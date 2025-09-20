@@ -1,0 +1,17 @@
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <rotate
+        android:pivotX="100%"
+        android:pivotY="50%"
+        android:fromDegrees="0"
+        android:toDegrees="-15"
+        android:duration="1500"
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:fillAfter="true" />
+
+    <!-- Fake Pause Effect (Keeps Arrow at -15° for 4 sec) -->
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="1.0"
+        android:duration="5000"
+        android:fillAfter="true"/>
+</set>

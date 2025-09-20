@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="1001dp"
+    android:layout_height="418dp"
+    android:background="@drawable/fragmentbg"
+    tools:context="com.fanconn.rideOS.menu.WirelessFragment">
+
+
+    <Button
+        android:id="@+id/bluetoothToggle"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="314dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/rounded_button1"
+        android:backgroundTint="#444444"
+        android:fontFamily="@font/kanit"
+        android:text="Bluetooth"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/wifiStatus"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="92dp"
+        android:fontFamily="@font/kanitlite"
+        android:text="Wi-Fi: Not connected"
+        android:textColor="#A6A6A6"
+        android:textSize="17dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bluetoothStatus"
+        android:layout_width="450dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="314dp"
+        android:layout_marginTop="92dp"
+        android:fontFamily="@font/kanitlite"
+        android:text="Bluetooth: Not connected"
+        android:textColor="#A6A6A6"
+        android:textSize="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/wifiToggle"
+        android:layout_width="160dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/rounded_button1"
+        android:backgroundTint="#444444"
+        android:fontFamily="@font/kanit"
+        android:text="Wi-Fi"
+        android:textColor="#FFFFFF"
+        android:textSize="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <LinearLayout
+        android:layout_width="998dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="121dp"
+        android:orientation="vertical"
+        android:padding="16dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="1dp"
+        tools:ignore="MissingConstraints">
+
+        <!-- Toggle Buttons -->
+
+        <!-- Connected Info -->
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Nearby Wi-Fi Networks:"
+            android:textColor="#279BF4" />
+
+        <ListView
+            android:id="@+id/wifiNetworksList"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#121212"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"
+            android:cacheColorHint="#00000000"
+            android:listSelector="@android:color/transparent" />
+
+
+        <!-- Device Lists -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Nearby Bluetooth Devices:"
+            android:textColor="#279BF4" />
+
+        <ListView
+            android:id="@+id/bluetoothDevicesList"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="#121212"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="8dp"
+            android:cacheColorHint="#00000000"
+            android:listSelector="@android:color/transparent" />
+
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="126dp"
+        android:src="@drawable/line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="14dp"
+        android:src="@drawable/wifi_icon_on_wireless"
+        app:layout_constraintStart_toStartOf="@+id/wifiToggle"
+        app:layout_constraintTop_toTopOf="@+id/wifiToggle" />
+
+    <ImageView
+        android:id="@+id/bluetoticon"
+        android:layout_width="28dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/blutooth_icon_wireless"
+        app:layout_constraintStart_toStartOf="@+id/bluetoothToggle"
+        app:layout_constraintTop_toTopOf="@+id/bluetoothToggle" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+
+    <!-- Allow HTTP for OTA domain -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">ota.rivotmotors.com</domain>
+    </domain-config>
+
+    <!-- Allow HTTP for local testing/server -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">192.168.1.105</domain>
+<!--        <domain includeSubdomains="true">103.104.231.197</domain>-->
+        <domain includeSubdomains="true">192.168.1.107</domain>/<!-- //DEVAN-->
+        <domain includeSubdomains="true"> 103.174.148.224</domain><!-- //new grafana server VM-->
+
+
+
+    </domain-config>
+
+</network-security-config>

@@ -1,0 +1,4 @@
+APP_PLATFORM := android-26
+APP_ABI := all
+#NDK_TOOLCHAIN_VERSION=4.9
+APP_BUILD_SCRIPT := Android.mk

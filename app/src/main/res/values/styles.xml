@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Base Theme (optional) -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Use custom switch style throughout if needed -->
+        <item name="switchStyle">@style/CustomSwitch</item>
+    </style>
+
+    <!-- Custom Switch Style -->
+    <style name="CustomSwitch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/custom_switch_thumb</item>
+        <item name="android:track">@drawable/custom_switch_track</item>
+    </style>
+
+    <style name="ToggleStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/bg_toggle_selector</item>
+        <item name="android:button">@null</item> <!-- Removes default radio icon -->
+        <item name="android:textColor">@color/text_toggle_selector</item>
+        <item name="android:paddingHorizontal">19dp</item>
+        <item name="android:paddingTop">18dp</item> <!-- Increase this to move text down -->
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">@font/kanit</item>
+    </style>
+
+    <style name="QuickButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">92dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@drawable/rounded_button1</item>
+        <item name="android:backgroundTint">#444444</item>
+        <item name="android:fontFamily">@font/kanit</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+</resources>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="66dp">
+
+    <!-- Blue line indicator -->
+
+    <!-- Main tab layout -->
+
+    <View
+        android:id="@+id/selectedIndicator"
+        android:layout_width="150dp"
+        android:layout_height="82dp"
+        android:layout_gravity="end"
+        android:background="#279BF4" />
+
+    <LinearLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="396dp"
+        android:layout_height="65dp"
+        android:background="@drawable/tab_background"
+        android:gravity="start|center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="34dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp">
+
+        <ImageView
+            android:id="@+id/tabIcon"
+            android:layout_width="26px"
+            android:layout_height="27px"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Tab icon"
+            android:src="@drawable/gearicon" />
+
+        <TextView
+            android:id="@+id/tabLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kanit"
+            android:text="Tab"
+            android:textColor="#AAAAAA"
+            android:textSize="22dp"
+            android:textStyle="normal" />
+    </LinearLayout>
+</FrameLayout>

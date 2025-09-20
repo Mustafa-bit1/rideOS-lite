@@ -1,0 +1,16 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Background shape -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#D3D3D3"/> <!-- Background color -->
+            <corners android:radius="50dp"/>
+        </shape>
+    </item>
+
+    <!-- Animated filling bar -->
+    <item android:id="@+id/level_bar">
+        <clip android:drawable="@drawable/blue_bar"
+            android:clipOrientation="horizontal"
+            android:gravity="start"/>
+    </item>
+</layer-list>

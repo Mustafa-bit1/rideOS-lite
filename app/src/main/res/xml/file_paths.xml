@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Define the external path where APKs are stored -->
+    <external-path name="external_files" path="Android/data/rideOS/files/" />
+</paths>

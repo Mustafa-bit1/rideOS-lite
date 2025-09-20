@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="1280dp"
+    android:layout_height="480dp"
+    android:background="@drawable/bg">
+
+    <EditText
+        android:id="@+id/etTorque"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="264dp"
+        android:hint="Max Torque"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etUsername"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="120dp"
+        android:hint="Username"
+        android:inputType="textPersonName"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etAge"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="168dp"
+        android:hint="Age"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <EditText-->
+<!--        android:id="@+id/etLucky"-->
+<!--        android:layout_width="300dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="480dp"-->
+<!--        android:layout_marginTop="216dp"-->
+<!--        android:hint="Lucky Number"-->
+<!--        android:inputType="number"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="480dp"
+        android:layout_marginTop="320dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioButton
+            android:id="@+id/radioPin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PIN" />
+
+        <RadioButton
+            android:id="@+id/radioPattern"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="Pattern" />
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/etPin"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="860dp"
+        android:layout_marginTop="212dp"
+        android:hint="Enter PIN"
+        android:inputType="numberPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.fanconn.rideOS.authen.PatternViewRegister
+        android:id="@+id/patternViewRegister"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="124dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="404dp"
+        android:layout_marginEnd="600dp"
+        android:text="Register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--xmlns:tools="http://schemas.android.com/tools"-->
+<!--android:layout_width="1280dp"-->
+<!--android:layout_height="480dp"-->
+<!--android:background="@drawable/bg">-->
+
+<!--<EditText-->
+<!--    android:id="@+id/etCredential"-->
+<!--    android:layout_width="500dp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginStart="388dp"-->
+<!--    android:layout_marginTop="44dp"-->
+<!--    android:hint="Enter PIN"-->
+<!--    android:inputType="numberPassword"-->
+<!--    app:layout_constraintStart_toStartOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--<com.example.authen.PatternView-->
+<!--    android:id="@+id/patternView"-->
+<!--    android:layout_width="270dp"-->
+<!--    android:layout_height="270dp"-->
+<!--    android:layout_marginStart="488dp"-->
+<!--    android:layout_marginTop="104dp"-->
+<!--    app:layout_constraintStart_toStartOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--<Button-->
+<!--    android:id="@+id/btnLogin"-->
+<!--    android:layout_width="200dp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginStart="388dp"-->
+<!--    android:layout_marginTop="416dp"-->
+<!--    android:text="Login"-->
+<!--    android:fontFamily="@font/kanit"-->
+<!--    android:backgroundTint="#FF953E"-->
+<!--    app:layout_constraintStart_toStartOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--<Button-->
+<!--    android:id="@+id/btnRegister"-->
+<!--    android:layout_width="200dp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginStart="644dp"-->
+<!--    android:layout_marginTop="416dp"-->
+<!--    android:text="Register"-->
+<!--    android:fontFamily="@font/kanit"-->
+<!--    android:backgroundTint="#FF953E"-->
+<!--    app:layout_constraintStart_toStartOf="parent"-->
+<!--    app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->

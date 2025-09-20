@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="1280dp"
+    android:layout_height="480dp"
+    tools:context=".chargingUI"
+    android:background="@drawable/bgsquare">
+
+
+
+        <!--    <ImageView-->
+        <!--        android:id="@+id/imageView10"-->
+        <!--        android:layout_width="170dp"-->
+        <!--        android:layout_height="42dp"-->
+        <!--        android:layout_marginTop="339dp"-->
+        <!--        android:layout_marginEnd="686dp"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:srcCompat="@drawable/slowcharge" />-->
+
+
+        <TextView
+            android:id="@+id/timeTextView"
+            android:layout_width="100dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="448dp"
+            android:fontFamily="@font/kanit"
+            android:text="00:00"
+            android:textColor="#FFFFFF"
+            android:textSize="22dp"
+            app:layout_constraintEnd_toEndOf="@+id/imageView14"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView14"
+        android:layout_width="835dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="204dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/chargingbar" />
+
+<!--    <ImageView-->
+<!--            android:id="@+id/imageView15"-->
+<!--            android:layout_width="38dp"-->
+<!--            android:layout_height="38dp"-->
+<!--            android:layout_marginTop="32dp"-->
+<!--            android:layout_marginEnd="312dp"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/imageView14"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/wificharging" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/Bluetooth_IV"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_marginTop="32dp"-->
+<!--            android:layout_marginEnd="604dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/blueth" />-->
+
+    <TextView
+        android:id="@+id/socText"
+        android:layout_width="460dp"
+        android:layout_height="125dp"
+        android:layout_marginStart="464dp"
+        android:layout_marginBottom="178dp"
+        android:fontFamily="@font/opti"
+        android:text="100%"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="90dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/batfullmsg"
+        android:layout_width="360dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="474dp"
+        android:layout_marginBottom="176dp"
+        android:fontFamily="@font/kanit"
+        android:text="Plugged In"
+        android:textAlignment="center"
+        android:textColor="#61FF05"
+        android:textSize="20dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/chagingstartedicon"
+        android:layout_width="150dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="565dp"
+        android:visibility="gone"
+        android:layout_marginTop="284dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/chargingicon" />
+
+    <TextView
+        android:id="@+id/APUbatTV"
+        android:layout_width="110dp"
+        android:layout_height="32dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="704dp"
+        android:layout_marginTop="47dp"
+        android:fontFamily="@font/kanit"
+        android:shadowColor="#80000000"
+        android:shadowDx="5"
+        android:shadowDy="3"
+        android:shadowRadius="5"
+        android:text="-"
+        android:textAlignment="textStart"
+        android:textColor="#FFFFFFFF"
+        android:textSize="20dp"
+        android:translationY="-10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageButton
+        android:id="@+id/chargingtologinbtn"
+        android:layout_width="157dp"
+        android:layout_height="115dp"
+        android:layout_marginBottom="0dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/chargingtologinbtn" />
+
+
+    <ImageView
+        android:id="@+id/chargingbike"
+        android:layout_width="1280dp"
+        android:layout_height="480dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/chargingbike"
+        />
+
+    <!--    <ImageView-->
+        <!--        android:id="@+id/imageView18"-->
+        <!--        android:layout_width="250dp"-->
+        <!--        android:layout_height="30dp"-->
+        <!--        android:layout_marginTop="347dp"-->
+        <!--        android:layout_marginEnd="420dp"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:srcCompat="@drawable/chargeremainingtime" />-->
+
+    <ImageView
+        android:id="@+id/plugged"
+        android:layout_width="61dp"
+        android:layout_height="93dp"
+        android:layout_marginTop="172dp"
+        android:layout_marginEnd="600dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/pluggedicon" />
+
+    <ImageView
+        android:id="@+id/chargingUiBatterybar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="241dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/bat_0" />
+
+
+
+    <ImageView
+        android:id="@+id/APUbatteryImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="305dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/apubat_0" />
+
+    <ImageView
+        android:id="@+id/apubaticon"
+        android:layout_width="31dp"
+        android:layout_height="17dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="584dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/apubaticon" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

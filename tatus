@@ -1,0 +1,14 @@
+warning: in the working copy of 'app/src/main/java/com/fanconn/rideOS/MainActivity.java', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/app/src/main/java/com/fanconn/rideOS/MainActivity.java b/app/src/main/java/com/fanconn/rideOS/MainActivity.java[m
+[1mindex abbcb97..f762af0 100644[m
+[1m--- a/app/src/main/java/com/fanconn/rideOS/MainActivity.java[m
+[1m+++ b/app/src/main/java/com/fanconn/rideOS/MainActivity.java[m
+[36m@@ -1943,6 +1943,8 @@[m [mpublic class MainActivity extends AppCompatActivity implements FrameDataListener[m
+             binding.textstatus.setText(message);[m
+         }[m
+     }[m
+[32m+[m[32m    //firs git git diff[m
+[32m+[m
+     public void runPostLoginInit() {[m
+ //        Log.d("MainActivity", "Running unlock sequence from post-login...");[m
+ [m

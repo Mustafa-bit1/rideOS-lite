@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#D3D3D3"> <!-- 设置背景为灰色 -->
+
+    <!-- Option 1 with TextView and Switch -->
+    <LinearLayout
+        android:id="@+id/frontLock_PUI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <!-- 添加文字或按钮 -->
+        <TextView
+            android:id="@+id/frontLock_PTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="龙头锁:" />
+
+        <Switch
+            android:id="@+id/frontLock_SW"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp" />
+
+        <TextView
+            android:id="@+id/frontLock_SW_STV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 关 "
+            android:textSize="16sp"/>
+    </LinearLayout>
+
+    <!-- Option 2 with TextView and Switch -->
+    <LinearLayout
+        android:id="@+id/seatCushionLock_PUI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <!-- 添加文字或按钮 -->
+        <TextView
+            android:id="@+id/seatCushionLock_PTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="坐垫锁:" />
+
+        <Switch
+            android:id="@+id/seatCushionLock_SW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginEnd="3dp" />
+
+        <TextView
+            android:id="@+id/seatCushionLock_SW_STV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" 关 "
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Option 3 with TextView and HorizontalScrollView -->
+    <LinearLayout
+        android:id="@+id/rectangleGears_PUI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:gravity="center">>
+
+        <!-- 添加文字或按钮 -->
+        <TextView
+            android:id="@+id/rectangleGears_PTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="方向档:" />
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- 档位按钮 -->
+                <TextView
+                    android:id="@+id/neutral_gear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:text=" N "
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/drive_gear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:text=" D "
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/reverse_gear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:text=" R "
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <!-- Option 4 with TextView and HorizontalScrollView -->
+    <LinearLayout
+        android:id="@+id/speedThreshold_PUI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:gravity="center">>
+
+        <!-- 添加文字或按钮 -->
+        <TextView
+            android:id="@+id/speedThreshold_PTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="速度档:" />
+
+        <HorizontalScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- 档位按钮 -->
+                <TextView
+                    android:id="@+id/speedThreshold_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:layout_marginEnd="2dp"
+                    android:text=" 1 "
+                    android:textSize="21sp" />
+
+                <TextView
+                    android:id="@+id/speedThreshold_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:text=" 2 "
+                    android:textSize="21sp" />
+
+                <TextView
+                    android:id="@+id/speedThreshold_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="1dp"
+                    android:layout_marginEnd="1dp"
+                    android:text=" 3 "
+                    android:textSize="21sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+</LinearLayout>

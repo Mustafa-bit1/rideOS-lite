@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="1280dp"
+    android:layout_height="480dp"
+    android:background="@drawable/bg">
+
+
+    <!--        android:gravity="center"-->
+<!--        android:focusable="false"-->
+<!--        android:cursorVisible="false"-->
+
+
+    <EditText
+        android:id="@+id/etCredential"
+        android:layout_width="40dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="620dp"
+        android:layout_marginTop="5dp"
+        android:background="@android:color/transparent"
+        android:cursorVisible="false"
+        android:digits="0123456789"
+        android:focusable="false"
+        android:fontFamily="@font/kanit"
+        android:hint="••••"
+        android:inputType="none"
+        android:longClickable="false"
+        android:maxLength="4"
+        android:textAlignment="center"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="#404040"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <!--    <Button-->
+<!--        android:id="@+id/btnLogin"-->
+<!--        android:layout_width="200dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="428dp"-->
+<!--        android:layout_marginTop="416dp"-->
+<!--        android:background="@drawable/rounded_button"-->
+<!--        android:fontFamily="@font/kanit"-->
+<!--        android:text="Login"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1216dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#DA6200"
+        android:fontFamily="@font/kanit"
+        android:text="?"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+<!--    <Button-->
+<!--        android:id="@+id/ScreenOFFbtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="416dp"-->
+<!--        android:layout_marginEnd="1132dp"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:fontFamily="@font/kanit"-->
+<!--        android:text="Screen Off"-->
+<!--        android:textColor="#FFFFFF"-->
+<!--        android:textSize="20sp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+    <com.fanconn.rideOS.authen.PatternView
+        android:id="@+id/patternView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_marginStart="490dp"
+        android:layout_marginTop="54dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchAuthMethod"
+        android:layout_width="260dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1008dp"
+        android:layout_marginTop="412dp"
+        android:fontFamily="@font/kanit"
+        android:gravity="center"
+        android:padding="0dp"
+        android:switchPadding="0dp"
+        android:text="Use PIN instead"
+        android:textColor="@color/white"
+        android:textSize="19sp"
+        android:thumbTextPadding="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+<!--    <TextView-->
+<!--        android:id="@+id/drawpattern"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="584dp"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:fontFamily="@font/kanit"-->
+<!--        android:text="Draw Pattern"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="19dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <include layout="@layout/custom_keypadd"
+        android:id="@+id/customKeypad"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/loginchargingicon"
+        android:layout_width="138dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="417dp"
+        android:layout_marginEnd="578dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/chargingicon"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/loginSoc"
+        android:layout_width="223dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="528dp"
+        android:layout_marginTop="385dp"
+        android:fontFamily="@font/kanit"
+        android:text="-"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="21dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tempWarningMessage"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="465dp"
+        android:layout_marginTop="418dp"
+        android:fontFamily="@font/kanit"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="High Battery Temperature Detected"
+        android:textColor="#FF0000"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,118 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.fanconn.rideOS'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.fanconn.rideOS"
+        minSdk 26
+        targetSdk 35
+        versionCode 3
+        versionName "3.1"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        packagingOptions {
+            pickFirst 'libs/arm64-v8a/libnative-lib.so'
+            pickFirst "libs/armeabi-v7a/libnative-lib.so"
+
+            exclude 'META-INF/INDEX.LIST'
+            exclude 'META-INF/DEPENDENCIES'
+            exclude 'META-INF/LICENSE'
+            exclude 'META-INF/LICENSE.txt'
+            exclude 'META-INF/NOTICE'
+            exclude 'META-INF/NOTICE.txt'
+            exclude 'META-INF/io.netty.versions.properties'  // Added exclusion for this file
+        }
+
+        ndk {
+            moduleName "native-lib"
+            ldLibs "log", "z", "m"
+            abiFilters "arm64-v8a", "armeabi-v7a"
+        }
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("keystore/platform.jks")
+            storePassword 'fanconn'
+            keyAlias 'platform'
+            keyPassword 'fanconn'
+        }
+
+        debug {
+            storeFile file("keystore/platform.jks")
+            storePassword 'fanconn'
+            keyAlias 'platform'
+            keyPassword 'fanconn'
+        }
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+    externalNativeBuild {
+        ndkBuild {
+            path file('src/main/jni/Android.mk')
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main {
+            jni {
+                srcDirs 'src/main/jni'
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.firebase:firebase-appdistribution-gradle:5.1.1'
+    implementation 'androidx.security:security-crypto:1.0.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'io.github.xmaihh:serialport:2.1.1'
+    implementation 'com.airbnb.android:lottie:6.3.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+    implementation 'androidx.activity:activity:1.10.0'
+    implementation 'androidx.core:core-ktx:1.15.0'
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation "androidx.security:security-crypto:1.1.0-alpha03"
+
+
+        implementation 'androidx.appcompat:appcompat:1.6.1' // Ensure this version is up to date
+
+
+}
