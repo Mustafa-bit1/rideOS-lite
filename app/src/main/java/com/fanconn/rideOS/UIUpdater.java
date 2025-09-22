@@ -2734,45 +2734,63 @@ public class UIUpdater  {
                     int minor = intent.getIntExtra(TpmsScanService.EXTRA_MINOR, -1);
 
                     if (minor != -1 && mac != null) {
-                        // Extract high/low 8 bits directly
+                        // Extract raw bytes
                         int pressureRaw = (minor >> 8) & 0xFF;
                         int tempRaw = minor & 0xFF;
 
+                        // Convert raw -> kPa -> psi (same conversion used in TPMS_activity)
                         double pressureKpa = pressureRaw * 2.5;
-                        double pressurePsi = pressureKpa * 0.145038;
+                        double pressurePsiDouble = pressureKpa * 0.145038;
+                        int pressurePsi = (int) Math.round(pressurePsiDouble); // integer PSI for display/encoding
                         int temperature = tempRaw - 40;
 
-                        Log.d("TPMS-Decode", "Minor=" + minor +
-                                " | PressureRaw=" + pressureRaw +
-                                " | TempRaw=" + tempRaw +
-                                " | Pressure=" + String.format("%.1f psi", pressurePsi) +
-                                " | Temp=" + temperature + "°C");
+                        // Safe debug log (shows both decimal and rounded value)
+                        Log.d("TPMS-Decode", String.format(
+                                "Minor=%d | PressureRaw=%d | TempRaw=%d | Pressure=%.1f psi (rounded=%d) | Temp=%d°C",
+                                minor, pressureRaw, tempRaw, pressurePsiDouble, pressurePsi, temperature));
 
-                        // Update correct tire
+                        // Update correct tire and warn flags
                         if (metadata.getFrontTPMS() != null && metadata.getFrontTPMS().equals(mac)) {
                             frontMinor = minor;
                             frontWarning = (pressurePsi < MIN_PRESSURE_PSI || temperature > MAX_TEMP_C);
-                            Log.d("UIUpdater", String.format("FRONT -> %.1f psi, %d °C", pressurePsi, temperature));
+                            Log.d("UIUpdater", String.format("FRONT -> %d psi, %d °C", pressurePsi, temperature));
 
                         } else if (metadata.getRearTPMS() != null && metadata.getRearTPMS().equals(mac)) {
                             rearMinor = minor;
                             rearWarning = (pressurePsi < MIN_PRESSURE_PSI || temperature > MAX_TEMP_C);
-                            Log.d("UIUpdater", String.format("REAR -> %.1f psi, %d °C", pressurePsi, temperature));
+                            Log.d("UIUpdater", String.format("REAR -> %d psi, %d °C", pressurePsi, temperature));
                         }
 
-                        // ✅ Combine both minors if available
-                        if (frontMinor != null || rearMinor != null) {
-                            StringBuilder sb = new StringBuilder();
-                            if (frontMinor != null) sb.append(frontMinor);
-                            if (rearMinor != null) sb.append(rearMinor);
+                        // Build encoded values from the stored minors (use converted PSI, not raw)
+                        int fPress = 0, fTemp = 0, rPress = 0, rTemp = 0;
 
-                            try {
-                                float combinedMinor = Float.parseFloat(sb.toString());
-                                tm.setTeleTirePressure(combinedMinor);
-                                Log.d("UIUpdater", "Combined Minor sent to Telemetry = " + combinedMinor);
-                            } catch (NumberFormatException e) {
-                                Log.e("UIUpdater", "Error parsing combined minor", e);
-                            }
+                        if (frontMinor != null) {
+                            int raw = (frontMinor >> 8) & 0xFF;
+                            double pKpa = raw * 2.5;
+                            int psi = (int) Math.round(pKpa * 0.145038);
+                            fPress = psi;
+                            fTemp = (frontMinor & 0xFF) - 40;
+                        }
+
+                        if (rearMinor != null) {
+                            int raw = (rearMinor >> 8) & 0xFF;
+                            double pKpa = raw * 2.5;
+                            int psi = (int) Math.round(pKpa * 0.145038);
+                            rPress = psi;
+                            rTemp = (rearMinor & 0xFF) - 40;
+                        }
+
+                        // Concatenate as 02-digit fields (frontP, frontT, rearP, rearT)
+                        @SuppressLint("DefaultLocale")
+                        String teleTripString = String.format("%02d%02d%02d%02d",
+                                fPress, fTemp, rPress, rTemp);
+
+                        try {
+                            float teleTripValue = Float.parseFloat(teleTripString);
+                            TelemetryDataManager.getInstance().setTeleTirePressure(teleTripValue);
+                            Log.d("UIUpdater", "TeleTirePressure updated = " + teleTripString);
+                        } catch (NumberFormatException e) {
+                            Log.e("UIUpdater", "Error parsing TeleTirePressure", e);
                         }
 
                         // Show/hide warning icon
@@ -2790,7 +2808,6 @@ public class UIUpdater  {
         LocalBroadcastManager.getInstance(ctx).registerReceiver(tpmsReceiver, filter);
         Log.d("TPMS-UI", "registerTpmsReceiver: TPMS receiver registered ");
     }
-
 
     public void cleanup(Context ctx) {
         if (tpmsReceiver != null) {

@@ -1943,31 +1943,36 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             binding.textstatus.setText(message);
         }
     }
-    //firs git git diff
-
-
     public void runPostLoginInit() {
 //        Log.d("MainActivity", "Running unlock sequence from post-login...");
 
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+        //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//            long minRequired = 50 * 1024 * 1024; // 50 MB minimum free space
+//            if (isSdCardHasSpace(minRequired)) {
+//                Log.d("MainActivity", "Starting CameraService recording...");
+//                Intent i = new Intent(MainActivity.this, CameraService.class);
+//                i.setAction("START_REC");
+//                startService(i);
+//            } else {
+//                Log.e("MainActivity", "SD card full, cannot start recording!");
+//                Toast.makeText(this, "SD card full, cannot start recording!", Toast.LENGTH_SHORT).show();
+//            }
+//        }, 8000);
+//============================================================================================================
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            Log.d("MainActivity", "Starting CameraService recording...");
 //            Intent i = new Intent(MainActivity.this, CameraService.class);
 //            i.setAction("START_REC");   // ✅ match service action name
 //            startService(i);
-        }, 8000); // 8 seconds
+//        }, 8000); // 8 seconds
 
         delayedUnlockRunnable = () -> {
             Heartbeat1 hb1 = serialPortManager.getHb1();
             if ((hb1.getDragonLock() == 0 || hb1.getLED() == 0)&& LoginisActive) {
                 Log.d("MainActivity", "&&&&&&&&&&&&&&&&&&&&&&&Unlocking again after delay...");
                 EVLockService.getInstance().startUnlockSequence();
-
-
-
-
-
             } else {
                 //Log.d("MainActivity", "Scooter already unlocked, skipping re-unlock.");
             }

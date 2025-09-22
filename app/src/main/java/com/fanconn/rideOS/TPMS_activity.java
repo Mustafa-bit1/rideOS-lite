@@ -1,5 +1,6 @@
 package com.fanconn.rideOS;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -150,6 +151,10 @@ public class TPMS_activity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(new Intent(TpmsScanService.ACTION_TPMS_REQUEST));
     }
+    private int frontPressure = 0;
+    private int frontTemp = 0;
+    private int rearPressure = 0;
+    private int rearTemp = 0;
 
     private void prepareTpmsReceiver() {
         tpmsReceiver = new BroadcastReceiver() {
@@ -174,51 +179,59 @@ public class TPMS_activity extends AppCompatActivity {
                     double pressurePsi = pressureKpa * 0.145038;
                     int temperature = tempRaw - 40;
 
-                    Log.d(TAG, String.format("TPMS packet | MAC=%s | minor=%d | pRaw=%d | tRaw=%d | psi=%.2f | °C=%d",
+                    Log.d(TAG, String.format(
+                            "TPMS packet | MAC=%s | minor=%d | pRaw=%d | tRaw=%d | psi=%.2f | °C=%d",
                             mac, minor, pressureRaw, tempRaw, pressurePsi, temperature));
 
-                    // forward a raw numeric to telemetry (you may change this)
-                    //TelemetryDataManager.getInstance().setTeleTirePressure(minor);
-
-                    // Update sensor that matches MAC. Use TextUtils.equals for null-safety.
                     long now = System.currentTimeMillis();
 
+                    // Update front sensor
                     if (!TextUtils.isEmpty(metadata.getFrontTPMS()) && TextUtils.equals(mac, metadata.getFrontTPMS())) {
                         frontLow = (pressurePsi < 20.0);
                         frontAvailable = true;
                         lastFrontUpdate = now;
-                        if (frontPressureView != null) frontPressureView.setText(String.format("%.1f psi", pressurePsi));
-                        if (frontTempView != null) frontTempView.setText(String.format("%d\u00B0C", temperature));
+                        frontPressure = (int) Math.round(pressurePsi);
+                        frontTemp = temperature;
+
+                        if (frontPressureView != null)
+                            frontPressureView.setText(String.format("%d psi", frontPressure));
+                        if (frontTempView != null)
+                            frontTempView.setText(String.format("%d\u00B0C", frontTemp));
                         Log.d(TAG, "Front sensor updated");
                     }
 
+                    // Update rear sensor
                     if (!TextUtils.isEmpty(metadata.getRearTPMS()) && TextUtils.equals(mac, metadata.getRearTPMS())) {
                         rearLow = (pressurePsi < 20.0);
                         rearAvailable = true;
                         lastRearUpdate = now;
-                        if (rearPressureView != null) rearPressureView.setText(String.format("%.1f psi", pressurePsi));
-                        if (rearTempView != null) rearTempView.setText(String.format("%d\u00B0C", temperature));
+                        rearPressure = (int) Math.round(pressurePsi);
+                        rearTemp = temperature;
+
+                        if (rearPressureView != null)
+                            rearPressureView.setText(String.format("%d psi", rearPressure));
+                        if (rearTempView != null)
+                            rearTempView.setText(String.format("%d\u00B0C", rearTemp));
                         Log.d(TAG, "Rear sensor updated");
                     }
 
-                    // If MAC matches neither, log and ignore
-                    if (!(TextUtils.equals(mac, metadata.getFrontTPMS()) || TextUtils.equals(mac, metadata.getRearTPMS()))) {
-                        Log.w(TAG, "TPMS packet from unconfigured MAC: " + mac);
-                    }
+                    // ✅ Removed TeleTirePressure setting logic
 
                     // Immediately update UI after processing
                     updateUI();
+
                 } catch (Exception e) {
                     Log.e(TAG, "Error processing TPMS packet", e);
                 }
             }
         };
 
-        // Register with LocalBroadcastManager (service sends updates locally)
+        // Register with LocalBroadcastManager
         IntentFilter filter = new IntentFilter(TpmsScanService.ACTION_TPMS_UPDATE);
         LocalBroadcastManager.getInstance(this).registerReceiver(tpmsReceiver, filter);
         Log.d(TAG, "TPMS receiver registered with LocalBroadcastManager");
     }
+
 
     /**
      * updateUI reads per-sensor availability/low flags and writes UI.
