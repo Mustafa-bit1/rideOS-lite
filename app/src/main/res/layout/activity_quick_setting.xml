@@ -223,7 +223,7 @@
             <Button
                 android:id="@+id/ltetoggle"
                 style="@style/QuickButtonStyle"
-                android:text="4G"
+                android:text="Device Data"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

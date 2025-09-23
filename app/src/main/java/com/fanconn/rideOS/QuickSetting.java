@@ -1,6 +1,7 @@
 package com.fanconn.rideOS;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -18,6 +20,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -37,6 +41,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.fanconn.rideOS.menu.BrightnessManager;
 
+import java.lang.reflect.Method;
 import java.util.Set;
 
 public class QuickSetting extends AppCompatActivity {
@@ -48,6 +53,9 @@ public class QuickSetting extends AppCompatActivity {
     ImageButton tpmsBtn;
 
     private static final int REQUEST_BLUETOOTH_CONNECT = 1001;
+
+    private Button lteToggle;
+    private TextView lteStatusText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +98,12 @@ public class QuickSetting extends AppCompatActivity {
         TextView autoBrightnessText = findViewById(R.id.autoBrightnessText);
         brightnessManager.applyToSeekBar(brightnessSlider, autoBrightnessText);
 
-        // Init Volume
+        // Volume
         SeekBar volumeSlider = findViewById(R.id.volumeSlider);
         ImageButton muteButton = findViewById(R.id.muteButton);
         brightnessManager.applyToVolumeSlider(volumeSlider, muteButton);
 
-        // WiFi Setup
+        // WiFi
         Button wifiToggle = findViewById(R.id.wifiToggle);
         TextView wifiStatusText = findViewById(R.id.wifiStatusText);
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
@@ -106,7 +114,7 @@ public class QuickSetting extends AppCompatActivity {
             handler.postDelayed(() -> updateWifiUI(wifiManager, wifiToggle, wifiStatusText), 1500);
         });
 
-        // Bluetooth Setup
+        // Bluetooth
         bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
         Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);
         TextView bluetoothStatusText = findViewById(R.id.bluetoothStatusText);
@@ -132,23 +140,38 @@ public class QuickSetting extends AppCompatActivity {
             }
 
             if (bluetoothAdapter.isEnabled()) {
-                bluetoothAdapter.disable();
-                bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
-                bluetoothStatusText.setText("");
+                // Show warning dialog before turning off
+                createDialog(
+                        "Warning",
+                        "RIVOT smart key feature and tire pressure monitoring system may not work,  Are you sure you want to turn OFF the Bluetooth?",
+                        "Turn Off",
+                        () -> {
+                            bluetoothAdapter.disable();
+                            bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
+                            bluetoothStatusText.setText("");
+                        }
+                ).show();
             } else {
                 bluetoothAdapter.enable();
                 bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
                 bluetoothStatusText.setText("Turning on...");
-                handler.postDelayed(() ->
-                        updateBluetoothUI(bluetoothToggle, bluetoothStatusText), 3000);
+                handler.postDelayed(() -> updateBluetoothUI(bluetoothToggle, bluetoothStatusText), 3000);
             }
         });
+
+
+        // LTE / Mobile Data
+        lteToggle = findViewById(R.id.ltetoggle);
+        lteStatusText = findViewById(R.id.ltetoggleStatusText);
+        updateMobileDataUI();
+
+        lteToggle.setOnClickListener(v -> handleLteToggle());
     }
 
+    // ---- WiFi ----
     private void updateWifiUI(WifiManager wifiManager, Button button, TextView statusText) {
         int customOnColor = Color.parseColor("#1C78BE");
         int customOffColor = Color.parseColor("#555555");
-
         if (wifiManager.isWifiEnabled()) {
             button.setBackgroundTintList(ColorStateList.valueOf(customOnColor));
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
@@ -164,6 +187,7 @@ public class QuickSetting extends AppCompatActivity {
         }
     }
 
+    // ---- Bluetooth ----
     private void updateBluetoothUI(Button button, TextView statusText) {
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
             button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
@@ -181,7 +205,6 @@ public class QuickSetting extends AppCompatActivity {
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
             return "";
         }
-
         Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
         for (BluetoothDevice device : bondedDevices) {
             int state = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
@@ -192,7 +215,61 @@ public class QuickSetting extends AppCompatActivity {
         return "";
     }
 
-    // Permissions result
+    // ---- Mobile Data (LTE) ----
+    private boolean hasSimCard() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm == null) return false;
+        return tm.getSimState() == TelephonyManager.SIM_STATE_READY;
+    }
+
+    private void handleLteToggle() {
+        if (!hasSimCard()) {
+            Toast.makeText(this, "No SIM card detected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        boolean newState = !getMobileDataState();
+        setMobileDataEnabled(newState);
+        updateMobileDataUI();
+    }
+
+    private void updateMobileDataUI() {
+        int customOnColor = Color.parseColor("#1C78BE");
+        int customOffColor = Color.parseColor("#555555");
+
+        boolean enabled = getMobileDataState();
+
+        lteToggle.setEnabled(hasSimCard());
+        lteToggle.setBackgroundTintList(ColorStateList.valueOf(enabled ? customOnColor : customOffColor));
+        lteStatusText.setText(enabled ? "Data On" : "Data Off");
+    }
+
+    // ---- Reflection to control mobile data ----
+    private boolean getMobileDataState() {
+        try {
+            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            Method getDataEnabled = TelephonyManager.class.getDeclaredMethod("getDataEnabled");
+            getDataEnabled.setAccessible(true);
+            return (boolean) getDataEnabled.invoke(tm);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void setMobileDataEnabled(boolean enabled) {
+        try {
+            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            Method setDataEnabled = TelephonyManager.class.getDeclaredMethod("setDataEnabled", boolean.class);
+            setDataEnabled.setAccessible(true);
+            setDataEnabled.invoke(tm, enabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Cannot toggle mobile data. Requires system privileges.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // ---- Permissions ----
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String[] permissions,
@@ -209,6 +286,7 @@ public class QuickSetting extends AppCompatActivity {
         }
     }
 
+    // ---- Gestures ----
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
@@ -242,4 +320,31 @@ public class QuickSetting extends AppCompatActivity {
             return false;
         }
     }
+
+    private AlertDialog createDialog(String titleText, String messageText, String positiveText, Runnable positiveAction) {
+        View dialogView = getLayoutInflater().inflate(R.layout.popupdialog, null);
+        TextView title = dialogView.findViewById(R.id.dialogTitle);
+        TextView message = dialogView.findViewById(R.id.dialogMessage);
+        Button btnYes = dialogView.findViewById(R.id.btnYes);
+        Button btnNo = dialogView.findViewById(R.id.btnNo);
+
+        title.setText(titleText);
+        message.setText(messageText);
+        btnYes.setText(positiveText);
+        btnNo.setText("Cancel");
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        btnYes.setOnClickListener(v -> {
+            positiveAction.run();
+            dialog.dismiss();
+        });
+        btnNo.setOnClickListener(v -> dialog.dismiss());
+
+        return dialog;
+    }
+
 }

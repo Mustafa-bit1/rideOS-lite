@@ -2745,20 +2745,20 @@ public class UIUpdater  {
                         int temperature = tempRaw - 40;
 
                         // Safe debug log (shows both decimal and rounded value)
-                        Log.d("TPMS-Decode", String.format(
-                                "Minor=%d | PressureRaw=%d | TempRaw=%d | Pressure=%.1f psi (rounded=%d) | Temp=%d°C",
-                                minor, pressureRaw, tempRaw, pressurePsiDouble, pressurePsi, temperature));
+//                        Log.d("TPMS-Decode", String.format(
+//                                "Minor=%d | PressureRaw=%d | TempRaw=%d | Pressure=%.1f psi (rounded=%d) | Temp=%d°C",
+//                                minor, pressureRaw, tempRaw, pressurePsiDouble, pressurePsi, temperature));
 
                         // Update correct tire and warn flags
                         if (metadata.getFrontTPMS() != null && metadata.getFrontTPMS().equals(mac)) {
                             frontMinor = minor;
                             frontWarning = (pressurePsi < MIN_PRESSURE_PSI || temperature > MAX_TEMP_C);
-                            Log.d("UIUpdater", String.format("FRONT -> %d psi, %d °C", pressurePsi, temperature));
+                            //Log.d("UIUpdater", String.format("FRONT -> %d psi, %d °C", pressurePsi, temperature));
 
                         } else if (metadata.getRearTPMS() != null && metadata.getRearTPMS().equals(mac)) {
                             rearMinor = minor;
                             rearWarning = (pressurePsi < MIN_PRESSURE_PSI || temperature > MAX_TEMP_C);
-                            Log.d("UIUpdater", String.format("REAR -> %d psi, %d °C", pressurePsi, temperature));
+                            //Log.d("UIUpdater", String.format("REAR -> %d psi, %d °C", pressurePsi, temperature));
                         }
 
                         // Build encoded values from the stored minors (use converted PSI, not raw)
@@ -2788,7 +2788,7 @@ public class UIUpdater  {
                         try {
                             float teleTripValue = Float.parseFloat(teleTripString);
                             TelemetryDataManager.getInstance().setTeleTirePressure(teleTripValue);
-                            Log.d("UIUpdater", "TeleTirePressure updated = " + teleTripString);
+                            //Log.d("UIUpdater", "TeleTirePressure updated = " + teleTripString);
                         } catch (NumberFormatException e) {
                             Log.e("UIUpdater", "Error parsing TeleTirePressure", e);
                         }

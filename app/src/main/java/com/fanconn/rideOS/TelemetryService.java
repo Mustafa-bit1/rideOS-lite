@@ -201,7 +201,7 @@ public class TelemetryService extends Service {
                         null, null, null, rideOSversion, null,
                         odo, chargingState, handleLockState, seatLockState,
                         bmsMosStates, riders, bmslifecycles, lat_long, time);
-        Log.d("TelemetryService", "Sending telemetry: " + TelemetryDataManager.getInstance().getTeleLatLong());
+        //Log.d("TelemetryService", "Sending telemetry: " + TelemetryDataManager.getInstance().getTeleLatLong());
 
         if (anyChanged) {
             prefs.edit()
