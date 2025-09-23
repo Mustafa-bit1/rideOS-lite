@@ -1,10 +1,17 @@
 package com.fanconn.rideOS;
 
+import android.app.AlertDialog;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -123,37 +130,56 @@ public class UpdateService extends Service {
 
                 handler.post(() -> {
                     try {
-                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getApplicationContext());
-                        builder.setTitle("Update Available")
-                                .setMessage("A new version of rideOS is available. Do you want to update?")
+                        // Inflate custom dialog layout
+                        Context context = getApplicationContext();
+                        LayoutInflater inflater = LayoutInflater.from(context);
+                        View dialogView = inflater.inflate(R.layout.popupdialog, null);
+
+                        TextView title = dialogView.findViewById(R.id.dialogTitle);
+                        TextView message = dialogView.findViewById(R.id.dialogMessage);
+                        Button btnYes = dialogView.findViewById(R.id.btnYes);
+                        Button btnNo = dialogView.findViewById(R.id.btnNo);
+
+                        title.setText("Update Available");
+                        message.setText("rideOS got upgraded with new features. Do you want to update?");
+                        btnYes.setText("Yes");
+                        btnNo.setText("Remind me later");
+
+                        AlertDialog dialog = new AlertDialog.Builder(context)
+                                .setView(dialogView)
                                 .setCancelable(false)
-                                .setPositiveButton("Yes", (dialog, which) -> {
-                                    Log.d(TAG, "User accepted the update.");
+                                .create();
 
-                                    Intent progressIntent = new Intent(getApplicationContext(), UpdateProgressActivity.class);
-                                    progressIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    startActivity(progressIntent);
+                        // Buttons actions
+                        btnYes.setOnClickListener(v -> {
+                            Log.d(TAG, "User accepted the update.");
 
-                                    downloadAndInstall(apkUrl);
-                                })
-                                .setNegativeButton("Remind me later", (dialog, which) -> {
-                                    Log.d(TAG, "Remind later selected");
-                                    handler.postDelayed(() -> promptUserToUpdate(apkUrl), 24 * 60 * 60 * 1000); // 24 hours
-                                });
+                            Intent progressIntent = new Intent(context, UpdateProgressActivity.class);
+                            progressIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(progressIntent);
 
-                        android.app.AlertDialog dialog = builder.create();
+                            downloadAndInstall(apkUrl);
+                            dialog.dismiss();
+                        });
 
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        btnNo.setOnClickListener(v -> {
+                            Log.d(TAG, "Remind later selected");
+                            handler.postDelayed(() -> promptUserToUpdate(apkUrl), 24 * 60 * 60 * 1000); // 24 hours
+                            dialog.dismiss();
+                        });
+
+                        // Overlay window type for Service
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             dialog.getWindow().setType(android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
                         } else {
                             dialog.getWindow().setType(android.view.WindowManager.LayoutParams.TYPE_PHONE);
                         }
 
                         dialog.show();
-                        Log.d(TAG, "Update dialog displayed");
+                        Log.d(TAG, "Custom update dialog displayed");
 
                     } catch (Exception e) {
-                        Log.e(TAG, "Failed to show update prompt", e);
+                        Log.e(TAG, "Failed to show custom update dialog", e);
                     }
                 });
 
