@@ -47,8 +47,11 @@ public class WirelessFragment extends Fragment {
 
     private ArrayAdapter<String> btAdapter, wifiAdapter;
 
-    int customOnColor = Color.parseColor("#1C78BE");
-    int customOffColor = Color.parseColor("#555555");
+    private int customOnColor = Color.parseColor("#1C78BE");
+    private int customOffColor = Color.parseColor("#555555");
+
+    private BroadcastReceiver btStateReceiver;
+    private BroadcastReceiver wifiStateReceiver;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,7 +67,6 @@ public class WirelessFragment extends Fragment {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         wifiManager = (WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        // ✅ Use custom styled list items
         btAdapter = new ArrayAdapter<>(requireContext(), R.layout.devices_listitems, R.id.deviceName);
         bluetoothDevicesList.setAdapter(btAdapter);
 
@@ -79,26 +81,18 @@ public class WirelessFragment extends Fragment {
             scanWifi();
         }
 
+        // Bluetooth toggle
         bluetoothToggle.setOnClickListener(v -> {
             if (bluetoothAdapter == null) return;
-            boolean isEnabled = bluetoothAdapter.isEnabled();
 
-            if (isEnabled) {
-                new AlertDialog.Builder(requireContext())
-                        .setTitle("Turn off Bluetooth?")
-                        .setMessage("This will disable the RIVOT smart key feature and tire pressure monitoring system,  Are you sure you want to turn OFF the Bluetooth? ")
-                        .setPositiveButton("Turn OFF Bluetooth", (dialog, which) -> {
-                            bluetoothAdapter.disable();
-                            updateButtonStates();
-                        })
-                        .setNegativeButton("Cancel", null)
-                        .show();
+            if (bluetoothAdapter.isEnabled()) {
+                showBluetoothOffDialog();
             } else {
                 bluetoothAdapter.enable();
-                updateButtonStates();
             }
         });
 
+        // Wi-Fi toggle
         wifiToggle.setOnClickListener(v -> {
             if (wifiManager != null) {
                 boolean success = wifiManager.setWifiEnabled(!wifiManager.isWifiEnabled());
@@ -106,37 +100,137 @@ public class WirelessFragment extends Fragment {
             }
         });
 
+        setupBluetoothReceiver();
+        setupWifiReceiver();
+
         return view;
     }
 
+    /*** Bluetooth Receiver ***/
+    private void setupBluetoothReceiver() {
+        btStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) {
+                    updateButtonStates();
+                    if (bluetoothAdapter.isEnabled()) scanBluetooth();
+                }
+            }
+        };
+    }
+
+    /*** Wi-Fi Receiver ***/
+    private void setupWifiReceiver() {
+        wifiStateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action == null) return;
+
+                switch (action) {
+                    case WifiManager.WIFI_STATE_CHANGED_ACTION:
+                    case WifiManager.NETWORK_STATE_CHANGED_ACTION:
+                        updateButtonStates();
+                        if (wifiManager != null && wifiManager.isWifiEnabled()) {
+                            scanWifi(); // refresh available networks
+                        }
+                        break;
+                    case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
+                        List<ScanResult> results = wifiManager.getScanResults();
+                        wifiAdapter.clear();
+                        for (ScanResult result : results) {
+                            if (result.SSID != null && !result.SSID.isEmpty()) {
+                                wifiAdapter.add(result.SSID);
+                            }
+                        }
+                        break;
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (btStateReceiver != null) {
+            requireContext().registerReceiver(btStateReceiver,
+                    new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+        }
+
+        if (wifiStateReceiver != null) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+            filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            requireContext().registerReceiver(wifiStateReceiver, filter);
+        }
+
+        updateButtonStates();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (btStateReceiver != null) {
+            try { requireContext().unregisterReceiver(btStateReceiver); } catch (IllegalArgumentException ignored) {}
+        }
+        if (wifiStateReceiver != null) {
+            try { requireContext().unregisterReceiver(wifiStateReceiver); } catch (IllegalArgumentException ignored) {}
+        }
+    }
+
+    /*** Bluetooth OFF confirmation ***/
+    private void showBluetoothOffDialog() {
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View dialogView = inflater.inflate(R.layout.popupdialog, null);
+
+        TextView title = dialogView.findViewById(R.id.dialogTitle);
+        TextView message = dialogView.findViewById(R.id.dialogMessage);
+        Button btnYes = dialogView.findViewById(R.id.btnYes);
+        Button btnNo = dialogView.findViewById(R.id.btnNo);
+
+        title.setText("Turn off Bluetooth?");
+        message.setText("This will disable the RIVOT smart key feature and tire pressure monitoring system. Are you sure you want to turn OFF the Bluetooth?");
+        btnYes.setText("Turn OFF Bluetooth");
+        btnNo.setText("Cancel");
+
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(false)
+                .create();
+
+        btnYes.setOnClickListener(v -> {
+            bluetoothAdapter.disable();
+            dialog.dismiss();
+        });
+        btnNo.setOnClickListener(v -> dialog.dismiss());
+
+        if (isAdded()) dialog.show();
+    }
+
+    /*** Update UI button states ***/
     private void updateButtonStates() {
         boolean btOn = bluetoothAdapter != null && bluetoothAdapter.isEnabled();
         bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(btOn ? customOnColor : customOffColor));
-//        bluetoothStatus.setText("Bluetooth: " + (btOn ? "Enabled" : "Disabled"));
-        if (btOn) {
-            bluetoothStatus.setText("Bluetooth: Enabled");
-        } else {
-            bluetoothStatus.setText("Bluetooth OFF - Smart Key Feature Inactivated");
-        }
-
+        bluetoothStatus.setText(btOn ? "Bluetooth: Enabled" : "Bluetooth OFF - Smart Key Feature Inactivated");
 
         boolean wifiOn = wifiManager != null && wifiManager.isWifiEnabled();
         wifiToggle.setBackgroundTintList(ColorStateList.valueOf(wifiOn ? customOnColor : customOffColor));
 
         String connectedSSID = "Not connected";
-        if (wifiOn) {
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            if (wifiInfo != null && wifiInfo.getNetworkId() != -1) {
-                connectedSSID = wifiInfo.getSSID();
+        if (wifiOn && wifiManager != null) {
+            WifiInfo info = wifiManager.getConnectionInfo();
+            if (info != null && info.getNetworkId() != -1) {
+                connectedSSID = info.getSSID();
                 if (connectedSSID.startsWith("\"") && connectedSSID.endsWith("\"")) {
                     connectedSSID = connectedSSID.substring(1, connectedSSID.length() - 1);
                 }
             }
         }
-//        wifiStatus.setText("Wi-Fi: " + (wifiOn ? "Enabled" : "Disabled") + "\nConnected to: " + connectedSSID);
         wifiStatus.setText("Connected to : " + connectedSSID);
     }
 
+    /*** Scan paired Bluetooth devices ***/
     private void scanBluetooth() {
         if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
             btAdapter.clear();
@@ -149,33 +243,14 @@ public class WirelessFragment extends Fragment {
         }
     }
 
+    /*** Trigger Wi-Fi scan ***/
     private void scanWifi() {
         if (wifiManager != null && wifiManager.isWifiEnabled()) {
-            wifiAdapter.clear();
-            BroadcastReceiver receiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    List<ScanResult> results = wifiManager.getScanResults();
-                    for (ScanResult result : results) {
-                        if (result.SSID != null && !result.SSID.isEmpty()) {
-                            wifiAdapter.add(result.SSID);
-                        }
-                    }
-                    try {
-                        context.unregisterReceiver(this);
-                    } catch (IllegalArgumentException ignored) {}
-                }
-            };
-
-            requireActivity().registerReceiver(
-                    receiver,
-                    new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)
-            );
-
-            wifiManager.startScan();
+            wifiManager.startScan(); // results handled in SCAN_RESULTS_AVAILABLE_ACTION
         }
     }
 
+    /*** Permissions ***/
     private String[] getRequiredPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return new String[]{
