@@ -541,6 +541,12 @@ public class UIUpdater  {
         if (batteryLevel >= 21 && Lowbatflag) {
             resetParamtersAfterLowbat=true;
             Lowbatflag = false;
+
+            binding.yellowalert.clearAnimation();
+            binding.LowBatmsg.clearAnimation();
+
+            binding.yellowalert.setVisibility(View.INVISIBLE);
+            binding.LowBatmsg.setVisibility(View.INVISIBLE);
         }
         if (batteryLevel >= 21 && atSOC10Lowbatflag) {
             resetParamtersAfterLowbat=true;

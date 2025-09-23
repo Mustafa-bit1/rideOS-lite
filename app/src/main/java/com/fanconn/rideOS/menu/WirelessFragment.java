@@ -7,19 +7,25 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,12 +90,8 @@ public class WirelessFragment extends Fragment {
         // Bluetooth toggle
         bluetoothToggle.setOnClickListener(v -> {
             if (bluetoothAdapter == null) return;
-
-            if (bluetoothAdapter.isEnabled()) {
-                showBluetoothOffDialog();
-            } else {
-                bluetoothAdapter.enable();
-            }
+            if (bluetoothAdapter.isEnabled()) showBluetoothOffDialog();
+            else bluetoothAdapter.enable();
         });
 
         // Wi-Fi toggle
@@ -102,6 +104,16 @@ public class WirelessFragment extends Fragment {
 
         setupBluetoothReceiver();
         setupWifiReceiver();
+
+        // Wi-Fi network click: connect
+        wifiNetworksList.setOnItemClickListener((parent, view1, position, id) -> {
+            String ssid = wifiAdapter.getItem(position);
+            if (ssid == null) return;
+
+            boolean isSecured = isWifiSecured(ssid);
+            if (isSecured) showWifiPasswordDialog(ssid);
+            else connectToWifi(ssid, null);
+        });
 
         return view;
     }
@@ -131,9 +143,7 @@ public class WirelessFragment extends Fragment {
                     case WifiManager.WIFI_STATE_CHANGED_ACTION:
                     case WifiManager.NETWORK_STATE_CHANGED_ACTION:
                         updateButtonStates();
-                        if (wifiManager != null && wifiManager.isWifiEnabled()) {
-                            scanWifi(); // refresh available networks
-                        }
+                        if (wifiManager != null && wifiManager.isWifiEnabled()) scanWifi();
                         break;
                     case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
                         List<ScanResult> results = wifiManager.getScanResults();
@@ -171,19 +181,14 @@ public class WirelessFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        if (btStateReceiver != null) {
-            try { requireContext().unregisterReceiver(btStateReceiver); } catch (IllegalArgumentException ignored) {}
-        }
-        if (wifiStateReceiver != null) {
-            try { requireContext().unregisterReceiver(wifiStateReceiver); } catch (IllegalArgumentException ignored) {}
-        }
+        if (btStateReceiver != null) try { requireContext().unregisterReceiver(btStateReceiver); } catch (IllegalArgumentException ignored) {}
+        if (wifiStateReceiver != null) try { requireContext().unregisterReceiver(wifiStateReceiver); } catch (IllegalArgumentException ignored) {}
     }
 
     /*** Bluetooth OFF confirmation ***/
     private void showBluetoothOffDialog() {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.popupdialog, null);
-
         TextView title = dialogView.findViewById(R.id.dialogTitle);
         TextView message = dialogView.findViewById(R.id.dialogMessage);
         Button btnYes = dialogView.findViewById(R.id.btnYes);
@@ -199,10 +204,7 @@ public class WirelessFragment extends Fragment {
                 .setCancelable(false)
                 .create();
 
-        btnYes.setOnClickListener(v -> {
-            bluetoothAdapter.disable();
-            dialog.dismiss();
-        });
+        btnYes.setOnClickListener(v -> { bluetoothAdapter.disable(); dialog.dismiss(); });
         btnNo.setOnClickListener(v -> dialog.dismiss());
 
         if (isAdded()) dialog.show();
@@ -222,9 +224,8 @@ public class WirelessFragment extends Fragment {
             WifiInfo info = wifiManager.getConnectionInfo();
             if (info != null && info.getNetworkId() != -1) {
                 connectedSSID = info.getSSID();
-                if (connectedSSID.startsWith("\"") && connectedSSID.endsWith("\"")) {
+                if (connectedSSID.startsWith("\"") && connectedSSID.endsWith("\""))
                     connectedSSID = connectedSSID.substring(1, connectedSSID.length() - 1);
-                }
             }
         }
         wifiStatus.setText("Connected to : " + connectedSSID);
@@ -245,9 +246,137 @@ public class WirelessFragment extends Fragment {
 
     /*** Trigger Wi-Fi scan ***/
     private void scanWifi() {
-        if (wifiManager != null && wifiManager.isWifiEnabled()) {
-            wifiManager.startScan(); // results handled in SCAN_RESULTS_AVAILABLE_ACTION
+        if (wifiManager != null && wifiManager.isWifiEnabled()) wifiManager.startScan();
+    }
+
+    /*** Wi-Fi Security check ***/
+    private boolean isWifiSecured(String ssid) {
+        List<ScanResult> results = wifiManager.getScanResults();
+        for (ScanResult result : results) {
+            if (result.SSID.equals(ssid)) {
+                String capabilities = result.capabilities;
+                return capabilities.contains("WEP") || capabilities.contains("WPA") || capabilities.contains("WPA2");
+            }
         }
+        return false;
+    }
+
+    /*** Show password dialog ***/
+    private void showWifiPasswordDialog(String ssid) {
+        LayoutInflater inflater = LayoutInflater.from(requireContext());
+        View dialogView = inflater.inflate(R.layout.wifi_password_dialog, null);
+        TextView title = dialogView.findViewById(R.id.dialogTitle);
+        title.setText("Connect to " + ssid);
+
+        EditText passwordInput = dialogView.findViewById(R.id.passwordInput);
+        Button connectBtn = dialogView.findViewById(R.id.connectBtn);
+
+        // Auto-fill password if saved
+        String savedPwd = getSavedPassword(ssid);
+        if (savedPwd != null) passwordInput.setText(savedPwd);
+
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setView(dialogView)
+                .setCancelable(true)
+                .create();
+
+        connectBtn.setOnClickListener(v -> {
+            String password = passwordInput.getText().toString();
+            if (!password.isEmpty()) {
+                connectToWifi(ssid, password);
+                dialog.dismiss();
+            } else {
+                Toast.makeText(requireContext(), "Enter password", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        dialog.show();
+    }
+
+    /*** Connect to Wi-Fi using WifiNetworkSpecifier (Android 10+) with saved networks queue ***/
+    private void connectToWifi(String ssid, String password) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+            // Check for saved password if not provided
+            if ((password == null || password.isEmpty())) {
+                String savedPwd = getSavedPassword(ssid);
+                if (savedPwd != null) password = savedPwd;
+            }
+
+            // Save network to queue if password exists
+            if (password != null && !password.isEmpty()) saveWifiNetwork(ssid, password);
+
+            WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder().setSsid(ssid);
+            if (password != null && !password.isEmpty()) builder.setWpa2Passphrase(password);
+            WifiNetworkSpecifier specifier = builder.build();
+
+            NetworkRequest request = new NetworkRequest.Builder()
+                    .addTransportType(android.net.NetworkCapabilities.TRANSPORT_WIFI)
+                    .setNetworkSpecifier(specifier)
+                    .build();
+
+            ConnectivityManager cm = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
+                @Override
+                public void onAvailable(@NonNull android.net.Network network) {
+                    super.onAvailable(network);
+                    Toast.makeText(requireContext(), "Connected to " + ssid, Toast.LENGTH_SHORT).show();
+                    cm.bindProcessToNetwork(network);
+                }
+
+                @Override
+                public void onUnavailable() {
+                    super.onUnavailable();
+                    Toast.makeText(requireContext(), "Failed to connect to " + ssid, Toast.LENGTH_SHORT).show();
+                }
+            };
+
+            Toast.makeText(requireContext(), "Connecting...", Toast.LENGTH_SHORT).show();
+            cm.requestNetwork(request, callback);
+
+            // Fast timeout check
+            new Handler().postDelayed(() -> {
+                WifiInfo info = wifiManager.getConnectionInfo();
+                String currentSSID = info != null ? info.getSSID() : "";
+                if (currentSSID == null || !currentSSID.equals("\"" + ssid + "\"")) {
+                    Toast.makeText(requireContext(), "Failed to connect. Check password.", Toast.LENGTH_SHORT).show();
+                }
+            }, 7000);
+
+        } else {
+            Toast.makeText(requireContext(), "Wi-Fi connect supported only on Android 10+", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /*** Save Wi-Fi network into a max 3-entry queue ***/
+    private void saveWifiNetwork(String ssid, String password) {
+        if (ssid == null || password == null) return;
+
+        SharedPreferences prefs = requireContext().getSharedPreferences("wifi_prefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        String queueStr = prefs.getString("wifi_queue", "");
+        String[] queue = queueStr.isEmpty() ? new String[]{} : queueStr.split(",");
+
+        // Build new queue
+        String newQueueStr = ssid;
+        int count = 1;
+        for (String oldSSID : queue) {
+            if (!oldSSID.equals(ssid) && count < 3) {
+                newQueueStr += "," + oldSSID;
+                count++;
+            }
+        }
+
+        editor.putString("wifi_queue", newQueueStr);
+        editor.putString("wifi_" + ssid, password);
+        editor.apply();
+    }
+
+    /*** Get saved password for a Wi-Fi SSID ***/
+    private String getSavedPassword(String ssid) {
+        SharedPreferences prefs = requireContext().getSharedPreferences("wifi_prefs", Context.MODE_PRIVATE);
+        return prefs.getString("wifi_" + ssid, null);
     }
 
     /*** Permissions ***/
@@ -272,9 +401,8 @@ public class WirelessFragment extends Fragment {
 
     private boolean hasPermissions() {
         for (String perm : getRequiredPermissions()) {
-            if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED)
                 return false;
-            }
         }
         return true;
     }
@@ -285,12 +413,7 @@ public class WirelessFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             boolean allGranted = true;
-            for (int result : grantResults) {
-                if (result != PackageManager.PERMISSION_GRANTED) {
-                    allGranted = false;
-                    break;
-                }
-            }
+            for (int result : grantResults) if (result != PackageManager.PERMISSION_GRANTED) allGranted = false;
             if (allGranted) {
                 updateButtonStates();
                 scanBluetooth();
