@@ -1242,7 +1242,7 @@ public class UIUpdater  {
         isSideStandSoundPlaying = true;
     }
 
-    private void stopSideStandSound() {
+    public void stopSideStandSound() {
         if (sideStandPlayer != null) {
             if (sideStandPlayer.isPlaying()) {
                 sideStandPlayer.stop();
@@ -1797,7 +1797,7 @@ public class UIUpdater  {
         }
     }
 
-    private void stopBlinking() {
+    public void stopBlinking() {
         if(directionalGears==0){InactivityManager.getInstance().startTimer(1);}
         isBlinking = false;
         isSoundPlaying = false;
@@ -1847,8 +1847,8 @@ public class UIUpdater  {
     private static double rpm;
     private String previousMode = "";
     private MediaPlayer modeChangePlayer;
-    private long lastCanUpdateTime = 0;
-    private static final long CAN_TIMEOUT_MS = 5000; // 5 seconds
+    public long lastCanUpdateTime = 0;
+    private static final long CAN_TIMEOUT_MS = 10000; // 5 seconds
     private boolean canPopupShown = false;
     private Handler canTimeoutHandler = new Handler(Looper.getMainLooper());
 
@@ -1912,7 +1912,6 @@ public class UIUpdater  {
                                 .show();
                     }
                 }
-
                 // Keep checking every second
                 canTimeoutHandler.postDelayed(this, 1000);
             }
@@ -2228,10 +2227,9 @@ public class UIUpdater  {
     public void onDoubleTapAction() {
         // Your logic when user double-taps screen
         if(rpm==0){
-
-
             stopReverseBeep();
             stopBlinking();
+            stopSideStandSound();
 //            EVLockService.getInstance().startLockSequence();
             serialPortManager = serialApplication.getSerialPortManager();
             if(serialPortManager!=null){

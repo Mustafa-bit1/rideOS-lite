@@ -331,7 +331,7 @@ public class LoginActivity extends AppCompatActivity{
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 tempWarningReceiver, new IntentFilter("TEMP_WARNING_EVENT"));
-        SoundPlayer.playOnce(this, R.raw.locksound);  // `this` is Activity context
+        SoundPlayer.playOnce(this, R.raw.locksound2);  // `this` is Activity context
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -925,12 +925,12 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     protected void onResume() {
         super.onResume();
+        MainActivity.MainisActive = false;
         int batteryLevel=serialPortManager.getHb3().getBatteryLevel() / 10;
         String sBatteryLevel = String.valueOf(batteryLevel);
         if(batteryLevel>=0 && batteryLevel<=100){
             binding.loginSoc.setText("Battery " + batteryLevel + "%");
         }
-
         UIUpdater.ignorefirstblink=true;
         UIUpdater.islock=false;
         TelemetryService.shdtelemetrywhenunlocked=false;

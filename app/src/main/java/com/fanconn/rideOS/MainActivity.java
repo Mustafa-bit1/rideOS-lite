@@ -1867,7 +1867,15 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     protected void onPause() {
         super.onPause();
         LoginisActive = false;
-        MainisActive = false;
+//        MainisActive = false;
+
+        if(!MainisActive)
+        {
+            uiUpdater.stopReverseBeep();
+            uiUpdater.stopBlinking();
+            uiUpdater.stopSideStandSound();
+        }
+
 //        CameraService.stopRecording(this);
 
         try {
@@ -1944,6 +1952,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
     }
     public void runPostLoginInit() {
+        uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
 //        Log.d("MainActivity", "Running unlock sequence from post-login...");
 
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
