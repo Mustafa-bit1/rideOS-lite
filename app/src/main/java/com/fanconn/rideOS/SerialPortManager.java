@@ -269,6 +269,8 @@ public class SerialPortManager {
      * @return 分离出来的数据帧列表
      */
     public static List<String> splitIntoFrames(String receivedData) {
+//        Log.d("sdfgh","RRFRAME------"+receivedData);
+
         List<String> frames = new ArrayList<>();
 
         int index = 0;

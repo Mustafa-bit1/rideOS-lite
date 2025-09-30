@@ -10,13 +10,10 @@ public class TripDistanceManager {
     private static final String KEY_ODO_DISTANCE = "odo_distance";
     private static final String KEY_LAST_TIME = "last_update_time";
     private static final double RPM_THRESHOLD = 40.0;
-
     private double tripDistance; // in km
     private double odoDistance;  // in km (never resets)
     private long lastUpdateTime; // in ms
-
     private SharedPreferences preferences;
-
     public TripDistanceManager(Context context) {
         preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         tripDistance = Double.longBitsToDouble(preferences.getLong(KEY_TRIP_DISTANCE, Double.doubleToLongBits(0.0)));
@@ -37,7 +34,7 @@ public class TripDistanceManager {
         double deltaTimeHours = (currentTime - lastUpdateTime) / 3600000.0;
 
         // Speed formula (convert rpm to km/h)
-        double speed = (rpm * 60.0 * 1.4825) / 3.3125 * 1 / 1000.0; // km/h
+        double speed = (rpm * 60.0 * 1.46) / 3.3125 * 0.95 / 1000.0; // km/h
         double deltaDistance = speed * deltaTimeHours;
 
         // Update trip + odo

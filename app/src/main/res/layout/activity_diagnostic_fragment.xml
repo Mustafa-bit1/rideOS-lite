@@ -24,7 +24,7 @@
         android:id="@+id/Low"
         android:layout_width="150dp"
         android:layout_height="50dp"
-        android:layout_marginStart="792dp"
+        android:layout_marginStart="784dp"
         android:layout_marginTop="248dp"
         android:backgroundTint="#2116F3"
         android:foreground="@drawable/btn_click_effect"
@@ -32,6 +32,20 @@
         android:textSize="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/hightorque"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="784dp"
+        android:layout_marginTop="300dp"
+        android:backgroundTint="#2196F3"
+        android:foreground="@drawable/btn_click_effect"
+        android:text="High"
+        android:textSize="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
     <Button
         android:id="@+id/Devicesettings"

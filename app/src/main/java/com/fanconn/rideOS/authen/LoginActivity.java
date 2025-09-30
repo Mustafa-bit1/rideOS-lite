@@ -703,10 +703,12 @@ public class LoginActivity extends AppCompatActivity{
                 Log.d("SeekBarStable", "MAXSPEED=" + maxSpeed + ", x=" + xRounded + ", Hex=" + speedByte02 + " " + speedByte01);
                 Log.d("SeekBarStable", "torque=" + lineCurrent + ", x=" + torqueHex + ", Hex=" + torqueByte02 + " " + torqueByte01);
 
+                Log.d("asdfdg","ENTER Login");
 
                 // Send frames
                 if (serialPortManager != null && (serialPortManager.getHb3().getBatteryLevel()/10)>20) {
                     serialPortManager.VCUSendToMCU(finalSpeedFrame);
+                    Log.d("asdfdg","ENTER Succes Login cmd snet");
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 1000);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 2000);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 3000);

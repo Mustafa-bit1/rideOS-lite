@@ -316,16 +316,17 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         mapbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Maps.class);
-                InactivityManager.getInstance().stopTimer();
-                startActivity(intent);
-
+                if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
+                    Intent intent = new Intent(MainActivity.this, Maps.class);
+                    InactivityManager.getInstance().stopTimer();
+                    startActivity(intent);
+                }
             }
         });
         menubtn.setOnClickListener(v -> {
             Log.d("MainActivity", "Menu button clicked");
 
-            if (serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
+            if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
                 Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening settings");
 
                 serialPortManager.VCUSendToMCU("FFAA550107000A01");
@@ -1816,12 +1817,9 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        LoginActivity.isSequenceActive = false;
 //        Log.d("CommandSequence", "Unlock sequence stopped manually.");
 //    }
-
     private boolean isReceiverRegistered = false;
     public static boolean LoginisActive = false;
     public static boolean MainisActive = false;
-
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -1873,7 +1871,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         {
             uiUpdater.stopReverseBeep();
             uiUpdater.stopBlinking();
-            uiUpdater.stopSideStandSound();
+            //uiUpdater.stopSideStandSound();
         }
 
 //        CameraService.stopRecording(this);
@@ -2065,7 +2063,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                     }
                 }
             } else {
-                if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10 && Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                     if (diffY > 0) {
                         openQuickSettings(); // swipe top to bottom
                         return true;

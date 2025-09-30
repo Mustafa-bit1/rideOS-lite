@@ -502,9 +502,8 @@ public class UIUpdater  {
         int batteryLevel= hb3.getBatteryLevel() / 10;
         String sBatteryLevel = String.valueOf(batteryLevel);
 
-        float currentconsumption=(hb3.getrealCurrent()-30000/10);
-        if(currentconsumption<500 && currentconsumption>-500){
-            tm.setTeleCurrentConsumption(currentconsumption);
+        if(((hb3.getrealCurrent()-30000)/10)<500){
+            tm.setTeleCurrentConsumption((hb3.getrealCurrent()-30000)/10);
         }
         tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
         int range= (int) Math.floor(batteryLevel * 2.8);  // Get the whole number part
@@ -516,6 +515,7 @@ public class UIUpdater  {
         if (!Lowbatflag && batteryLevel == 20  && tm.getTeleChargingState()==0) {
 
             if(serialPortManager!=null){
+                Log.d("asdfdg","ENTER 20");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000");//line current 15A, max phase current 300A ,regen 30-40
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
@@ -564,6 +564,7 @@ public class UIUpdater  {
         if(!atSOC10Lowbatflag && batteryLevel==10 && tm.getTeleChargingState()==0){
             atSOC10Lowbatflag=true;
             if(serialPortManager!=null){
+                Log.d("asdfdg","ENTER 10");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
@@ -581,13 +582,14 @@ public class UIUpdater  {
                 InactivityManager.getInstance().stopTimer();
                 showCustomPopup("Alert","Your Battery is Low, Switch to APU for Extra Range");
             } else if  (!isAPUPresent) {
+                Log.d("asdfdg","ENTER 7");
                 StopInactivtyTimerDuringPopUp=false;
-                showCustomPopupatSOC7("Alert","Battery low,deep discharge may damage your scooter battery.Please charge your scooter");
+                showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
-                showCustomPopupatSOC7("Alert","Battery low,deep discharge may damage your scooter battery.Please charge your scooter");
+                showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);            }
         }
@@ -1102,14 +1104,14 @@ public class UIUpdater  {
             return;
         }
 
-        if(isStand && !isSideStandSoundPlaying){
-            startStandSound();
-        }
-        else{
-            if(isSideStandSoundPlaying){
-                stopSideStandSound();
-            }
-        }
+//        if(isStand && !isSideStandSoundPlaying){
+//            startStandSound();
+//        }
+//        else{
+//            if(isSideStandSoundPlaying){
+//                stopSideStandSound();
+//            }
+//        }
 
 // Priority 3: Gear-based UI (only if not charging and stand is closed)
 
@@ -1843,7 +1845,7 @@ public class UIUpdater  {
     public void setTripManager(TripDistanceManager tripManager) {
         this.tripManager = tripManager;
     }
-    public static double tiredimensions=1.4825;
+    public static double tiredimensions=1.46;//1.4825;
     private static double rpm;
     private String previousMode = "";
     private MediaPlayer modeChangePlayer;
@@ -2229,7 +2231,7 @@ public class UIUpdater  {
         if(rpm==0){
             stopReverseBeep();
             stopBlinking();
-            stopSideStandSound();
+            //stopSideStandSound();
 //            EVLockService.getInstance().startLockSequence();
             serialPortManager = serialApplication.getSerialPortManager();
             if(serialPortManager!=null){

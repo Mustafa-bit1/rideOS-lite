@@ -152,9 +152,9 @@ public class TpmsScanService extends Service {
             if (majorHex.equals(last4)) {
                 latestMinorMap.put(mac, minor);
 
-//                Log.d(TAG, "✅ TPMS detected | MAC=" + mac +
-//                        " | Major=" + major + " (Hex=" + majorHex + ")" +
-//                        " | Minor=" + minor);
+                Log.d(TAG, "✅ TPMS detected | MAC=" + mac +
+                        " | Major=" + major + " (Hex=" + majorHex + ")" +
+                        " | Minor=" + minor);
 
                 Intent intent = new Intent(ACTION_TPMS_UPDATE);
                 intent.putExtra(EXTRA_MAC, mac);

@@ -11,6 +11,8 @@ import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.text.InputType;
@@ -40,7 +42,7 @@ import java.util.Locale;
 
 public class DiagnosticsFragment extends Fragment {
 
-    private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON, LEDOFF, debugbtn;
+    private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON, LEDOFF, debugbtn,highTorque;
     private ImageButton  rebootbtn, shutdownbtn;
     private Button wifiBtn, wifiOffBtn, Devicesettings;
     private TextView tireDimensionDisplay;
@@ -75,6 +77,7 @@ public class DiagnosticsFragment extends Fragment {
 
     private void initViews(View view) {
         bootbutton = view.findViewById(R.id.bootbutton);
+        highTorque = view.findViewById(R.id.hightorque);
         handlelockbutton = view.findViewById(R.id.handlelockbutton);
         handleUNlockbutton = view.findViewById(R.id.handleUNlockbutton);
         lockScreen = view.findViewById(R.id.lockScreen);
@@ -97,9 +100,17 @@ public class DiagnosticsFragment extends Fragment {
         shutdownbtn.setOnClickListener(v -> showShutdownDialog());
         view.findViewById(R.id.mcuotaupdatebtn).setOnClickListener(v -> MCUOTA_Onclick(v));
 
-        bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550102000A01"));
+        bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8017800B004A000"));
         handlelockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A00"));
         handleUNlockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A01"));
+
+        highTorque.setOnClickListener(v -> {
+            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8017800B004A000");
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
+                    1200
+            );
+        });
 
         lockScreen.setOnClickListener(v -> {
             // Start lock
