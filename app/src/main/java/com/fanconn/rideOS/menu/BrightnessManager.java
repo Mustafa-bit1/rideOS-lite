@@ -28,7 +28,7 @@ public class BrightnessManager {
 
     public BrightnessManager(Context context) {
         this.context = context;
-        this.prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        this.prefs = context.getSharedPreferences("menu", Context.MODE_PRIVATE);
         this.volumePrefs = context.getSharedPreferences("volume_prefs", Context.MODE_PRIVATE);
         this.audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }

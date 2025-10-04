@@ -1,7 +1,6 @@
 package com.fanconn.rideOS.menu;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,11 +12,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.fanconn.rideOS.GestureHelper;
-import com.fanconn.rideOS.InactivityManager;
 import com.fanconn.rideOS.R;
 
-public class settings extends AppCompatActivity {
-    public static settings setinstance;
+public class menu extends AppCompatActivity {
+    public static menu setinstance;
     String[] titles = {"Display", "Wireless", "Features","rider Profiles", "rideCam", "Battery", "Documents", "OS Updates", "Support","Information", "Diagnostic"};
     int[] icons = {
             R.drawable.displayicon, // display

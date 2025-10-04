@@ -34,7 +34,8 @@ public class TripDistanceManager {
         double deltaTimeHours = (currentTime - lastUpdateTime) / 3600000.0;
 
         // Speed formula (convert rpm to km/h)
-        double speed = (rpm * 60.0 * 1.46) / 3.3125 * 0.95 / 1000.0; // km/h
+        //double speed = (rpm * 60.0 * 1.412404) / 3.3125 * 1 / 1000.0; //0% km/h
+        double speed = (rpm * 60.0 * 1.48331442) / 3.3125 * 1 / 1000.0; //5% km/h
         double deltaDistance = speed * deltaTimeHours;
 
         // Update trip + odo

@@ -543,14 +543,11 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
 
-
     private void playTapSound() {
         if (tapSoundPlayer != null) {
             tapSoundPlayer.start();
         }
     }
-
-
 
     public void Onscreen()
     {
@@ -738,11 +735,10 @@ public class LoginActivity extends AppCompatActivity{
                     mp.start();
                 }
 
-                if (MainActivity.instance != null) {
-                    MainActivity.instance.runPostLoginInit();
-                }
             }, 200);
-
+            if (MainActivity.instance != null) {
+                MainActivity.instance.runPostLoginInit();
+            }
         }).start();
     }
 

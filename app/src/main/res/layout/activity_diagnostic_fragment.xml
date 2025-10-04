@@ -36,12 +36,12 @@
     <Button
         android:id="@+id/hightorque"
         android:layout_width="150dp"
-        android:layout_height="50dp"
+        android:layout_height="80dp"
         android:layout_marginStart="784dp"
-        android:layout_marginTop="300dp"
+        android:layout_marginTop="310dp"
         android:backgroundTint="#2196F3"
         android:foreground="@drawable/btn_click_effect"
-        android:text="High"
+        android:text="Reset parameters"
         android:textSize="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

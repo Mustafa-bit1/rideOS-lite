@@ -38,7 +38,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.TextureView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
@@ -63,6 +62,7 @@ import com.fanconn.rideOS.databinding.ActivityMainBinding;
 import com.fanconn.rideOS.mcuupdate.FileDownloader;
 import com.fanconn.rideOS.mcuupdate.YMode;
 
+import com.fanconn.rideOS.menu.menu;
 import com.fanconn.rideOS.network.EVWebSocketClient;
 import com.fanconn.rideOS.network.ApiService;
 
@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         } else {
             registerReceiver(lockReceiver, lockbtnpressedofsettingclass);
         }
-//        settings settings = new settings(this); // 'this' refers to MainActivity
+//        menu menu = new menu(this); // 'this' refers to MainActivity
         uiUpdater = new UIUpdater(binding, this);
 
 //        ScreenController.init(serialPortManager);///passing serialPoertManager to ScreenController Class
@@ -327,10 +327,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             Log.d("MainActivity", "Menu button clicked");
 
             if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
-                Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening settings");
+                Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening menu");
 
                 serialPortManager.VCUSendToMCU("FFAA550107000A01");
-                Intent intent = new Intent(MainActivity.this, com.fanconn.rideOS.menu.settings.class);
+                Intent intent = new Intent(MainActivity.this, menu.class);
                 InactivityManager.getInstance().stopTimer();
                 startActivity(intent);
             }
@@ -538,7 +538,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 InactivityManager.getInstance().stopTimer();
                 serialPortManager.VCUSendToMCU("FFAA550107000A01");
 
-//                Intent intent = new Intent(MainActivity.this, settings.class);
+//                Intent intent = new Intent(MainActivity.this, menu.class);
 //                startActivity(intent);
             } else {
                 Toast.makeText(MainActivity.this, "Incorrect password", Toast.LENGTH_SHORT).show();
@@ -2080,7 +2080,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         if (serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
             InactivityManager.getInstance().stopTimer();
             serialPortManager.VCUSendToMCU("FFAA550107000A01");
-            Intent intent = new Intent(MainActivity.this, com.fanconn.rideOS.menu.settings.class);
+            Intent intent = new Intent(MainActivity.this, menu.class);
             startActivity(intent);
             // No animation
         }

@@ -105,7 +105,7 @@ public class DiagnosticsFragment extends Fragment {
         handleUNlockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A01"));
 
         highTorque.setOnClickListener(v -> {
-            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8017800B004A000");
+            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400");//35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
                     1200

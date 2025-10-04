@@ -1926,7 +1926,10 @@ public class UIUpdater  {
         lastCanUpdateTime = now;
         canPopupShown = false;
 
-        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
+//        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
+        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.48331442) / 3.3125 * 1 / 1000;//5 % high
+//        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.412404) / 3.3125 * 1 / 1000;// 0% high
+
         rpm =hb3.getBSG2_BYTE78();
         if (tripManager == null) return;
         if(hb3.getBSG2_BYTE78()<4700){tripManager.updateTrip(hb3.getBSG2_BYTE78());}

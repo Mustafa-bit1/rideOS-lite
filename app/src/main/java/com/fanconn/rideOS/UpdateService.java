@@ -1,6 +1,5 @@
 package com.fanconn.rideOS;
 
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -32,13 +31,13 @@ public class UpdateService extends Service {
     private static final String TAG = "UpdateService";
     private static final String UPDATE_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/update.json";
     private final Handler handler = new Handler();
-    private final int CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours = 86,400,000 ms
+    private final int CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
     public static String pendingUpdateApkUrl = null;
 
     private final Runnable updateRunnable = new Runnable() {
         @Override
         public void run() {
-            checkForUpdate();
+            checkForUpdate(false); // automatic check
             handler.postDelayed(this, CHECK_INTERVAL);
         }
     };
@@ -47,21 +46,27 @@ public class UpdateService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "UpdateService started");
 
-        // If this is a request to only show the pending prompt
-        if (intent != null && intent.getBooleanExtra("show_prompt_only", false)) {
-            if (pendingUpdateApkUrl != null) {
-                Log.d(TAG, "Showing deferred update prompt...");
-                showUpdateDialog(pendingUpdateApkUrl);
-                pendingUpdateApkUrl = null;
+        if (intent != null) {
+            if (intent.getBooleanExtra("show_prompt_only", false)) {
+                if (pendingUpdateApkUrl != null) {
+                    Log.d(TAG, "Showing deferred update prompt...");
+                    showUpdateDialog(pendingUpdateApkUrl);
+                    pendingUpdateApkUrl = null;
+                }
+                return START_NOT_STICKY;
             }
-            return START_NOT_STICKY;
+
+            if (intent.getBooleanExtra("manual_check", false)) {
+                checkForUpdate(true);
+                return START_NOT_STICKY;
+            }
         }
 
         handler.post(updateRunnable);
         return START_STICKY;
     }
 
-    private void checkForUpdate() {
+    private void checkForUpdate(boolean manual) {
         new Thread(() -> {
             try {
                 URL url = new URL(UPDATE_URL);
@@ -86,15 +91,27 @@ public class UpdateService extends Service {
                 Log.d(TAG, "Current version: " + currentVersion + ", Latest version: " + latestVersion);
 
                 if (!latestVersion.equals(currentVersion)) {
-                    Log.d(TAG, "Update available! Downloading...");
+                    Log.d(TAG, "Update available!");
                     InactivityManager.getInstance().stopTimer();
                     promptUserToUpdate(apkUrl);
                 } else {
                     Log.d(TAG, "App is up-to-date.");
+                    if (manual) {
+                        handler.post(() ->
+                                android.widget.Toast.makeText(getApplicationContext(),
+                                        "App is up-to-date", android.widget.Toast.LENGTH_SHORT).show()
+                        );
+                    }
                 }
 
             } catch (Exception e) {
                 Log.e(TAG, "Update check failed: " + e.getMessage(), e);
+                if (manual) {
+                    handler.post(() ->
+                            android.widget.Toast.makeText(getApplicationContext(),
+                                    "No update available", android.widget.Toast.LENGTH_SHORT).show()
+                    );
+                }
             }
 
         }).start();
@@ -103,7 +120,7 @@ public class UpdateService extends Service {
     private void promptUserToUpdate(String apkUrl) {
         Log.d(TAG, "Prompting user for update...");
 
-        // Check if MainActivity is active
+        // Defer if MainActivity not active
         if (!MainActivity.MainisActive) {
             Log.d(TAG, "MainActivity not active. Deferring update prompt.");
             pendingUpdateApkUrl = apkUrl;
@@ -130,7 +147,6 @@ public class UpdateService extends Service {
 
                 handler.post(() -> {
                     try {
-                        // Inflate custom dialog layout
                         Context context = getApplicationContext();
                         LayoutInflater inflater = LayoutInflater.from(context);
                         View dialogView = inflater.inflate(R.layout.popupdialog, null);
@@ -141,34 +157,31 @@ public class UpdateService extends Service {
                         Button btnNo = dialogView.findViewById(R.id.btnNo);
 
                         title.setText("Update Available");
-                        message.setText("rideOS got upgraded with new features. Do you want to update?");
-                        btnYes.setText("Yes");
+                        message.setText("rideOS update available.\nDo you want to update?");
+                        btnYes.setText("Update Now");
                         btnNo.setText("Remind me later");
 
-                        AlertDialog dialog = new AlertDialog.Builder(context)
+                        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(context)
                                 .setView(dialogView)
                                 .setCancelable(false)
                                 .create();
 
-                        // Buttons actions
                         btnYes.setOnClickListener(v -> {
                             Log.d(TAG, "User accepted the update.");
-
                             Intent progressIntent = new Intent(context, UpdateProgressActivity.class);
                             progressIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(progressIntent);
-
                             downloadAndInstall(apkUrl);
                             dialog.dismiss();
                         });
 
                         btnNo.setOnClickListener(v -> {
                             Log.d(TAG, "Remind later selected");
-                            handler.postDelayed(() -> promptUserToUpdate(apkUrl), 24 * 60 * 60 * 1000); // 24 hours
+                            handler.postDelayed(() -> promptUserToUpdate(apkUrl),
+                                    24 * 60 * 60 * 1000);
                             dialog.dismiss();
                         });
 
-                        // Overlay window type for Service
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             dialog.getWindow().setType(android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
                         } else {

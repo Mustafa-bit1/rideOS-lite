@@ -7,29 +7,90 @@
     android:background="@drawable/fragmentbg"
     tools:context="com.fanconn.rideOS.menu.OS_UpdatesFragment">
 
-    <ImageView
-        android:id="@+id/imageView3"
+    <!-- Header Section -->
+    <FrameLayout
+        android:id="@+id/frameLayout"
         android:layout_width="0dp"
         android:layout_height="125dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="fitXY"
-        android:paddingStart="26dp"
-        android:paddingEnd="26dp"
-        android:src="@drawable/osupdate_version_info_pic"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp">
 
+        <!-- Background Image -->
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/osupdate_version_info_pic" />
 
+        <!-- Overlay Layout -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Release Date (top-left) -->
+
+            <!-- Latest Version (bottom-left) -->
+
+            <!-- OTA Update Button (right side, centered vertically) -->
+
+            <TextView
+                android:id="@+id/server_release_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="52dp"
+                android:fontFamily="@font/kanitlite"
+                android:text="Release Date: -"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/server_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="28dp"
+                android:layout_marginBottom="78dp"
+                android:fontFamily="@font/kanit"
+                android:text="App version -"
+                android:textColor="@android:color/white"
+                android:textSize="18dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageButton
+                android:id="@+id/otaupdatebtn"
+                android:layout_width="180dp"
+                android:layout_height="52dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/otaupdatebtn"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+                android:padding="0dp"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginEnd="16dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
+    <!-- Scrollable Content Section -->
     <ScrollView
         android:id="@+id/scrollViewContent"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/imageView3"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/frameLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +98,7 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Row 1: Current Version -->
+            <!-- Current Version -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,10 +124,10 @@
                         android:id="@+id/version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/kanitlite"
                         android:paddingEnd="11dp"
                         android:text="rideOS"
                         android:textColor="#FFFFFF"
-                        android:fontFamily="@font/kanitlite"
                         android:textSize="25sp" />
 
                     <TextView
@@ -80,7 +141,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Row 2: Build -->
+            <!-- Build Info -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,40 +162,14 @@
                     android:id="@+id/buildnum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/kanitlite"
                     android:paddingEnd="11dp"
                     android:text="rideOS_base"
                     android:textColor="#FFFFFF"
-                    android:fontFamily="@font/kanitlite"
-                    android:textSize="25sp"  />
+                    android:textSize="25sp" />
             </LinearLayout>
 
-<!--            &lt;!&ndash; VIN &ndash;&gt;-->
-<!--            <LinearLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:orientation="horizontal"-->
-<!--                android:paddingVertical="20dp">-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:fontFamily="@font/kanitlite"-->
-<!--                    android:paddingStart="11dp"-->
-<!--                    android:text="VIN-Number"-->
-<!--                    android:textColor="#FFFFFF"-->
-<!--                    android:textSize="23sp" />-->
-
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:paddingEnd="11dp"-->
-<!--                    android:text="VINME010203040506"-->
-<!--                    android:textColor="#FFFFFF"-->
-<!--                    android:fontFamily="@font/kanitlite"-->
-<!--                    android:textSize="24sp"  />-->
-<!--            </LinearLayout>-->
-
+            <!-- Device Name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -155,10 +190,10 @@
                     android:id="@+id/devicenameTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/kanitlite"
                     android:paddingEnd="11dp"
                     android:text=""
                     android:textColor="#FFFFFF"
-                    android:fontFamily="@font/kanitlite"
                     android:textSize="25sp" />
             </LinearLayout>
 
@@ -197,11 +232,11 @@
                         android:id="@+id/bluetoothTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/kanitlite"
                         android:paddingEnd="11dp"
                         android:text=""
                         android:textColor="#FFFFFF"
-                        android:fontFamily="@font/kanitlite"
-                        android:textSize="25sp"  />
+                        android:textSize="25sp" />
                 </LinearLayout>
             </LinearLayout>
 

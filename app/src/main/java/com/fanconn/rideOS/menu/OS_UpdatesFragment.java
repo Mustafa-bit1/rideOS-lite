@@ -1,6 +1,7 @@
 package com.fanconn.rideOS.menu;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -9,6 +10,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.Manifest;
 
@@ -16,20 +18,74 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.fanconn.rideOS.R;
+import com.fanconn.rideOS.UpdateService;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class OS_UpdatesFragment extends Fragment {
+
+    private ImageButton otaupdatebtn;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_os_updates, container, false);
         updateVersionInfo(view);
+        fetchServerUpdateInfo(view);
 
+        otaupdatebtn = view.findViewById(R.id.otaupdatebtn);
+
+        otaupdatebtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), UpdateService.class);
+            intent.putExtra("manual_check", true);
+            getContext().startService(intent);
+        });
 
         return view;
+    }
+    private void fetchServerUpdateInfo(View view) {
+        TextView serverVersionTV = view.findViewById(R.id.server_version);
+        TextView serverReleaseDateTV = view.findViewById(R.id.server_release_date);
+
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/update.json");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.connect();
+
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+                reader.close();
+
+                JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
+                String latestVersion = jsonObject.getString("latest_version");
+                String releaseDate = jsonObject.optString("release_date", "N/A");
+
+                requireActivity().runOnUiThread(() -> {
+                    serverVersionTV.setText("App Version " + latestVersion);
+                    serverReleaseDateTV.setText("Release Date: " + releaseDate);
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                requireActivity().runOnUiThread(() -> {
+                    serverVersionTV.setText("Latest Version: Error");
+                    serverReleaseDateTV.setText("Release Date: Error");
+                });
+            }
+        }).start();
     }
 
     private void updateVersionInfo(View view) {

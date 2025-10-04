@@ -8,10 +8,9 @@ import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
-import com.fanconn.rideOS.MainActivity;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
-import com.fanconn.rideOS.menu.settings;
+import com.fanconn.rideOS.menu.menu;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class YMode {
     protected static final int MAXERRORS = 100;
     private Context context;
     private byte mcuAnswerData;
-    private settings activity = new settings();
+    private menu activity = new menu();
 
     public YMode(Context context) {
         this.context = context;

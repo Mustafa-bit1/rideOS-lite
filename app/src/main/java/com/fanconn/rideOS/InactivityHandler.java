@@ -9,7 +9,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.fanconn.rideOS.authen.LoginActivity;
-import com.fanconn.rideOS.menu.settings;
+import com.fanconn.rideOS.menu.menu;
 
 import java.lang.reflect.Method;
 
@@ -142,10 +142,10 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                 loginIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);  // Required since context is app-level
                 context.startActivity(loginIntent);
 
-                // Finish settings activity if active
-                if (settings.setinstance != null) {
-                    settings.setinstance.finish();
-                    settings.setinstance = null; // Optional, prevent leaks
+                // Finish menu activity if active
+                if (menu.setinstance != null) {
+                    menu.setinstance.finish();
+                    menu.setinstance = null; // Optional, prevent leaks
                 }
                 break;
             case 7:

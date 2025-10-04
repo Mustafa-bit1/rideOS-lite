@@ -38,13 +38,13 @@
 //import java.util.Date;
 //import java.util.Locale;
 //
-//public class settings extends AppCompatActivity {
+//public class menu extends AppCompatActivity {
 //    public Button bootbutton, handlelockbutton, handleUNlockbutton, riderprofile,lockScreen,ToAPU,ToMain,LEDON,LEDOFF,debugbtn;
 //    ImageButton returnbtn,rebootbtn,shutdownbtn;
 //    SerialPortManager serialPortManager;
 //    private MainActivity mainActivity;
-//    public settings(){}
-//    public settings(MainActivity mainActivity) {
+//    public menu(){}
+//    public menu(MainActivity mainActivity) {
 //        this.mainActivity = mainActivity;
 //    }
 ////    private boolean isSequenceActive = false;
@@ -115,7 +115,7 @@
 //        riderprofile.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(settings.this, RiderProfile.class);
+//                Intent intent = new Intent(menu.this, RiderProfile.class);
 //                InactivityManager.getInstance().stopTimer();
 //                startActivity(intent);
 //            }
@@ -166,10 +166,10 @@
 //            public void onClick(View v) {
 //                if (!wifiManager.isWifiEnabled()) {
 //                    wifiManager.setWifiEnabled(true);
-////                    Toast.makeText(settings.this, "WiFi ON", Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(menu.this, "WiFi ON", Toast.LENGTH_SHORT).show();
 //                    showCustomToast("WiFi ON");
 //                } else {
-////                    Toast.makeText(settings.this, "WiFi already ON", Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(menu.this, "WiFi already ON", Toast.LENGTH_SHORT).show();
 //                    showCustomToast("WiFi already ON");
 //                }
 //            }
@@ -180,10 +180,10 @@
 //            public void onClick(View v) {
 //                if (wifiManager.isWifiEnabled()) {
 //                    wifiManager.setWifiEnabled(false);
-////                    Toast.makeText(settings.this, "WiFi OFF", Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(menu.this, "WiFi OFF", Toast.LENGTH_SHORT).show();
 //                    showCustomToast("WiFi OFF");
 //                } else {
-////                    Toast.makeText(settings.this, "WiFi already OFF", Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(menu.this, "WiFi already OFF", Toast.LENGTH_SHORT).show();
 //                    showCustomToast("WiFi already OFF");
 //                }
 //            }
@@ -200,7 +200,7 @@
 //        debugbtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                Intent intent = new Intent(settings.this, debugPage.class);
+//                Intent intent = new Intent(menu.this, debugPage.class);
 //                startActivity(intent);
 //            }
 //        });
@@ -209,7 +209,7 @@
 //            @Override
 //            public void onClick(View v) {
 //                // Inflate your existing custom dialog layout
-//                LayoutInflater inflater = LayoutInflater.from(settings.this);
+//                LayoutInflater inflater = LayoutInflater.from(menu.this);
 //                View dialogView = inflater.inflate(R.layout.popupdialog, null);
 //
 //                // Initialize views inside the dialog
@@ -225,7 +225,7 @@
 //                btnNo.setText("Cancel");
 //
 //                // Create and show the dialog
-//                AlertDialog dialog = new AlertDialog.Builder(settings.this)
+//                AlertDialog dialog = new AlertDialog.Builder(menu.this)
 //                        .setView(dialogView)
 //                        .setCancelable(false)
 //                        .create();
@@ -239,7 +239,7 @@
 //                        }
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
-//                        Toast.makeText(settings.this, "Reboot failed", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(menu.this, "Reboot failed", Toast.LENGTH_SHORT).show();
 //                    }
 //                    dialog.dismiss();
 //                });
@@ -257,7 +257,7 @@
 //            @Override
 //            public void onClick(View v) {
 //                // Inflate your custom dialog layout
-//                LayoutInflater inflater = LayoutInflater.from(settings.this);
+//                LayoutInflater inflater = LayoutInflater.from(menu.this);
 //                View dialogView = inflater.inflate(R.layout.popupdialog, null);
 //
 //                // Access views in layout
@@ -273,7 +273,7 @@
 //                btnNo.setText("Cancel");
 //
 //                // Create the dialog
-//                AlertDialog dialog = new AlertDialog.Builder(settings.this)
+//                AlertDialog dialog = new AlertDialog.Builder(menu.this)
 //                        .setView(dialogView)
 //                        .setCancelable(false)
 //                        .create();
@@ -284,7 +284,7 @@
 //                        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 //                        if (powerManager == null) {
 //                            Log.e("Shutdown", "PowerManager is null");
-//                            Toast.makeText(settings.this, "Shutdown not supported", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(menu.this, "Shutdown not supported", Toast.LENGTH_SHORT).show();
 //                            dialog.dismiss();
 //                            return;
 //                        }
@@ -297,10 +297,10 @@
 //                                Log.d("Shutdown", "Shutdown triggered via reflection");
 //                            } catch (NoSuchMethodException e) {
 //                                Log.e("Shutdown", "shutdown() method not found", e);
-//                                Toast.makeText(settings.this, "Shutdown method not supported", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(menu.this, "Shutdown method not supported", Toast.LENGTH_SHORT).show();
 //                            } catch (Exception e) {
 //                                Log.e("Shutdown", "Error invoking shutdown()", e);
-//                                Toast.makeText(settings.this, "Shutdown failed", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(menu.this, "Shutdown failed", Toast.LENGTH_SHORT).show();
 //                            }
 //                        } else {
 //                            try {
@@ -308,13 +308,13 @@
 //                                Log.d("Shutdown", "Fallback reboot(\"shutdown\") triggered");
 //                            } catch (Exception e) {
 //                                Log.e("Shutdown", "Fallback reboot failed", e);
-//                                Toast.makeText(settings.this, "Shutdown fallback failed", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(menu.this, "Shutdown fallback failed", Toast.LENGTH_SHORT).show();
 //                            }
 //                        }
 //
 //                    } catch (Exception e) {
 //                        Log.e("Shutdown", "Unexpected error", e);
-//                        Toast.makeText(settings.this, "Unexpected shutdown error", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(menu.this, "Unexpected shutdown error", Toast.LENGTH_SHORT).show();
 //                    }
 //                    dialog.dismiss();
 //                });
@@ -367,10 +367,10 @@
 //
 //    }
 //    private void showPasswordDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(settings.this);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(menu.this);
 //        builder.setTitle("Admin");
 //
-//        final EditText input = new EditText(settings.this);
+//        final EditText input = new EditText(menu.this);
 //        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 //        builder.setView(input);
 //
@@ -381,7 +381,7 @@
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Optional but safe
 //                startActivity(intent);
 //            } else {
-////                Toast.makeText(settings.this, "Incorrect password", Toast.LENGTH_SHORT).show();
+////                Toast.makeText(menu.this, "Incorrect password", Toast.LENGTH_SHORT).show();
 //                showCustomToast("Access denied");
 //            }
 //        });
@@ -518,10 +518,10 @@
 //
 //    public void MCUOTA_Onclick(View view) {
 //        if (FrameUtils.isNetworkAvailable(this)) {
-//            new settings.FetchVersionTask().execute(version_URL);
+//            new menu.FetchVersionTask().execute(version_URL);
 //        } else {
 //            Log.d("OTA_onClick", "no network ....");
-//            //Toast.makeText(settings.this, R.string.tips_mcuota_no_network, Toast.LENGTH_SHORT).show();
+//            //Toast.makeText(menu.this, R.string.tips_mcuota_no_network, Toast.LENGTH_SHORT).show();
 //            showCustomToast("no network!");
 //        }
 //    }
@@ -547,18 +547,18 @@
 //                if (mcuOtaVer_new > mcuOtaVer_local) {
 //                    showUpdateDialog();
 //                } else {
-////                    Toast.makeText(settings.this, R.string.tips_mcuota_latest_version, Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(menu.this, R.string.tips_mcuota_latest_version, Toast.LENGTH_SHORT).show();
 //                    showCustomToast("This is the latest version, do not update!");
 //                }
 //            } else {
-////                Toast.makeText(settings.this, R.string.tips_mcuota_file_fetch_version, Toast.LENGTH_SHORT).show();
+////                Toast.makeText(menu.this, R.string.tips_mcuota_file_fetch_version, Toast.LENGTH_SHORT).show();
 //                showCustomToast("Failed to fetch new MCU version!");
 //            }
 //        }
 //    }
 //
 //    private void showUpdateDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(settings.this);
+//        AlertDialog.Builder builder = new AlertDialog.Builder(menu.this);
 //        builder.setTitle(getString(R.string.tips_mcuota_update))
 //                .setMessage(getString(R.string.tips_mcuota_update_content))
 //                .setIcon(android.R.drawable.ic_dialog_alert)
@@ -591,12 +591,12 @@
 //                    yMode.send(mFirmwareFile, progress -> runOnUiThread(() -> updateProgressDialog(progress)));
 //                    runOnUiThread(() -> hideProgressDialog());
 //                } else {
-////                    Toast.makeText(settings.this, R.string.tips_mcuota_file_unexist, Toast.LENGTH_SHORT).show();
+////                    Toast.makeText(menu.this, R.string.tips_mcuota_file_unexist, Toast.LENGTH_SHORT).show();
 //                    showCustomToast("Firmware file does not exist!");
 //                }
 //            } catch (IOException | InterruptedException e) {
 //                Log.e("startFirmwareDownload", "Error downloading or sending firmware", e);
-////                Toast.makeText(settings.this, R.string.tips_mcuota_Error_downloading_or_sending_firmware, Toast.LENGTH_SHORT).show();
+////                Toast.makeText(menu.this, R.string.tips_mcuota_Error_downloading_or_sending_firmware, Toast.LENGTH_SHORT).show();
 //                showCustomToast("Error downloading or sending firmware!");
 //            }
 //        }).start();
