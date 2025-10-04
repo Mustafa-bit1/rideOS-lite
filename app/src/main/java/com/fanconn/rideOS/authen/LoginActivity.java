@@ -347,7 +347,7 @@ public class LoginActivity extends AppCompatActivity{
         TelemetryService.shdtelemetrywhenunlocked=false;
 
         this.BatPackSwitcher = new batteryPackSwitcher();
-        bmsHandler.post(bmsRunnable);
+        //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
         InactivityManager.getInstance().startTimer(3);
 
@@ -637,18 +637,16 @@ public class LoginActivity extends AppCompatActivity{
             String prevRider = prefs.getString("last_logged_in_user", null);
             boolean isSameRider = username.equals(prevRider);
 
-            if (!isSameRider  || UIUpdater.resetParamtersAfterLowbat ) {
+            if (!isSameRider) {
 
-                UIUpdater.resetParamtersAfterLowbat=false;
                 // Fetch user data
                 String age = prefs.getString("user_" + username + "_age", "N/A");
                 String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
-                String maxTorque = prefs.getString("user_" + username + "_torque", "Easy");
 
                 Log.d("UserData", "Username: " + username);
                 Log.d("UserData", "Age: " + age);
                 Log.d("UserData", "Max Speed: " + maxSpeedStr);
-                Log.d("UserData", "Max Torque: " + maxTorque);
+//                Log.d("UserData", "Max Torque: " + maxTorque);
 
                 // Convert speed string to int
                 int maxSpeed = 0;
@@ -671,19 +669,19 @@ public class LoginActivity extends AppCompatActivity{
                 editor.commit(); // synchronous write (okay in background thread)
 
                 // Torque mapping
-                int lineCurrent;
-                switch (maxTorque) {
-                    case "Medium": lineCurrent = Level2_Line_Current; break;
-                    case "Rush":   lineCurrent = Level3_Line_Current; break;
-                    case "Insane": lineCurrent = Level4_Line_Current; break;
-                    case "Easy":
-                    default:       lineCurrent = Level1_Line_Current; break;
-                }
-
-                int torqueValue = lineCurrent * 4;
-                String torqueHex = String.format("%04X", torqueValue);
-                String torqueByte01 = torqueHex.substring(2, 4); // low byte
-                String torqueByte02 = torqueHex.substring(0, 2); // high byte
+//                int lineCurrent;
+//                switch (maxTorque) {
+//                    case "Medium": lineCurrent = Level2_Line_Current; break;
+//                    case "Rush":   lineCurrent = Level3_Line_Current; break;
+//                    case "Insane": lineCurrent = Level4_Line_Current; break;
+//                    case "Easy":
+//                    default:       lineCurrent = Level1_Line_Current; break;
+//                }
+//
+//                int torqueValue = lineCurrent * 4;
+//                String torqueHex = String.format("%04X", torqueValue);
+//                String torqueByte01 = torqueHex.substring(2, 4); // low byte
+//                String torqueByte02 = torqueHex.substring(0, 2); // high byte
 
                 // Frame templates
                 SharedPreferences boostPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
@@ -692,29 +690,86 @@ public class LoginActivity extends AppCompatActivity{
 
                 String finalSpeedFrame = "FFAA550103001510FCA807" + speedByte01 + speedByte02 + "00000000" + durationHex + intervalHex;
 //                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "000088040000";
-                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "7800B004A000";//max phase 300A ,  regen currents as 30A(7800) and 40A(A000)
+//                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "7800B004A000";//max phase 300A ,  regen currents as 30A(7800) and 40A(A000)
 
 
-                Log.d("SeekBarStable", "Final Speed Frame (with boost): " + finalSpeedFrame);
-                Log.d("SeekBarStable", "Final Torque Frame: " + finalTorqueFrame);
-                Log.d("SeekBarStable", "MAXSPEED=" + maxSpeed + ", x=" + xRounded + ", Hex=" + speedByte02 + " " + speedByte01);
-                Log.d("SeekBarStable", "torque=" + lineCurrent + ", x=" + torqueHex + ", Hex=" + torqueByte02 + " " + torqueByte01);
-
-                Log.d("asdfdg","ENTER Login");
+//                Log.d("SeekBarStable", "Final Speed Frame (with boost): " + finalSpeedFrame);
+//                Log.d("SeekBarStable", "Final Torque Frame: " + finalTorqueFrame);
+//                Log.d("SeekBarStable", "MAXSPEED=" + maxSpeed + ", x=" + xRounded + ", Hex=" + speedByte02 + " " + speedByte01);
+//                Log.d("SeekBarStable", "torque=" + lineCurrent + ", x=" + torqueHex + ", Hex=" + torqueByte02 + " " + torqueByte01);
+//
+//                Log.d("asdfdg","ENTER Login");
 
                 // Send frames
-                if (serialPortManager != null && (serialPortManager.getHb3().getBatteryLevel()/10)>20) {
+                if (serialPortManager != null) {
                     serialPortManager.VCUSendToMCU(finalSpeedFrame);
                     Log.d("asdfdg","ENTER Succes Login cmd snet");
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 1000);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 1000);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 2000);
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 3000);
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 4000);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2500);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 3000);
+
                 }
                 else{
                     Log.d("asdfsgd","THE BATTERY IS "+serialPortManager.getHb3().getBatteryLevel()/10) ;
                 }
+            }//END OF SAME USER
+
+            String maxTorque = prefs.getString("user_" + username + "_torque", "Easy");
+
+            int lineCurrent;
+            switch (maxTorque) {
+                case "Medium": lineCurrent = Level2_Line_Current; break;
+                case "Rush":   lineCurrent = Level3_Line_Current; break;
+                case "Insane": lineCurrent = Level4_Line_Current; break;
+                case "Easy":
+                default:       lineCurrent = Level1_Line_Current; break;
             }
+
+            int torqueValue = lineCurrent * 4;
+            String torqueHex = String.format("%04X", torqueValue);
+            String torqueByte01 = torqueHex.substring(2, 4); // low byte
+            String torqueByte02 = torqueHex.substring(0, 2); // high byte
+
+
+            //                    (serialPortManager.getHb3().getBatteryLevel() / 10 < 80)
+//                            ? "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400"//to set regen currents as 30A(7800) and 40A(A000)- 35A(8C00),45A(B400)
+//                            : "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";//to set regen currents as 6A(1800) and 8A(2000)
+            String torqueFrame;
+            int batteryLevel = serialPortManager.getHb3().getBatteryLevel() / 10;
+
+            if (batteryLevel ==0) { // phase max , all normal
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
+            }
+            else if (batteryLevel <= 10) { // phase 0 , all normal
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C000000B400";
+            }
+            else if (batteryLevel <= 20) { // phase max, all normal
+                torqueFrame = "FFAA550103001510FBA8073C008C00B004B400";
+            } else if (batteryLevel <= 80) { // phase max, all normal
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
+            } else { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
+            }
+
+            final String finalTorqueFrame = torqueFrame; // make it final for lambdas
+
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 3500);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 4000);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 4500);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5000);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5500);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 6000);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 6500);
+
+
 
             // Always set login status (apply is safe here)
             editor.putBoolean("is_logged_in", true);
@@ -741,6 +796,9 @@ public class LoginActivity extends AppCompatActivity{
             }
         }).start();
     }
+
+
+
 
 //below is b4 7/7
 //        mediaPlayer = MediaPlayer.create(this, R.raw.unlocked);

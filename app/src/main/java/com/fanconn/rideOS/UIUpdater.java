@@ -496,7 +496,7 @@ public class UIUpdater  {
     private  boolean StopInactivtyTimerDuringPopUp=true;
     public static boolean isAPUPresent=false;
     private static int UniversalAPUbatteryLevel;
-    public static boolean resetParamtersAfterLowbat=false;
+//    public static boolean resetParamtersAfterLowbat=false;
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
         int batteryLevel= hb3.getBatteryLevel() / 10;
@@ -539,9 +539,12 @@ public class UIUpdater  {
         }
 
         if (batteryLevel >= 21 && Lowbatflag) {
-            resetParamtersAfterLowbat=true;
+//            resetParamtersAfterLowbat=true;
             Lowbatflag = false;
-
+            if(serialPortManager!=null){
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400"); //max all phase 300, line 100 , regen 35-45
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+            }
             binding.yellowalert.clearAnimation();
             binding.LowBatmsg.clearAnimation();
 
@@ -549,11 +552,11 @@ public class UIUpdater  {
             binding.LowBatmsg.setVisibility(View.INVISIBLE);
         }
         if (batteryLevel >= 21 && atSOC10Lowbatflag) {
-            resetParamtersAfterLowbat=true;
+//            resetParamtersAfterLowbat=true;
             atSOC10Lowbatflag = false;
         }
         if (batteryLevel >= 21 && atSOC7Lowbatflag) {
-            resetParamtersAfterLowbat=true;
+//            resetParamtersAfterLowbat=true;
             atSOC7Lowbatflag = false;
         }
 
@@ -561,14 +564,14 @@ public class UIUpdater  {
 //            apuflag=false;
 //        }
 
-        if(!atSOC10Lowbatflag && batteryLevel==10 && tm.getTeleChargingState()==0){
-            atSOC10Lowbatflag=true;
-            if(serialPortManager!=null){
-                Log.d("asdfdg","ENTER 10");
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
-            }
-        }
+//        if(!atSOC10Lowbatflag && batteryLevel==10 && tm.getTeleChargingState()==0){
+//            atSOC10Lowbatflag=true;
+//            if(serialPortManager!=null){
+//                Log.d("asdfdg","ENTER 10");
+//                serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
+//                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+//            }
+//        }
 
         if(!atSOC7Lowbatflag && batteryLevel==7 && tm.getTeleChargingState()==0){
             atSOC7Lowbatflag=true;

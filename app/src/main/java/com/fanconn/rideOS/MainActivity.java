@@ -309,6 +309,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         //bmsHandler.post(bmsRunnable);
 //       requestbms();
 //       Feature Startups
+        bmsHandler.post(bmsRunnable);
 
         mapbtn  = findViewById(R.id.mapbtn);
         menubtn = findViewById(R.id.menubtn);
@@ -1998,7 +1999,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         @Override
         public void run() {
             switch (requestIndex) {
-
                 case 0://Log.d("sfadsgf","ENTERREQUSTLOOP");
                     serialPortManager.VCUSendToMCU("FFAA5501030015189001400001020304050607");
                     break;
@@ -2024,11 +2024,19 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                     break;
 
                 case 6:
+                    serialPortManager.VCUSendToMCU("FFAA5501030015160B01800001020304050607");
+                    break;
+
+                case 7:
+                    serialPortManager.VCUSendToMCU("FFAA5501030015160D01800001020304050607");
+                    break;
+
+                case 8:
                     serialPortManager.VCUSendToMCU("FFAA5501030015189801400001020304050607");
                     break;
             }
 
-            requestIndex = (requestIndex + 1) % 6; // 0 → 1 → ... → 6 → 0
+            requestIndex = (requestIndex + 1) % 9;
             bmsHandler.postDelayed(this, 650); // 650ms interval
         }
     };

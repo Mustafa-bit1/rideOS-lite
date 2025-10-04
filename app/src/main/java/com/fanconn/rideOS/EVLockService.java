@@ -64,6 +64,8 @@ public class EVLockService {
         if (currentSequenceType != SequenceType.UNLOCK) return;
 
         serialPortManager.VCUSendToMCU("FFAA550101000A01");
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> serialPortManager.VCUSendToMCU("FFAA550101000A01"), 400);
 
         Heartbeat1 hb1 = serialPortManager.getHb1();
         boolean success = hb1.getDragonLock() == 1;
@@ -86,6 +88,8 @@ public class EVLockService {
         if (currentSequenceType != SequenceType.UNLOCK) return;
 
         serialPortManager.VCUSendToMCU("FFAA550107000A01");
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 400);
 
         Heartbeat1 hb1 = serialPortManager.getHb1();
         boolean success = hb1.getLED() == 1;
@@ -107,6 +111,9 @@ public class EVLockService {
         if (currentSequenceType != SequenceType.LOCK) return;
 
         serialPortManager.VCUSendToMCU("FFAA550101000A00");
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> serialPortManager.VCUSendToMCU("FFAA550101000A00"), 400);
+
         //Log.d("EVLockService", "Sent Lock Commandd 1");
 
         Heartbeat1 hb1 = serialPortManager.getHb1();
