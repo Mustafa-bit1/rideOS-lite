@@ -12,7 +12,7 @@
 //import android.os.Build;
 //import android.os.Bundle;
 //import android.os.PowerManager;
-//import android.provider.Settings;
+//import android.provider.settings;
 //import android.text.InputType;
 //import android.util.Log;
 //import android.view.LayoutInflater;
@@ -64,7 +64,7 @@
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
 //        EdgeToEdge.enable(this);
-//        setContentView(R.layout.activity_settings);
+//        setContentView(R.layout.activity_menu);
 //        setFullScreen();
 //        serialPortManager = serialApplication.getSerialPortManager();
 //        batteryPackSwitcher BatPackSwitcher = new batteryPackSwitcher();
@@ -377,7 +377,7 @@
 //        builder.setPositiveButton("OK", (dialog, which) -> {
 //            String enteredPassword = input.getText().toString();
 //            if (enteredPassword.equals("nx")) {
-//                Intent intent = new Intent(Settings.ACTION_SETTINGS);
+//                Intent intent = new Intent(settings.ACTION_SETTINGS);
 //                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // Optional but safe
 //                startActivity(intent);
 //            } else {

@@ -40,6 +40,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.fanconn.rideOS.menu.BrightnessManager;
+import com.fanconn.rideOS.menu.settings;
 
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -50,7 +51,7 @@ public class QuickSetting extends AppCompatActivity {
     private BrightnessManager brightnessManager;
     private BluetoothAdapter bluetoothAdapter;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    ImageButton tpmsBtn;
+    ImageButton tpmsBtn,allSetbtn;
 
     private static final int REQUEST_BLUETOOTH_CONNECT = 1001;
 
@@ -80,6 +81,8 @@ public class QuickSetting extends AppCompatActivity {
         }
 
         tpmsBtn = findViewById(R.id.tpmsbtn);
+        allSetbtn = findViewById(R.id.allSetbtn);
+
 
         tpmsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +93,17 @@ public class QuickSetting extends AppCompatActivity {
                 finish();
             }
         });
+
+        allSetbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(QuickSetting.this,settings.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
+
 
 
         // Init Brightness

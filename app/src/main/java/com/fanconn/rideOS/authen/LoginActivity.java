@@ -769,8 +769,6 @@ public class LoginActivity extends AppCompatActivity{
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 6500);
 
-
-
             // Always set login status (apply is safe here)
             editor.putBoolean("is_logged_in", true);
             editor.apply();

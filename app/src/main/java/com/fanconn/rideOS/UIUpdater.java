@@ -573,8 +573,8 @@ public class UIUpdater  {
 //            }
 //        }
 
-        if(!atSOC7Lowbatflag && batteryLevel==7 && tm.getTeleChargingState()==0){
-            atSOC7Lowbatflag=true;
+        if(!atSOC10Lowbatflag && batteryLevel==10 && tm.getTeleChargingState()==0){
+            atSOC10Lowbatflag=true;
             startBeeping(2);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 stopBeeping();
@@ -585,7 +585,7 @@ public class UIUpdater  {
                 InactivityManager.getInstance().stopTimer();
                 showCustomPopup("Alert","Your Battery is Low, Switch to APU for Extra Range");
             } else if  (!isAPUPresent) {
-                Log.d("asdfdg","ENTER 7");
+                Log.d("asdfdg","ENTER 10");
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero

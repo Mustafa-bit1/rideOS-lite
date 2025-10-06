@@ -134,7 +134,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                 break;
 
             case 5:
-                Log.d("InactivityHandler", "Case......5: Locking and opening LoginActivity from Settings");
+                Log.d("InactivityHandler", "Case......5: Locking and opening LoginActivity from settings");
                 // Lock the EV
                 EVLockService.getInstance().startLockSequence();
                 // Launch LoginActivity
