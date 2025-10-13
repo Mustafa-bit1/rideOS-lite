@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.Manifest;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.fanconn.rideOS.MyApp;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.UpdateService;
 
@@ -33,6 +35,9 @@ import java.util.Locale;
 public class OS_UpdatesFragment extends Fragment {
 
     private ImageButton otaupdatebtn;
+    private Handler uptimeHandler = new Handler();
+    private TextView tvUptime;
+    private Runnable uptimeRunnable;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,6 +47,9 @@ public class OS_UpdatesFragment extends Fragment {
 
         otaupdatebtn = view.findViewById(R.id.otaupdatebtn);
 
+        tvUptime = view.findViewById(R.id.tvUptime);
+        startUptimeTimer();
+
         otaupdatebtn.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), UpdateService.class);
             intent.putExtra("manual_check", true);
@@ -50,13 +58,43 @@ public class OS_UpdatesFragment extends Fragment {
 
         return view;
     }
+    private void startUptimeTimer() {
+        uptimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long uptime = System.currentTimeMillis() - MyApp.appStartTime;
+
+                long days = uptime / (1000 * 60 * 60 * 24);
+                long hours = (uptime / (1000 * 60 * 60)) % 24;
+                long minutes = (uptime / (1000 * 60)) % 60;
+                long seconds = (uptime / 1000) % 60;
+
+                if (tvUptime != null) {
+                    tvUptime.setText(String.format("Uptime: %dd %02d:%02d:%02d",
+                            days, hours, minutes, seconds));
+                }
+
+                uptimeHandler.postDelayed(this, 1000); // update every 1 sec
+            }
+        };
+
+        uptimeHandler.post(uptimeRunnable);
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        uptimeHandler.removeCallbacks(uptimeRunnable); // 🚫 Prevent memory leak
+    }
+
     private void fetchServerUpdateInfo(View view) {
         TextView serverVersionTV = view.findViewById(R.id.server_version);
         TextView serverReleaseDateTV = view.findViewById(R.id.server_release_date);
 
         new Thread(() -> {
             try {
-                URL url = new URL("http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/update.json");
+                URL url = new URL("http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.connect();
@@ -74,15 +112,15 @@ public class OS_UpdatesFragment extends Fragment {
                 String releaseDate = jsonObject.optString("release_date", "N/A");
 
                 requireActivity().runOnUiThread(() -> {
-                    serverVersionTV.setText("App Version " + latestVersion);
+                    serverVersionTV.setText("Latest Version " + latestVersion);
                     serverReleaseDateTV.setText("Release Date: " + releaseDate);
                 });
 
             } catch (Exception e) {
                 e.printStackTrace();
                 requireActivity().runOnUiThread(() -> {
-                    serverVersionTV.setText("Latest Version: Error");
-                    serverReleaseDateTV.setText("Release Date: Error");
+                    serverVersionTV.setText("Latest Version : Not found");
+                    serverReleaseDateTV.setText("Release Date : -");
                 });
             }
         }).start();
@@ -110,7 +148,7 @@ public class OS_UpdatesFragment extends Fragment {
         String buildNumber = Build.DISPLAY;
         buildnum.setText(buildNumber);
 
-        String versionInfo = "rideOS " + versionName;
+        String versionInfo = "rideOS " + versionName+"_GA";
         versionText.setText(versionInfo);
 
         String deviceName = Settings.Global.getString(requireContext().getContentResolver(), "device_name");

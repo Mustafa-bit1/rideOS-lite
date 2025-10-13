@@ -100,7 +100,7 @@ public class DiagnosticsFragment extends Fragment {
         shutdownbtn.setOnClickListener(v -> showShutdownDialog());
         view.findViewById(R.id.mcuotaupdatebtn).setOnClickListener(v -> MCUOTA_Onclick(v));
 
-        bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8017800B004A000"));
+        bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550102000A01"));
         handlelockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A00"));
         handleUNlockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A01"));
 

@@ -1688,9 +1688,9 @@ public class UIUpdater  {
     private final Handler stopDelayHandler = new Handler(Looper.getMainLooper());
     private final Handler soundHandler = new Handler(Looper.getMainLooper());
 
-    private final int BLINK_INTERVAL_MS = 500;
+    private final int BLINK_INTERVAL_MS = 400;
     private final int SOUND_INTERVAL_MS = 1000;
-    private final int ZERO_HOLD_DURATION_MS = 1500;
+    private final int ZERO_HOLD_DURATION_MS = 2500;
 
     private Runnable blinkRunnable;
     private Runnable stopBlinkingRunnable;

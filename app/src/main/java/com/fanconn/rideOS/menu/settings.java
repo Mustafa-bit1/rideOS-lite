@@ -11,6 +11,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.fanconn.rideOS.BatteryFragment;
 import com.fanconn.rideOS.GestureHelper;
 import com.fanconn.rideOS.R;
 
@@ -18,10 +19,10 @@ public class settings extends AppCompatActivity {
     public static settings instance;
 
     // ✅ settings section items
-    String[] titles = {"rideCam", "Battery", "Documents", "Support", "Information", "Diagnostic"};
+    String[] titles = {"Battery", "rideCam", "Documents", "Support", "Information", "Diagnostic"};
     int[] icons = {
+            R.drawable.batteryicononmenu,//ridecamicon
             R.drawable.ridecamicon,
-            R.drawable.batteryicononmenu,
             R.drawable.docicon,
             R.drawable.supporticon,
             R.drawable.informationicon,
@@ -58,15 +59,15 @@ public class settings extends AppCompatActivity {
         settingsList.setAdapter(adapter);
 
         // ✅ Default fragment
-        loadFragment(new RideCamFragment());
+        loadFragment(new BatteryFragment());
         adapter.setSelectedPosition(0);
 
         // ✅ Handle item clicks
         settingsList.setOnItemClickListener((parent, view, position, id) -> {
             Fragment fragment;
             switch (position) {
-                case 0: fragment = new RideCamFragment(); break;
-                case 1: fragment = new BatteryFragment(); break;
+                case 0: fragment = new BatteryFragment(); break;//RideCamFragment
+                case 1: fragment = new RideCamFragment(); break;
                 case 2: fragment = new DocsFragment(); break;
                 case 3: fragment = new supportFragment(); break;
                 case 4: fragment = new informationFragment(); break;

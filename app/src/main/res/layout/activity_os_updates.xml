@@ -141,6 +141,34 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="15dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/kanitlite"
+                    android:paddingStart="11dp"
+                    android:text="App uptime"
+                    android:textColor="#FFFFFF"
+                    android:textSize="23sp" />
+
+                <TextView
+                    android:id="@+id/tvUptime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kanitlite"
+                    android:paddingEnd="11dp"
+                    android:text="rideOS_base"
+                    android:textColor="#FFFFFF"
+                    android:textSize="25sp" />
+            </LinearLayout>
+
+
             <!-- Build Info -->
             <LinearLayout
                 android:layout_width="match_parent"

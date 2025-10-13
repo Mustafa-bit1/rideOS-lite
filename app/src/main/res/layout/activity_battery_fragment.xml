@@ -1,23 +1,246 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="1001dp"
     android:layout_height="418dp"
-    tools:context=".BatteryFragment"
-    android:background="@drawable/fragmentbg">
+    android:background="@drawable/fragmentbg"
+    tools:context=".BatteryFragment">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <!-- Top Toggle Buttons -->
+    <RadioGroup
+        android:id="@+id/topToggleGroup"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="52dp"
-        android:fontFamily="@font/kanitlite"
-        android:text="Battery data"
-        android:textColor="#A6A6A6"
-        android:textSize="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginStart="574dp"
+        android:layout_marginTop="26dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <RadioButton
+            android:id="@+id/btnBattery"
+            style="@style/BatteryFragToggleStyle"
+            android:layout_width="160dp"
+            android:layout_height="46dp"
+            android:textSize="19dp"
+            android:layout_marginEnd="2dp"
+            android:text="Main Battery" />
+
+        <RadioButton
+            android:id="@+id/btnAuxillary"
+            style="@style/BatteryFragToggleStyle"
+            android:layout_width="155dp"
+            android:layout_height="46dp"
+            android:textSize="19dp"
+            android:text="Auxillary" />
+    </RadioGroup>
+
+
+    <!-- Top Container for Main Battery -->
+    <LinearLayout
+        android:id="@+id/topMainContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/topCardTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Battery Level"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp"/>
+
+        <TextView
+            android:id="@+id/topCardValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-%"
+            android:textColor="#54FF29"
+            android:textSize="50sp"/>
+
+        <TextView
+            android:id="@+id/Rangetext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Range"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp"/>
+
+        <TextView
+            android:id="@+id/RangeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-km"
+            android:textColor="#54FF29"
+            android:textSize="50sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#424242"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <!-- Top Container for Aux Battery -->
+    <LinearLayout
+        android:id="@+id/topAuxContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/topAuxTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="APU Battery Level"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp"/>
+
+        <TextView
+            android:id="@+id/topAuxValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-%"
+            android:textColor="#54FF29"
+            android:textSize="50sp"/>
+
+        <TextView
+            android:id="@+id/topAuxRangeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Range"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp"/>
+
+        <TextView
+            android:id="@+id/topAuxRangeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-km"
+            android:textColor="#54FF29"
+            android:textSize="50sp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#424242"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+    <!-- Scrollable Battery Details -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="250dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Main Battery Container -->
+            <LinearLayout
+                android:id="@+id/mainBatteryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/mainBatteryLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Main Battery %"/>
+
+                <TextView
+                    android:id="@+id/mainBatteryVoltage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Voltage"/>
+
+                <TextView
+                    android:id="@+id/mainRemainingAh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remaining Ah"/>
+
+                <TextView
+                    android:id="@+id/NTC1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NTC1"/>
+
+                <TextView
+                    android:id="@+id/NTC2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NTC2"/>
+
+                <TextView
+                    android:id="@+id/NTC3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NTC3"/>
+
+                <TextView
+                    android:id="@+id/NTC4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NTC4"/>
+
+                <TextView
+                    android:id="@+id/mainMosState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Main MOS State"/>
+
+                <TextView
+                    android:id="@+id/chargingStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Charging Status"/>
+
+            </LinearLayout>
+
+            <!-- Aux / APU Battery Container -->
+            <LinearLayout
+                android:id="@+id/auxBatteryContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/apuBatteryLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="APU Battery %"/>
+
+                <TextView
+                    android:id="@+id/apuBatteryVoltage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Voltage"/>
+
+                <TextView
+                    android:id="@+id/apuRemainingAh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remaining Ah"/>
+
+                <TextView
+                    android:id="@+id/apuMosState"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="APU MOS State"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

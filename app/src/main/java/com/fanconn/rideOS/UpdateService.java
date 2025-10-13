@@ -29,7 +29,7 @@ import java.net.URL;
 public class UpdateService extends Service {
 
     private static final String TAG = "UpdateService";
-    private static final String UPDATE_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/update.json";
+    private static final String UPDATE_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json";
     private final Handler handler = new Handler();
     private final int CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
     public static String pendingUpdateApkUrl = null;
@@ -140,7 +140,7 @@ public class UpdateService extends Service {
                 int responseCode = conn.getResponseCode();
 
                 if (responseCode != 200) {
-                    Log.w(TAG, "APK URL no longer valid. Skipping prompt.");
+                    Log.e(TAG, "APK URL no longer valid. Skipping prompt.");
                     pendingUpdateApkUrl = null;
                     return;
                 }
