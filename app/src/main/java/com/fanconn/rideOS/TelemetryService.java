@@ -36,6 +36,7 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.ResponseBody;
@@ -127,7 +128,7 @@ public class TelemetryService extends Service {
                     }
 
                     sendVehicleData(context, (float) roundTo2Decimal(TelemetryDataManager.getInstance().getTeleODO()), TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
-                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
+                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+"-"+UptimeManager.getUptime(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
                             TelemetryDataManager.getInstance().getTeleBmsLifeCycles(), TelemetryDataManager.getInstance().getTeleLatLong());
 
                     if (shdtelemetrywhenunlocked) {
@@ -231,28 +232,22 @@ public class TelemetryService extends Service {
 
         if (isInternetAvailable()) {
             // Send staged data first
+            // NEW SAFE BATCH SENDING
             if (TelemetryStagingManager.getInstance().hasData()) {
-                telemetryHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        RealTimeData r;
-                        while ((r = TelemetryStagingManager.getInstance().poll()) != null) {
-                            DataUsageTracker tracker = new DataUsageTracker();
-                            tracker.startTracking();
+                new Thread(() -> {
+                    while (TelemetryStagingManager.getInstance().hasData() && isInternetAvailable()) {
 
+                        List<RealTimeData> batch = TelemetryStagingManager.getInstance().pollBatch();  // Take 20 at once
+                        for (RealTimeData r : batch) {
                             sendToServer(r);
-
-                            tracker.logUsage("Staged Payload");
-
-                            try {
-                                Thread.sleep(30);
-                            } catch (InterruptedException e) {
-                                // ignore
-                            }
+                            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
                         }
+
+                        try { Thread.sleep(300); } catch (Exception ignored) {} // Small break between batches
                     }
-                });
+                }).start();
             }
+
 
             // Send current data
             //DataUsageTracker tracker = new DataUsageTracker();
@@ -284,7 +279,7 @@ public class TelemetryService extends Service {
         data.inAH_by_charger = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleChargerAH());
         data.inAH_by_regen = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRegenAH());
         data.outAH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleDischargeAH());
-        data.ev_power_state = shdtelemetrywhenunlocked ? "ON" : "OFF";
+        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + "," + UptimeManager.getUptime();
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
         data.soc = TelemetryDataManager.getInstance().getTeleSOC();
@@ -297,6 +292,7 @@ public class TelemetryService extends Service {
         return data;
 
     }
+
     private void sendToServer(RealTimeData data) {
         apiService.saveRealTimeData(data).enqueue(new Callback<ResponseBody>() {
             @Override

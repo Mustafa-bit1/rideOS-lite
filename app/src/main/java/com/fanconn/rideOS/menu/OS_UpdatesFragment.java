@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment;
 import com.fanconn.rideOS.MyApp;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.UpdateService;
+import com.fanconn.rideOS.UptimeManager;
 
 import org.json.JSONObject;
 
@@ -62,22 +63,12 @@ public class OS_UpdatesFragment extends Fragment {
         uptimeRunnable = new Runnable() {
             @Override
             public void run() {
-                long uptime = System.currentTimeMillis() - MyApp.appStartTime;
-
-                long days = uptime / (1000 * 60 * 60 * 24);
-                long hours = (uptime / (1000 * 60 * 60)) % 24;
-                long minutes = (uptime / (1000 * 60)) % 60;
-                long seconds = (uptime / 1000) % 60;
-
                 if (tvUptime != null) {
-                    tvUptime.setText(String.format("Uptime: %dd %02d:%02d:%02d",
-                            days, hours, minutes, seconds));
+                    tvUptime.setText("Uptime: " + UptimeManager.getUptime());
                 }
-
-                uptimeHandler.postDelayed(this, 1000); // update every 1 sec
+                uptimeHandler.postDelayed(this, 1000); // update UI every second
             }
         };
-
         uptimeHandler.post(uptimeRunnable);
     }
 
@@ -85,7 +76,7 @@ public class OS_UpdatesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        uptimeHandler.removeCallbacks(uptimeRunnable); // 🚫 Prevent memory leak
+        uptimeHandler.removeCallbacks(uptimeRunnable);
     }
 
     private void fetchServerUpdateInfo(View view) {
