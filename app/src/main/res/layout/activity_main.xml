@@ -468,7 +468,7 @@
         android:layout_marginBottom="-46dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/stand"
+        app:srcCompat="@drawable/stand1"
         android:visibility="gone"/>
 
     <ImageView
@@ -479,7 +479,7 @@
         android:layout_marginBottom="-46dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/neutral" />
+        app:srcCompat="@drawable/neutral1" />
 
     <ImageView
         android:id="@+id/picklocation_IV"
@@ -739,6 +739,7 @@
         android:layout_marginTop="323dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:srcCompat="@drawable/brk" />
 
     <ImageView
@@ -749,6 +750,7 @@
         android:layout_marginTop="354dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:srcCompat="@drawable/startbutton" />
 
     <ImageView

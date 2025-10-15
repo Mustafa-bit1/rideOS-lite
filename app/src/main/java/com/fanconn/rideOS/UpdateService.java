@@ -15,6 +15,8 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.fanconn.rideOS.menu.OS_UpdatesFragment;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -120,14 +122,14 @@ public class UpdateService extends Service {
     private void promptUserToUpdate(String apkUrl) {
         Log.d(TAG, "Prompting user for update...");
 
-        // Defer if MainActivity not active
-        if (!MainActivity.MainisActive) {
-            Log.d(TAG, "MainActivity not active. Deferring update prompt.");
+        // Show if MainActivity OR OS Updates fragment is ready
+        if (MainActivity.MainisActive || OS_UpdatesFragment.showupdatepopup) {
+            showUpdateDialog(apkUrl);
+            OS_UpdatesFragment.showupdatepopup = false;
+        } else {
+            Log.d(TAG, "UI not ready. Deferring update...");
             pendingUpdateApkUrl = apkUrl;
-            return;
         }
-
-        showUpdateDialog(apkUrl);
     }
 
     private void showUpdateDialog(String apkUrl) {

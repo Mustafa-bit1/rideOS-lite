@@ -11,6 +11,7 @@ public class MyApp extends Application {
         registerActivityLifecycleCallbacks(new TouchTracker());
         MetadataManager.init(this);
         appStartTime = System.currentTimeMillis();
+        UptimeManager.start(); // Start uptime tracking immediately
 
     }
 }

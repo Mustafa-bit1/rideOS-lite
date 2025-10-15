@@ -34,212 +34,644 @@
             android:text="Auxillary" />
     </RadioGroup>
 
-
     <!-- Top Container for Main Battery -->
     <LinearLayout
         android:id="@+id/topMainContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="210dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/topCardTitle"
-            android:layout_width="wrap_content"
+        <!-- LEFT: BATTERY % -->
+        <LinearLayout
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="Battery Level"
-            android:textColor="#FFFFFF"
-            android:textSize="21sp"/>
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="470dp"
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/topCardValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-%"
-            android:textColor="#54FF29"
-            android:textSize="50sp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="start">
 
-        <TextView
-            android:id="@+id/Rangetext"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Range"
-            android:textColor="#FFFFFF"
-            android:textSize="21sp"/>
+                <TextView
+                    android:id="@+id/topCardValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kanit"
+                    android:text="- %"
+                    android:textColor="#54FF29"
+                    android:textSize="50sp" />
 
-        <TextView
-            android:id="@+id/RangeValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-km"
-            android:textColor="#54FF29"
-            android:textSize="50sp"/>
+                <TextView
+                    android:id="@+id/Batterytv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Battery"
+                    android:fontFamily="@font/kanit"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
 
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Divider -->
         <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
             android:background="#424242"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"/>
 
+        <!-- RIGHT: RANGE -->
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/RangeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="- km"
+                    android:fontFamily="@font/kanit"
+                    android:textColor="#54FF29"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/Rangetext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Range"
+                    android:fontFamily="@font/kanit"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="990dp"
+        android:layout_height="1dp"
+        android:background="#424242"
+        android:layout_marginTop="215dp"
+        android:layout_marginHorizontal="6dp"/>
 
     <!-- Top Container for Aux Battery -->
     <LinearLayout
         android:id="@+id/topAuxContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:layout_height="210dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/topAuxTitle"
-            android:layout_width="wrap_content"
+        <!-- LEFT: AUX BATTERY % -->
+        <LinearLayout
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="APU Battery Level"
-            android:textColor="#FFFFFF"
-            android:textSize="21sp"/>
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="470dp"
+            android:gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/topAuxValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-%"
-            android:textColor="#54FF29"
-            android:textSize="50sp"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="start">
 
-        <TextView
-            android:id="@+id/topAuxRangeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Range"
-            android:textColor="#FFFFFF"
-            android:textSize="21sp"/>
+                <TextView
+                    android:id="@+id/topAuxValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 %"
+                    android:fontFamily="@font/kanit"
+                    android:textColor="#54FF29"
+                    android:textSize="50sp" />
 
-        <TextView
-            android:id="@+id/topAuxRangeValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-km"
-            android:textColor="#54FF29"
-            android:textSize="50sp"/>
+                <TextView
+                    android:id="@+id/topAuxBatteryText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Battery"
+                    android:fontFamily="@font/kanit"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
 
+        <!-- Divider -->
         <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
             android:background="#424242"
-            android:layout_marginTop="8dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"/>
 
+        <!-- RIGHT: RANGE -->
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="start">
+
+                <TextView
+                    android:id="@+id/topAuxRangeValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 km"
+                    android:fontFamily="@font/kanit"
+                    android:textColor="#54FF29"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/topAuxRangeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Range"
+                    android:fontFamily="@font/kanit"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
-    <!-- Scrollable Battery Details -->
+    <!-- Scrollable Battery Details for Main Battery -->
     <ScrollView
+        android:id="@+id/mainBatteryScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="250dp">
+        android:layout_marginTop="230dp">
 
         <LinearLayout
+            android:id="@+id/mainBatteryContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:padding="10dp">
 
-            <!-- Main Battery Container -->
+            <!-- Main Battery Parameters Row -->
             <LinearLayout
-                android:id="@+id/mainBatteryContainer"
+                android:id="@+id/mainBatteryParamsRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="7"
+                android:paddingVertical="16dp">
 
-                <TextView
-                    android:id="@+id/mainBatteryLevel"
-                    android:layout_width="wrap_content"
+                <!-- Voltage -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Main Battery %"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/mainBatteryVoltage"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/mainBatteryVoltage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0V"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Voltage"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Voltage"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/mainRemainingAh"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/maincurrentconsumption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0V"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Current"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- Capacity -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Remaining Ah"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/NTC1"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/mainBatteryCapacity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0 kWh"
+                        android:fontFamily="@font/kanitlite"
+
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Capacity"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC1 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="NTC1"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/NTC2"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/NTC1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0°C"
+                        android:fontFamily="@font/kanitlite"
+
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC1"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="NTC2"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/NTC3"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/NTC2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0°C"
+                        android:fontFamily="@font/kanitlite"
+
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC2"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC3 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="NTC3"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/NTC4"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/NTC3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0°C"
+                        android:fontFamily="@font/kanitlite"
+
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC3"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC4 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="NTC4"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/mainMosState"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Main MOS State"/>
+                    <TextView
+                        android:id="@+id/NTC4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0°C"
+                        android:textColor="#FFFFFF"
+                        android:fontFamily="@font/kanitlite"
 
-                <TextView
-                    android:id="@+id/chargingStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Charging Status"/>
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC4"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Aux / APU Battery Container -->
+            <TextView
+                android:id="@+id/mainMosState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="10dp"
+                android:text="Charge Switch : - |  Discharge Switch : -"
+                android:fontFamily="@font/kanitlite"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Scrollable Battery Details for AUX -->
+    <ScrollView
+        android:id="@+id/auxBatteryScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="230dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:id="@+id/auxBatteryContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <!-- Aux Battery Parameters Row -->
             <LinearLayout
-                android:id="@+id/auxBatteryContainer"
+                android:id="@+id/auxBatteryParamsRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="7"
+                android:paddingVertical="16dp">
 
-                <TextView
-                    android:id="@+id/apuBatteryLevel"
-                    android:layout_width="wrap_content"
+                <!-- Voltage -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="APU Battery %"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/apuBatteryVoltage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Voltage"/>
+                    <TextView
+                        android:id="@+id/auxBatteryVoltage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0V"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
 
-                <TextView
-                    android:id="@+id/apuRemainingAh"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Remaining Ah"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Voltage"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/apuMosState"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="APU MOS State"/>
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/auxcurrentconsumption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0.0 A"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Current"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- Capacity -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/auxBatteryCapacity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="- kWh"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Capacity"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC1 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/auxNTC1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="- °C"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC1"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/auxNTC2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="- °C"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC2"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC3 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/auxNTC3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="- °C"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC3"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
+
+                <!-- NTC4 -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/auxNTC4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="- °C"
+                        android:fontFamily="@font/kanitlite"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="NTC4"
+                        android:fontFamily="@font/kanit"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp"/>
+                </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/apuMosState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kanitlite"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="10dp"
+                android:text="Charge Switch : - |  Discharge Switch : -"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
         </LinearLayout>
     </ScrollView>
 

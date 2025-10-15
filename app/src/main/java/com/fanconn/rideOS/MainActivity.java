@@ -2035,7 +2035,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                     serialPortManager.VCUSendToMCU("FFAA5501030015189801400001020304050607");
                     break;
             }
-
             requestIndex = (requestIndex + 1) % 9;
             bmsHandler.postDelayed(this, 650); // 650ms interval
         }

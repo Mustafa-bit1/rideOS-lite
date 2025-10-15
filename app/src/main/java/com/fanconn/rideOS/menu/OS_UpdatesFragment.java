@@ -39,6 +39,7 @@ public class OS_UpdatesFragment extends Fragment {
     private Handler uptimeHandler = new Handler();
     private TextView tvUptime;
     private Runnable uptimeRunnable;
+    public static boolean showupdatepopup;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,15 +48,16 @@ public class OS_UpdatesFragment extends Fragment {
         fetchServerUpdateInfo(view);
 
         otaupdatebtn = view.findViewById(R.id.otaupdatebtn);
-
         tvUptime = view.findViewById(R.id.tvUptime);
         startUptimeTimer();
 
         otaupdatebtn.setOnClickListener(v -> {
+            OS_UpdatesFragment.showupdatepopup = true; // Mark it as a manual check
             Intent intent = new Intent(getContext(), UpdateService.class);
             intent.putExtra("manual_check", true);
             getContext().startService(intent);
         });
+
 
         return view;
     }

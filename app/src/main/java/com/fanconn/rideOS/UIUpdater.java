@@ -752,7 +752,7 @@ public class UIUpdater  {
         NTC7 = hb3.getNTC7() - 40;
         NTC8 = hb3.getNTC8() - 40;
 
-        //Log.d("TemperatureCheck", "NTCs = " + NTC1 + "," + NTC2 + "," + NTC3 + "," + NTC4 + "," + NTC5 + "," + NTC6 + "," + NTC7 + "," + NTC8);
+        Log.d("TemperatureCheck", "NTCs = " + NTC1 + "," + NTC2 + "," + NTC3 + "," + NTC4 + "," + NTC5 + "," + NTC6 + "," + NTC7 + "," + NTC8);
         tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
         int[] temps = {NTC1, NTC2, NTC3, NTC4, NTC5, NTC6, NTC7, NTC8};
         boolean anyIs45 = false;
@@ -1451,8 +1451,8 @@ public class UIUpdater  {
 //        binding.startButton.clearAnimation();
         stopReverseBeep();
         binding.neutralicon.setVisibility(View.VISIBLE);
-        binding.brk.setVisibility(View.VISIBLE);
-        binding.startButton.setVisibility(View.VISIBLE);
+//        binding.brk.setVisibility(View.VISIBLE);
+//        binding.startButton.setVisibility(View.VISIBLE);
         binding.reverseui.setVisibility(View.INVISIBLE);
         binding.avgSpeed.setVisibility(View.INVISIBLE);
         binding.tripTextView.setVisibility(View.INVISIBLE);

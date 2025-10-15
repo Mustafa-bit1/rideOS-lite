@@ -11,9 +11,11 @@ public class Heartbeat3 {
     private int chargingbit;// 单片机心跳包 电池电量
     private int mainChargeMosState,MainDisMosState,ApuChargeMosState,ApuDisMosState;
     private float realCurrent;
-
     private float batvoltage;
     private float remainingAH;
+    private float APUrealCurrent;
+    private float APUbatvoltage;
+    private float APUremainingAH;
     private int BMSlifecycles;
     private int NTC1,NTC2,NTC3,NTC4,NTC5,NTC6,NTC7,NTC8;
     private int BSG1_BYTE1;
@@ -168,6 +170,19 @@ public class Heartbeat3 {
     public void setNTC7(int ntc7){this.NTC7=ntc7;}
     public int getNTC8(){return NTC8;}
     public void setNTC8(int ntc8){this.NTC8=ntc8;}
+
+    public float getAPUrealCurrent(){return APUrealCurrent;}
+    public void setAPURealCurrent(int APUrealCurrent){
+        this.APUrealCurrent=APUrealCurrent;
+    }
+    public float getAPUbatvoltage(){return APUbatvoltage;}
+    public void setAPUbatvoltage(int APUbatvoltage){
+        this.APUbatvoltage=APUbatvoltage;
+    }
+    public float getAPUremainingAH(){return APUremainingAH;}
+    public void setAPUremainingAH(int APUremainingAH){
+        this.APUremainingAH=APUremainingAH;
+    }
 
     //============================================
     public int getChargeAH(){return chargeAh;}

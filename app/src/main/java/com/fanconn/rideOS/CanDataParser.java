@@ -29,8 +29,11 @@ public class CanDataParser {
     }
 
     public static  void parseCanData18904002(Heartbeat3 hb3, String canData) {
+        hb3.setAPUbatvoltage(FrameUtils.getByteSubstringAsInt(canData,0,1)); //voltage
+        hb3.setAPURealCurrent(FrameUtils.getByteSubstringAsInt(canData,4,5));//Real Time Current
         hb3.setAPUBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //APUSOC
     }
+
     public static  void parseCanData18934001(Heartbeat3 hb3, String canData) {
         hb3.setMainChargeMosState(FrameUtils.getByteValue(canData,1));
         hb3.setMainDisChargeMosState(FrameUtils.getByteValue(canData,2));
