@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.net.Network;
 import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiInfo;
@@ -20,12 +21,16 @@ import android.net.wifi.WifiNetworkSpecifier;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +42,7 @@ import androidx.fragment.app.Fragment;
 
 import com.fanconn.rideOS.R;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Set;
 
@@ -50,15 +56,19 @@ public class WirelessFragment extends Fragment {
 
     private BluetoothAdapter bluetoothAdapter;
     private WifiManager wifiManager;
+    private LinearLayout wifiSectionLayout;
 
     private ArrayAdapter<String> btAdapter, wifiAdapter;
 
     private int customOnColor = Color.parseColor("#1C78BE");
     private int customOffColor = Color.parseColor("#555555");
 
-    private BroadcastReceiver btStateReceiver;
-    private BroadcastReceiver wifiStateReceiver;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
+    private BluetoothReceiver btStateReceiver;
+    private WifiReceiver wifiStateReceiver;
+
+    // --- Lifecycle ---
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_wireless_fragment, container, false);
@@ -69,6 +79,7 @@ public class WirelessFragment extends Fragment {
         wifiStatus = view.findViewById(R.id.wifiStatus);
         bluetoothDevicesList = view.findViewById(R.id.bluetoothDevicesList);
         wifiNetworksList = view.findViewById(R.id.wifiNetworksList);
+        wifiSectionLayout = view.findViewById(R.id.wifiSectionLayout);
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         wifiManager = (WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -79,113 +90,46 @@ public class WirelessFragment extends Fragment {
         wifiAdapter = new ArrayAdapter<>(requireContext(), R.layout.devices_listitems, R.id.deviceName);
         wifiNetworksList.setAdapter(wifiAdapter);
 
-        if (!hasPermissions()) {
-            requestPermissions(getRequiredPermissions(), PERMISSION_REQUEST_CODE);
-        } else {
-            updateButtonStates();
-            scanBluetooth();
-            scanWifi();
-        }
+        if (!hasPermissions()) requestPermissions(getRequiredPermissions(), PERMISSION_REQUEST_CODE);
+        else initUI();
 
-        // Bluetooth toggle
+        return view;
+    }
+
+    private void initUI() {
+        updateButtonStates();
+        scanBluetooth();
+        scanWifi();
+
         bluetoothToggle.setOnClickListener(v -> {
             if (bluetoothAdapter == null) return;
             if (bluetoothAdapter.isEnabled()) showBluetoothOffDialog();
             else bluetoothAdapter.enable();
         });
 
-        // Wi-Fi toggle
         wifiToggle.setOnClickListener(v -> {
             if (wifiManager != null) {
-                boolean success = wifiManager.setWifiEnabled(!wifiManager.isWifiEnabled());
-                if (success) updateButtonStates();
+                boolean enabling = !wifiManager.isWifiEnabled();
+                wifiToggle.setBackgroundTintList(ColorStateList.valueOf(enabling ? customOnColor : customOffColor));
+                wifiStatus.setText(enabling ? "Turning ON..." : "Turning OFF...");
+                wifiManager.setWifiEnabled(enabling);
             }
         });
 
-        setupBluetoothReceiver();
-        setupWifiReceiver();
-
-        // Wi-Fi network click: connect
-        wifiNetworksList.setOnItemClickListener((parent, view1, position, id) -> {
+        wifiNetworksList.setOnItemClickListener((parent, view, position, id) -> {
             String ssid = wifiAdapter.getItem(position);
             if (ssid == null) return;
-
-            boolean isSecured = isWifiSecured(ssid);
-            if (isSecured) showWifiPasswordDialog(ssid);
+            boolean secured = isWifiSecured(ssid);
+            if (secured) showWifiPasswordDialog(ssid);
             else connectToWifi(ssid, null);
         });
 
-        return view;
+        // Setup receivers
+        btStateReceiver = new BluetoothReceiver(this);
+        wifiStateReceiver = new WifiReceiver(this);
     }
 
-    /*** Bluetooth Receiver ***/
-    private void setupBluetoothReceiver() {
-        btStateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) {
-                    updateButtonStates();
-                    if (bluetoothAdapter.isEnabled()) scanBluetooth();
-                }
-            }
-        };
-    }
-
-    /*** Wi-Fi Receiver ***/
-    private void setupWifiReceiver() {
-        wifiStateReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String action = intent.getAction();
-                if (action == null) return;
-
-                switch (action) {
-                    case WifiManager.WIFI_STATE_CHANGED_ACTION:
-                    case WifiManager.NETWORK_STATE_CHANGED_ACTION:
-                        updateButtonStates();
-                        if (wifiManager != null && wifiManager.isWifiEnabled()) scanWifi();
-                        break;
-                    case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
-                        List<ScanResult> results = wifiManager.getScanResults();
-                        wifiAdapter.clear();
-                        for (ScanResult result : results) {
-                            if (result.SSID != null && !result.SSID.isEmpty()) {
-                                wifiAdapter.add(result.SSID);
-                            }
-                        }
-                        break;
-                }
-            }
-        };
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (btStateReceiver != null) {
-            requireContext().registerReceiver(btStateReceiver,
-                    new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
-        }
-
-        if (wifiStateReceiver != null) {
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
-            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-            filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-            requireContext().registerReceiver(wifiStateReceiver, filter);
-        }
-
-        updateButtonStates();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (btStateReceiver != null) try { requireContext().unregisterReceiver(btStateReceiver); } catch (IllegalArgumentException ignored) {}
-        if (wifiStateReceiver != null) try { requireContext().unregisterReceiver(wifiStateReceiver); } catch (IllegalArgumentException ignored) {}
-    }
-
-    /*** Bluetooth OFF confirmation ***/
+    // --- Bluetooth Dialog ---
     private void showBluetoothOffDialog() {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.popupdialog, null);
@@ -204,52 +148,16 @@ public class WirelessFragment extends Fragment {
                 .setCancelable(false)
                 .create();
 
-        btnYes.setOnClickListener(v -> { bluetoothAdapter.disable(); dialog.dismiss(); });
+        btnYes.setOnClickListener(v -> {
+            bluetoothAdapter.disable();
+            dialog.dismiss();
+        });
         btnNo.setOnClickListener(v -> dialog.dismiss());
 
         if (isAdded()) dialog.show();
     }
 
-    /*** Update UI button states ***/
-    private void updateButtonStates() {
-        boolean btOn = bluetoothAdapter != null && bluetoothAdapter.isEnabled();
-        bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(btOn ? customOnColor : customOffColor));
-        bluetoothStatus.setText(btOn ? "Bluetooth: Enabled" : "Bluetooth OFF - Smart Key Feature Inactivated");
-
-        boolean wifiOn = wifiManager != null && wifiManager.isWifiEnabled();
-        wifiToggle.setBackgroundTintList(ColorStateList.valueOf(wifiOn ? customOnColor : customOffColor));
-
-        String connectedSSID = "Not connected";
-        if (wifiOn && wifiManager != null) {
-            WifiInfo info = wifiManager.getConnectionInfo();
-            if (info != null && info.getNetworkId() != -1) {
-                connectedSSID = info.getSSID();
-                if (connectedSSID.startsWith("\"") && connectedSSID.endsWith("\""))
-                    connectedSSID = connectedSSID.substring(1, connectedSSID.length() - 1);
-            }
-        }
-        wifiStatus.setText("Connected to : " + connectedSSID);
-    }
-
-    /*** Scan paired Bluetooth devices ***/
-    private void scanBluetooth() {
-        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-            btAdapter.clear();
-            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-            for (BluetoothDevice device : pairedDevices) {
-                String name = device.getName();
-                if (name == null || name.isEmpty()) name = "Unnamed Device";
-                btAdapter.add(name + " - " + device.getAddress());
-            }
-        }
-    }
-
-    /*** Trigger Wi-Fi scan ***/
-    private void scanWifi() {
-        if (wifiManager != null && wifiManager.isWifiEnabled()) wifiManager.startScan();
-    }
-
-    /*** Wi-Fi Security check ***/
+    // --- Wi-Fi helpers ---
     private boolean isWifiSecured(String ssid) {
         List<ScanResult> results = wifiManager.getScanResults();
         for (ScanResult result : results) {
@@ -261,19 +169,33 @@ public class WirelessFragment extends Fragment {
         return false;
     }
 
-    /*** Show password dialog ***/
     private void showWifiPasswordDialog(String ssid) {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
         View dialogView = inflater.inflate(R.layout.wifi_password_dialog, null);
-        TextView title = dialogView.findViewById(R.id.dialogTitle);
-        title.setText("Connect to " + ssid);
 
+        TextView title = dialogView.findViewById(R.id.dialogTitle);
         EditText passwordInput = dialogView.findViewById(R.id.passwordInput);
+        ImageView togglePassword = dialogView.findViewById(R.id.togglePassword);
         Button connectBtn = dialogView.findViewById(R.id.connectBtn);
 
-        // Auto-fill password if saved
-        String savedPwd = getSavedPassword(ssid);
-        if (savedPwd != null) passwordInput.setText(savedPwd);
+        title.setText("Connect to " + ssid);
+
+        final boolean[] isPasswordVisible = {false};
+
+        togglePassword.setOnClickListener(v -> {
+            if (isPasswordVisible[0]) {
+                // Hide Password
+                passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                togglePassword.setImageResource(R.drawable.ic_eye_closed);
+                isPasswordVisible[0] = false;
+            } else {
+                // Show Password
+                passwordInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                togglePassword.setImageResource(R.drawable.ic_eye_open);
+                isPasswordVisible[0] = true;
+            }
+            passwordInput.setSelection(passwordInput.getText().length());
+        });
 
         AlertDialog dialog = new AlertDialog.Builder(requireContext())
                 .setView(dialogView)
@@ -281,7 +203,7 @@ public class WirelessFragment extends Fragment {
                 .create();
 
         connectBtn.setOnClickListener(v -> {
-            String password = passwordInput.getText().toString();
+            String password = passwordInput.getText().toString().trim();
             if (!password.isEmpty()) {
                 connectToWifi(ssid, password);
                 dialog.dismiss();
@@ -293,21 +215,19 @@ public class WirelessFragment extends Fragment {
         dialog.show();
     }
 
-    /*** Connect to Wi-Fi using WifiNetworkSpecifier (Android 10+) with saved networks queue ***/
+
     private void connectToWifi(String ssid, String password) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (ssid == null || ssid.isEmpty()) return;
 
-            // Check for saved password if not provided
-            if ((password == null || password.isEmpty())) {
-                String savedPwd = getSavedPassword(ssid);
-                if (savedPwd != null) password = savedPwd;
-            }
-
-            // Save network to queue if password exists
             if (password != null && !password.isEmpty()) saveWifiNetwork(ssid, password);
 
-            WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder().setSsid(ssid);
-            if (password != null && !password.isEmpty()) builder.setWpa2Passphrase(password);
+            WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder()
+                    .setSsid(ssid);
+
+            if (password != null && !password.isEmpty())
+                builder.setWpa2Passphrase(password);
+
             WifiNetworkSpecifier specifier = builder.build();
 
             NetworkRequest request = new NetworkRequest.Builder()
@@ -316,39 +236,38 @@ public class WirelessFragment extends Fragment {
                     .build();
 
             ConnectivityManager cm = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
+            ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
                 @Override
-                public void onAvailable(@NonNull android.net.Network network) {
+                public void onAvailable(@NonNull Network network) {
                     super.onAvailable(network);
-                    Toast.makeText(requireContext(), "Connected to " + ssid, Toast.LENGTH_SHORT).show();
                     cm.bindProcessToNetwork(network);
+                    handler.post(() -> {
+                        Toast.makeText(requireContext(), "Connected to " + ssid, Toast.LENGTH_SHORT).show();
+                        updateButtonStates();
+                    });
                 }
 
                 @Override
                 public void onUnavailable() {
                     super.onUnavailable();
-                    Toast.makeText(requireContext(), "Failed to connect to " + ssid, Toast.LENGTH_SHORT).show();
+                    handler.post(() -> Toast.makeText(requireContext(), "Failed to connect to " + ssid, Toast.LENGTH_SHORT).show());
                 }
             };
 
-            Toast.makeText(requireContext(), "Connecting...", Toast.LENGTH_SHORT).show();
-            cm.requestNetwork(request, callback);
-
-            // Fast timeout check
-            new Handler().postDelayed(() -> {
-                WifiInfo info = wifiManager.getConnectionInfo();
-                String currentSSID = info != null ? info.getSSID() : "";
-                if (currentSSID == null || !currentSSID.equals("\"" + ssid + "\"")) {
-                    Toast.makeText(requireContext(), "Failed to connect. Check password.", Toast.LENGTH_SHORT).show();
-                }
-            }, 7000);
+            Toast.makeText(requireContext(), "Connecting to " + ssid, Toast.LENGTH_SHORT).show();
+            cm.requestNetwork(request, networkCallback);
 
         } else {
-            Toast.makeText(requireContext(), "Wi-Fi connect supported only on Android 10+", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Wi-Fi connection supported only on Android 10+", Toast.LENGTH_SHORT).show();
         }
     }
 
-    /*** Save Wi-Fi network into a max 3-entry queue ***/
+    private String getSavedPassword(String ssid) {
+        if (ssid == null) return null;
+        SharedPreferences prefs = requireContext().getSharedPreferences("wifi_prefs", Context.MODE_PRIVATE);
+        return prefs.getString("wifi_" + ssid, null);
+    }
+
     private void saveWifiNetwork(String ssid, String password) {
         if (ssid == null || password == null) return;
 
@@ -358,7 +277,7 @@ public class WirelessFragment extends Fragment {
         String queueStr = prefs.getString("wifi_queue", "");
         String[] queue = queueStr.isEmpty() ? new String[]{} : queueStr.split(",");
 
-        // Build new queue
+        // Keep max 3 entries
         String newQueueStr = ssid;
         int count = 1;
         for (String oldSSID : queue) {
@@ -373,13 +292,118 @@ public class WirelessFragment extends Fragment {
         editor.apply();
     }
 
-    /*** Get saved password for a Wi-Fi SSID ***/
-    private String getSavedPassword(String ssid) {
-        SharedPreferences prefs = requireContext().getSharedPreferences("wifi_prefs", Context.MODE_PRIVATE);
-        return prefs.getString("wifi_" + ssid, null);
+    // --- Lifecycle overrides ---
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (btStateReceiver != null)
+            requireContext().registerReceiver(btStateReceiver,
+                    new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+
+        if (wifiStateReceiver != null) {
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+            filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+            filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
+            requireContext().registerReceiver(wifiStateReceiver, filter);
+        }
+
+        updateButtonStates();
     }
 
-    /*** Permissions ***/
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (btStateReceiver != null) try { requireContext().unregisterReceiver(btStateReceiver); } catch (Exception ignored){}
+        if (wifiStateReceiver != null) try { requireContext().unregisterReceiver(wifiStateReceiver); } catch (Exception ignored){}
+
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    // --- UI Updates ---
+    private void updateButtonStates() {
+        boolean btOn = bluetoothAdapter != null && bluetoothAdapter.isEnabled();
+        bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(btOn ? customOnColor : customOffColor));
+        bluetoothStatus.setText(btOn ? "Bluetooth: Enabled" : "Bluetooth OFF - Smart Key Feature Inactivated");
+
+        boolean wifiOn = wifiManager != null && wifiManager.isWifiEnabled();
+        wifiToggle.setBackgroundTintList(ColorStateList.valueOf(wifiOn ? customOnColor : customOffColor));
+        if (wifiOn) {
+            wifiSectionLayout.setVisibility(View.VISIBLE);
+        } else {
+            wifiSectionLayout.setVisibility(View.GONE);
+        }
+        String connectedSSID = "Not connected";
+        if (wifiOn && wifiManager != null) {
+            WifiInfo info = wifiManager.getConnectionInfo();
+            if (info != null && info.getNetworkId() != -1) {
+                connectedSSID = info.getSSID();
+                if (connectedSSID.startsWith("\"") && connectedSSID.endsWith("\""))
+                    connectedSSID = connectedSSID.substring(1, connectedSSID.length() - 1);
+            }
+        }
+        wifiStatus.setText("Connected to : " + connectedSSID);
+    }
+
+    private void scanBluetooth() {
+        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+            btAdapter.clear();
+            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+            for (BluetoothDevice device : pairedDevices) {
+                String name = device.getName();
+                if (name == null || name.isEmpty()) name = "Unnamed Device";
+                btAdapter.add(name + " - " + device.getAddress());
+            }
+        }
+    }
+
+    private void scanWifi() {
+        if (wifiManager != null && wifiManager.isWifiEnabled()) wifiManager.startScan();
+    }
+
+    // --- Receivers ---
+    private static class BluetoothReceiver extends BroadcastReceiver {
+        private final WeakReference<WirelessFragment> fragmentRef;
+        BluetoothReceiver(WirelessFragment fragment) { fragmentRef = new WeakReference<>(fragment); }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            WirelessFragment fragment = fragmentRef.get();
+            if (fragment == null) return;
+            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) {
+                fragment.updateButtonStates();
+                if (fragment.bluetoothAdapter.isEnabled()) fragment.scanBluetooth();
+            }
+        }
+    }
+
+    private static class WifiReceiver extends BroadcastReceiver {
+        private final WeakReference<WirelessFragment> fragmentRef;
+        WifiReceiver(WirelessFragment fragment) { fragmentRef = new WeakReference<>(fragment); }
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            WirelessFragment fragment = fragmentRef.get();
+            if (fragment == null) return;
+            String action = intent.getAction();
+            if (action == null) return;
+            switch (action) {
+                case WifiManager.WIFI_STATE_CHANGED_ACTION:
+                case WifiManager.NETWORK_STATE_CHANGED_ACTION:
+                    fragment.updateButtonStates();
+                    if (fragment.wifiManager != null && fragment.wifiManager.isWifiEnabled()) fragment.scanWifi();
+                    break;
+                case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
+                    List<ScanResult> results = fragment.wifiManager.getScanResults();
+                    fragment.wifiAdapter.clear();
+                    for (ScanResult result : results) {
+                        if (result.SSID != null && !result.SSID.isEmpty())
+                            fragment.wifiAdapter.add(result.SSID);
+                    }
+                    break;
+            }
+        }
+    }
+
+    // --- Permissions ---
     private String[] getRequiredPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return new String[]{
@@ -414,13 +438,8 @@ public class WirelessFragment extends Fragment {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             boolean allGranted = true;
             for (int result : grantResults) if (result != PackageManager.PERMISSION_GRANTED) allGranted = false;
-            if (allGranted) {
-                updateButtonStates();
-                scanBluetooth();
-                scanWifi();
-            } else {
-                Toast.makeText(requireContext(), "Permissions are required", Toast.LENGTH_LONG).show();
-            }
+            if (allGranted) initUI();
+            else Toast.makeText(requireContext(), "Permissions are required", Toast.LENGTH_LONG).show();
         }
     }
 }

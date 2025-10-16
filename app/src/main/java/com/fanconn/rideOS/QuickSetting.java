@@ -6,8 +6,10 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -52,11 +54,49 @@ public class QuickSetting extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
     private final Handler handler = new Handler(Looper.getMainLooper());
     ImageButton tpmsBtn,allSetbtn;
-
     private static final int REQUEST_BLUETOOTH_CONNECT = 1001;
-
     private Button lteToggle;
     private TextView lteStatusText;
+    private Button wifiToggle;
+    private TextView wifiStatusText;
+
+    private final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+
+            if (wifiManager == null) return;
+
+            String action = intent.getAction();
+            if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(action) ||
+                    WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action) ||
+                    WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
+                // Update UI on any Wi-Fi state or network change
+                updateWifiUI(
+                        wifiManager,
+                        findViewById(R.id.wifiToggle),
+                        findViewById(R.id.wifiStatusText)
+                );
+            }
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+        filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
+        registerReceiver(wifiReceiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(wifiReceiver);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,15 +158,29 @@ public class QuickSetting extends AppCompatActivity {
         brightnessManager.applyToVolumeSlider(volumeSlider, muteButton);
 
         // WiFi
-        Button wifiToggle = findViewById(R.id.wifiToggle);
-        TextView wifiStatusText = findViewById(R.id.wifiStatusText);
+        wifiToggle = findViewById(R.id.wifiToggle);
+        wifiStatusText = findViewById(R.id.wifiStatusText);
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        updateWifiUI(wifiManager, wifiToggle, wifiStatusText);
+//        updateWifiUI(wifiManager, wifiToggle, wifiStatusText);
         wifiToggle.setOnClickListener(v -> {
-            boolean enabled = wifiManager.isWifiEnabled();
-            wifiManager.setWifiEnabled(!enabled);
-            handler.postDelayed(() -> updateWifiUI(wifiManager, wifiToggle, wifiStatusText), 1500);
+            boolean currentlyEnabled = wifiManager.isWifiEnabled();
+
+            int customOnColor = Color.parseColor("#1C78BE");
+            int customOffColor = Color.parseColor("#555555");
+
+            // Instant UI update
+            if (!currentlyEnabled) {
+                wifiToggle.setBackgroundTintList(ColorStateList.valueOf(customOnColor));
+                wifiStatusText.setText("Turning ON...");
+            } else {
+                wifiToggle.setBackgroundTintList(ColorStateList.valueOf(customOffColor));
+                wifiStatusText.setText("Turning OFF...");
+            }
+
+            // Toggle Wi-Fi
+            wifiManager.setWifiEnabled(!currentlyEnabled);
         });
+
 
         // Bluetooth
         bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
@@ -186,12 +240,14 @@ public class QuickSetting extends AppCompatActivity {
     private void updateWifiUI(WifiManager wifiManager, Button button, TextView statusText) {
         int customOnColor = Color.parseColor("#1C78BE");
         int customOffColor = Color.parseColor("#555555");
+
         if (wifiManager.isWifiEnabled()) {
             button.setBackgroundTintList(ColorStateList.valueOf(customOnColor));
+
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            String ssid = wifiInfo.getSSID();
-            if (ssid != null && !ssid.equals("<unknown ssid>") && wifiInfo.getNetworkId() != -1) {
-                statusText.setText(ssid.replace("\"", ""));
+            if (wifiInfo != null && wifiInfo.getNetworkId() != -1 && wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
+                String ssid = wifiInfo.getSSID();
+                statusText.setText(ssid != null ? ssid.replace("\"", "") : "Connected");
             } else {
                 statusText.setText("Not connected");
             }
@@ -200,6 +256,7 @@ public class QuickSetting extends AppCompatActivity {
             statusText.setText("");
         }
     }
+
 
     // ---- Bluetooth ----
     private void updateBluetoothUI(Button button, TextView statusText) {
