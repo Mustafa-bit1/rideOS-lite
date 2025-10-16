@@ -111,7 +111,6 @@
         android:backgroundTint="#B10505"
         android:text="Switch to APU"
         android:foreground="@drawable/btn_click_effect"
-
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

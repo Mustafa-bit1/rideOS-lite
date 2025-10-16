@@ -37,7 +37,7 @@ public class GestureHelper {
                         //Log.d("GestureHelper", "Swipe ↓ from top edge → QuickSettings");
                         Intent intent = new Intent(activity, QuickSetting.class);
                         activity.startActivity(intent);
-                        activity.overridePendingTransition(0, 0);
+                        activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
                         return true;
                     }
 
@@ -48,7 +48,7 @@ public class GestureHelper {
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         activity.startActivity(intent);
                         activity.finish();
-                        activity.overridePendingTransition(0, 0);
+                        activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
                         return true;
                     }
 

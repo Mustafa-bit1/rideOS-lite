@@ -51,4 +51,37 @@
         <item name="android:textSize">20dp</item>
     </style>
 
+    <!-- Slide Animation Theme for Activity -->
+    <style name="TransparentSlideTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/SlideAnimationStyle</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="TransparentSlideThemeforOthers" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="textAllCaps">false</item>   <!-- Works with AppCompat -->
+    </style>
+
+
+    <!-- Actual Animation Definition -->
+    <style name="SlideAnimationStyle">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_down</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_up</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_down</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_up</item>
+    </style>
+
+<!--    <style name="TransparentSlideThemeforOthers" parent="Theme.AppCompat.Light.NoActionBar">-->
+<!--        <item name="android:windowIsTranslucent">true</item>-->
+<!--        <item name="android:windowBackground">@android:color/transparent</item>-->
+<!--        <item name="android:windowAnimationStyle">@null</item>  &lt;!&ndash; 🔥 No animation &ndash;&gt;-->
+<!--        <item name="android:textAllCaps">false</item>  &lt;!&ndash; Extra safety &ndash;&gt;-->
+
+<!--    </style>-->
+
+
 </resources>

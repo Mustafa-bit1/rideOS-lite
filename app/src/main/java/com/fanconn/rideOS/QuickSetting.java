@@ -309,8 +309,9 @@ public class QuickSetting extends AppCompatActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, 0);
+        overridePendingTransition(0, R.anim.slide_out_up);
     }
+
 
     @Override
     public void onBackPressed() {
@@ -360,5 +361,7 @@ public class QuickSetting extends AppCompatActivity {
 
         return dialog;
     }
+
+
 
 }

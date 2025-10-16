@@ -1,4 +1,4 @@
-package com.fanconn.rideOS;
+package com.fanconn.rideOS.menu;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +18,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.fanconn.rideOS.Heartbeat3;
+import com.fanconn.rideOS.R;
+import com.fanconn.rideOS.SerialPortManager;
 
 public class BatteryFragment extends Fragment {
 

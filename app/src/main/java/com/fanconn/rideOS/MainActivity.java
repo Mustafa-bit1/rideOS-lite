@@ -2103,8 +2103,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private void openQuickSettings() {
         Intent intent = new Intent(MainActivity.this, QuickSetting.class);
         startActivity(intent);
-        // Remove any animation
-        overridePendingTransition(0, 0);
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 
 

@@ -11,7 +11,7 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.fanconn.rideOS.BatteryFragment;
+import com.fanconn.rideOS.menu.BatteryFragment;
 import com.fanconn.rideOS.GestureHelper;
 import com.fanconn.rideOS.R;
 

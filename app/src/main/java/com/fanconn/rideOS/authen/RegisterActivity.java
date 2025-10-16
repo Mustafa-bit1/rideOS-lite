@@ -75,6 +75,7 @@ public class RegisterActivity extends AppCompatActivity {
         setPatternListeners();
         setButtonListeners();
         security();
+        setupSecurityResetOnFocus();
 
         disableSoftKeyboard(etPin, etPinConfirm, etAge);
         setupFocusListeners();
@@ -196,9 +197,73 @@ public class RegisterActivity extends AppCompatActivity {
             showCustomToasterror("Error initializing secure storage");
         }
     }
+    private void setupSecurityResetOnFocus() {
+        View.OnFocusChangeListener hideSecurityListener = (v, hasFocus) -> {
+            if (hasFocus) {
+                // Hide security section when user focuses on name or age
+                patternView.setVisibility(View.GONE);
+                patternViewConfirm.setVisibility(View.GONE);
+                etPin.setVisibility(View.GONE);
+                etPinConfirm.setVisibility(View.GONE);
+                tvEnterPin.setVisibility(View.GONE);
+                tvConfirmPin.setVisibility(View.GONE);
+                TVconfirmpat.setVisibility(View.GONE);
+                TVdrawpat.setVisibility(View.GONE);
+                findViewById(R.id.customKeypad).setVisibility(View.GONE);
+                resetPatterns();
+            }
+        };
+
+        etUsername.setOnFocusChangeListener(hideSecurityListener);
+        etAge.setOnFocusChangeListener(hideSecurityListener);
+    }
 
     public void security() {
         securitybtn.setOnClickListener(v -> {
+
+            String ageText = etAge.getText().toString().trim();
+            String newUsername = etUsername.getText().toString().trim();
+
+            // 1️⃣ Check if all details entered
+            if (ageText.isEmpty() || newUsername.isEmpty()) {
+                showCustomToasterror("Please enter all details");
+                playErrorSound();
+                return;
+            }
+
+            // 2️⃣ Check valid age
+            try {
+                int ageValue = Integer.parseInt(ageText);
+                if (ageValue < 18) {
+                    showCustomToasterror("Invalid rider age, must be 18 or above");
+                    playErrorSound();
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                showCustomToasterror("Enter a valid age");
+                playErrorSound();
+                return;
+            }
+
+            // 3️⃣ Check if username already exists (ignore case)
+            boolean exists = false;
+            for (String key : sharedPreferences.getAll().keySet()) {
+                if (key.startsWith("user_") && key.endsWith("_age")) { // iterate all users
+                    String existingName = key.substring(5, key.length() - 4); // remove prefix/suffix
+                    if (existingName.equalsIgnoreCase(newUsername)) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+
+            if (exists) {
+                showCustomToasterror("Rider name already exists");
+                playErrorSound();
+                return;
+            }
+
+            // 4️⃣ If all valid → proceed to security setup
             patternView.setVisibility(View.GONE);
             patternViewConfirm.setVisibility(View.GONE);
             etPin.setVisibility(View.VISIBLE);
@@ -212,6 +277,8 @@ public class RegisterActivity extends AppCompatActivity {
             etPin.requestFocus();
         });
     }
+
+
 
     private void setPatternListeners() {
         patternView.setOnPatternCompleteListener(pattern -> {
