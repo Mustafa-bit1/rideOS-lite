@@ -154,6 +154,9 @@ public class UIUpdater  {
 
 
         this.tm = TelemetryDataManager.getInstance();
+        long now = System.currentTimeMillis();
+        lastCanUpdateTime = now;
+
         startCanTimeoutChecker();
         registerTpmsReceiver(ctx);
     }
@@ -437,6 +440,9 @@ public class UIUpdater  {
             case "18904001":
                 updateCanData18904001(hb3);
                 break;
+            case "18914001":
+                updateCanData18914001(hb3);
+                break;
             case "18904002":
                 updateCanData18904002(hb3);
                 break;
@@ -492,7 +498,7 @@ public class UIUpdater  {
     private int lowBatteryAlertCount = 0;
     private static final int MAX_LOW_BATTERY_ALERTS = 3;
     private static boolean  Lowbatflag,todefultflag,atSOC10Lowbatflag,atSOC7Lowbatflag = false;
-    private static boolean apuflag=false;
+    public static boolean apuflag=false;
     private  boolean StopInactivtyTimerDuringPopUp=true;
     public static boolean isAPUPresent=false;
     private static int UniversalAPUbatteryLevel;
@@ -621,13 +627,38 @@ public class UIUpdater  {
         //int batteryImageResId = getBatteryImageResource(batteryLevel);
         //binding.batteryIV.setImageResource(batteryImageResId);
     }
+
+    public void updateCanData18914001(Heartbeat3 hb3) {
+        tm.setteleIndividualCellVoltages(hb3.getIndiCellVol());
+    }
+
     private chargingUI chargingUI;
     public void setChargingUI(chargingUI chargingUI) {
         this.chargingUI = chargingUI;
     }
+    private boolean isApuConnected = false;
+    private long lastApuFrameTime = 0;
 
+    private static final long APU_TIMEOUT_MS = 20000; // 20 seconds of silence = disconnected
+
+    // Use a single Handler for UI thread safe timing
+    private final Handler apuHandler = new Handler(Looper.getMainLooper());
+    private boolean apuWatcherRunning = false;
     public void updateCanData18904002(Heartbeat3 hb3) {
 
+        lastApuFrameTime = System.currentTimeMillis();
+
+        // Detect APU connection transition
+        if (!isApuConnected && !apuflag) {
+            isApuConnected = true;
+            Log.d("APU", "APU Connected");
+            showCustomPopupAPUdetected("Assistance", "APU detected. Do you want to switch to APU?");
+        }
+
+        // Ensure the disconnect watcher is running only once
+        if (!apuWatcherRunning) {
+            startApuDisconnectWatcher();
+        }
         isAPUPresent=true;
         // 更新电池电量
         int APUbatteryLevel= hb3.getAPUBatteryLevel() / 10;
@@ -637,11 +668,14 @@ public class UIUpdater  {
 //        int range= (int) Math.floor(APUbatteryLevel * 2.8);  // Get the whole number part
         if(APUbatteryLevel>=0 && APUbatteryLevel<=100){
             tm.setTeleAPUSOC(APUbatteryLevel);
-            binding.APUbatteryTV.setText("APU "+sAPUBatteryLevel + "% ");}//  |  ~ "+range+" km");}
+            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            binding.apubaticon.setVisibility(View.VISIBLE);
+            binding.APUbatteryImageView.setVisibility(View.VISIBLE);
+            binding.APUbatteryTV.setText("APU "+sAPUBatteryLevel + "% ");
+        }//  |  ~ "+range+" km");}
 
         int batteryImageResId = getBatteryImageResource(APUbatteryLevel);
         binding.apubaticon.setImageResource(batteryImageResId);
-
 
 
         if (APUbatteryLevel >= 20) {
@@ -665,6 +699,60 @@ public class UIUpdater  {
         //int batteryImageResId = getBatteryImageResource(batteryLevel);
         //binding.batteryIV.setImageResource(batteryImageResId);
     }
+
+    private void startApuDisconnectWatcher() {
+        apuWatcherRunning = true;
+
+        apuHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                long now = System.currentTimeMillis();
+
+                // Check if APU is disconnected
+                if (isApuConnected && (now - lastApuFrameTime > APU_TIMEOUT_MS)) {
+                    isApuConnected = false;
+                    Log.d("APU", "APU Disconnected");
+
+                    binding.APUbatteryTV.setVisibility(View.INVISIBLE);
+                    binding.apubaticon.setVisibility(View.INVISIBLE);
+                    binding.APUbatteryImageView.setVisibility(View.INVISIBLE);
+                    isAPUPresent = false;
+
+                    if(serialPortManager!=null){
+                        serialPortManager.getHb3().setApuChargeMosState(0);
+                        serialPortManager.getHb3().setApuDisChargeMosState(0);
+
+
+                        //NTC VALUES
+                        serialPortManager.getHb3().setNTC5(0);
+                        serialPortManager.getHb3().setNTC6(0);
+                        serialPortManager.getHb3().setNTC7(0);
+                        serialPortManager.getHb3().setNTC8(0);
+
+
+
+                        serialPortManager.getHb3().setAPUbatvoltage(0); //voltage
+                        serialPortManager.getHb3().setAPURealCurrent(0);//Real Time Current
+                        serialPortManager.getHb3().setAPUBatteryLevel(0); //APUSOC
+                    }
+
+                    // 🔹 Dismiss popup if showing
+                    if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+                        apuPopupDialog.dismiss();
+                        apuPopupDialog = null;
+                        Log.d("APU", "Popup dismissed on disconnect");
+                    }
+                }
+
+                // Continue checking
+                if (apuWatcherRunning) {
+                    apuHandler.postDelayed(this, 1000);
+                }
+            }
+        }, 1000);
+    }
+
+
     private boolean AlreadyInChargingUI = false;
 
     public void updateCanData14028001(Heartbeat3 hb3) {
@@ -1471,7 +1559,6 @@ public class UIUpdater  {
         binding.timeTextView.setVisibility(View.VISIBLE);
         binding.BluetoothIV.setVisibility(View.VISIBLE);
         binding.batteryImageView.setVisibility(View.VISIBLE);
-        binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         binding.picklocationIV.setVisibility(View.VISIBLE);//visible
         binding.speedImageView.setVisibility(View.INVISIBLE);
         binding.speedNumberTV.setVisibility(View.INVISIBLE);
@@ -1495,8 +1582,11 @@ public class UIUpdater  {
         binding.chargingicon.setVisibility(View.INVISIBLE);
 //        binding.brk.setVisibility(View.INVISIBLE);
 //        binding.startButton.setVisibility(View.INVISIBLE);
-        binding.apubaticon.setVisibility(View.VISIBLE);
-        binding.APUbatteryTV.setVisibility(View.VISIBLE);
+        if(isAPUPresent){
+            binding.apubaticon.setVisibility(View.VISIBLE);
+            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            binding.APUbatteryImageView.setVisibility(View.VISIBLE);
+        }
         binding.removestand.setVisibility(View.INVISIBLE);
 //        binding.chargingicononmainactivty.setVisibility(View.VISIBLE);
     }
@@ -1528,7 +1618,6 @@ public class UIUpdater  {
         binding.timeTextView.setVisibility(View.VISIBLE);
         binding. BluetoothIV.setVisibility(View.VISIBLE);
         binding.batteryImageView.setVisibility(View.VISIBLE);
-        binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         if(!shouldshowchargingicononmainonot){
             binding.rectangleGearsTV.setVisibility((View.VISIBLE));
         }
@@ -1546,8 +1635,11 @@ public class UIUpdater  {
         binding.mapbtn.setVisibility(View.VISIBLE);
         binding.menubtn.setVisibility(View.VISIBLE);
         binding.chargingicon.setVisibility(View.INVISIBLE);
-        binding.apubaticon.setVisibility(View.VISIBLE);
-        binding.APUbatteryTV.setVisibility(View.VISIBLE);
+        if(isAPUPresent){
+            binding.apubaticon.setVisibility(View.VISIBLE);
+            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            binding.APUbatteryImageView.setVisibility(View.VISIBLE);
+        }
         binding.turnLeftIV.setVisibility(View.VISIBLE);
         binding.turnRightIV.setVisibility(View.VISIBLE);
 //        binding.highBeamIVoff.setVisibility(View.VISIBLE);
@@ -1638,7 +1730,6 @@ public class UIUpdater  {
         binding.timeTextView.setVisibility(View.VISIBLE);
         binding.BluetoothIV.setVisibility(View.VISIBLE);
         binding.batteryImageView.setVisibility(View.VISIBLE);
-        binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         binding.brk.setVisibility(View.INVISIBLE);
 
         binding.reverseui.setVisibility(View.INVISIBLE);
@@ -1673,8 +1764,11 @@ public class UIUpdater  {
 //        binding.turnLeftIV.setVisibility(View.INVISIBLE);
 //        binding.turnRightIV.setVisibility(View.INVISIBLE);
         binding.rectangleGearsTV.setVisibility(View.INVISIBLE);
-        binding.apubaticon.setVisibility(View.VISIBLE);
-        binding.APUbatteryTV.setVisibility(View.VISIBLE);
+        if(isAPUPresent){
+            binding.apubaticon.setVisibility(View.VISIBLE);
+            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            binding.APUbatteryImageView.setVisibility(View.VISIBLE);
+        }
     }
 
     // --- Fields ---
@@ -2187,7 +2281,7 @@ public class UIUpdater  {
             StopInactivtyTimerDuringPopUp=true;
             batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
             switcher.startSwitchingToAPU();
-            apuflag=true;
+//            apuflag=true;
 //            BatPackSwitcher.startSwitchingToAPU();
             alertDialog.dismiss();
         });
@@ -2202,6 +2296,57 @@ public class UIUpdater  {
 
         alertDialog.show();
     }
+
+    private AlertDialog apuPopupDialog = null; // Keep track of popup
+
+    public void showCustomPopupAPUdetected(String title, String message) {
+        // Prevent multiple popups if one is already visible
+        if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+            return;
+        }
+
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View dialogView = inflater.inflate(R.layout.popupdialog, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(dialogView);
+        apuPopupDialog = builder.create();
+        apuPopupDialog.setCancelable(false);
+
+        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
+        dialogTitle.setText(title);
+        dialogMessage.setText(message);
+
+        Button btnYes = dialogView.findViewById(R.id.btnYes);
+        Button btnNo = dialogView.findViewById(R.id.btnNo);
+
+        btnYes.setOnClickListener(v -> {
+            StopInactivtyTimerDuringPopUp = true;
+            batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
+            switcher.startSwitchingToAPU();
+//            apuflag = true;
+
+
+
+            if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+                apuPopupDialog.dismiss();
+                apuPopupDialog = null;
+            }
+        });
+
+        btnNo.setOnClickListener(v -> {
+            StopInactivtyTimerDuringPopUp = true;
+            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
+
+            if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+                apuPopupDialog.dismiss();
+                apuPopupDialog = null;
+            }
+        });
+        apuPopupDialog.show();
+    }
+
 
     public void showCustomPopupatSOC7(String title, String message) {
         // Inflate the custom layout
@@ -2726,8 +2871,19 @@ public class UIUpdater  {
             modeChangePlayer.release();
             modeChangePlayer = null;
         }
-        serialPortManager = null;
 
+        stopApuWatcher();
+
+    }
+    private void stopApuWatcher() {
+        apuWatcherRunning = false;
+        apuHandler.removeCallbacksAndMessages(null);
+
+        // Dismiss popup if activity closes
+        if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+            apuPopupDialog.dismiss();
+            apuPopupDialog = null;
+        }
     }
     private boolean frontWarning = false;
     private boolean rearWarning = false;

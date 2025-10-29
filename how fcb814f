@@ -1,0 +1,30 @@
+[33mfcb814f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: reset: moving to fcb814fe0c103ff33d9e475f2624ceebacff9c3a
+[33mfcb814f[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: commit: Added APU detected Logic AND Individual cell voltages
+[33me2104c0[m HEAD@{2}: commit: Improve wifi button response AND Enter p/w response to connect
+[33mc44df32[m HEAD@{3}: commit: Added feature of not allowing age<18 rider and same name rider
+[33m9c08e75[m HEAD@{4}: commit: Added battery fragment AND OTA Update popup on OSfragment completed
+[33mb955c6e[m HEAD@{5}: commit: Stagging in batch added AND uptime counter added
+[33m7d53515[m HEAD@{6}: commit: Uptime feature added AND battery fragment working still
+[33m2e2f53c[m HEAD@{7}: commit: Menu tabs split into menu and settings
+[33ma0eb5ba[m HEAD@{8}: commit: Ignores the rider and sets alwasy the torue value and phase valuee and regen value
+[33mfcf22b7[m HEAD@{9}: commit: Manual ota update button added
+[33mc83bb23[m HEAD@{10}: rebase (finish): returning to refs/heads/main
+[33mc83bb23[m HEAD@{11}: rebase (continue): Touch disabled while riding
+[33m6ee4c3e[m HEAD@{12}: pull --rebase origin main (pick): controller abruptly OFF timer logic updated AND all sounds stop when in LOGINACTIVITY (pause of Mainactivty)
+[33m08922b7[m HEAD@{13}: pull --rebase origin main (pick): stand sound and reverse sounds stop in resume of mainActivity< MainIsActive flag aslo changed
+[33m521afed[m HEAD@{14}: pull --rebase origin main (pick): wireless page allows to connect any wifinetwork by entering password AND low SOC yellowalert goes when SOC>22
+[33mcec047a[m HEAD@{15}: pull --rebase origin main (pick): In WirelessFragment >POPUP to Bluetooth AND wifi status in realtime
+[33m674b5d2[m HEAD@{16}: pull --rebase origin main (pick): customPopup added for ota update message
+[33m15be3ef[m HEAD@{17}: pull --rebase origin main (pick): In Quick setting LTE btn feature added AND popup before tuning bluetooth OFF added
+[33m8849c42[m HEAD@{18}: pull --rebase origin main (pick): TPMS feature added,UI+telemetry
+[33m657a7d8[m HEAD@{19}: pull --rebase origin main (start): checkout 657a7d8e22de6f851954a3848523eb7c55405cd4
+[33m1c29602[m HEAD@{20}: commit: Touch disabled while riding
+[33m85e5a23[m HEAD@{21}: commit: controller abruptly OFF timer logic updated AND all sounds stop when in LOGINACTIVITY (pause of Mainactivty)
+[33md7a0837[m HEAD@{22}: commit: stand sound and reverse sounds stop in resume of mainActivity< MainIsActive flag aslo changed
+[33m2467864[m HEAD@{23}: commit: wireless page allows to connect any wifinetwork by entering password AND low SOC yellowalert goes when SOC>22
+[33m2aa15a9[m HEAD@{24}: commit: In WirelessFragment >POPUP to Bluetooth AND wifi status in realtime
+[33m5b9daca[m HEAD@{25}: commit: customPopup added for ota update message
+[33m3fe7008[m HEAD@{26}: commit: In Quick setting LTE btn feature added AND popup before tuning bluetooth OFF added
+[33me205f6b[m HEAD@{27}: commit: TPMS feature added,UI+telemetry
+[33m8ef21cd[m HEAD@{28}: Branch: renamed refs/heads/master to refs/heads/main
+[33m8ef21cd[m HEAD@{30}: commit (initial): Initial commit

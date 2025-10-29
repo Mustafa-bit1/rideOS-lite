@@ -11,9 +11,10 @@ public class batteryPackSwitcher {
     private final SerialPortManager serialPortManager;
     private final Handler handler;
     private final int MAX_RETRIES = 20;
-    private final int MAX_RETRIES2 = 5;
+    private final int MAX_RETRIES2 = 10;
     private int retryCount1 = 0;
     private int retryCount2 = 0;
+    private int retryCount3 = 0;
     private boolean isSequenceActive = false;
     private TextView statusTextView; // remove final
 
@@ -67,20 +68,37 @@ public class batteryPackSwitcher {
                 // Check again if main charge is really off
                 boolean mainChargeStillOn = (hb3 != null && hb3.getMainChargeMosState() != 0);
                 //Log.d("CommandSequence", "This-B------------"+hb3.getMainChargeMosState());
-
-                if (mainChargeStillOn) {
-                    retryCount1 = 0;
-                    doMainchargeOffAgain();
-                } else {
-                    updateStatusText("Successfully Switched To APU");
-                    Log.i("CommandSequence", "Switched TO APU succeeded");
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        if (statusTextView != null) {
-                            statusTextView.setVisibility(View.INVISIBLE);
-                        }
-                    }, 3000);
-                    isSequenceActive = false;
+                updateStatusText("Successfully Switched To APU");
+                UIUpdater.apuflag=true;
+                if(serialPortManager!=null){
+                    serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000"), 1000);
+                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+                            serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2000);
                 }
+
+                Log.i("CommandSequence", "Switched TO APU succeeded");
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if (statusTextView != null) {
+                        statusTextView.setVisibility(View.INVISIBLE);
+                    }
+                }, 3000);
+                isSequenceActive = false;
+
+//                if (mainChargeStillOn) {
+//                    retryCount1 = 0;
+//                    doMainchargeOffAgain();
+//                } else {
+//                    updateStatusText("Successfully Switched To APU");
+//                    Log.i("CommandSequence", "Switched TO APU succeeded");
+//                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//                        if (statusTextView != null) {
+//                            statusTextView.setVisibility(View.INVISIBLE);
+//                        }
+//                    }, 3000);
+//                    isSequenceActive = false;
+//                }
             } else {
                 Log.e("CommandSequence", "APU Dis ON failed after max retries");
                 isSequenceActive = false;
@@ -90,6 +108,44 @@ public class batteryPackSwitcher {
         }, 800);
     }
 
+    private void apuChargeON() {
+        if (!isSequenceActive) return;
+
+        serialPortManager.VCUSendToMCU("FFAA5501030015162A02800101020304050607");
+        //Log.d("CommandSequence", "APU Dis On cmd sent");
+
+        handler.postDelayed(() -> {
+            Heartbeat3 hb3 = serialPortManager.getHb3(); // ✅ Fetch fresh state now
+            if (hb3 != null) {
+                //Log.d("CommandSequence", "APU DIs MosState " + hb3.getApuDisChargeMosState());
+            }
+
+            boolean commandSuccess = (hb3 != null && hb3.getApuChargeMosState() == 1);
+
+            if (!commandSuccess && retryCount3 < MAX_RETRIES) {
+                retryCount3++;
+//                Log.d("CommandSequence", "Retrying command 1, attempt " + retryCount2);
+                apuChargeON();
+            } else if (commandSuccess) {
+                // Check again if main charge is really off
+                boolean mainChargeStillOn = (hb3 != null && hb3.getMainChargeMosState() != 0);
+                //Log.d("CommandSequence", "This-B------------"+hb3.getMainChargeMosState());
+                apuDisON();
+
+//                if (mainChargeStillOn) {
+//                    retryCount1 = 0;
+//                    doMainchargeOffAgain();
+//                } else {
+//                    isSequenceActive = false;
+//                }
+            } else {
+                Log.e("CommandSequence", "APU Dis ON failed after max retries");
+                isSequenceActive = false;
+                if(statusTextView!=null){
+                    statusTextView.setVisibility(View.INVISIBLE);}
+            }
+        }, 800);
+    }
 
     private void mainChargeOFF() {
         if (!isSequenceActive) return;
@@ -112,12 +168,18 @@ public class batteryPackSwitcher {
             } else if (commandSuccess) {
                 //Log.i("APU", "CMD1 Success");
                 //Log.d("CommandSequence", "This-D------------"+hb3.getMainChargeMosState());
-                apuDisON(); // proceed to APU Dis ON
+                apuChargeON(); // proceed to APU chr ON
             } else {
                 //Log.e("CommandSequence", "Command 2 failed after max retries");
-                apuDisON(); // proceed anyway with backup check
+                //apuDisON(); // proceed anyway with backup check
                 //Log.d("CommandSequence", "This-A------------"+hb3.getMainChargeMosState());
-
+                updateStatusText("Switching failed, Main charge still ON");
+                //Log.i("CommandSequence", "Final Main Charge OFF confirmed");
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if (statusTextView != null) {
+                        statusTextView.setVisibility(View.INVISIBLE);
+                    }
+                }, 5000);
             }
         }, 800);
     }

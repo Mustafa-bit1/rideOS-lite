@@ -448,7 +448,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Scrollable Battery Details for AUX -->
+    <!-- Scrollable Battery Details for APU -->
     <ScrollView
         android:id="@+id/auxBatteryScroll"
         android:layout_width="match_parent"

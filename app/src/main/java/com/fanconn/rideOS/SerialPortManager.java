@@ -473,6 +473,9 @@ public class SerialPortManager {
             case "18904001"://MAIN SOC
                 CanDataParser.parseCanData18904001(hb3, hb3.getCanData());
                 break;
+            case "18914001"://MAIN SOC
+                CanDataParser.parseCanData18914001(hb3, hb3.getCanData());
+                break;
             case "18904002"://APU SOC
                 CanDataParser.parseCanData18904002(hb3, hb3.getCanData());
                 break;

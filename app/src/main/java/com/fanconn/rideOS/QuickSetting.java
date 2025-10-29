@@ -183,49 +183,49 @@ public class QuickSetting extends AppCompatActivity {
 
 
         // Bluetooth
-        bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-        Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);
-        TextView bluetoothStatusText = findViewById(R.id.bluetoothStatusText);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_CONNECT);
-        } else {
-            updateBluetoothUI(bluetoothToggle, bluetoothStatusText);
-        }
-
-        bluetoothToggle.setOnClickListener(v -> {
-            if (bluetoothAdapter == null) {
-                bluetoothStatusText.setText("Not supported");
-                return;
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                    ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (bluetoothAdapter.isEnabled()) {
-                // Show warning dialog before turning off
-                createDialog(
-                        "Warning",
-                        "RIVOT smart key feature and tire pressure monitoring system may not work,  Are you sure you want to turn OFF the Bluetooth?",
-                        "Turn Off",
-                        () -> {
-                            bluetoothAdapter.disable();
-                            bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
-                            bluetoothStatusText.setText("");
-                        }
-                ).show();
-            } else {
-                bluetoothAdapter.enable();
-                bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
-                bluetoothStatusText.setText("Turning on...");
-                handler.postDelayed(() -> updateBluetoothUI(bluetoothToggle, bluetoothStatusText), 3000);
-            }
-        });
+//        bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+//        Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);
+//        TextView bluetoothStatusText = findViewById(R.id.bluetoothStatusText);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+//                ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this,
+//                    new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_CONNECT);
+//        } else {
+//            updateBluetoothUI(bluetoothToggle, bluetoothStatusText);
+//        }
+//
+//        bluetoothToggle.setOnClickListener(v -> {
+//            if (bluetoothAdapter == null) {
+//                bluetoothStatusText.setText("Not supported");
+//                return;
+//            }
+//
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+//                    ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
+//                return;
+//            }
+//
+//            if (bluetoothAdapter.isEnabled()) {
+//                // Show warning dialog before turning off
+//                createDialog(
+//                        "Warning",
+//                        "RIVOT smart key feature and tire pressure monitoring system may not work,  Are you sure you want to turn OFF the Bluetooth?",
+//                        "Turn Off",
+//                        () -> {
+//                            bluetoothAdapter.disable();
+//                            bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
+//                            bluetoothStatusText.setText("");
+//                        }
+//                ).show();
+//            } else {
+//                bluetoothAdapter.enable();
+//                bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
+//                bluetoothStatusText.setText("Turning on...");
+//                handler.postDelayed(() -> updateBluetoothUI(bluetoothToggle, bluetoothStatusText), 3000);
+//            }
+//        });
 
 
         // LTE / Mobile Data
@@ -259,32 +259,32 @@ public class QuickSetting extends AppCompatActivity {
 
 
     // ---- Bluetooth ----
-    private void updateBluetoothUI(Button button, TextView statusText) {
-        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
-            String deviceName = getConnectedBluetoothDeviceName();
-            statusText.setText(deviceName.isEmpty() ? "Not connected" : deviceName);
-        } else {
-            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
-            statusText.setText("");
-        }
-    }
-
-    private String getConnectedBluetoothDeviceName() {
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) return "";
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-            return "";
-        }
-        Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
-        for (BluetoothDevice device : bondedDevices) {
-            int state = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
-            if (state == BluetoothProfile.STATE_CONNECTED) {
-                return device.getName();
-            }
-        }
-        return "";
-    }
+//    private void updateBluetoothUI(Button button, TextView statusText) {
+//        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
+//            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
+//            String deviceName = getConnectedBluetoothDeviceName();
+//            statusText.setText(deviceName.isEmpty() ? "Not connected" : deviceName);
+//        } else {
+//            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
+//            statusText.setText("");
+//        }
+//    }
+//
+//    private String getConnectedBluetoothDeviceName() {
+//        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) return "";
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+//                ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+//            return "";
+//        }
+//        Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
+//        for (BluetoothDevice device : bondedDevices) {
+//            int state = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
+//            if (state == BluetoothProfile.STATE_CONNECTED) {
+//                return device.getName();
+//            }
+//        }
+//        return "";
+//    }
 
     // ---- Mobile Data (LTE) ----
     private boolean hasSimCard() {
@@ -341,21 +341,21 @@ public class QuickSetting extends AppCompatActivity {
     }
 
     // ---- Permissions ----
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_BLUETOOTH_CONNECT) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);
-                TextView bluetoothStatusText = findViewById(R.id.bluetoothStatusText);
-                updateBluetoothUI(bluetoothToggle, bluetoothStatusText);
-            } else {
-                Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode,
+//                                           @NonNull String[] permissions,
+//                                           @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if (requestCode == REQUEST_BLUETOOTH_CONNECT) {
+//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);
+//                TextView bluetoothStatusText = findViewById(R.id.bluetoothStatusText);
+//                updateBluetoothUI(bluetoothToggle, bluetoothStatusText);
+//            } else {
+//                Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//    }
 
     // ---- Gestures ----
     @Override

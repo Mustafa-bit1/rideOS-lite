@@ -49,6 +49,8 @@ public class Heartbeat3 {
     private int BSG6_BYTE7;
     private int BSG6_BYTE8;
     private int motortemp;
+    private String individualcellvoltages;
+
     private int chargeAh,dischargeAh;
 
     private int HanldeLockResponse,SeatLockResponse,LEDResponse;
@@ -192,6 +194,11 @@ public class Heartbeat3 {
     public void setDisChargeAH(int dischargeAh){this.dischargeAh=dischargeAh;}
 
     //===========================================
+
+    public String getIndiCellVol(){return individualcellvoltages;}
+    public void setIndiCellVol(String individualcellvoltages){this.individualcellvoltages=individualcellvoltages;}
+
+    //====================================
     public int getBSG1_BYTE1() {
         return BSG1_BYTE1;
     }

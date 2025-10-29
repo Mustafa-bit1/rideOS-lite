@@ -22,6 +22,7 @@ public class TelemetryDataManager {
     private int teleEvPowerState;
     private float teleCurrentConsumption;
     private float teleBatVoltage;
+    private String teleIndividualCellVoltages;
     private float teleRemainingCapacityAH;
     private float teleODO;
     private float teleSpeed;
@@ -174,6 +175,13 @@ public class TelemetryDataManager {
 
     public void setTeleBatVoltage(float teleBatVoltage) {
         this.teleBatVoltage = teleBatVoltage;
+    }
+    public String getteleIndividualCellVoltages() {
+        return teleIndividualCellVoltages;
+    }
+
+    public void setteleIndividualCellVoltages(String teleIndividualCellVoltages) {
+        this.teleIndividualCellVoltages = teleIndividualCellVoltages;
     }
 
     public float getTeleRemainingCapacityAH() {

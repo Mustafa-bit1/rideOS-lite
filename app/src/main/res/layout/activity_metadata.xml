@@ -152,7 +152,7 @@
                 android:layout_width="200dp"
                 android:layout_marginStart="540dp"
                 android:layout_height="wrap_content"
-                android:text="Save Metadata"
+                android:text="Save and Restart"
                 android:textColor="@android:color/white"
                 android:backgroundTint="@android:color/holo_blue_light"
                 android:layout_marginTop="24dp" />

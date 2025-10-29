@@ -32,6 +32,8 @@ import com.fanconn.rideOS.network.ApiService;
 
 import com.google.gson.Gson;
 
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -222,7 +224,7 @@ public class TelemetryService extends Service {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) { }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Telemetry", "Failed to send vehicle data", t);
+                Log.e("Telemetry", "Faileddd to send vehicle data", t);
             }
         });
     }
@@ -230,12 +232,12 @@ public class TelemetryService extends Service {
     private void sendRealTimeData(String vin) {
         RealTimeData data = collectTelemetryData(vin);
 
-        if (isInternetAvailable()) {
+        if (hasActiveInternetConnection()) {
             // Send staged data first
             // NEW SAFE BATCH SENDING
             if (TelemetryStagingManager.getInstance().hasData()) {
                 new Thread(() -> {
-                    while (TelemetryStagingManager.getInstance().hasData() && isInternetAvailable()) {
+                    while (TelemetryStagingManager.getInstance().hasData() && hasActiveInternetConnection()) {
 
                         List<RealTimeData> batch = TelemetryStagingManager.getInstance().pollBatch();  // Take 20 at once
                         for (RealTimeData r : batch) {
@@ -254,11 +256,12 @@ public class TelemetryService extends Service {
             //tracker.startTracking();
 
             sendToServer(data);
+            Log.e("Telemetry", "INTENET VAIL SNEDNING ");
 
             //tracker.logUsage("Currdent Payload");
 
         } else {
-            // Stage the current data
+            Log.e("Telemetry", "NOOINTENET VAIL SNEDNING ");
             TelemetryStagingManager.getInstance().addData(data);
         }
     }
@@ -271,7 +274,7 @@ public class TelemetryService extends Service {
         data.controllerMosTemp = TelemetryDataManager.getInstance().getTeleControllerMosTemp();
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
-        data.ntc = TelemetryDataManager.getInstance().getTeleNTC();
+        data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+" ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages();
         data.currentconsumption = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleCurrentConsumption());
         data.batvoltage = roundTo1Decimal(TelemetryDataManager.getInstance().getTeleBatVoltage());
         data.remainingCapacity_AH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRemainingCapacityAH());
@@ -290,13 +293,23 @@ public class TelemetryService extends Service {
         }
         data.time = java.time.OffsetDateTime.now().toString();
         return data;
-
     }
 
     private void sendToServer(RealTimeData data) {
+        Log.d("TelemetryService", "12311111111111111111111");
+
         apiService.saveRealTimeData(data).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) { }
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
+                } else {
+                    Log.e("TelemetryService", "❌ RealTimeData failed with code: " + response.code());
+                    try {
+                        Log.e("TelemetryService", "Error body: " + response.errorBody().string());
+                    } catch (Exception ignored) {}
+                }
+            }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
@@ -327,6 +340,36 @@ public class TelemetryService extends Service {
         }
     }
 
+    /** Checks if there’s any active network connection (Wi-Fi / Mobile) */
+    private boolean isNetworkConnected() {
+        try {
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (cm == null) return false;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                Network n = cm.getActiveNetwork();
+                if (n == null) return false;
+                NetworkCapabilities nc = cm.getNetworkCapabilities(n);
+                return nc != null && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+            } else {
+                NetworkInfo ni = cm.getActiveNetworkInfo();
+                return ni != null && ni.isConnected();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /** Actually tests if Internet is reachable (for cloud endpoints) */
+    private boolean hasActiveInternetConnection() {
+        try {
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress("8.8.8.8", 53), 1500);
+            socket.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
     private double roundTo3Decimal(double value) {
         return Math.round(value * 1000.0) / 1000.0;

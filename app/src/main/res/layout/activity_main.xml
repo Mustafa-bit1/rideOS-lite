@@ -342,7 +342,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/a_power_on" />
+        app:srcCompat="@drawable/a_power_on_blue" />
 
 
     <ImageView
@@ -545,6 +545,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="287dp"
         android:layout_marginTop="1dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/apubat_0" />
@@ -586,6 +587,7 @@
         android:shadowColor="#80000000"
         android:shadowDx="5"
         android:shadowDy="3"
+        android:visibility="gone"
         android:shadowRadius="5"
         android:text="APU 0%"
         android:textAlignment="textStart"
@@ -1001,6 +1003,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:layout_marginEnd="523dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/battery_level_1" />

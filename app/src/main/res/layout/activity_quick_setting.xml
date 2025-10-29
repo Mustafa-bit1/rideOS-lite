@@ -181,36 +181,6 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
-        <!-- Bluetooth -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/bluetoothtoggle"
-                style="@style/QuickButtonStyle"
-                android:text="Bluetooth"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:backgroundTint="#555555"
-                android:textColor="#FFFFFF"/>
-
-            <!-- Optional: Add status TextView for Bluetooth too -->
-            <TextView
-                android:id="@+id/bluetoothStatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:fontFamily="@font/kanit"
-                android:layout_marginTop="2dp"/>
-        </LinearLayout>
 
         <!-- 4G -->
         <LinearLayout
@@ -237,6 +207,37 @@
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:gravity="center"
+                android:fontFamily="@font/kanit"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
+        <!-- Bluetooth -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/Somethingbtn"
+                style="@style/QuickButtonStyle"
+                android:text="New feature"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:backgroundTint="#555555"
+                android:textColor="#FFFFFF"/>
+
+            <!-- Optional: Add status TextView for Bluetooth too -->
+            <TextView
+                android:id="@+id/bluetoothStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:fontFamily="@font/kanit"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
 
@@ -251,7 +252,7 @@
             <Button
                 android:id="@+id/soundstoggle"
                 style="@style/QuickButtonStyle"
-                android:text="Sounds"
+                android:text="New Feature"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

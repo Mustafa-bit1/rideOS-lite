@@ -741,15 +741,18 @@ public class LoginActivity extends AppCompatActivity{
             if (batteryLevel ==0) { // phase max , all normal
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
             }
-            else if (batteryLevel <= 10) { // phase 0 , all normal
+            else if (batteryLevel <= 10 && !UIUpdater.apuflag) { // phase 0 , all normal
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C000000B400";
             }
-            else if (batteryLevel <= 20) { // phase max, all normal
+            else if (batteryLevel <= 20) { //  line 15A, phase max, all normal
                 torqueFrame = "FFAA550103001510FBA8073C008C00B004B400";
             } else if (batteryLevel <= 80) { // phase max, all normal
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
-            } else { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
+            } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
+            }
+            else{//all max
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
             }
 
             final String finalTorqueFrame = torqueFrame; // make it final for lambdas

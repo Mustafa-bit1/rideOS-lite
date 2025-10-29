@@ -28,10 +28,8 @@ public class CanDataParser {
 
     }
 
-    public static  void parseCanData18904002(Heartbeat3 hb3, String canData) {
-        hb3.setAPUbatvoltage(FrameUtils.getByteSubstringAsInt(canData,0,1)); //voltage
-        hb3.setAPURealCurrent(FrameUtils.getByteSubstringAsInt(canData,4,5));//Real Time Current
-        hb3.setAPUBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //APUSOC
+    public static  void parseCanData18914001(Heartbeat3 hb3, String canData) {
+        hb3.setIndiCellVol(FrameUtils.getByteSubstring(canData,0,5)); //Individual cell voltage Frame
     }
 
     public static  void parseCanData18934001(Heartbeat3 hb3, String canData) {
@@ -41,10 +39,6 @@ public class CanDataParser {
         hb3.setBMSlifecycles(FrameUtils.getByteValue(canData,3));
     }
 
-    public static  void parseCanData18934002(Heartbeat3 hb3, String canData) {
-        hb3.setApuChargeMosState(FrameUtils.getByteValue(canData,1));
-        hb3.setApuDisChargeMosState(FrameUtils.getByteValue(canData,2));
-    }
 
 
     public static  void parseCanData18964001(Heartbeat3 hb3, String canData) {
@@ -64,6 +58,12 @@ public class CanDataParser {
 
         hb3.setDisChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//discharge AH
     }
+
+    public static  void parseCanData18934002(Heartbeat3 hb3, String canData) {
+        hb3.setApuChargeMosState(FrameUtils.getByteValue(canData,1));
+        hb3.setApuDisChargeMosState(FrameUtils.getByteValue(canData,2));
+    }
+
     public static  void parseCanData18964002(Heartbeat3 hb3, String canData) {
         //NTC VALUES
         hb3.setNTC5(FrameUtils.getByteValue(canData,1));
@@ -71,6 +71,12 @@ public class CanDataParser {
         hb3.setNTC7(FrameUtils.getByteValue(canData,3));
         hb3.setNTC8(FrameUtils.getByteValue(canData,4));
 
+    }
+
+    public static  void parseCanData18904002(Heartbeat3 hb3, String canData) {
+        hb3.setAPUbatvoltage(FrameUtils.getByteSubstringAsInt(canData,0,1)); //voltage
+        hb3.setAPURealCurrent(FrameUtils.getByteSubstringAsInt(canData,4,5));//Real Time Current
+        hb3.setAPUBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //APUSOC
     }
     /**
      * 解析 CAN ID 为 10F807A8 的数据

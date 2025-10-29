@@ -65,6 +65,7 @@ import com.fanconn.rideOS.mcuupdate.YMode;
 import com.fanconn.rideOS.menu.menu;
 import com.fanconn.rideOS.network.EVWebSocketClient;
 import com.fanconn.rideOS.network.ApiService;
+import com.fanconn.rideOS.network.ScooterMqttManager;
 
 import tp.xmaihh.serialport.BuildConfig;
 
@@ -283,6 +284,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         // 检测摄像头
         //  cameraHandler.queryCameraAvailability();
+
+
+//        String mqttClientId = "rideos_" + System.currentTimeMillis();
+//        ScooterMqttManager.getInstance(this, VINNUMBER, mqttClientId);
 
         // 实时获取时间
         acquisitionTime();
@@ -2034,8 +2039,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 case 8:
                     serialPortManager.VCUSendToMCU("FFAA5501030015189801400001020304050607");
                     break;
+                case 9:
+                    serialPortManager.VCUSendToMCU("FFAA5501030015189101400001020304050607");
+                    break;
             }
-            requestIndex = (requestIndex + 1) % 9;
+            requestIndex = (requestIndex + 1) % 10;
             bmsHandler.postDelayed(this, 650); // 650ms interval
         }
     };
