@@ -1960,6 +1960,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        Log.d("MainActivity", "Running unlock sequence from post-login...");
 
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
+        TelemetryService.shdtelemetrywhenunlocked=true;
 
         //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            long minRequired = 50 * 1024 * 1024; // 50 MB minimum free space

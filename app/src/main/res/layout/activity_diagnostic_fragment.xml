@@ -54,8 +54,8 @@
         android:layout_marginStart="264dp"
         android:layout_marginTop="316dp"
         android:backgroundTint="#FF0000"
-        android:text="Dont Click"
-        android:textSize="15dp"
+        android:text="System"
+        android:textSize="18dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

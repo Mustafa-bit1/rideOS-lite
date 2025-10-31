@@ -10,16 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.SystemClock;
@@ -32,39 +26,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.app.Activity;
 
 import com.fanconn.rideOS.authen.LoginActivity;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
 
-import java.io.File;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 
 //=========================
-import android.net.Uri;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.fanconn.rideOS.network.ApiService;
-import com.fanconn.rideOS.network.RetrofitClient;
-import com.fanconn.rideOS.network.VehicleData;
-import com.fanconn.rideOS.network.EVWebSocketClient;
-import com.fanconn.rideOS.TelemetryService;
-import com.fanconn.rideOS.TelemetryDataManager;
-import com.google.gson.Gson;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import java.net.URI;
-import java.util.Map;
 //=========================
 
 /**
@@ -464,8 +434,8 @@ public class UIUpdater  {
             case "160D8001":
                 updateCanData160D8001(hb3);
                 break;
-            case "14028001":
-                updateCanData14028001(hb3);
+            case "18FF50E5":
+                updateCanData18FF50E5(hb3);
                 break;
             case "10F807A8":
                 updateCanData10F807A8(hb3);
@@ -627,20 +597,16 @@ public class UIUpdater  {
         //int batteryImageResId = getBatteryImageResource(batteryLevel);
         //binding.batteryIV.setImageResource(batteryImageResId);
     }
-
     public void updateCanData18914001(Heartbeat3 hb3) {
         tm.setteleIndividualCellVoltages(hb3.getIndiCellVol());
     }
-
     private chargingUI chargingUI;
     public void setChargingUI(chargingUI chargingUI) {
         this.chargingUI = chargingUI;
     }
     private boolean isApuConnected = false;
     private long lastApuFrameTime = 0;
-
     private static final long APU_TIMEOUT_MS = 20000; // 20 seconds of silence = disconnected
-
     // Use a single Handler for UI thread safe timing
     private final Handler apuHandler = new Handler(Looper.getMainLooper());
     private boolean apuWatcherRunning = false;
@@ -654,6 +620,7 @@ public class UIUpdater  {
             Log.d("APU", "APU Connected");
             showCustomPopupAPUdetected("Assistance", "APU detected. Do you want to switch to APU?");
         }
+        tm.setTeleAPUBatVoltage(hb3.getAPUbatvoltage()/10);
 
         // Ensure the disconnect watcher is running only once
         if (!apuWatcherRunning) {
@@ -722,14 +689,15 @@ public class UIUpdater  {
                         serialPortManager.getHb3().setApuChargeMosState(0);
                         serialPortManager.getHb3().setApuDisChargeMosState(0);
 
+                        tm.setTeleAPUSOC(0);
+                        tm.setTeleAPUBatVoltage(0);
+
 
                         //NTC VALUES
                         serialPortManager.getHb3().setNTC5(0);
                         serialPortManager.getHb3().setNTC6(0);
                         serialPortManager.getHb3().setNTC7(0);
                         serialPortManager.getHb3().setNTC8(0);
-
-
 
                         serialPortManager.getHb3().setAPUbatvoltage(0); //voltage
                         serialPortManager.getHb3().setAPURealCurrent(0);//Real Time Current
@@ -740,7 +708,7 @@ public class UIUpdater  {
                     if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
                         apuPopupDialog.dismiss();
                         apuPopupDialog = null;
-                        Log.d("APU", "Popup dismissed on disconnect");
+                       // Log.d("APU", "Popup dismissed on disconnect");
                     }
                 }
 
@@ -755,8 +723,10 @@ public class UIUpdater  {
 
     private boolean AlreadyInChargingUI = false;
 
-    public void updateCanData14028001(Heartbeat3 hb3) {
+    public void updateCanData18FF50E5(Heartbeat3 hb3) {
        //Log.d("ChargingDebug", "RESETING FROM UIUPDATORrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+        TelemetryDataManager.getInstance().setTeleChargingStateError(hb3.getChargingErrorbit());
+
         //---------------------------
         binding.yellowalert.clearAnimation();
         binding.LowBatmsg.clearAnimation();
@@ -1017,7 +987,7 @@ public class UIUpdater  {
 
         // Allow small charging increments
         if (delta > 0.001f && delta < 5.0f) {
-            if (tm.getTeleChargingState()== 1) {
+            if (tm.getTeleChargingState()==1) {
                 ahByCharger += delta;
             } else {
                 ahByRegen += delta;
@@ -1137,17 +1107,21 @@ public class UIUpdater  {
 //        else binding.actualboost.setVisibility(View.INVISIBLE);
         //Log.d("sdafsgdf","BOOSTBYTE IS "+isboost);
         int chargingbit = hb3.getChargingbit();
+        Log.d("sdfdg","setChargingErrorbit   "+hb3.getChargingErrorbit());
         if((shouldshowchargingicononmainonot && directionalGears!=2) || shouldshowchargingicononmainonot && isStand){
 
-            TelemetryDataManager.getInstance().setTeleChargingState(1);
             binding.rectangleGearsTV.setVisibility(View.INVISIBLE);
             binding.neutralicon.setVisibility(View.INVISIBLE);
 //            binding.chargingicononmainactivty.setVisibility(View.VISIBLE);
             binding.chargingredtab.setVisibility(View.VISIBLE);
-            if(chargingbit==1){
+            if(chargingbit>0){
                 binding.chargingredtab.setImageResource(R.drawable.chargingredtab);
+                TelemetryDataManager.getInstance().setTeleChargingState(1);
             }
-            else binding.chargingredtab.setImageResource(R.drawable.yellowpluggedtab);
+            else {
+                binding.chargingredtab.setImageResource(R.drawable.yellowpluggedtab);
+                TelemetryDataManager.getInstance().setTeleChargingState(2);
+            }
 
 //            binding.chargingredtab.setVisibility(View.VISIBLE);
         }

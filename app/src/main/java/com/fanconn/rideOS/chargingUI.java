@@ -40,7 +40,7 @@ public class chargingUI extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             String frame = intent.getStringExtra("frame_data");
-            if (frame.startsWith("FFAA770303001514028001")) {
+            if (frame.startsWith("FFAA770303001518FF50E5")) {
                 resetChargingTimeout();
 
             }
@@ -165,7 +165,7 @@ public class chargingUI extends AppCompatActivity {
                         stopBatteryPulseAnimation();
                         isChargingAnimationRunning = false;
                     }
-                    if(chargingbit==1){
+                    if(chargingbit>0){
 
                         binding.socText.setVisibility(View.VISIBLE);
                         binding.plugged.setVisibility(View.INVISIBLE);
@@ -191,18 +191,31 @@ public class chargingUI extends AppCompatActivity {
                     }
                     else binding.batfullmsg.setVisibility(View.INVISIBLE);
 
-                    if (APUsoc >= 0 && APUsoc <= 100) {
+                    if (APUsoc >= 0 && APUsoc <= 100 && UIUpdater.isAPUPresent) {
+                        binding.APUbatTV.setVisibility(View.VISIBLE);
                         binding.APUbatTV.setText("APU "+APUsoc + "%");
                     }
-                    int batteryImageResId = getBatteryImageResource(APUsoc);
-                    binding.apubaticon.setImageResource(batteryImageResId);
-                    try {
-                        if (APUsoc>=0 && APUsoc<=100) { // ✅ Only update if animation is done
-                            APUupdateBatteryAnimation(APUsoc);
+
+                    if (UIUpdater.isAPUPresent){
+
+                        int batteryImageResId = getBatteryImageResource(APUsoc);
+                        binding.apubaticon.setVisibility(View.VISIBLE);
+                        binding.APUbatteryImageView.setVisibility(View.VISIBLE);
+                        binding.apubaticon.setImageResource(batteryImageResId);
+                        try {
+                            if (APUsoc>=0 && APUsoc<=100) { // ✅ Only update if animation is done
+                                APUupdateBatteryAnimation(APUsoc);
+                            }
+                        } catch (NumberFormatException e) {
+                            e.printStackTrace();
                         }
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
                     }
+                    else {
+                        binding.APUbatteryImageView.setVisibility(View.INVISIBLE);
+                        binding.apubaticon.setVisibility(View.INVISIBLE);
+                        binding.APUbatTV.setVisibility(View.INVISIBLE);
+                    }
+
                     // Start animation loop only once
 
                 });
@@ -317,8 +330,10 @@ public class chargingUI extends AppCompatActivity {
             finish();
 //            UIUpdater.telechargingstate=0;
             TelemetryDataManager.getInstance().setTeleChargingState(0);
+
+            Log.d("sdafgd","CANCLINGCHARGING");
         };
-        timeoutHandler.postDelayed(timeoutRunnable, 18000);
+        timeoutHandler.postDelayed(timeoutRunnable, 7000);
     }
 
     @Override

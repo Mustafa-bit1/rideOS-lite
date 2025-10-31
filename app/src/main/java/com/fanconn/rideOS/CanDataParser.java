@@ -13,10 +13,9 @@ public class CanDataParser {
      * @param canData CAN 数据字符串
      */
 
-    public static  void parseCanData14028001(Heartbeat3 hb3, String canData) {
-        // 实现 18904001 CAN 数据的解析逻辑
-        // 提取心跳包 电池电量 值
-        hb3.setChargingbit(FrameUtils.getByteValue(canData,0));
+    public static  void parseCanData18FF50E5(Heartbeat3 hb3, String canData) {
+        hb3.setChargingbit(FrameUtils.getByteSubstringAsInt(canData,2,3)); //charging current value
+        hb3.setChargingErrorbit(FrameUtils.getByteSubstring(canData,4,4)); //Individual cell voltage Frame
     }
 
     public static  void parseCanData18904001(Heartbeat3 hb3, String canData) {
@@ -62,6 +61,7 @@ public class CanDataParser {
     public static  void parseCanData18934002(Heartbeat3 hb3, String canData) {
         hb3.setApuChargeMosState(FrameUtils.getByteValue(canData,1));
         hb3.setApuDisChargeMosState(FrameUtils.getByteValue(canData,2));
+        hb3.setAPUremainingAH(FrameUtils.getByteSubstringAsInt(canData,4,7));
     }
 
     public static  void parseCanData18964002(Heartbeat3 hb3, String canData) {

@@ -23,6 +23,8 @@ import com.fanconn.rideOS.Heartbeat3;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 
+import java.util.Locale;
+
 public class BatteryFragment extends Fragment {
 
     private SerialPortManager serialPortManager;
@@ -122,8 +124,9 @@ public class BatteryFragment extends Fragment {
                                 apuBatteryText.length(),
                                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         topAuxValue.setText(apuBatteryText);
+                        String formattedRange = String.format(Locale.getDefault(), "%.1f", apuRange);
 
-                        SpannableString apuRangeText = new SpannableString(apuRange + " km");
+                        SpannableString apuRangeText = new SpannableString(formattedRange + " km");
                         apuRangeText.setSpan(new RelativeSizeSpan(0.7f),
                                 apuRangeText.length() - 2,
                                 apuRangeText.length(),

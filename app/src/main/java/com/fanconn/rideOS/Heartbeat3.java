@@ -9,6 +9,7 @@ public class Heartbeat3 {
     private int batteryLevel,APUbatteryLevel;
     private int mainChargingMosState,mainDisMosState,apuChargingMosState,apuDisMosState;
     private int chargingbit;// 单片机心跳包 电池电量
+    private String chargingErrorbitHex;// 单片机心跳包 电池电量
     private int mainChargeMosState,MainDisMosState,ApuChargeMosState,ApuDisMosState;
     private float realCurrent;
     private float batvoltage;
@@ -103,6 +104,14 @@ public class Heartbeat3 {
     public void setChargingbit(int chargingbit) {
         this.chargingbit = chargingbit;
     }
+
+    public String getChargingErrorbit() {
+        return chargingErrorbitHex;
+    }
+
+    public void setChargingErrorbit(String chargingErrorbitHex) {
+        this.chargingErrorbitHex = chargingErrorbitHex;
+    }
     public float getreamainingAH() {
         return remainingAH;
     }
@@ -110,6 +119,8 @@ public class Heartbeat3 {
     public void setremainingAH(int remainingAH) {
         this.remainingAH = remainingAH;
     }
+    //APU ==============
+
 
     public int getBMSlifecycles() {
         return  BMSlifecycles;

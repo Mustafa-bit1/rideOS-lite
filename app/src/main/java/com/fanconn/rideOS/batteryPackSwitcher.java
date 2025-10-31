@@ -218,7 +218,6 @@ public class batteryPackSwitcher {
         isSequenceActive = true;
         retryCount1 = 0;
         retryCount2 = 0;
-        mainChargeON();
         apuDisOFF();
     }
 
@@ -243,7 +242,6 @@ public class batteryPackSwitcher {
                 mainChargeON();
             } else {
                 //Log.e("CommandSequence", "Command 1 failed after max retries");
-
             }
         }, 800); // adjust delay as needed
     }

@@ -129,9 +129,9 @@ public class LoginActivity extends AppCompatActivity{
         public void onReceive(Context context, Intent intent) {
 
             String frame = intent.getStringExtra("frame_data");
-            if(frame.startsWith("FFAA7703030015140280"))
+            if(frame.startsWith("FFAA770303001518FF50E5"))
                 //Log.d("FRAME", "Received in4001NNNNNNNN " + getClass().getSimpleName() + ": " + frame);
-                //if(frame.startsWith("FFAA770303001514028001"))Log.d("sdfgh","frameofCHARGING"+frame);
+                //if(frame.startsWith("FFAA770303001518FF50E5"))Log.d("sdfgh","frameofCHARGING"+frame);
 
             if (frame.length() > 15 && FrameUtils.verifyFrame(frame)){
 
@@ -154,9 +154,9 @@ public class LoginActivity extends AppCompatActivity{
                 }
 //                if (frame.startsWith("FFAA660107")) {
 //                    serialPortManager.parseLEDControlResponse(frame);
-//                }
+//                }18FF50E5
             }
-            if (frame.length() >= 38 && frame.startsWith("FFAA770303001514028001")) {
+            if (frame.length() >= 38 && frame.startsWith("FFAA770303001518FF50E5")) {
                 BatPackSwitcher.startSwitchingToNormalState();
                 // wakeScreenIfNeeded();
                 Heartbeat3 hb3 = serialPortManager.getHb3();
@@ -166,17 +166,18 @@ public class LoginActivity extends AppCompatActivity{
                 forceStandUIDUEToCharging=true;
 //                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+frame);
                 String candata=FrameUtils.getByteSubstring(frame,11,18);
-                CanDataParser.parseCanData14028001(hb3, candata);
+                CanDataParser.parseCanData18FF50E5(hb3, candata);
                 int chargingbit = hb3.getChargingbit();
 //                    UIUpdater.telechargingstate=hb3.getChargingbit();
 //                    String byt = frame.substring(22, 24);
 //                    int chargingbit = Integer.parseInt(byt, 16);
-                //Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+chargingbit);
+                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+chargingbit);
 
                 if(chargingbit==0){
                     binding.loginchargingicon.setVisibility(View.INVISIBLE);
+                    TelemetryDataManager.getInstance().setTeleChargingState(2);
                 }
-                if(chargingbit==1) {
+                if(chargingbit>0) {
 //                  Log.d("sdfdgfh","CHRAGINGBITINFEILD___________"+chargingbit);
                     binding.loginchargingicon.setVisibility(View.VISIBLE);
                     TelemetryDataManager.getInstance().setTeleChargingState(1);

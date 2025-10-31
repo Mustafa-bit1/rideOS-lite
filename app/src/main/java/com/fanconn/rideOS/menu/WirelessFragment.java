@@ -191,9 +191,12 @@ public class WirelessFragment extends Fragment {
                     super.onAvailable(network);
                     cm.bindProcessToNetwork(network);
                     handler.post(() -> {
-                        Toast.makeText(requireContext(), "Connected to " + ssid, Toast.LENGTH_SHORT).show();
-                        updateButtonStates();
+                        if (isAdded() && getContext() != null) {
+                            Toast.makeText(getContext(), "Connected to " + ssid, Toast.LENGTH_SHORT).show();
+                            updateButtonStates();
+                        }
                     });
+
                 }
 
                 @Override

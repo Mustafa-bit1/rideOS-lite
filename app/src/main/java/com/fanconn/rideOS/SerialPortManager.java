@@ -319,8 +319,6 @@ public class SerialPortManager {
 
         return frames;
     }
-
-
     /**
      * 解析数据帧
      * @param frame 数据帧
@@ -328,8 +326,8 @@ public class SerialPortManager {
      */
     public void parseDataFrames(String frame, FrameDataListener listener) {
         if (frame.startsWith("FFAA77") && frame.length() > 14) {
-            if (FrameUtils.verifyFrame(frame)||frame.startsWith("FFAA770303001514028001")) {
-                if(frame.startsWith("FFAA770303001514028001"))Log.d("sdsfgf","frmae"+frame);
+            if (FrameUtils.verifyFrame(frame)||frame.startsWith("FFAA770303001518FF50E5")) {
+                if(frame.startsWith("FFAA770303001518FF50E5"))Log.d("sdsfgf","frmae"+frame);
                 String frameType = FrameUtils.getByteSubstring(frame,3,4);
                 switch (frameType) {
                     case "0301":
@@ -425,7 +423,6 @@ public class SerialPortManager {
         hb1.setHeadlights(FrameUtils.getByteValue(frame,16));  // 大灯状态
         hb1.setTurnSignal(FrameUtils.getByteValue(frame,17));   // 转向灯状态
         hb1.setLED(FrameUtils.getByteValue(frame,18));//LED response
-
     }
     private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
 
@@ -467,8 +464,8 @@ public class SerialPortManager {
         //Log.d("dfsdgb","id's are"+FrameUtils.getByteSubstring(frame,7,10));
         // 根据 CAN ID 进一步解析 CAN 数据
         switch (hb3.getCanId()) {
-            case "14028001"://CHARGING STARTED STATUS
-                CanDataParser.parseCanData14028001(hb3, hb3.getCanData());
+            case "18FF50E5"://CHARGING STARTED STATUS
+                CanDataParser.parseCanData18FF50E5(hb3, hb3.getCanData());
                 break;
             case "18904001"://MAIN SOC
                 CanDataParser.parseCanData18904001(hb3, hb3.getCanData());

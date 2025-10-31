@@ -22,12 +22,13 @@
 
         <TextView
             android:id="@+id/timeTextView"
-            android:layout_width="100dp"
+            android:layout_width="120dp"
             android:layout_height="32dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="448dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="368dp"
             android:fontFamily="@font/kanit"
             android:text="00:00"
+            android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="22dp"
             app:layout_constraintEnd_toEndOf="@+id/imageView14"
@@ -112,22 +113,42 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="704dp"
-        android:layout_marginTop="47dp"
+        android:layout_marginStart="622dp"
+        android:layout_marginTop="67dp"
         android:fontFamily="@font/kanit"
         android:shadowColor="#80000000"
         android:shadowDx="5"
         android:shadowDy="3"
         android:shadowRadius="5"
-        android:text="-"
+        android:text=""
         android:textAlignment="textStart"
         android:textColor="#FFFFFFFF"
         android:textSize="20dp"
+        android:visibility="gone"
         android:translationY="-10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/APUbatteryImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="305dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/apubat_0" />
 
+    <ImageView
+        android:id="@+id/apubaticon"
+        android:layout_width="31dp"
+        android:layout_height="17dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="666dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/apubaticon" />
     <ImageButton
         android:id="@+id/chargingtologinbtn"
         android:layout_width="157dp"
@@ -169,7 +190,7 @@
         android:layout_width="61dp"
         android:layout_height="93dp"
         android:layout_marginTop="172dp"
-        android:layout_marginEnd="600dp"
+        android:layout_marginEnd="608dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/pluggedicon" />
@@ -185,25 +206,7 @@
 
 
 
-    <ImageView
-        android:id="@+id/APUbatteryImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="305dp"
-        android:layout_marginTop="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/apubat_0" />
 
-    <ImageView
-        android:id="@+id/apubaticon"
-        android:layout_width="31dp"
-        android:layout_height="17dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="584dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/apubaticon" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

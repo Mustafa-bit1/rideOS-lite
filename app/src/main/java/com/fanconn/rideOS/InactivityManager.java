@@ -10,9 +10,7 @@ public class InactivityManager {
     private Runnable timeoutRunnable;
     private long timeoutMillis = 40000; // 30 seconds
     private int currentCode = -1;
-
     private InactivityCallback callback;
-
     private InactivityManager() {}
 
     public static synchronized InactivityManager getInstance() {

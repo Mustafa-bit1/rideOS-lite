@@ -274,7 +274,7 @@ public class TelemetryService extends Service {
         data.controllerMosTemp = TelemetryDataManager.getInstance().getTeleControllerMosTemp();
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
-        data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+" ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages();
+        data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+" ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage();
         data.currentconsumption = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleCurrentConsumption());
         data.batvoltage = roundTo1Decimal(TelemetryDataManager.getInstance().getTeleBatVoltage());
         data.remainingCapacity_AH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRemainingCapacityAH());

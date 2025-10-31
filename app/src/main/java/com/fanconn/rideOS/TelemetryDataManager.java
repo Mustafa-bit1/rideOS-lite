@@ -6,6 +6,7 @@ public class TelemetryDataManager {
 
     // ==== All telemetry fields ====
     private int teleChargingState;
+    private String teleChargingStateError;
     private int teleBmsLifeCycles;
     private String teleLatLong;
     private int teleHandleLockState;
@@ -22,6 +23,7 @@ public class TelemetryDataManager {
     private int teleEvPowerState;
     private float teleCurrentConsumption;
     private float teleBatVoltage;
+    private float teleAPUBatVoltage;
     private String teleIndividualCellVoltages;
     private float teleRemainingCapacityAH;
     private float teleODO;
@@ -55,7 +57,13 @@ public class TelemetryDataManager {
     public void setTeleChargingState(int teleChargingState) {
         this.teleChargingState = teleChargingState;
     }
+    public String getTeleChargingStateError() {
+        return teleChargingStateError;
+    }
 
+    public void setTeleChargingStateError(String teleChargingStateError) {
+        this.teleChargingStateError = teleChargingStateError;
+    }
     public int getTeleBmsLifeCycles() {
         return teleBmsLifeCycles;
     }
@@ -175,6 +183,14 @@ public class TelemetryDataManager {
 
     public void setTeleBatVoltage(float teleBatVoltage) {
         this.teleBatVoltage = teleBatVoltage;
+    }
+
+    public float getTeleAPUBatVoltage() {
+        return teleAPUBatVoltage;
+    }
+
+    public void setTeleAPUBatVoltage(float teleAPUBatVoltage) {
+        this.teleAPUBatVoltage = teleAPUBatVoltage;
     }
     public String getteleIndividualCellVoltages() {
         return teleIndividualCellVoltages;
