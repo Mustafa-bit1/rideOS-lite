@@ -50,6 +50,7 @@ import androidx.security.crypto.MasterKeys;
 
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
+import com.fanconn.rideOS.Smartkey.KeyPresenceManager;
 import com.fanconn.rideOS.SoundPlayer;
 import com.fanconn.rideOS.TelemetryDataManager;
 import com.fanconn.rideOS.TelemetryService;
@@ -73,6 +74,8 @@ import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity{
     private static boolean isFrameReceiverRegistered = false;
+    public static LoginActivity instance;
+
     public  static SerialPortManager loginserialPortManager;  // 串口管理类
     private ActivityLoginBinding binding;
     private String sPort = "/dev/ttyHS1";  // 串口地址
@@ -346,7 +349,7 @@ public class LoginActivity extends AppCompatActivity{
         );
         tapSoundPlayer = MediaPlayer.create(this, R.raw.dottap33);
         TelemetryService.shdtelemetrywhenunlocked=false;
-
+        instance = this;
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
@@ -411,14 +414,14 @@ public class LoginActivity extends AppCompatActivity{
         patternView.setOnPatternCompleteListener(pattern -> {
             String inputPattern = TextUtils.join("", pattern);
             for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-                if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue())) {
+                if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue()) && KeyPresenceManager.get().getIsInRange()) {
                     String username = entry.getKey().replace("user_", "").replace("_pattern", "");
                     loginSuccess(username);
                     return;
                 }
             }
             playErrorSound();
-            showCustomToasterror("Invalid Pattern");
+            showCustomToasterror("Invalid Pattern OR Smart Key Not Found");
             vibrateError();
         });
 
@@ -577,7 +580,7 @@ public class LoginActivity extends AppCompatActivity{
     private void validatePin() {
         String inputPin = actualPin.toString();
         for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-            if (entry.getKey().endsWith("_pin")) {
+            if (entry.getKey().endsWith("_pin")   && KeyPresenceManager.get().getIsInRange()) {
                 String username = entry.getKey().replace("user_", "").replace("_pin", "");
                 String storedSalt = prefs.getString("user_" + username + "_salt", "");
                 String storedHash = (String) entry.getValue();
@@ -612,7 +615,7 @@ public class LoginActivity extends AppCompatActivity{
     int Level3_Line_Current = 95;
     int Level4_Line_Current = 110;
 
-    private void loginSuccess(String username) {
+    public void loginSuccess(String username) {
         showCustomToast("Welcome " + username + " !");
 //        UIUpdater.telecurrentrider=username;
         TelemetryDataManager.getInstance().setTeleCurrentRider(username);
@@ -724,7 +727,7 @@ public class LoginActivity extends AppCompatActivity{
                 case "Rush":   lineCurrent = Level3_Line_Current; break;
                 case "Insane": lineCurrent = Level4_Line_Current; break;
                 case "Easy":
-                default:       lineCurrent = Level1_Line_Current; break;
+                default:       lineCurrent = Level4_Line_Current; break;
             }
 
             int torqueValue = lineCurrent * 4;
@@ -943,7 +946,7 @@ public class LoginActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         InactivityManager.getInstance().stopTimer();
-
+        instance = null; // clean up
         TelemetryService.shdtelemetrywhenunlocked=true;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(tempWarningReceiver);
 

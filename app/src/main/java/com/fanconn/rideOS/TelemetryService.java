@@ -256,12 +256,12 @@ public class TelemetryService extends Service {
             //tracker.startTracking();
 
             sendToServer(data);
-            Log.e("Telemetry", "INTENET VAIL SNEDNING ");
+            //Log.e("Telemetry", "INTENET VAIL SNEDNING ");
 
             //tracker.logUsage("Currdent Payload");
 
         } else {
-            Log.e("Telemetry", "NOOINTENET VAIL SNEDNING ");
+            //Log.e("Telemetry", "NOOINTENET VAIL SNEDNING ");
             TelemetryStagingManager.getInstance().addData(data);
         }
     }
@@ -296,15 +296,15 @@ public class TelemetryService extends Service {
     }
 
     private void sendToServer(RealTimeData data) {
-        Log.d("TelemetryService", "12311111111111111111111");
+        //Log.d("TelemetryService", "12311111111111111111111");
 
         apiService.saveRealTimeData(data).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
+                    //Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
                 } else {
-                    Log.e("TelemetryService", "❌ RealTimeData failed with code: " + response.code());
+                   // Log.e("TelemetryService", "❌ RealTimeData failed with code: " + response.code());
                     try {
                         Log.e("TelemetryService", "Error body: " + response.errorBody().string());
                     } catch (Exception ignored) {}

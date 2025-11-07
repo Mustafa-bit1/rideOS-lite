@@ -149,7 +149,9 @@
             android:name=".TpmsScanService"
             android:enabled="true"
             android:exported="false" />
-
+        <service
+            android:name="com.fanconn.rideOS.Smartkey.BLEScanService"
+            android:exported="false" />
         <activity
             android:name=".UpdateProgressActivity"
             android:excludeFromRecents="true"

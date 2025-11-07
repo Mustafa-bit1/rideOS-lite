@@ -1049,7 +1049,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
+    <TextView
+        android:id="@+id/KeylostMessage"
+        android:layout_width="481dp"
+        android:layout_height="106dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="400dp"
+        android:layout_marginTop="230dp"
+        android:fontFamily="@font/kanit"
+        android:shadowColor="#80000000"
+        android:shadowDx="5"
+        android:shadowDy="3"
+        android:shadowRadius="5"
+        android:text="Key Lost"
+        android:textAlignment="center"
+        android:textColor="#FF0000"
+        android:textSize="70dp"
+        android:visibility="gone"
+        android:translationY="-10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--    <ImageView-->
     <!--        android:id="@+id/imageView12"-->

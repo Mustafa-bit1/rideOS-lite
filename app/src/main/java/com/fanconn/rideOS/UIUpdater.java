@@ -810,7 +810,7 @@ public class UIUpdater  {
         NTC7 = hb3.getNTC7() - 40;
         NTC8 = hb3.getNTC8() - 40;
 
-        Log.d("TemperatureCheck", "NTCs = " + NTC1 + "," + NTC2 + "," + NTC3 + "," + NTC4 + "," + NTC5 + "," + NTC6 + "," + NTC7 + "," + NTC8);
+        //Log.d("TemperatureCheck", "NTCs = " + NTC1 + "," + NTC2 + "," + NTC3 + "," + NTC4 + "," + NTC5 + "," + NTC6 + "," + NTC7 + "," + NTC8);
         tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
         int[] temps = {NTC1, NTC2, NTC3, NTC4, NTC5, NTC6, NTC7, NTC8};
         boolean anyIs45 = false;
@@ -818,7 +818,7 @@ public class UIUpdater  {
         boolean allBelow45 = true;
 
         for (int temp : temps) {
-            if (temp < 0 || temp > 70) {
+            if (temp < 0 || temp > 150) {
                 continue;
             }
 
@@ -829,7 +829,7 @@ public class UIUpdater  {
 
         // ✅ Reset 45-warning ONLY when all temps are below 45
         if (allBelow45 && is45WarningShown) {
-            Log.d("TempReset", "All NTCs below 45. Resetting 10s warning flag.");
+            //Log.d("TempReset", "All NTCs below 45. Resetting 10s warning flag.");
             is45WarningShown = false;
         }
 
@@ -894,7 +894,7 @@ public class UIUpdater  {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    private void startBeeping(int code) {
+    public void startBeeping(int code) {
         if (isBeeping) return;
 
         isBeeping = true;
@@ -916,6 +916,9 @@ public class UIUpdater  {
                     case 3:
                         mediaPlayer = MediaPlayer.create(context, R.raw.gearshift);
                         break;
+                    case 4:
+                        mediaPlayer = MediaPlayer.create(context, R.raw.batlowalert2);
+                        break;
                     default:
                         Log.w("Beep", "Unknown beep code: " + code);
                         stopBeeping(); // Or just return; if you want to keep isBeeping true
@@ -935,7 +938,7 @@ public class UIUpdater  {
         beepHandler.post(beepRunnable);
     }
 
-    private void stopBeeping() {
+    public void stopBeeping() {
         isBeeping = false;
         beepHandler.removeCallbacks(beepRunnable);
 
@@ -967,6 +970,34 @@ public class UIUpdater  {
         binding.battempmsg.setVisibility(View.INVISIBLE);
     }
 
+    public void startKeylostRedAlertAnimation() {
+        try {
+            if (binding.redalert != null) {
+                Animation keylost = AnimationUtils.loadAnimation(context, R.anim.alpha);
+                binding.redalert.setVisibility(View.VISIBLE);
+                binding.KeylostMessage.setVisibility(View.VISIBLE);
+                binding.redalert.startAnimation(keylost);
+                binding.KeylostMessage.startAnimation(keylost);
+                startBeeping(4);
+            }
+        } catch (Exception e) {
+            Log.e("UIUpdater", "SMARTKEY Error starting red alert animation", e);
+        }
+    }
+
+    public void stopKeylostRedAlertAnimation() {
+        try {
+            if (binding.redalert != null) {
+                binding.redalert.setVisibility(View.GONE);
+                binding.KeylostMessage.setVisibility(View.GONE);
+                binding.redalert.clearAnimation();
+                binding.KeylostMessage.clearAnimation();
+                stopBeeping();
+            }
+        } catch (Exception e) {
+            Log.e("UIUpdater", "SMARTKEY Error stopping red alert animation", e);
+        }
+    }
 
 
     // Class variables to persist values across calls
