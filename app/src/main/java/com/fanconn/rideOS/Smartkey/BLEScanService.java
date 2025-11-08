@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 
 import com.fanconn.rideOS.EVLockService;
 import com.fanconn.rideOS.MainActivity;
+import com.fanconn.rideOS.MetadataManager;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.authen.LoginActivity;
@@ -23,8 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BLEScanService extends Service {
     private static final String TAG = "BLEKeyService";
     private SerialPortManager serialPortManager;
-
-    private static final String TARGET_MAC = "C3:00:00:38:C4:4E";
+    private static final String TARGET_MAC = MetadataManager.get().getSmartKeyId();
     private static final long SCAN_INTERVAL_MS = 4000;
     private static final long OUT_OF_RANGE_TIMEOUT_MS = 6000;
     private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;

@@ -28,6 +28,7 @@ public class TelemetryDataManager {
     private float teleRemainingCapacityAH;
     private float teleODO;
     private float teleSpeed;
+    private int teleControllerOffabrupt;
     private float teletripkm;
     private float teleControllerMosTemp;
     private float teleMotorTemp;
@@ -223,6 +224,14 @@ public class TelemetryDataManager {
     public void setTeleSpeed(float teleSpeed) {
         this.teleSpeed = teleSpeed;
     }
+    public int getTeleControllerAbruptOff() {
+        return teleControllerOffabrupt;
+    }
+
+    public void setTeleControllerAbruptOff(int teleControllerOffabrupt) {
+        this.teleControllerOffabrupt = teleControllerOffabrupt;
+    }
+
     public float getTeleTrip() {
         return teleTrip;
     }

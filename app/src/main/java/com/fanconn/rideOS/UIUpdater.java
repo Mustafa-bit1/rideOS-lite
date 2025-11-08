@@ -1124,14 +1124,31 @@ public class UIUpdater  {
     private MediaPlayer cruisePlayer;
     private boolean isCruiseSoundPlaying = false;
     private boolean lastCruise = false; // track changes
+    private boolean startReasySound = false; // track changes
+
     public void updateCanData10F807A8(Heartbeat3 hb3) {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
-        //int READY = FrameUtils.extractBits(hb3.getBSG1_BYTE3(), 0, 0);
+        int READY = FrameUtils.extractBits(hb3.getBSG1_BYTE3(), 0, 0);
+        boolean isReady = (READY == 1);
+        if (isReady) {
+            if (!startReasySound && directionalGears==1) {
+                startReasySound = true;
+                ReadystartBeeping();
+                Log.d("CAN", "🟢 Ready detected - starting beep");
+            }
+        } else {
+            if (startReasySound) {
+                startReasySound = false;
+                ReadystopBeeping();
+                Log.d("CAN", "🔴 Not ready - stopping beep");
+            }
+        }
+
         int STAND =FrameUtils.extractBits(hb3.getBSG1_BYTE2(),0,1);
         isboost=hb3.getBSG1_BYTE3()==8; //hex value 08
         isCruise=hb3.getBSG1_BYTE1()==201;//hex value of 201=C9
-        tm.setTeleMotorTemp(hb3. getBSG1_BYTE7()-40);   //Motot temprature hex to dec then offset 40
+        tm.setTeleMotorTemp(hb3. getBSG1_BYTE7()-40);   //Motor temprature hex to dec then offset 40
         tm.setTeleControllerMosTemp(hb3.getBSG1_BYTE8()-40);// Controller Mos temp offset 40
 //        Log.d("dfhgvhb","CRUISE VALUE IS "+hb3.getBSG1_BYTE1());
 //        if(isboost)binding.actualboost.setVisibility(View.VISIBLE);
@@ -1309,6 +1326,25 @@ public class UIUpdater  {
         // isReady = (READY == 1);
 //        binding.readyIV.setVisibility(isReady ? View.VISIBLE : View.INVISIBLE);
     }
+
+    private MediaPlayer ReadybeepPlayer;
+
+    public void ReadystartBeeping() {
+        if (ReadybeepPlayer == null) {
+            ReadybeepPlayer = MediaPlayer.create(context, R.raw.readysound);
+            ReadybeepPlayer.setLooping(true); // continuous
+            ReadybeepPlayer.start();
+        }
+    }
+
+    public void ReadystopBeeping() {
+        if (ReadybeepPlayer != null) {
+            ReadybeepPlayer.stop();
+            ReadybeepPlayer.release();
+            ReadybeepPlayer = null;
+        }
+    }
+
 
     private void startCruiseSound() {
         if (cruisePlayer == null) {
@@ -1952,7 +1988,7 @@ public class UIUpdater  {
     private String previousMode = "";
     private MediaPlayer modeChangePlayer;
     public long lastCanUpdateTime = 0;
-    private static final long CAN_TIMEOUT_MS = 10000; // 5 seconds
+    private static final long CAN_TIMEOUT_MS = 8000; // 5 seconds
     private boolean canPopupShown = false;
     private Handler canTimeoutHandler = new Handler(Looper.getMainLooper());
 
@@ -1960,28 +1996,35 @@ public class UIUpdater  {
     private boolean controllerErrorSoundPlayed = false;
     private MediaPlayer controllerErrorPlayer;
     public static boolean islock;
+
     private void startCanTimeoutChecker() {
         canTimeoutHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 long now = System.currentTimeMillis();
 
-                // If timeout happened and popup not yet shown
-                if ((now - lastCanUpdateTime) > CAN_TIMEOUT_MS && !canPopupShown  && islock) {
+                if ((now - lastCanUpdateTime) > CAN_TIMEOUT_MS && !canPopupShown && islock) {
                     canPopupShown = true;
 
                     if (!activity.isFinishing() && !activity.isDestroyed()) {
 
-//                        if (serialPortManager != null) {
-//                            serialPortManager.getHb3().setBSG2_BYTE78(0);
-//                        }
-//                        binding.speedNumberTV.setText("0");
-//                        updateSpeedAnimation(0);
-//                        binding.ecoimage.setVisibility(View.GONE);
-//                        binding.sports.setVisibility(View.GONE);
-//                        binding.boost.setVisibility(View.GONE);
+                        // 🚨 Immediately reset state when popup appears
+                        if (serialPortManager != null) {
+                            serialPortManager.getHb3().setBSG2_BYTE78(0);
+                        }
+                        binding.speedNumberTV.setText("0");
+                        tm.setTeleSpeed(0);
+                        tm.setTeleControllerAbruptOff(1);
+                        rpm = 0;
+                        ReadystopBeeping();
+                        startReasySound = false;
+                        stopReverseBeep();
+                        updateSpeedAnimation(0);
+                        binding.ecoimage.setVisibility(View.GONE);
+                        binding.sports.setVisibility(View.GONE);
+                        binding.boost.setVisibility(View.GONE);
 
-                         //🔊 Play sound only once per error event
+                        // 🔊 Play error sound only once
                         if (!controllerErrorSoundPlayed) {
                             controllerErrorPlayer = MediaPlayer.create(activity, R.raw.controllererror);
                             controllerErrorPlayer.setOnCompletionListener(mp -> {
@@ -1989,45 +2032,35 @@ public class UIUpdater  {
                                 controllerErrorPlayer = null;
                             });
                             controllerErrorPlayer.start();
-                            controllerErrorSoundPlayed = true; // Prevent replay until reset
+                            controllerErrorSoundPlayed = true;
                         }
 
-                         //🚨 Show the alert
+                        // 🚨 Show popup
                         new AlertDialog.Builder(activity)
                                 .setTitle("Error Alert")
                                 .setMessage("Controller switched off abruptly, or a CAN line issue occurred.")
                                 .setPositiveButton("OK", (dialog, which) -> {
-                                    // Reset speed data
-                                    if (serialPortManager != null) {
-                                        serialPortManager.getHb3().setBSG2_BYTE78(0);
-                                    }
-                                    binding.speedNumberTV.setText("0");
-                                    updateSpeedAnimation(0);
-                                    binding.ecoimage.setVisibility(View.GONE);
-                                    binding.sports.setVisibility(View.GONE);
-                                    binding.boost.setVisibility(View.GONE);
-
-                                    // 🔄 Allow sound to play again for next error
-                                    controllerErrorSoundPlayed = false;
-
+                                    // Just close the dialog now
                                     dialog.dismiss();
                                 })
                                 .setCancelable(false)
                                 .show();
                     }
                 }
-                // Keep checking every second
+
+                // Keep checking
                 canTimeoutHandler.postDelayed(this, 1000);
             }
         }, 1000);
     }
+
     private boolean resetboost=false;
     public void updateCanData10F907A8(Heartbeat3 hb3) {
 
         long now = System.currentTimeMillis();
         lastCanUpdateTime = now;
         canPopupShown = false;
-
+        tm.setTeleControllerAbruptOff(0);
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
         double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.48331442) / 3.3125 * 1 / 1000;//5 % high
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.412404) / 3.3125 * 1 / 1000;// 0% high
@@ -2851,6 +2884,7 @@ public class UIUpdater  {
 
         stopBeeping();
         stopReverseBeep();
+        ReadystopBeeping();
 
         if (soundPool != null) {
             soundPool.release();

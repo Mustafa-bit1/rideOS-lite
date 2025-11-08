@@ -66,7 +66,14 @@ public class MetadataManager {
     public String getControllerId() { return prefs.getString("controller", "UNKNOWN_CONTROLLER"); }
     public String getMotorId() { return prefs.getString("motor", "UNKNOWN_MOTOR"); }
     public String getBmsId() { return prefs.getString("bms", "UNKNOWN_BMS"); }
-    public String getSmartKeyId() { return prefs.getString("smartKey", "UNKNOWN_KEY"); }
+    public String getSmartKeyId() {
+        String key = prefs.getString("smartKey", "");
+        if (key == null || key.trim().isEmpty()) {
+            return "UNKNOWN_KEY";
+        }
+        return key;
+    }
+
     public String getModel() { return prefs.getString("model", "UNKNOWN_MODEL"); }
     public String getFrontTPMS() { return prefs.getString("fronttpms", "UNKNOWN_FTPMS"); }
     public String getRearTPMS() { return prefs.getString("reartpms", "UNKNOWN_RTPMS"); }

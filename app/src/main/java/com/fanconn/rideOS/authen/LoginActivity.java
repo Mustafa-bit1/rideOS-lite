@@ -48,6 +48,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
+import com.fanconn.rideOS.MetadataManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.Smartkey.KeyPresenceManager;
@@ -70,6 +71,7 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class LoginActivity extends AppCompatActivity{
@@ -414,7 +416,7 @@ public class LoginActivity extends AppCompatActivity{
         patternView.setOnPatternCompleteListener(pattern -> {
             String inputPattern = TextUtils.join("", pattern);
             for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-                if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue()) && KeyPresenceManager.get().getIsInRange()) {
+                if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue()) && (KeyPresenceManager.get().getIsInRange() || MetadataManager.get().getSmartKeyId()=="UNKNOWN_KEY")) {
                     String username = entry.getKey().replace("user_", "").replace("_pattern", "");
                     loginSuccess(username);
                     return;
@@ -580,7 +582,7 @@ public class LoginActivity extends AppCompatActivity{
     private void validatePin() {
         String inputPin = actualPin.toString();
         for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-            if (entry.getKey().endsWith("_pin")   && KeyPresenceManager.get().getIsInRange()) {
+            if (entry.getKey().endsWith("_pin")   && (KeyPresenceManager.get().getIsInRange() || Objects.equals(MetadataManager.get().getSmartKeyId(), "UNKNOWN_KEY"))) {
                 String username = entry.getKey().replace("user_", "").replace("_pin", "");
                 String storedSalt = prefs.getString("user_" + username + "_salt", "");
                 String storedHash = (String) entry.getValue();

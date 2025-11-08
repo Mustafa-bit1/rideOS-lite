@@ -1873,11 +1873,14 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         LoginisActive = false;
 //        MainisActive = false;
 
-        if(!MainisActive)
+        if(MainisActive)
         {
+            uiUpdater.ReadystopBeeping();
             uiUpdater.stopReverseBeep();
             uiUpdater.stopBlinking();
+
             //uiUpdater.stopSideStandSound();
+//            Log.d("sadsfgd","IN MAIN PAUSE ENTERIF LOOP");
         }
 
 //        CameraService.stopRecording(this);

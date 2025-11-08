@@ -51,7 +51,7 @@ public class WatchdogService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Schedule restart every 24 hours
-        watchdogHandler.postDelayed(watchdogRunnable, 1 * 60 * 60 * 1000);
+        watchdogHandler.postDelayed(watchdogRunnable, 1 * 30 * 60 * 1000);
         return START_STICKY; // Restart service if killed
     }
 
