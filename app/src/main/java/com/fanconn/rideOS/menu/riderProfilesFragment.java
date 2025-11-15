@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -131,6 +132,18 @@ public class riderProfilesFragment extends Fragment {
         }
     }
 
+    private int getRiderCount() {
+        int count = 0;
+        for (Map.Entry<String, ?> entry : sharedPreferences.getAll().entrySet()) {
+            String key = entry.getKey();
+            if (key.startsWith("user_") && key.contains("_age")) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+
     private void addRiderCard(String username) {
         View card = LayoutInflater.from(context).inflate(R.layout.rider_card, ridersContainer, false);
         TextView nameText = card.findViewById(R.id.riderName);
@@ -139,18 +152,49 @@ public class riderProfilesFragment extends Fragment {
         nameText.setText(username);
 
         deleteBtn.setOnClickListener(v -> {
-            new AlertDialog.Builder(context)
-                    .setTitle("Confirm Deletion")
-                    .setMessage("Delete \"" + username + "\" rider profile?")
-                    .setPositiveButton("Delete", (dialog, which) -> {
-                        deleteUser(username);
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+            int riderCount = getRiderCount();
+
+            if (riderCount <= 1) {
+                showCustomToasterror("At least one rider must remain");
+                return;
+            }
+
+            // Inflate your custom popup layout
+            View dialogView = LayoutInflater.from(context).inflate(R.layout.popupdialog, null);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setView(dialogView);
+
+            // Create the dialog
+            AlertDialog dialog = builder.create();
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+            // Access views inside popupdialog.xml
+            TextView title = dialogView.findViewById(R.id.dialogTitle);
+            TextView message = dialogView.findViewById(R.id.dialogMessage);
+            Button btnYes = dialogView.findViewById(R.id.btnYes);
+            Button btnNo = dialogView.findViewById(R.id.btnNo);
+
+            // Customize text
+            title.setText("Confirm Deletion");
+            message.setText("Delete rider \"" + username + "\" ?");
+            btnYes.setText("Delete");
+            btnNo.setText("Cancel");
+
+            // Button actions
+            btnYes.setOnClickListener(b -> {
+                dialog.dismiss();
+                deleteUser(username);
+            });
+
+            btnNo.setOnClickListener(b -> dialog.dismiss());
+
+            // Show dialog
+            dialog.show();
         });
 
         ridersContainer.addView(card);
     }
+
 
     private void deleteUser(String username) {
         try {

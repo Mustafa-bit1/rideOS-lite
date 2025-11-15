@@ -87,6 +87,9 @@ public class EVLockService {
     }
 
     private void taskUnlock2() {
+        serialPortManager.VCUSendToMCU("FFAA550107000A01");
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 400);
         if (currentSequenceType != SequenceType.UNLOCK) return;
 
         serialPortManager.VCUSendToMCU("FFAA550107000A01");

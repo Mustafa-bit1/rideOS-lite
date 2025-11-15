@@ -14,8 +14,8 @@ public class KeyPresenceManager {
     private static final long OUT_OF_RANGE_MS = 5000L;
     // Unlock only if key is strong signal (> -65),
 // but don't immediately lock until it's much weaker (< -75)
-    private static final int RSSI_IN_RANGE_THRESHOLD = -65;
-    private static final int RSSI_OUT_RANGE_THRESHOLD = -75;
+    private static final int RSSI_IN_RANGE_THRESHOLD = -75;
+    private static final int RSSI_OUT_RANGE_THRESHOLD = -80;
     private static KeyPresenceManager instance;
     private final Deque<Integer> samples = new ArrayDeque<>();
     private double ema = Double.NaN;

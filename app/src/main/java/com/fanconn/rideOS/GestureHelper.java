@@ -2,18 +2,14 @@ package com.fanconn.rideOS;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.MotionEvent;
-
-import com.fanconn.rideOS.MainActivity;
-import com.fanconn.rideOS.QuickSetting;
 
 public class GestureHelper {
 
-    private static final int SWIPE_THRESHOLD = 150;
-    private static final int SWIPE_VELOCITY_THRESHOLD = 150;
-    private static final int BOTTOM_EDGE_THRESHOLD = 180;
-    private static final int TOP_EDGE_THRESHOLD = 180;
+    private static final int SWIPE_THRESHOLD = 80;
+    private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+    private static final int BOTTOM_EDGE_THRESHOLD = 0; // ↓ make smaller (was 150)
+    private static final int TOP_EDGE_THRESHOLD = 150;
 
     public static boolean handleGesture(Activity activity, MotionEvent event, float[] startYRef) {
         int screenHeight = activity.getResources().getDisplayMetrics().heightPixels;
@@ -28,33 +24,28 @@ public class GestureHelper {
                 float diffY = endY - startYRef[0];
                 float startY = startYRef[0];
 
-                //Log.d("GestureHelper", "startY=" + startY + " | endY=" + endY + " | diffY=" + diffY);
+                if (Math.abs(diffY) > 40) {
 
-                if (Math.abs(diffY) > SWIPE_THRESHOLD) {
-
-                    // ✅ Swipe Top → Bottom → from TOP edge only
-                    if (diffY > 0 && startY <= TOP_EDGE_THRESHOLD) {
-                        //Log.d("GestureHelper", "Swipe ↓ from top edge → QuickSettings");
+                    // ✅ Swipe Top → Bottom → Quick Settings
+                    if (diffY > 20 && startY <= TOP_EDGE_THRESHOLD) {
                         Intent intent = new Intent(activity, QuickSetting.class);
                         activity.startActivity(intent);
                         activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
                         return true;
                     }
 
-                    // ✅ Swipe Bottom → Top → from BOTTOM edge only
-                    else if (diffY < 0 && startY >= screenHeight - BOTTOM_EDGE_THRESHOLD && endY < screenHeight - (BOTTOM_EDGE_THRESHOLD * 2)) {
-                        //Log.d("GestureHelper", "Swipe ↑ from bottom edge → MainActivity");
+                    // ✅ Swipe Bottom → Top → Main Activity (only from bottom edge)
+                    else if (diffY < -40
+                            && startY >= screenHeight - BOTTOM_EDGE_THRESHOLD
+                            && endY <= screenHeight - (BOTTOM_EDGE_THRESHOLD + 40)) {
+                        // Must start within bottom 80px and move at least 40px upward
+
                         Intent intent = new Intent(activity, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         activity.startActivity(intent);
                         activity.finish();
                         activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
                         return true;
-                    }
-
-                    // Ignored: started from wrong area
-                    else {
-                        ///Log.d("GestureHelper", "Swipe ignored — not from correct edge region");
                     }
                 }
 

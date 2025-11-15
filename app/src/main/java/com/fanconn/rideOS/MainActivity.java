@@ -184,6 +184,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private ImageButton tripResetBtn;
     private TextView tripTextView;
     private boolean showingTrip = false; // false = Odo, true = Trip
+    private Handler chargingFixHandler;
+    private Runnable chargingFixRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -394,6 +396,26 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         registerReceiver(statusReceiver, signalfilter);
         getFreshLatLong(this);
         isStatusReceiverRegistered = true;
+
+
+        chargingFixHandler = new Handler(Looper.getMainLooper());
+
+        chargingFixRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // your line executed every 1 second
+                if (serialPortManager != null) {
+                    serialPortManager.VCUSendToMCU("FFAA55010300151806E5F4034D012C00000000");
+                } else {
+                    Log.d("CHARGINGFIX", "serialPortManager not initialized yet");
+                }
+                // schedule next run
+                chargingFixHandler.postDelayed(this, 1000);
+            }
+        };
+
+        // Start it
+        chargingFixHandler.post(chargingFixRunnable);
 
     }//END OF ONCREATE METHOD
     @SuppressLint("MissingPermission")
@@ -1621,6 +1643,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         super.onUserInteraction();
         //stopSequence();
         InactivityManager.getInstance().onUserInteraction(); // Reset timer on touch or key press
+        Log.d("dsafsd","onUserInteraction() NETER");
     }
 
 //    @Override
@@ -1839,6 +1862,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        }
         if(UIUpdater.directionalGears==0){
             InactivityManager.getInstance().startTimer(1);
+            //Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
         }
 //         If you need to restart anything like timers here, do so
 //         mHandlerTime.postDelayed(mRunnableTime, 0);
@@ -1847,7 +1871,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         // If deferred update exists, show it
         if (UpdateService.pendingUpdateApkUrl != null) {
-            Log.d("MainActivity", "Showing deferred OTA update dialog...");
+            //Log.d("MainActivity", "Showing deferred OTA update dialog...");
             Intent intent = new Intent(this, UpdateService.class);
             intent.putExtra("show_prompt_only", true);
             startService(intent);

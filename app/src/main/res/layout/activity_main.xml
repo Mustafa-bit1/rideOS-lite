@@ -587,9 +587,9 @@
         android:shadowColor="#80000000"
         android:shadowDx="5"
         android:shadowDy="3"
-        android:visibility="gone"
         android:shadowRadius="5"
         android:text="APU 0%"
+        android:visibility="gone"
         android:textAlignment="textStart"
         android:textColor="#FFFFFFFF"
         android:textSize="17dp"
@@ -951,27 +951,27 @@
         android:id="@+id/tempalerticon"
         android:layout_width="32dp"
         android:layout_height="44dp"
-        android:layout_marginStart="888dp"
-        android:layout_marginTop="315dp"
+        android:layout_marginStart="412dp"
+        android:layout_marginTop="17dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/tempicon"
         android:visibility="gone"
+
         />
 
     <ImageView
         android:id="@+id/tpmsicon"
         android:layout_width="32dp"
         android:layout_height="44dp"
-        android:layout_marginStart="930dp"
-        android:layout_marginTop="315dp"
+        android:layout_marginStart="860dp"
+        android:layout_marginTop="19dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/tpmsicon"
         android:visibility="gone"
+
         />
-
-
 
     <ImageView
         android:id="@+id/battempmsg"

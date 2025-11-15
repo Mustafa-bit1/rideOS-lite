@@ -1155,7 +1155,7 @@ public class UIUpdater  {
 //        else binding.actualboost.setVisibility(View.INVISIBLE);
         //Log.d("sdafsgdf","BOOSTBYTE IS "+isboost);
         int chargingbit = hb3.getChargingbit();
-        Log.d("sdfdg","setChargingErrorbit   "+hb3.getChargingErrorbit());
+        //Log.d("sdfdg","setChargingErrorbit   "+hb3.getChargingErrorbit());
         if((shouldshowchargingicononmainonot && directionalGears!=2) || shouldshowchargingicononmainonot && isStand){
 
             binding.rectangleGearsTV.setVisibility(View.INVISIBLE);
@@ -1243,7 +1243,6 @@ public class UIUpdater  {
                         powerOnUi();
                    //     cameraHandler.startRearRecording(rearPath);
 
-
                         //mp3name is shiftforward
                         playGearSound(R.raw.shiftforward); // 🔊 Play neutral shift sound
                         if(serialPortManager!=null){
@@ -1254,7 +1253,8 @@ public class UIUpdater  {
 
                     case 2: // Reverse
                         reverseUI();
-                        startBeeping(4);
+                        //
+                        // startBeeping(4);
                         if(StopInactivtyTimerDuringPopUp){InactivityManager.getInstance().startTimer(2);}
                         break;
 
