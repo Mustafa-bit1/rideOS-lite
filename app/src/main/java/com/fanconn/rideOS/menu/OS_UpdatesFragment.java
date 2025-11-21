@@ -104,20 +104,27 @@ public class OS_UpdatesFragment extends Fragment {
                 String latestVersion = jsonObject.getString("latest_version");
                 String releaseDate = jsonObject.optString("release_date", "N/A");
 
-                requireActivity().runOnUiThread(() -> {
-                    serverVersionTV.setText("Latest Version " + latestVersion);
-                    serverReleaseDateTV.setText("Release Date: " + releaseDate);
-                });
+                // SAFE UI update
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> {
+                        serverVersionTV.setText("Latest Version " + latestVersion);
+                        serverReleaseDateTV.setText("Release Date: " + releaseDate);
+                    });
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                requireActivity().runOnUiThread(() -> {
-                    serverVersionTV.setText("Latest Version : Not found");
-                    serverReleaseDateTV.setText("Release Date : -");
-                });
+
+                if (isAdded()) {
+                    requireActivity().runOnUiThread(() -> {
+                        serverVersionTV.setText("Latest Version : Not found");
+                        serverReleaseDateTV.setText("Release Date : -");
+                    });
+                }
             }
         }).start();
     }
+
 
     private void updateVersionInfo(View view) {
         TextView versionText = view.findViewById(R.id.version);

@@ -1034,6 +1034,14 @@ public class LoginActivity extends AppCompatActivity{
     protected void onResume() {
         super.onResume();
         MainActivity.MainisActive = false;
+        MainActivity.isVisible = true;
+
+        if(UIUpdater.getInstance()!=null){
+            UIUpdater.getInstance().ReadystopBeeping();
+            UIUpdater.getInstance().stopReverseBeep();
+            UIUpdater.getInstance().stopBlinking();
+        }
+
         int batteryLevel=serialPortManager.getHb3().getBatteryLevel() / 10;
         String sBatteryLevel = String.valueOf(batteryLevel);
         if(batteryLevel>=0 && batteryLevel<=100){

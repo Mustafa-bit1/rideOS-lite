@@ -480,15 +480,16 @@ public class UIUpdater  {
 
         if(((hb3.getrealCurrent()-30000)/10)<500){
             tm.setTeleCurrentConsumption((hb3.getrealCurrent()-30000)/10);
+            Log.d("sadfsgg","CURRWNTCSMALL VALUES IS "+(hb3.getrealCurrent()-30000)/10);
         }
         tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
-        int range= (int) Math.floor(batteryLevel * 2.8);  // Get the whole number part
+        int range= (int) Math.floor(batteryLevel * 2.0);  // Get the whole number part
         if(batteryLevel>=0 && batteryLevel<=100){
             tm.setTeleSOC(batteryLevel);
             binding.batteryTV.setText("Battery "+sBatteryLevel + "%   |  ~ "+range+" km");
         }
 
-        if (!Lowbatflag && batteryLevel == 20  && tm.getTeleChargingState()==0) {
+        if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18)  && tm.getTeleChargingState()==0) {
 
             if(serialPortManager!=null){
                 Log.d("asdfdg","ENTER 20");
@@ -1125,7 +1126,9 @@ public class UIUpdater  {
     private boolean isCruiseSoundPlaying = false;
     private boolean lastCruise = false; // track changes
     private boolean startReasySound = false; // track changes
-
+    private boolean isAlreadyInMainActivity() {
+        return activity != null && activity instanceof MainActivity;
+    }
     public void updateCanData10F807A8(Heartbeat3 hb3) {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
@@ -1142,6 +1145,15 @@ public class UIUpdater  {
                 startReasySound = false;
                 ReadystopBeeping();
                 Log.d("CAN", "🔴 Not ready - stopping beep");
+            }
+            if (!MainActivity.isVisible && directionalGears==1) {
+                Log.d("UIUPDATER", "TAKEMEHOME111");
+
+                Intent intent = new Intent(activity, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
             }
         }
 
@@ -1241,10 +1253,25 @@ public class UIUpdater  {
 
                     case 1: // Forward
                         powerOnUi();
-                   //     cameraHandler.startRearRecording(rearPath);
+//                        if(MainActivity.MainisActive)
+//                        {
+//                            goToMainActivityClearStack();
+//                        }
+                        if (!MainActivity.isVisible) {
+                            Log.d("UIUPDATER", "TAKEMEHOME2222");
+
+                            Intent intent = new Intent(activity, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                            activity.startActivity(intent);
+                            activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
+                        }
+
+
+                        //     cameraHandler.startRearRecording(rearPath);
 
                         //mp3name is shiftforward
-                        playGearSound(R.raw.shiftforward); // 🔊 Play neutral shift sound
+                        //playGearSound(R.raw.shiftforward);
                         if(serialPortManager!=null){
                             serialPortManager.VCUSendToMCU("FFAA550101000A01");}
                         // animateSpeedLevelOnce();
@@ -1326,6 +1353,20 @@ public class UIUpdater  {
         // isReady = (READY == 1);
 //        binding.readyIV.setVisibility(isReady ? View.VISIBLE : View.INVISIBLE);
     }
+
+
+
+    public void goToMainActivityClearStack() {
+        if (activity == null) return;
+
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        activity.startActivity(intent);
+    }
+
 
     private MediaPlayer ReadybeepPlayer;
 

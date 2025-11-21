@@ -96,8 +96,7 @@ public class DiagnosticsFragment extends Fragment {
     private void initListeners(View view) {
         WifiManager wifiManager = (WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        rebootbtn.setOnClickListener(v -> showRebootDialog());
-        shutdownbtn.setOnClickListener(v -> showShutdownDialog());
+
         view.findViewById(R.id.mcuotaupdatebtn).setOnClickListener(v -> MCUOTA_Onclick(v));
 
         bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550102000A01"));
@@ -165,36 +164,93 @@ public class DiagnosticsFragment extends Fragment {
             UIUpdater.tiredimensions -= 0.05;
             updateDisplay(view);
         });
+
+        rebootbtn.setOnClickListener(v -> showRebootDialog());
+        shutdownbtn.setOnClickListener(v -> showShutdownDialog());
+    }//END OF onCreateView
+
+
+    // ------------------ HELPER: SEND CMD TWICE THEN CALLBACK ------------------
+    private void sendCommandTwiceThen(Runnable afterTask) {
+
+        if (serialPortManager == null) {
+            Log.e("UART", "SerialPortManager is NULL");
+            afterTask.run();
+            return;
+        }
+
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        // Send 1st time
+        serialPortManager.VCUSendToMCU("FFAA550107000A00");
+
+        // Send 2nd time after 1 second
+        handler.postDelayed(() -> {
+
+            serialPortManager.VCUSendToMCU("FFAA550107000A00");
+
+            // After another 1 sec → execute final task (reboot/shutdown)
+            handler.postDelayed(afterTask, 1000);
+
+        }, 1000);
     }
+// ---------------------------------------------------------------------------
+
+
 
     private void showRebootDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.popupdialog, null);
-        AlertDialog dialog = createDialog(dialogView, "Confirm Restart", "Are you sure you want to Restart the device?", "Restart", () -> {
-            PowerManager pm = (PowerManager) requireContext().getSystemService(Context.POWER_SERVICE);
-            if (pm != null) pm.reboot(null);
-        });
+
+        AlertDialog dialog = createDialog(dialogView,
+                "Confirm Restart",
+                "Are you sure you want to Restart the device?",
+                "Restart",
+                () -> sendCommandTwiceThen(() -> {
+                    PowerManager pm = (PowerManager) requireContext().getSystemService(Context.POWER_SERVICE);
+                    if (pm != null) pm.reboot(null);
+                })
+        );
+
         dialog.show();
     }
+
+
 
     private void showShutdownDialog() {
         View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.popupdialog, null);
-        AlertDialog dialog = createDialog(dialogView, "Confirm Shutdown", "Are you sure you want to shut down the device?", "Shutdown", () -> {
-            try {
-                PowerManager pm = (PowerManager) requireContext().getSystemService(Context.POWER_SERVICE);
-                if (pm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    Method method = PowerManager.class.getMethod("shutdown", boolean.class, String.class, boolean.class);
-                    method.invoke(pm, false, null, false);
-                } else {
-                    pm.reboot("shutdown");
-                }
-            } catch (Exception e) {
-                Log.e("Shutdown", "Shutdown failed", e);
-            }
-        });
+
+        AlertDialog dialog = createDialog(dialogView,
+                "Confirm Shutdown",
+                "Are you sure you want to shut down the device?",
+                "Shutdown",
+                () -> sendCommandTwiceThen(() -> {
+                    try {
+                        PowerManager pm = (PowerManager) requireContext().getSystemService(Context.POWER_SERVICE);
+                        if (pm != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            Method method = PowerManager.class.getMethod(
+                                    "shutdown",
+                                    boolean.class,
+                                    String.class,
+                                    boolean.class
+                            );
+                            method.invoke(pm, false, null, false);
+                        } else {
+                            pm.reboot("shutdown");
+                        }
+                    } catch (Exception e) {
+                        Log.e("Shutdown", "Shutdown failed", e);
+                    }
+                })
+        );
+
         dialog.show();
     }
 
+
+
+    // ------------------ COMMON DIALOG CODE ------------------
     private AlertDialog createDialog(View dialogView, String titleText, String messageText, String positiveText, Runnable positiveAction) {
+
         TextView title = dialogView.findViewById(R.id.dialogTitle);
         TextView message = dialogView.findViewById(R.id.dialogMessage);
         Button btnYes = dialogView.findViewById(R.id.btnYes);
@@ -214,10 +270,15 @@ public class DiagnosticsFragment extends Fragment {
             positiveAction.run();
             dialog.dismiss();
         });
+
+
         btnNo.setOnClickListener(v -> dialog.dismiss());
 
         return dialog;
     }
+
+
+
 
     private void showPasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());

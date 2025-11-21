@@ -184,8 +184,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private ImageButton tripResetBtn;
     private TextView tripTextView;
     private boolean showingTrip = false; // false = Odo, true = Trip
-    private Handler chargingFixHandler;
-    private Runnable chargingFixRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -397,25 +395,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         getFreshLatLong(this);
         isStatusReceiverRegistered = true;
 
-
-        chargingFixHandler = new Handler(Looper.getMainLooper());
-
-        chargingFixRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // your line executed every 1 second
-                if (serialPortManager != null) {
-                    serialPortManager.VCUSendToMCU("FFAA55010300151806E5F4034D012C00000000");
-                } else {
-                    Log.d("CHARGINGFIX", "serialPortManager not initialized yet");
-                }
-                // schedule next run
-                chargingFixHandler.postDelayed(this, 1000);
-            }
-        };
-
-        // Start it
-        chargingFixHandler.post(chargingFixRunnable);
 
     }//END OF ONCREATE METHOD
     @SuppressLint("MissingPermission")
@@ -1849,12 +1828,15 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private boolean isReceiverRegistered = false;
     public static boolean LoginisActive = false;
     public static boolean MainisActive = false;
+    public static boolean isVisible = false;
+
     @Override
     protected void onResume() {
         super.onResume();
         LoginisActive = true;
-
         UIUpdater.islock=true;
+        isVisible = true;
+
 //        if (!isReceiverRegistered) {
 //            IntentFilter filter = new IntentFilter("FRAME_RECEIVED");
 //            LocalBroadcastManager.getInstance(this).registerReceiver(frameReceiver, filter);
@@ -1895,17 +1877,19 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     protected void onPause() {
         super.onPause();
         LoginisActive = false;
+        isVisible = false;
+
 //        MainisActive = false;
 
-        if(MainisActive)
-        {
-            uiUpdater.ReadystopBeeping();
-            uiUpdater.stopReverseBeep();
-            uiUpdater.stopBlinking();
-
-            //uiUpdater.stopSideStandSound();
-//            Log.d("sadsfgd","IN MAIN PAUSE ENTERIF LOOP");
-        }
+//        if(KeepsoundsOrStop)
+//        {
+//            uiUpdater.ReadystopBeeping();
+//            uiUpdater.stopReverseBeep();
+//            uiUpdater.stopBlinking();
+//
+//            //uiUpdater.stopSideStandSound();
+////            Log.d("sadsfgd","IN MAIN PAUSE ENTERIF LOOP");
+//        }
 
 //        CameraService.stopRecording(this);
 

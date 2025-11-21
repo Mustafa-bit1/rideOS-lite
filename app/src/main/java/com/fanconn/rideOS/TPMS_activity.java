@@ -32,6 +32,7 @@ public class TPMS_activity extends AppCompatActivity {
     private TextView frontPressureView, frontTempView, rearPressureView, rearTempView;
     private TextView bluetoothWarningText;
     private TextView statusText, rearStatus, frontStatus;
+    private ImageView tpmsBikeImg;
 
     // Receiver for TPMS updates
     private BroadcastReceiver tpmsReceiver;
@@ -123,6 +124,7 @@ public class TPMS_activity extends AppCompatActivity {
         statusText = findViewById(R.id.tpmsStatusText);
         rearStatus = findViewById(R.id.reartpmsIdealStatus);
         frontStatus = findViewById(R.id.fronttpmsIdealStatus);
+        tpmsBikeImg = findViewById(R.id.tpmsbikeIMG);
 
         // back button -> go to main (clearing quicksettings)
         backbtntpms.setOnClickListener(v -> {
@@ -263,12 +265,12 @@ public class TPMS_activity extends AppCompatActivity {
                 statusText.setText("Rear tire low pressure warning!");
                 statusText.setTextColor(Color.YELLOW);
                 rearStatus.setText("CRITICAL"); rearStatus.setTextColor(Color.RED);
-                frontStatus.setText("IDEAL"); frontStatus.setTextColor(Color.parseColor("#FFC30F"));
+                frontStatus.setText("IDEAL"); frontStatus.setTextColor(Color.parseColor("#3BFF21"));
 
             } else {
                 statusText.setText("Both tires optimal. rideOS keeps you rolling with confidence.");
                 statusText.setTextColor(Color.WHITE);
-                frontStatus.setText("IDEAL"); frontStatus.setTextColor(Color.parseColor("#FFC30F"));
+                frontStatus.setText("IDEAL"); frontStatus.setTextColor(Color.parseColor("#3BFF21"));
                 rearStatus.setText("IDEAL"); rearStatus.setTextColor(Color.parseColor("#3BFF21"));
             }
 
@@ -281,7 +283,7 @@ public class TPMS_activity extends AppCompatActivity {
             } else {
                 statusText.setText("Front tire optimal. Rear sensor not detected.");
                 statusText.setTextColor(Color.WHITE);
-                frontStatus.setText("IDEAL"); frontStatus.setTextColor(Color.parseColor("#FFC30F"));
+                frontStatus.setText("IDEAL"); frontStatus.setTextColor(Color.parseColor("#3BFF21"));
             }
             rearStatus.setText("No sensor detected"); //rearStatus.setTextColor(Color.GRAY);
 
@@ -305,6 +307,58 @@ public class TPMS_activity extends AppCompatActivity {
             frontStatus.setText("No sensor detected"); //frontStatus.setTextColor(Color.GRAY);
             rearStatus.setText("No sensor detected"); //rearStatus.setTextColor(Color.GRAY);
         }
+
+
+        // ------------------------------------------
+// Update TPMS bike image based on conditions
+// ------------------------------------------
+        if (tpmsBikeImg != null) {
+
+            // ✔ CASE 1: Both sensors available
+            if (frontAvailable && rearAvailable) {
+
+                if (!frontLow && !rearLow) {
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsgg);   // both good
+                } else if (frontLow && !rearLow) {
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsgr);   // front low
+                } else if (!frontLow && rearLow) {
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsrg);   // rear low
+                } else {
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsrr);   // both low
+                }
+            }
+
+            // ✔ CASE 2: ONLY front detected → REAR = LOW
+            else if (frontAvailable && !rearAvailable) {
+
+                if (frontLow) {
+                    // front low + rear missing → both low
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsrr);
+                } else {
+                    // front good + rear missing → rear low
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsrg);
+                }
+            }
+
+            // ✔ CASE 3: ONLY rear detected → FRONT = LOW
+            else if (!frontAvailable && rearAvailable) {
+
+                if (rearLow) {
+                    // rear low + front missing → both low
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsrr);
+                } else {
+                    // rear good + front missing → front low
+                    tpmsBikeImg.setImageResource(R.drawable.tpmsgr);
+                }
+            }
+
+            // ✔ CASE 4: No sensors → default
+            else {
+                tpmsBikeImg.setImageResource(R.drawable.tpmsgg);
+            }
+        }
+
+
     }
 
     // lifecycle: register system bluetooth receiver and start UI tick in onStart; stop in onStop

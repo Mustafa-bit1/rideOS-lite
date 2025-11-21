@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -100,8 +103,7 @@ public class UpdateService extends Service {
                     Log.d(TAG, "App is up-to-date.");
                     if (manual) {
                         handler.post(() ->
-                                android.widget.Toast.makeText(getApplicationContext(),
-                                        "App is up-to-date", android.widget.Toast.LENGTH_SHORT).show()
+                                showCustomToast("App is up-to-date")
                         );
                     }
                 }
@@ -110,14 +112,33 @@ public class UpdateService extends Service {
                 Log.e(TAG, "Update check failed: " + e.getMessage(), e);
                 if (manual) {
                     handler.post(() ->
-                            android.widget.Toast.makeText(getApplicationContext(),
-                                    "No update available", android.widget.Toast.LENGTH_SHORT).show()
+//                            android.widget.Toast.makeText(getApplicationContext(),
+//                                    "No update available", android.widget.Toast.LENGTH_SHORT).show()
+                            showCustomToast("No update available")
                     );
                 }
             }
 
         }).start();
     }
+    private void showCustomToast(String message) {
+        new Handler(Looper.getMainLooper()).post(() -> {
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View layout = inflater.inflate(R.layout.toast_custom, null);
+
+            ImageView icon = layout.findViewById(R.id.toast_icon);
+            TextView text = layout.findViewById(R.id.toast_text);
+
+            icon.setImageResource(R.drawable.toastlogo);
+            text.setText(message);
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.setView(layout);
+            toast.show();
+        });
+    }
+
 
     private void promptUserToUpdate(String apkUrl) {
         Log.d(TAG, "Prompting user for update...");
