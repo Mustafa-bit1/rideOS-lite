@@ -26,14 +26,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 public class TPMS_activity extends AppCompatActivity {
     private static final String TAG = "TPMS-Activity";
-
     // Views
     private ImageView backbtntpms;
     private TextView frontPressureView, frontTempView, rearPressureView, rearTempView;
     private TextView bluetoothWarningText;
     private TextView statusText, rearStatus, frontStatus;
     private ImageView tpmsBikeImg;
-
     // Receiver for TPMS updates
     private BroadcastReceiver tpmsReceiver;
 
@@ -72,7 +70,6 @@ public class TPMS_activity extends AppCompatActivity {
     private boolean rearLow = false;
     private boolean frontAvailable = false;
     private boolean rearAvailable = false;
-
     private long lastFrontUpdate = 0L;
     private long lastRearUpdate  = 0L;
 

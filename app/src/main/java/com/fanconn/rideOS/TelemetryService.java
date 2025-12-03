@@ -82,7 +82,7 @@ public class TelemetryService extends Service {
     }
 
     private void startTelemetry(String VINNUMBER) {
-//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.110:8081/ws/ev"));
+//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.134:8081/ws/ev"));
         evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.174.148.224:8081/ws/ev"));
 
         evClient.connect();

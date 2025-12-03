@@ -29,8 +29,8 @@ public class BLEScanService extends Service {
     private static final long OUT_OF_RANGE_TIMEOUT_MS = 6000;
     private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;
 
-    private static final int RSSI_IN_RANGE_THRESHOLD = -85;
-    private static final int RSSI_OUT_RANGE_THRESHOLD = -90;
+    private static final int RSSI_IN_RANGE_THRESHOLD = -75;
+    private static final int RSSI_OUT_RANGE_THRESHOLD = -80;
 
     private BluetoothLeScanner scanner;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -80,9 +80,14 @@ public class BLEScanService extends Service {
                     outOfRangeNotified = false;
                     Log.d(TAG, "✅ SMARTKEY RSSI update: " + rssi);
 
-                    SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A01");
-                    new Handler(Looper.getMainLooper()).postDelayed(
-                            () -> SerialPortManager.getInstance().VCUSendToMCU("FFAA550101000A01"), 500);
+                    if (MainActivity.MainisActive) {
+                        SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A01");
+                        new Handler(Looper.getMainLooper()).postDelayed(
+                                () -> SerialPortManager.getInstance().VCUSendToMCU("FFAA550101000A01"), 500
+                        );
+                    } else {
+                        Log.d(TAG, "🔒 SMARTKEY Key detected but skipping unlock skipped — scooter is LOCKED.");
+                    }
                 }
 
             } else {

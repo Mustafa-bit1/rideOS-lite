@@ -634,6 +634,7 @@
         android:layout_marginBottom="120dp"
         android:layout_toRightOf="@id/timeTextView"
         android:translationY="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/headlamp" />
@@ -659,6 +660,7 @@
         android:layout_marginBottom="110dp"
         android:src="@drawable/indicators"
         android:translationY="-10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
     <ImageView
@@ -688,6 +690,7 @@
         android:layout_marginBottom="110dp"
         android:src="@drawable/indicatorsr"
         android:translationY="-10dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -964,7 +967,7 @@
         android:id="@+id/tpmsicon"
         android:layout_width="32dp"
         android:layout_height="44dp"
-        android:layout_marginStart="860dp"
+        android:layout_marginStart="856dp"
         android:layout_marginTop="19dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -1072,6 +1075,127 @@
         android:translationY="-10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+<!--    &lt;!&ndash; TPMS CONTAINER (hidden by default, shown only in Neutral gear) &ndash;&gt;-->
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:id="@+id/tpmsContainer"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--     >-->
+
+<!--&lt;!&ndash;        <androidx.cardview.widget.CardView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginStart="303dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginTop="325dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:cardBackgroundColor="#262626"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:cardCornerRadius="12dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
+
+<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/rearpressurevalue"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginTop="8dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:text="- psi"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/reartempvalue"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginTop="38dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:text="- °C"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;        </androidx.cardview.widget.CardView>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <androidx.cardview.widget.CardView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginStart="887dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginTop="325dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:cardBackgroundColor="#262626"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:cardCornerRadius="12dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
+
+<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/frontpressurevalue"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginTop="8dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:text="- psi"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;                android:id="@+id/fronttempvalue"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:layout_marginTop="38dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:text="- °C"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;        </androidx.cardview.widget.CardView>&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/reartpmsIdealStatus"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="180dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginTop="272dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginEnd="828dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:fontFamily="@font/kanit"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:lineSpacingExtra="-20dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:text="No sensor detected"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textColor="#3BFF21"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textSize="25dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+
+<!--&lt;!&ndash;        <TextView&ndash;&gt;-->
+<!--&lt;!&ndash;            android:id="@+id/fronttpmsIdealStatus"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_width="180dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginTop="275dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:layout_marginEnd="253dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:fontFamily="@font/kanit"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:lineSpacingExtra="-20dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:text="No sensor detected"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textColor="#FFC30F"&ndash;&gt;-->
+<!--&lt;!&ndash;            android:textSize="25dp"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/tpmsbikeIMG"-->
+<!--            android:layout_width="486dp"-->
+<!--            android:layout_height="332dp"-->
+<!--            android:layout_marginTop="146dp"-->
+<!--            android:layout_marginEnd="395dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/tpmsgg" />-->
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+
+
 
     <!--    <ImageView-->
     <!--        android:id="@+id/imageView12"-->

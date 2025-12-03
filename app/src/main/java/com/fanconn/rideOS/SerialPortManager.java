@@ -238,6 +238,7 @@ public class SerialPortManager {
         handlerVcuToMcu.postDelayed(() -> {
             mcuData = data;
             currentAttempt = 0;
+            Log.d("sdfs","VCUSENDTOMCUMETHODS "+data);
             handlerVcuToMcu.post(VcuToMcTask);
         }, 200);
     }

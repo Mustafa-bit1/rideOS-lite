@@ -664,6 +664,11 @@ public class LoginActivity extends AppCompatActivity{
 
     public void loginSuccess(String username) {
         showCustomToast("Welcome " + username + " !");
+        if(serialPortManager!=null){
+            serialPortManager.VCUSendToMCU("FFAA550107000A01");
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU("FFAA550101000A01"), 100);
+        }
 //        UIUpdater.telecurrentrider=username;
         TelemetryDataManager.getInstance().setTeleCurrentRider(username);
         actualPin.setLength(0);
@@ -683,13 +688,17 @@ public class LoginActivity extends AppCompatActivity{
 
         // Run heavy logic and sound AFTER activity transition
         new Thread(() -> {
+
+            if (MainActivity.instance != null) {
+                MainActivity.instance.runPostLoginInit();
+            }
+
             SharedPreferences.Editor editor = prefs.edit();
 
             String prevRider = prefs.getString("last_logged_in_user", null);
             boolean isSameRider = username.equals(prevRider);
 
-            if (!isSameRider) {
-
+            if (!isSameRider && !username.equals("Key Rider")) {
                 // Fetch user data
                 String age = prefs.getString("user_" + username + "_age", "N/A");
                 String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
@@ -790,20 +799,20 @@ public class LoginActivity extends AppCompatActivity{
             int batteryLevel = serialPortManager.getHb3().getBatteryLevel() / 10;
 
             if (batteryLevel ==0) { // phase max , all normal
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
             }
             else if (batteryLevel <= 10 && !UIUpdater.apuflag) { // phase 0 , all normal
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C000000B400";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
             }
             else if (batteryLevel <= 20) { //  line 15A, phase max, all normal
-                torqueFrame = "FFAA550103001510FBA8073C008C00B004B400";
+                torqueFrame = "FFAA550103001510FBA8073C00A000B004C800";
             } else if (batteryLevel <= 80) { // phase max, all normal
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
             } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
             }
             else{//all max
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
             }
 
             final String finalTorqueFrame = torqueFrame; // make it final for lambdas
@@ -843,9 +852,7 @@ public class LoginActivity extends AppCompatActivity{
                 }
 
             }, 200);
-            if (MainActivity.instance != null) {
-                MainActivity.instance.runPostLoginInit();
-            }
+
         }).start();
     }
 
@@ -1054,6 +1061,9 @@ public class LoginActivity extends AppCompatActivity{
 //        serialPortManager.getHb3().setLEDresponse(1);
 //        serialPortManager.getHb3().sethandleLockresponse(1);
         EVLockService.getInstance().startLockSequence();    // Start lock
+//        serialPortManager.VCUSendToMCU("FFAA550101000A00");
+//        new Handler(Looper.getMainLooper()).postDelayed(
+//                () -> serialPortManager.VCUSendToMCU("FFAA550107000A00"), 100);
 //        // First command (immediately)
 //        serialPortManager.VCUSendToMCU("FFAA550101000A00");
 //
@@ -1102,16 +1112,16 @@ public class LoginActivity extends AppCompatActivity{
         //this was bcz when user comes back from chargingUI on login then wait on login for 15 seconds then start again chargingUI
         chargingUIFlagHandler.postDelayed(chargingUIFlagRunnable, 15000);
 
-        delayedLockRunnable = () -> {
-            Heartbeat1 hb1 = serialPortManager.getHb1();
-            if (hb1.getDragonLock() == 1 || hb1.getLED() == 1) {
-                //Log.d("LoginActivity", "Locking after delay...");
-                EVLockService.getInstance().startLockSequence();
-            } else {
-                //Log.d("LoginActivity", "Scooter already locked, skipping.");
-            }
-        };
-        delayedLockHandler.postDelayed(delayedLockRunnable, 5000);
+//        delayedLockRunnable = () -> {
+//            Heartbeat1 hb1 = serialPortManager.getHb1();
+//            if (hb1.getDragonLock() == 1 || hb1.getLED() == 1) {
+//                //Log.d("LoginActivity", "Locking after delay...");
+//                EVLockService.getInstance().startLockSequence();
+//            } else {
+//                //Log.d("LoginActivity", "Scooter already locked, skipping.");
+//            }
+//        };
+//        delayedLockHandler.postDelayed(delayedLockRunnable, 5000);
     }
 
 
@@ -1240,6 +1250,7 @@ public class LoginActivity extends AppCompatActivity{
             wakeLock.acquire(3000); // keep screen on for 3 seconds
         }
     }
+
     @Override
     public void onBackPressed() {
         // Prevent user from bypassing login screen

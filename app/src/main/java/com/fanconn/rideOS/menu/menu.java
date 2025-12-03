@@ -55,8 +55,16 @@ public class menu extends AppCompatActivity {
         // ✅ Setup adapter and default fragment
         adapter = new MenuAdapter(this, titles, icons);
         menuList.setAdapter(adapter);
-        loadFragment(new DisplayFragment());
-        adapter.setSelectedPosition(0);
+        String openFragment = getIntent().getStringExtra("openFragment");
+
+        if (openFragment != null && openFragment.equals("wireless")) {
+            loadFragment(new WirelessFragment());
+            adapter.setSelectedPosition(1); // highlight Wireless
+        } else {
+            loadFragment(new DisplayFragment());
+            adapter.setSelectedPosition(0); // default
+        }
+
 
         // ✅ Handle clicks
         menuList.setOnItemClickListener((parent, view, position, id) -> {

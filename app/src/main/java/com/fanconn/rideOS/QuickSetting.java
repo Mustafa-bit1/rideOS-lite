@@ -182,6 +182,18 @@ public class QuickSetting extends AppCompatActivity {
         });
 
 
+        wifiToggle.setOnLongClickListener(v -> {
+            Intent i = new Intent(QuickSetting.this, com.fanconn.rideOS.menu.menu.class);
+            i.putExtra("openFragment", "wireless");
+
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            startActivity(i);
+            finish();
+            return true;
+        });
+
+
         // Bluetooth
 //        bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
 //        Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);

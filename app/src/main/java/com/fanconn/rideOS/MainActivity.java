@@ -63,9 +63,14 @@ import com.fanconn.rideOS.mcuupdate.FileDownloader;
 import com.fanconn.rideOS.mcuupdate.YMode;
 
 import com.fanconn.rideOS.menu.menu;
+import com.fanconn.rideOS.network.CommandHandler;
+import com.fanconn.rideOS.network.CommandListener;
 import com.fanconn.rideOS.network.EVWebSocketClient;
 import com.fanconn.rideOS.network.ApiService;
 import com.fanconn.rideOS.network.ScooterMqttManager;
+
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.json.JSONObject;
 
 import tp.xmaihh.serialport.BuildConfig;
 
@@ -291,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         // 实时获取时间
         acquisitionTime();
+
         //animateBatteryLevelOnce();
         //animateSpeedLevelOnce();
 //        InactivityManager.getInstance().setCallback(this);
@@ -395,8 +401,20 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         getFreshLatLong(this);
         isStatusReceiverRegistered = true;
 
+        commandHandler = new CommandHandler((commandType, value, clientId) -> {
+            Log.d("CMD_MAIN", "Command Received: " + commandType + " = " + value);
+
+            // TODO: UART Send here
+            // serialPortManager.sendCommandToMcu(commandType, value);
+
+            sendAckToServer("WHITEBOARD", commandType, value, "success", clientId);
+        });
+
+        initMqtt();
 
     }//END OF ONCREATE METHOD
+    private CommandHandler commandHandler;
+
     @SuppressLint("MissingPermission")
     private void getFreshLatLong(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -1966,6 +1984,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             binding.textstatus.setText(message);
         }
     }
+
     public void runPostLoginInit() {
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
 //        Log.d("MainActivity", "Running unlock sequence from post-login...");
@@ -1993,16 +2012,16 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //            startService(i);
 //        }, 8000); // 8 seconds
 
-        delayedUnlockRunnable = () -> {
-            Heartbeat1 hb1 = serialPortManager.getHb1();
-            if ((hb1.getDragonLock() == 0 || hb1.getLED() == 0)&& LoginisActive) {
-                Log.d("MainActivity", "&&&&&&&&&&&&&&&&&&&&&&&Unlocking again after delay...");
-                EVLockService.getInstance().startUnlockSequence();
-            } else {
-                //Log.d("MainActivity", "Scooter already unlocked, skipping re-unlock.");
-            }
-        };
-        delayedUnlockHandler.postDelayed(delayedUnlockRunnable, 8000);
+//        delayedUnlockRunnable = () -> {
+//            Heartbeat1 hb1 = serialPortManager.getHb1();
+//            if ((hb1.getDragonLock() == 0 || hb1.getLED() == 0)&& LoginisActive) {
+//                Log.d("MainActivity", "&&&&&&&&&&&&&&&&&&&&&&&Unlocking again after delay...");
+//                EVLockService.getInstance().startUnlockSequence();
+//            } else {
+//                //Log.d("MainActivity", "Scooter already unlocked, skipping re-unlock.");
+//            }
+//        };
+//        delayedUnlockHandler.postDelayed(delayedUnlockRunnable, 8000);
     }
     @Override
     public void onBackPressed() {
@@ -2011,6 +2030,29 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
     private final Handler bmsHandler = new Handler(Looper.getMainLooper());
     private int requestIndex = 0;
+
+//    private final Runnable bmsRunnable = new Runnable() {
+//        @Override
+//        public void run() {
+//            switch (requestIndex) {
+//                case 0://Log.d("sfadsgf","ENTERREQUSTLOOP");
+//                    serialPortManager.VCUSendToMCU("FFAA5501030015160B01800001020304050607");
+//                    break;
+//
+//                case 1:
+//                    serialPortManager.VCUSendToMCU("FFAA5501030015160D01800001020304050607");
+//                    break;
+//
+//                case 2:
+//                    serialPortManager.VCUSendToMCU("FFAA5501030015189101400001020304050607");
+//                    break;
+//
+//            }
+//            requestIndex = (requestIndex + 1) % 3;
+//            bmsHandler.postDelayed(this, 1000); // 650ms interval
+//        }
+//    };
+
 
     private final Runnable bmsRunnable = new Runnable() {
         @Override
@@ -2059,6 +2101,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             bmsHandler.postDelayed(this, 650); // 650ms interval
         }
     };
+
 
     // gesture features =================================
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
@@ -2141,5 +2184,83 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         return extractedBits;
     }
+
+
+    private void initMqtt() {
+        String vin = "WHITEBOARD";
+
+        ScooterMqttManager.getInstance().init(
+                this,
+                "tcp://192.168.1.134:1883",
+                "SCOOTER_DASHBOARD_" + vin
+        );
+
+        ScooterMqttManager.getInstance().connect(() -> {
+            Log.d("MQTT", "Connected. Subscribing...");
+
+            try {
+                ScooterMqttManager.getInstance().getClient().subscribe(
+                        "scooter/" + vin + "/command",
+                        1,
+                        new CommandListener(commandHandler)
+                );
+
+
+                Log.d("MQTT", "Subscribed to command topic");
+
+            } catch (Exception e) {
+                Log.e("MQTT", "Subscribe failed", e);
+            }
+        });
+    }
+
+//    private void onCommandReceived(String json) {
+//        Log.d("CMD", "Received command: " + json);
+//
+//        try {
+//            JSONObject obj = new JSONObject(json);
+//
+//            String commandType = obj.getString("commandType");
+//            int value = obj.getInt("value");
+//            String clientId = obj.optString("clientId", "ANDROID_APP");
+//            String vin = "WHITEBOARD"; // TODO: replace with real VIN later
+//
+//            Log.d("CMD_EXEC", "Executing: " + commandType + " | Value: " + value);
+//
+//            // TODO: Send to UART here
+//            // serialPortManager.sendCommandToMcu(commandType, value);
+//
+//            // Send success ACK back to Spring Boot
+//            sendAckToServer(vin, commandType, value, "success", clientId);
+//
+//        } catch (Exception e) {
+//            Log.e("CMD", "JSON parse failed", e);
+//        }
+//    }
+
+    private void sendAckToServer(String vin, String commandType, int value, String status, String clientId) {
+        try {
+            JSONObject ack = new JSONObject();
+            ack.put("vin", vin);
+            ack.put("commandType", commandType);
+            ack.put("value", value);
+            ack.put("status", status);
+            ack.put("clientId", clientId);
+
+            // FIXED: send ACK to status topic using VIN
+            String topic = "scooter/status/" + vin;
+
+            ScooterMqttManager.getInstance().publish(topic, ack.toString());
+
+            Log.d("ACK", "Sent ACK to backend on: " + topic + " → " + ack.toString());
+
+        } catch (Exception e) {
+            Log.e("ACK", "ACK send failed", e);
+        }
+    }
+
+
+
+
 }
 

@@ -12,7 +12,7 @@ public class RetrofitClient {
 //                    .baseUrl("http://192.168.1.100:8080/api/vehicle/")
 //                    .baseUrl("http://192.168.1.107:9090/api/vehicle/")
                     .baseUrl("http://103.174.148.224:8081/")//original
-//                      .baseUrl("http://192.168.1.110:8081/")
+//                      .baseUrl("http://192.168.1.134:8081/")
 //                    .baseUrl("http://103.104.231.197:9090/api/vehicle/")//server
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

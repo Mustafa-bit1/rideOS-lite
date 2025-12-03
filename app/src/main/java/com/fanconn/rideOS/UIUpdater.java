@@ -471,6 +471,8 @@ public class UIUpdater  {
     public static boolean apuflag=false;
     private  boolean StopInactivtyTimerDuringPopUp=true;
     public static boolean isAPUPresent=false;
+    private static boolean Dynamic80SOCRegencurrent=true;
+
     private static int UniversalAPUbatteryLevel;
 //    public static boolean resetParamtersAfterLowbat=false;
     public void updateCanData18904001(Heartbeat3 hb3) {
@@ -494,6 +496,7 @@ public class UIUpdater  {
             if(serialPortManager!=null){
                 Log.d("asdfdg","ENTER 20");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000");//line current 15A, max phase current 300A ,regen 30-40
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000"), 800);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
             // Start alert
@@ -515,7 +518,7 @@ public class UIUpdater  {
             }, 15_000);
         }
 
-        if (batteryLevel >= 21 && Lowbatflag) {
+        if (batteryLevel >= 21 && batteryLevel<80 && Lowbatflag) {
 //            resetParamtersAfterLowbat=true;
             Lowbatflag = false;
             if(serialPortManager!=null){
@@ -565,13 +568,23 @@ public class UIUpdater  {
                 Log.d("asdfdg","ENTER 10");
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728008C00B004B400");//line current 10A(2800), phase current max, regen currents as 35A(8C00) to make 6 (1800) and 45A(B400) to make 8 (2000)
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);            }
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+            }
+        }
+
+        if((batteryLevel>=65 && batteryLevel<=80) && Dynamic80SOCRegencurrent) {
+            Dynamic80SOCRegencurrent=false;
+            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800");//35 - 45 regen(8C00-B400)40A(A000) 50A(C800) , phase cur 300A(B004) , line current 110A(B801) ,
+            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800"), 500);
+        }
+        if(batteryLevel>=81) {
+            Dynamic80SOCRegencurrent=true;
         }
 
 //        if(batteryLevel==5 && !apuflag  && tm.getTeleChargingState()==0){
@@ -1147,7 +1160,7 @@ public class UIUpdater  {
                 Log.d("CAN", "🔴 Not ready - stopping beep");
             }
             if (!MainActivity.isVisible && directionalGears==1) {
-                Log.d("UIUPDATER", "TAKEMEHOME111");
+                //Log.d("UIUPDATER", "TAKEMEHOME111");
 
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1216,7 +1229,7 @@ public class UIUpdater  {
         if(batteryLevel>=0 && batteryLevel<=100){ sBatteryLevel = String.valueOf(batteryLevel);}
         else sBatteryLevel="Analysing";
 
-        double speed = (hb3.getBSG2_BYTE78() * 60.0) / 3.3125 * 0.96 / 1000;
+//        double speed = (hb3.getBSG2_BYTE78() * 60.0) / 3.3125 * 0.96 / 1000;
         isStand = (STAND == 1);
         boolean standChanged = (STAND != lastStand);
         lastStand = STAND;
@@ -1258,7 +1271,7 @@ public class UIUpdater  {
 //                            goToMainActivityClearStack();
 //                        }
                         if (!MainActivity.isVisible) {
-                            Log.d("UIUPDATER", "TAKEMEHOME2222");
+                            //Log.d("UIUPDATER", "TAKEMEHOME2222");
 
                             Intent intent = new Intent(activity, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -2103,12 +2116,13 @@ public class UIUpdater  {
         canPopupShown = false;
         tm.setTeleControllerAbruptOff(0);
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
-        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.48331442) / 3.3125 * 1 / 1000;//5 % high
+        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.5536444) / 3.3125 * 1 / 1000; // 10% high
+//        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.48331442) / 3.3125 * 1 / 1000;//5 % high
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.412404) / 3.3125 * 1 / 1000;// 0% high
 
         rpm =hb3.getBSG2_BYTE78();
         if (tripManager == null) return;
-        if(hb3.getBSG2_BYTE78()<4700){tripManager.updateTrip(hb3.getBSG2_BYTE78());}
+        if(hb3.getBSG2_BYTE78()<5000){tripManager.updateTrip(hb3.getBSG2_BYTE78());}
 //        Log.d("sadfdgf","THIS IS TRIPBUG    "+hb3.getBSG2_BYTE78());
         double tripKm = tripManager.getTripDistance();
         double odoKm = tripManager.getOdoDistance();
@@ -2475,12 +2489,18 @@ public class UIUpdater  {
 //                    i.setAction("STOP_REC");
 //                    context.startService(i);
 
-                }, 3000);
+                }, 300);
 
-                new Handler().postDelayed(() -> {
-                    serialPortManager.VCUSendToMCU("FFAA550107000A00");
-                }, 8000);
-
+//                new Handler().postDelayed(() -> {
+//                    serialPortManager.VCUSendToMCU("FFAA550107000A00");
+//                }, 6000);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    if(!MainActivity.MainisActive){
+                        Log.d("TAG", "LOCK6ECONDELYCODERAN delayed command: FFAA550107000A00");
+                        SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A00");
+                    }
+                    else     Log.d("TAG", "LOCK6ECONDELYCODERAN ELSE delayed command: FFAA550107000A00");
+                }, 6000);
             }
 
             LoginActivity.markScreenJustOff();
@@ -2510,7 +2530,6 @@ public class UIUpdater  {
 
     private final Handler reverseBeepHandler = new Handler(Looper.getMainLooper());
     private Runnable reverseBeepRunnable;
-
     private SoundPool reverseBeepPool;
     private int reverseBeepSoundId = -1;
     private boolean reverseBeepLoaded = false;

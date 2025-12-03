@@ -11,7 +11,7 @@ public class EVLockService {
     private final Handler handler = new Handler(Looper.getMainLooper());
     private final SerialPortManager serialPortManager;
     private int retryCount1 = 0, retryCount2 = 0;
-    private static final int MAX_RETRIES = 10;
+    private static final int MAX_RETRIES = 8;
 
     private enum SequenceType { LOCK, UNLOCK }
     private SequenceType currentSequenceType = null;
@@ -37,7 +37,11 @@ public class EVLockService {
     }
 
     public void startUnlockSequence() {
+        Log.d("gvhb","ENTERINGUNLOCKOFSCOOTERCODE");
         stopSequence();  // Stop any existing sequence
+        serialPortManager.VCUSendToMCU("FFAA550107000A01");
+        new Handler(Looper.getMainLooper()).postDelayed(
+                () -> serialPortManager.VCUSendToMCU("FFAA550101000A01"), 100);
         playLockSound();  // 🔊 Play the sound once
         currentSequenceType = SequenceType.UNLOCK;
         taskUnlock2();
@@ -49,6 +53,13 @@ public class EVLockService {
         playLockSound();
         //Log.d("dasfsgd","STARTED LOCKING");
         stopSequence();  // Stop any existing sequence
+        serialPortManager.VCUSendToMCU("FFAA550101000A00");
+//        new Handler(Looper.getMainLooper()).postDelayed(
+//                () -> serialPortManager.VCUSendToMCU("FFAA550107000A00"), 400);
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//            Log.d("TAG", "📩 SMARTKEYgggggggggggg Sending delayed command: FFAA550107000A00");
+//            SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A00");
+//        }, 400);
         currentSequenceType = SequenceType.LOCK;
         taskLock1();
         TelemetryDataManager.getInstance().setTeleHandleLockState(0);
@@ -88,13 +99,12 @@ public class EVLockService {
 
     private void taskUnlock2() {
         serialPortManager.VCUSendToMCU("FFAA550107000A01");
-        new Handler(Looper.getMainLooper()).postDelayed(
-                () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 400);
+
         if (currentSequenceType != SequenceType.UNLOCK) return;
 
         serialPortManager.VCUSendToMCU("FFAA550107000A01");
         new Handler(Looper.getMainLooper()).postDelayed(
-                () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 400);
+                () -> serialPortManager.VCUSendToMCU("FFAA550101000A01"), 100);
 
         Heartbeat1 hb1 = serialPortManager.getHb1();
         boolean success = hb1.getLED() == 1;
@@ -116,8 +126,7 @@ public class EVLockService {
         if (currentSequenceType != SequenceType.LOCK) return;
 
         serialPortManager.VCUSendToMCU("FFAA550101000A00");
-        new Handler(Looper.getMainLooper()).postDelayed(
-                () -> serialPortManager.VCUSendToMCU("FFAA550101000A00"), 400);
+
 
         //Log.d("EVLockService", "Sent Lock Commandd 1");
 
