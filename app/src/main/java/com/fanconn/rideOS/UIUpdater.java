@@ -480,10 +480,20 @@ public class UIUpdater  {
         int batteryLevel= hb3.getBatteryLevel() / 10;
         String sBatteryLevel = String.valueOf(batteryLevel);
 
-        if(((hb3.getrealCurrent()-30000)/10)<500){
-            tm.setTeleCurrentConsumption((hb3.getrealCurrent()-30000)/10);
-            Log.d("sadfsgg","CURRWNTCSMALL VALUES IS "+(hb3.getrealCurrent()-30000)/10);
+//        if(((hb3.getrealCurrent()-30000)/10)<500 && ((hb3.getrealCurrent()-30000)/10)>-500){
+//            tm.setTeleCurrentConsumption((hb3.getrealCurrent()-30000)/10);
+//            Log.d("sadfsgg","CURRWNTCSMALL VALUES IS "+(hb3.getrealCurrent()-30000)/10);
+//        }
+
+        float current = (hb3.getrealCurrent() - 30000) / 10;
+
+        if (current > -500 && current < 500) {
+            tm.setTeleCurrentConsumption(current);
+            Log.d("CURR", "Valid current: " + current);
+        } else {
+            Log.d("CURR", "Invalid current rejected: " + current);
         }
+
         tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
         int range= (int) Math.floor(batteryLevel * 2.0);  // Get the whole number part
         if(batteryLevel>=0 && batteryLevel<=100){
@@ -748,7 +758,7 @@ public class UIUpdater  {
         binding.yellowalert.setVisibility(View.INVISIBLE);
         binding.LowBatmsg.setVisibility(View.INVISIBLE);
         //----------------------------
-        int chargingbit = hb3.getChargingbit();
+        float chargingbit = hb3.getChargingbit();
 //        Log.d("ChargingDebug", "Charging bitKKK: " + chargingbit);
         if (chargingUI == null) {
             //Log.d("UIUpdater", "chargingUI is null — cannot reset timeout");
@@ -812,7 +822,7 @@ public class UIUpdater  {
     private Handler warningHandler = new Handler();
 
     public void updateCanData18964001(Heartbeat3 hb3) {
-        int chargingbit = hb3.getChargingbit();
+        float chargingbit = hb3.getChargingbit();
 
         // Apply offset
         NTC1 = hb3.getNTC1() - 40;
@@ -1179,7 +1189,7 @@ public class UIUpdater  {
 //        if(isboost)binding.actualboost.setVisibility(View.VISIBLE);
 //        else binding.actualboost.setVisibility(View.INVISIBLE);
         //Log.d("sdafsgdf","BOOSTBYTE IS "+isboost);
-        int chargingbit = hb3.getChargingbit();
+        float chargingbit = hb3.getChargingbit();
         //Log.d("sdfdg","setChargingErrorbit   "+hb3.getChargingErrorbit());
         if((shouldshowchargingicononmainonot && directionalGears!=2) || shouldshowchargingicononmainonot && isStand){
 

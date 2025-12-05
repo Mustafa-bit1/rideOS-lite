@@ -172,11 +172,12 @@ public class LoginActivity extends AppCompatActivity{
 //                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+frame);
                 String candata=FrameUtils.getByteSubstring(frame,11,18);
                 CanDataParser.parseCanData18FF50E5(hb3, candata);
-                int chargingbit = hb3.getChargingbit();
+                float chargingbit = hb3.getChargingbit();
+                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+chargingbit);
+
 //                    UIUpdater.telechargingstate=hb3.getChargingbit();
 //                    String byt = frame.substring(22, 24);
 //                    int chargingbit = Integer.parseInt(byt, 16);
-                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+chargingbit);
 
                 if(chargingbit==0){
                     binding.loginchargingicon.setVisibility(View.INVISIBLE);

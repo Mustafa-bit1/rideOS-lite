@@ -14,7 +14,7 @@ public class CanDataParser {
      */
 
     public static  void parseCanData18FF50E5(Heartbeat3 hb3, String canData) {
-        hb3.setChargingbit(FrameUtils.getByteSubstringAsInt(canData,2,3)); //charging current value
+        hb3.setChargingbit(FrameUtils.getByteSubstringAsInt(canData,2,3)/10f); //charging current value
         hb3.setChargingErrorbit(FrameUtils.getByteSubstring(canData,4,4)); //Individual cell voltage Frame
     }
 

@@ -11,7 +11,7 @@ public class InactivityManager {
     private Runnable timeoutRunnable;
     private Runnable countdownRunnable;
 
-    private long timeoutMillis = 2000000; // 40 seconds
+    private long timeoutMillis = 20000; // 40 seconds
     private int currentCode = -1;
     private InactivityCallback callback;
 

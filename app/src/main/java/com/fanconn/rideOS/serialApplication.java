@@ -31,7 +31,7 @@ public class serialApplication extends MyApp {
         for (String frame : frames) {
 //            if (frame.startsWith("FFAA660101")) {
 //                Log.d("DATA FRAME", "Frame: " + frame);
-//            if(frame.startsWith("FFAA770303001518FF50E5"))
+//            if(frame.startsWith("FFAA770303001518"))
 //                Log.d("sdfgh","FRAME------"+frame);
 
             Intent intent = new Intent("FRAME_RECEIVED");

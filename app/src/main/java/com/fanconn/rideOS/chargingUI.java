@@ -156,28 +156,40 @@ public class chargingUI extends AppCompatActivity {
 
                 runOnUiThread(() -> {
                     Heartbeat3 hb3 = serialPortManager.getHb3();
-                    int chargingbit = hb3.getChargingbit();
-                    if(chargingbit==0){
+                    float chargingbit = hb3.getChargingbit();
+                    if (chargingbit == 0) {
+
                         chargingUiBatteryAnimation(actualSOC);
                         binding.socText.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.INVISIBLE);
                         binding.plugged.setVisibility(View.VISIBLE);
                         stopBatteryPulseAnimation();
                         isChargingAnimationRunning = false;
-                    }
-                    if(chargingbit>0){
+
+                    } else if (chargingbit > 0) {
 
                         binding.socText.setVisibility(View.VISIBLE);
                         binding.plugged.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.VISIBLE);
+
+                        // Update SOC text
                         if (actualSOC >= 0 && actualSOC <= 100) {
                             binding.socText.setText(actualSOC + "%");
                         }
+
+                        // 👉 Dynamically set correct charging icon
+                        int icon = getChargingIcon(chargingbit);
+                        if (icon != 0) {
+                            binding.chagingstartedicon.setImageResource(icon);
+                        }
+
+                        // Start charging animation if not running
                         if (!isChargingAnimationRunning) {
                             isChargingAnimationRunning = true;
                             startBatteryPulseAnimation();
                         }
                     }
+
 
                     if(actualSOC==100 && chargingbit==0){
                         binding.batfullmsg.setText("Battery Full, Disconnect the charger"); //
@@ -225,6 +237,20 @@ public class chargingUI extends AppCompatActivity {
 
         socUpdateHandler.post(socUpdateRunnable);
     }
+
+    private int getChargingIcon(float chargingbit) {
+        if (chargingbit > 0 && chargingbit < 5) {
+            return R.drawable.normal_charging;
+        } else if (chargingbit >= 5 && chargingbit < 10) {
+            return R.drawable.fast_charging;
+        } else if (chargingbit >= 10) {
+            return R.drawable.flash_charging;
+        } else {
+            return 0; // no icon
+        }
+    }
+
+
     private int lastAPUBatteryLevel = -1; // Store last battery level to avoid redundant updates
 
     public void APUupdateBatteryAnimation(int batteryLevel) {

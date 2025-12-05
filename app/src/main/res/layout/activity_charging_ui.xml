@@ -96,14 +96,13 @@
 
     <ImageView
         android:id="@+id/chagingstartedicon"
-        android:layout_width="150dp"
-        android:layout_height="32dp"
-        android:layout_marginStart="565dp"
-        android:visibility="gone"
-        android:layout_marginTop="284dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="548dp"
+        android:layout_marginTop="292dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/chargingicon" />
+        app:srcCompat="@drawable/normal_charging" />
 
     <TextView
         android:id="@+id/APUbatTV"

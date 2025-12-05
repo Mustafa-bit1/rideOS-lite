@@ -8,7 +8,7 @@ public class Heartbeat3 {
     private String canData; // CAN 数据
     private int batteryLevel,APUbatteryLevel;
     private int mainChargingMosState,mainDisMosState,apuChargingMosState,apuDisMosState;
-    private int chargingbit;// 单片机心跳包 电池电量
+    private float chargingbit;// 单片机心跳包 电池电量
     private String chargingErrorbitHex;// 单片机心跳包 电池电量
     private int mainChargeMosState,MainDisMosState,ApuChargeMosState,ApuDisMosState;
     private float realCurrent;
@@ -97,11 +97,11 @@ public class Heartbeat3 {
         this.APUbatteryLevel = apubatterylevel;
     }
 
-    public int getChargingbit() {
+    public float getChargingbit() {
         return chargingbit;
     }
 
-    public void setChargingbit(int chargingbit) {
+    public void setChargingbit(float chargingbit) {
         this.chargingbit = chargingbit;
     }
 
