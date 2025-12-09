@@ -7,6 +7,8 @@ public class TelemetryDataManager {
     // ==== All telemetry fields ====
     private int teleChargingState;
     private String teleChargingStateError;
+    private String telecell1to3,telecell4to6,telecell7to9,telecell10to12,telecell13to15,telecell16to18,telecell19to21,telecell22to23;
+
     private int teleBmsLifeCycles;
     private String teleLatLong;
     private int teleHandleLockState;
@@ -286,5 +288,71 @@ public class TelemetryDataManager {
 
     public void setTeleAPUSOC(float teleAPUSOC) {
         this.teleAPUSOC = teleAPUSOC;
+    }
+
+
+
+    public String getcell1TO3() {
+        return telecell1to3;
+    }
+
+    public void setcell1TO3(String telecell1to3) {
+        this.telecell1to3 = telecell1to3;
+    }
+
+    public String getcell4TO6() {
+        return telecell4to6;
+    }
+
+    public void setcell4TO6(String telecell4to6) {
+        this.telecell4to6 = telecell4to6;
+    }
+
+    public String getcell7TO9() {
+        return telecell7to9;
+    }
+
+    public void setcell7TO9(String telecell7to9) {
+        this.telecell7to9 = telecell7to9;
+    }
+
+    public String getcell10TO12() {
+        return telecell10to12;
+    }
+
+    public void setcell10TO12(String telecell10to12) {
+        this.telecell10to12 = telecell10to12;
+    }
+
+    public String getcell13TO15() {
+        return telecell13to15;
+    }
+
+    public void setcell13TO15(String telecell13to15) {
+        this.telecell13to15 = telecell13to15;
+    }
+
+    public String getcell16TO18() {
+        return telecell16to18;
+    }
+
+    public void setcell16TO18(String telecell16to18) {
+        this.telecell16to18 = telecell16to18;
+    }
+
+    public String getcell19TO21() {
+        return telecell19to21;
+    }
+
+    public void setcell19TO21(String telecell19to21) {
+        this.telecell19to21 = telecell19to21;
+    }
+
+    public String getcell22TO23() {
+        return telecell22to23;
+    }
+
+    public void setcell22TO23(String telecell22to23) {
+        this.telecell22to23 = telecell22to23;
     }
 }

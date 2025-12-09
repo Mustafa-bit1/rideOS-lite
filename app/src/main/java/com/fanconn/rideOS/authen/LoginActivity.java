@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.fanconn.rideOS.InactivityManager;
+import com.fanconn.rideOS.AhTrackerManager;
 import com.fanconn.rideOS.CanDataParser;
 import com.fanconn.rideOS.EVLockService;
 import com.fanconn.rideOS.FrameUtils;
@@ -148,7 +149,7 @@ public class LoginActivity extends AppCompatActivity{
                 }
                 if (frame.startsWith("FFAA770303001518904001")) {
                     //Log.d("dsfgdfh", "SOC frame ; " + frame);
-                    handleLoginFrame(context, frame);
+                    handleLoginFrame();
                 }
 
                 if (frame.startsWith("FFAA770301")) {
@@ -234,13 +235,15 @@ public class LoginActivity extends AppCompatActivity{
             }
         }
 
-        private void handleLoginFrame(Context context, String frame) {
-            String dataSegment = frame.substring(22, 38);
+        private void handleLoginFrame() {
+//            String dataSegment = frame.substring(22, 38);
             //Log.d("CAN_DEBUG", "Parsed frame segment: " + dataSegment);
 
-            int soc = FrameUtils.getByteSubstringAsInt(dataSegment, 6, 7) / 10;
-            if (soc <= 100) {
-                binding.loginSoc.setText("Battery " + soc + "%");
+//            int soc = FrameUtils.getByteSubstringAsInt(dataSegment, 6, 7) / 10;
+            int socInt = (int) ahTrackerManager.getSOC();   // removes decimal part
+
+            if (socInt <= 100) {
+                binding.loginSoc.setText("Battery " + socInt + "%");
             }
 
         }
@@ -496,7 +499,7 @@ public class LoginActivity extends AppCompatActivity{
 //        rootView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
 //
         setupToggleRunnable();
-
+        ahTrackerManager=AhTrackerManager.getInstance(this);
     }// END OF ONCREATE METHOD
 
     private void playErrorSound() {
@@ -676,7 +679,7 @@ public class LoginActivity extends AppCompatActivity{
         etCredential.setText("");
         ChargingUiClosedByUserFlag = false;
 
-        InactivityManager.getInstance().stopTimer();
+        //InactivityManager.getInstance().stopTimer();
 
         UIUpdater.isAPUPresent=false;
 
@@ -767,8 +770,8 @@ public class LoginActivity extends AppCompatActivity{
                     Log.d("asdfdg","ENTER Succes Login cmd snet");
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 1000);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 2000);
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2500);
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 3000);
+//                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2500);
+//                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 3000);
 
                 }
                 else{
@@ -797,7 +800,9 @@ public class LoginActivity extends AppCompatActivity{
 //                            ? "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400"//to set regen currents as 30A(7800) and 40A(A000)- 35A(8C00),45A(B400)
 //                            : "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";//to set regen currents as 6A(1800) and 8A(2000)
             String torqueFrame;
-            int batteryLevel = serialPortManager.getHb3().getBatteryLevel() / 10;
+//            int batteryLevel = serialPortManager.getHb3().getBatteryLevel() / 10;
+            float batteryLevel = ahTrackerManager.getSOC();
+
 
             if (batteryLevel ==0) { // phase max , all normal
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
@@ -807,7 +812,7 @@ public class LoginActivity extends AppCompatActivity{
             }
             else if (batteryLevel <= 20) { //  line 15A, phase max, all normal
                 torqueFrame = "FFAA550103001510FBA8073C00A000B004C800";
-            } else if (batteryLevel <= 80) { // phase max, all normal
+            } else if (batteryLevel <= 80) { // phase max, all normal  A000(45A regen) - C800(50A)
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
             } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
@@ -830,8 +835,8 @@ public class LoginActivity extends AppCompatActivity{
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5500);
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 6000);
-            new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 6500);
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 6500);
 
             // Always set login status (apply is safe here)
             editor.putBoolean("is_logged_in", true);
@@ -1000,7 +1005,7 @@ public class LoginActivity extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        InactivityManager.getInstance().stopTimer();
+        //InactivityManager.getInstance().stopTimer();
         instance = null; // clean up
         TelemetryService.shdtelemetrywhenunlocked=true;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(tempWarningReceiver);
@@ -1037,7 +1042,7 @@ public class LoginActivity extends AppCompatActivity{
     private Runnable chargingUIFlagRunnable;
     private Handler resumehandler = new Handler(Looper.getMainLooper());
     private Runnable resetChargingUIFlagRunnable;
-
+    AhTrackerManager ahTrackerManager;
     @Override
     protected void onResume() {
         super.onResume();
@@ -1050,7 +1055,9 @@ public class LoginActivity extends AppCompatActivity{
             UIUpdater.getInstance().stopBlinking();
         }
 
-        int batteryLevel=serialPortManager.getHb3().getBatteryLevel() / 10;
+//        int batteryLevel=serialPortManager.getHb3().getBatteryLevel() / 10;
+        int batteryLevel=(int)ahTrackerManager.getSOC();
+
         String sBatteryLevel = String.valueOf(batteryLevel);
         if(batteryLevel>=0 && batteryLevel<=100){
             binding.loginSoc.setText("Battery " + batteryLevel + "%");

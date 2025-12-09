@@ -19,6 +19,7 @@ public class Heartbeat3 {
     private float APUremainingAH;
     private int BMSlifecycles;
     private int NTC1,NTC2,NTC3,NTC4,NTC5,NTC6,NTC7,NTC8;
+    private String cell1TO3,cell4TO6,cell7TO9,cell10TO12,cell13TO15,cell16TO18,cell19TO21,cell22TO23;
     private int BSG1_BYTE1;
     private int BSG1_BYTE2;
     private int BSG1_BYTE3;
@@ -481,6 +482,71 @@ public class Heartbeat3 {
     {
         return LEDResponse;
     }
+
+    public String getcell1TO3() {
+        return cell1TO3;
+    }
+
+    public void setcell1TO3(String cell1TO3) {
+        this.cell1TO3 = cell1TO3;
+    }
+
+    public String getcell4TO6() {
+        return cell4TO6;
+    }
+
+    public void setcell4TO6(String cell4TO6) {
+        this.cell4TO6 = cell4TO6;
+    }
+
+    public String getcell7TO9() {
+        return cell7TO9;
+    }
+
+    public void setcell7TO9(String cell7TO9) {
+        this.cell7TO9 = cell7TO9;
+    }
+
+    public String getcell10TO12() {
+        return cell10TO12;
+    }
+
+    public void setcell10TO12(String cell10TO12) {
+        this.cell10TO12 = cell10TO12;
+    }
+
+    public String getcell13TO15() {
+        return cell13TO15;
+    }
+
+    public void setcell13TO15(String cell13TO15) {
+        this.cell13TO15 = cell13TO15;
+    }
+
+    public String getcell16TO18() {
+        return cell16TO18;
+    }
+
+    public void setcell16TO18(String cell16TO18) {
+        this.cell16TO18 = cell16TO18;
+    }
+
+    public String getcell19TO21() {
+        return cell19TO21;
+    }
+
+    public void setcell19TO21(String cell19TO21) {
+        this.cell19TO21 = cell19TO21;
+    }
+
+    public String getcell22TO23() {
+        return cell22TO23;
+    }
+
+    public void setcell22TO23(String cell22TO23) {
+        this.cell22TO23 = cell22TO23;
+    }
+
 
 
     @Override

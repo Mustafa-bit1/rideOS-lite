@@ -10,14 +10,11 @@ public class InactivityManager {
     private final Handler countdownHandler = new Handler(Looper.getMainLooper());
     private Runnable timeoutRunnable;
     private Runnable countdownRunnable;
-
     private long timeoutMillis = 20000; // 40 seconds
     private int currentCode = -1;
     private InactivityCallback callback;
-
     private int secondsRemaining = 0;
     private boolean isRunning = false;
-
     private InactivityManager() {}
 
     public static synchronized InactivityManager getInstance() {
@@ -58,11 +55,16 @@ public class InactivityManager {
         countdownRunnable = new Runnable() {
             @Override
             public void run() {
+               // Log.d("sdafd","TOUCHTIMER Entered startcountdown");
                 if (!isRunning) return; // Stop if timer stopped
+                //Log.d("sdafd","TOUCHTIMER Entered startcountdown and not resturnd");
+
                // Log.d("InactivityCountdown", " " + secondsRemaining + "s TOUCHTIMER remaining");
                 secondsRemaining--;
 
                 if (secondsRemaining >= 0) {
+                  //  Log.d("sdafd","TOUCHTIMER Entered startcountdown and Entered cundownhandler");
+
                     countdownHandler.postDelayed(this, 1000);
                 }
             }
@@ -75,11 +77,11 @@ public class InactivityManager {
             //Log.d("InactivityManager", " TOUCHTIMER Interaction detected — timer reset");
             startTimer(currentCode);
         }
-        //else Log.d("sadfgf","onUserInteraction() NETER ELSEPARTOF RESTTIMER");
+        else Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF RESTTIMER");
     }
 
     public void stopTimer() {
-        //Log.d("sadfgf","onUserInteraction() NETER STOOPEDTIMER");
+       // Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER STOOPEDTIMER");
         isRunning = false;
         handler.removeCallbacksAndMessages(null);
         countdownHandler.removeCallbacksAndMessages(null);

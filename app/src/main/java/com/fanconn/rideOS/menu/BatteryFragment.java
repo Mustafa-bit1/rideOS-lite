@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.fanconn.rideOS.AhTrackerManager;
 import com.fanconn.rideOS.Heartbeat3;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
@@ -53,7 +54,7 @@ public class BatteryFragment extends Fragment {
     // Enum to track selected battery
     private enum BatteryType { MAIN, AUX }
     private BatteryType currentBattery = BatteryType.MAIN;
-
+    AhTrackerManager ahTrackerManager;
     private Runnable updateRunnable = new Runnable() {
         @Override
         public void run() {
@@ -63,8 +64,10 @@ public class BatteryFragment extends Fragment {
                 getActivity().runOnUiThread(() -> {
                     if (currentBattery == BatteryType.MAIN) {
                         // ----------------- MAIN BATTERY -----------------
-                        int battery = hb3.getBatteryLevel() / 10;
-                        int range = battery * 2;
+//                        int battery = hb3.getBatteryLevel() / 10;
+                        double battery = roundTo2Decimal(ahTrackerManager.getSOC());
+
+                        double range = battery * 2;
 
                         SpannableString batteryText = new SpannableString(battery + "%");
                         batteryText.setSpan(new RelativeSizeSpan(0.7f),
@@ -73,12 +76,16 @@ public class BatteryFragment extends Fragment {
                                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         topCardValue.setText(batteryText);
 
-                        SpannableString rangeText = new SpannableString(range + " km");
+                        int fixedRange = (int) range; // removes decimal part
+
+                        SpannableString rangeText = new SpannableString(fixedRange + " km");
                         rangeText.setSpan(new RelativeSizeSpan(0.7f),
                                 rangeText.length() - 2,
                                 rangeText.length(),
                                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
                         RangeValue.setText(rangeText);
+
 
                         Batterytv.setText("battery level");
                         Rangetext.setText("range");
@@ -92,8 +99,12 @@ public class BatteryFragment extends Fragment {
                             double current = (rawCurrent - 30000) / 10.0; // correct calculation
                             maincurrentcon.setText(String.format("%.1f A", current));
                         }
-                        mainRemainingAh.setText(String.format("%.1f Ah", hb3.getreamainingAH() / 1000.0));
+                        float remAh = ahTrackerManager.getRemainingAh();
 
+                        // truncate to 1 decimal place (no rounding)
+                        float truncated = (float) (Math.floor(remAh * 10) / 10.0);
+
+                        mainRemainingAh.setText(String.format("%.1f Ah", truncated));
                         int ntc1 = hb3.getNTC1();
                         NTC1.setText(ntc1 == 0 ? "0°C" : (ntc1 - 40) + "°C");
 
@@ -173,7 +184,9 @@ public class BatteryFragment extends Fragment {
             uiHandler.postDelayed(this, 1000);
         }
     };
-
+    private double roundTo2Decimal(double value) {
+        return Math.round(value * 100.0) / 100.0;
+    }
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -181,7 +194,7 @@ public class BatteryFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_battery_fragment, container, false);
 
         serialPortManager = SerialPortManager.peekInstance();
-
+        ahTrackerManager=AhTrackerManager.getInstance(requireContext());
         // Top Section
         topMainContainer = view.findViewById(R.id.topMainContainer);
         topAuxContainer = view.findViewById(R.id.topAuxContainer);

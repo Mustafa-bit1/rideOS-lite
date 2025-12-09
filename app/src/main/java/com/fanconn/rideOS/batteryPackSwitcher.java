@@ -74,8 +74,8 @@ public class batteryPackSwitcher {
                     serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
                     new Handler(Looper.getMainLooper()).postDelayed(() ->
                             serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000"), 1000);
-                    new Handler(Looper.getMainLooper()).postDelayed(() ->
-                            serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2000);
+//                    new Handler(Looper.getMainLooper()).postDelayed(() ->
+//                            serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2000);
                 }
 
                 Log.i("CommandSequence", "Switched TO APU succeeded");

@@ -40,18 +40,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- Bluetooth Status -->
-    <TextView
-        android:id="@+id/bluetoothStatus"
-        android:layout_width="450dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="374dp"
-        android:layout_marginTop="91dp"
-        android:fontFamily="@font/kanitlite"
-        android:text="Bluetooth: Not connected"
-        android:textColor="#A6A6A6"
-        android:textSize="18dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/bluetoothStatus"-->
+<!--        android:layout_width="450dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="374dp"-->
+<!--        android:layout_marginTop="91dp"-->
+<!--        android:fontFamily="@font/kanitlite"-->
+<!--        android:text="Bluetooth status"-->
+<!--        android:textColor="#A6A6A6"-->
+<!--        android:textSize="18dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <!-- Wi-Fi Status -->
     <TextView

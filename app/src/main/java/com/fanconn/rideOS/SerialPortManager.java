@@ -489,6 +489,9 @@ public class SerialPortManager {
             case "18964002":// APU NTC
                 CanDataParser.parseCanData18964002(hb3, hb3.getCanData());
                 break;
+            case "18954001":// APU NTC
+                CanDataParser.parseCanData18954001(hb3, hb3.getCanData());
+                break;
             case "160B8001":// Charge AH
                 CanDataParser.parseCanData160B8001(hb3, hb3.getCanData());
                 break;

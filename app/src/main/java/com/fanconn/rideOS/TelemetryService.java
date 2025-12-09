@@ -274,7 +274,10 @@ public class TelemetryService extends Service {
         data.controllerMosTemp = TelemetryDataManager.getInstance().getTeleControllerMosTemp();
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
-        data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+" ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff();
+        if(serialPortManager!=null){
+            data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+" ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff()+
+                    " AllCells 1to3="+serialPortManager.getHb3().getcell1TO3()+",cell4to6="+serialPortManager.getHb3().getcell4TO6()+",cell7to9="+serialPortManager.getHb3().getcell7TO9()+",cell10to12="+serialPortManager.getHb3().getcell10TO12()+",cell13to15="+serialPortManager.getHb3().getcell13TO15()+",cell16to18="+serialPortManager.getHb3().getcell16TO18()+",cell19to21="+serialPortManager.getHb3().getcell19TO21()+",cell22to23="+serialPortManager.getHb3().getcell22TO23();
+        }
         data.currentconsumption = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleCurrentConsumption());
         data.batvoltage = roundTo1Decimal(TelemetryDataManager.getInstance().getTeleBatVoltage());
         data.remainingCapacity_AH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRemainingCapacityAH());

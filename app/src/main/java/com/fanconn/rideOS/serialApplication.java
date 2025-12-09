@@ -32,7 +32,7 @@ public class serialApplication extends MyApp {
 //            if (frame.startsWith("FFAA660101")) {
 //                Log.d("DATA FRAME", "Frame: " + frame);
 //            if(frame.startsWith("FFAA770303001518"))
-//                Log.d("sdfgh","FRAME------"+frame);
+                Log.d("sdfgh","FRAME------"+frame);
 
             Intent intent = new Intent("FRAME_RECEIVED");
             intent.putExtra("frame_data", frame);

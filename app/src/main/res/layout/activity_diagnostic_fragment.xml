@@ -20,6 +20,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <Button
+        android:id="@+id/resetAhvalues"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginTop="360dp"
+        android:backgroundTint="#2196F3"
+        android:foreground="@drawable/btn_click_effect"
+        android:text="BAttAh"
+        android:textSize="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/Low"
         android:layout_width="150dp"
@@ -156,6 +170,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <Button
+        android:id="@+id/in60"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="268dp"
+        android:layout_marginTop="364dp"
+        android:backgroundTint="#03FFE6"
+        android:foreground="@drawable/btn_click_effect"
+        android:text="in60"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/out0"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="384dp"
+        android:layout_marginTop="364dp"
+        android:backgroundTint="#03FFE6"
+        android:foreground="@drawable/btn_click_effect"
+        android:text="out0"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/wifiBtn"

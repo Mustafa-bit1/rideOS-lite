@@ -343,7 +343,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
                 serialPortManager.VCUSendToMCU("FFAA550107000A01");
                 Intent intent = new Intent(MainActivity.this, menu.class);
-                InactivityManager.getInstance().stopTimer();
+//                InactivityManager.getInstance().stopTimer();
                 startActivity(intent);
             }
 
@@ -586,37 +586,43 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     public static boolean speedAnimationCompleted = false;
 
     private void animateBatteryLevelOnce() {
-        final Handler handler = new Handler();
-        final int[] level = {0};
-        final boolean[] increasing = {true};
 
-        batteryAnimationCompleted = false;
+        runOnUiThread(() -> {
 
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int mappedBattery = (level[0] / 10) * 10;
-                if (MainActivity.batteryImageMap.containsKey(mappedBattery)) {
-                    binding.batteryImageView.setImageResource(MainActivity.batteryImageMap.get(mappedBattery));
-                }
+            final Handler handler = new Handler(Looper.getMainLooper());
+            final int[] level = {0};
+            final boolean[] increasing = {true};
 
-                if (increasing[0]) {
-                    level[0] += 10;
-                    if (level[0] >= 100) {
-                        increasing[0] = false;
+            batteryAnimationCompleted = false;
+
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    int mappedBattery = (level[0] / 10) * 10;
+                    if (MainActivity.batteryImageMap.containsKey(mappedBattery)) {
+                        binding.batteryImageView.setImageResource(MainActivity.batteryImageMap.get(mappedBattery));
                     }
-                } else {
-                    level[0] -= 10;
-                    if (level[0] < 0) {
-                        batteryAnimationCompleted = true;
-                        return;
-                    }
-                }
 
-                handler.postDelayed(this, 60); // smoother animation
-            }
-        }, 50);
+                    if (increasing[0]) {
+                        level[0] += 10;
+                        if (level[0] >= 100) {
+                            increasing[0] = false;
+                        }
+                    } else {
+                        level[0] -= 10;
+                        if (level[0] < 0) {
+                            batteryAnimationCompleted = true;
+                            return;
+                        }
+                    }
+
+                    handler.postDelayed(this, 60);
+                }
+            }, 50);
+        });
     }
+
 
     private void animateSpeedLevelOnce() {
         final Handler handler = new Handler();
@@ -1860,10 +1866,12 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //            LocalBroadcastManager.getInstance(this).registerReceiver(frameReceiver, filter);
 //            isReceiverRegistered = true;
 //        }
-        if(UIUpdater.directionalGears==0){
-            InactivityManager.getInstance().startTimer(1);
-            //Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
-        }
+//        if(UIUpdater.directionalGears==0){
+//            InactivityManager.getInstance().startTimer(1);
+//            //Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
+//        }
+        InactivityManager.getInstance().startTimer(1);
+        Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
 //         If you need to restart anything like timers here, do so
 //         mHandlerTime.postDelayed(mRunnableTime, 0);
 
@@ -1988,7 +1996,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     public void runPostLoginInit() {
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
 //        Log.d("MainActivity", "Running unlock sequence from post-login...");
-
+        //animateBatteryLevelOnce();
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
         TelemetryService.shdtelemetrywhenunlocked=true;
 
@@ -2096,8 +2104,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 case 9:
                     serialPortManager.VCUSendToMCU("FFAA5501030015189101400001020304050607");
                     break;
+                case 10:
+                    serialPortManager.VCUSendToMCU("FFAA5501030015189501400001020304050607");
+                    break;
             }
-            requestIndex = (requestIndex + 1) % 10;
+            requestIndex = (requestIndex + 1) % 11;
             bmsHandler.postDelayed(this, 650); // 650ms interval
         }
     };
@@ -2148,7 +2159,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
     private void openMenu() {
         if (serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
-            InactivityManager.getInstance().stopTimer();
+//            InactivityManager.getInstance().stopTimer();
             serialPortManager.VCUSendToMCU("FFAA550107000A01");
             Intent intent = new Intent(MainActivity.this, menu.class);
             startActivity(intent);

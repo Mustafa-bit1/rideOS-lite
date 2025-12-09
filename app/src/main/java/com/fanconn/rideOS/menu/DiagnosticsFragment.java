@@ -41,8 +41,9 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DiagnosticsFragment extends Fragment {
+    private AhTrackerManager ahTrackerManager;
 
-    private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON, LEDOFF, debugbtn,highTorque;
+    private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON,In60,out0, LEDOFF, debugbtn,highTorque;
     private ImageButton  rebootbtn, shutdownbtn;
     private Button wifiBtn, wifiOffBtn, Devicesettings;
     private TextView tireDimensionDisplay;
@@ -71,6 +72,8 @@ public class DiagnosticsFragment extends Fragment {
             Intent intent = new Intent(requireActivity(), MetadataActivity.class);
             startActivity(intent);
         });
+        ahTrackerManager = AhTrackerManager.getInstance(requireContext());
+
         return view;
 
     }
@@ -85,6 +88,8 @@ public class DiagnosticsFragment extends Fragment {
         ToMain = view.findViewById(R.id.ToMain);
         LEDON = view.findViewById(R.id.LEDON);
         LEDOFF = view.findViewById(R.id.LEDOFF);
+        In60 = view.findViewById(R.id.in60);
+        out0 = view.findViewById(R.id.out0);
         rebootbtn = view.findViewById(R.id.rebootbtn);
         shutdownbtn = view.findViewById(R.id.shutdownbtn);
         wifiBtn = view.findViewById(R.id.wifiBtn);
@@ -102,6 +107,13 @@ public class DiagnosticsFragment extends Fragment {
         bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550102000A01"));
         handlelockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A00"));
         handleUNlockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A01"));
+        view.findViewById(R.id.resetAhvalues).setOnClickListener(v -> {
+
+            // Reset AH counters
+            ahTrackerManager.resetAll();
+
+            Toast.makeText(requireContext(), "AH values reset. Reboot recommended.", Toast.LENGTH_SHORT).show();
+        });
 
         highTorque.setOnClickListener(v -> {
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400");//35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,
@@ -130,7 +142,8 @@ public class DiagnosticsFragment extends Fragment {
 
         LEDON.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550107000A01"));
         LEDOFF.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550107000A00"));
-
+        In60.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160A01800000EA6000000000"));
+        out0.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160C01800000000000000000"));
         wifiBtn.setOnClickListener(v -> {
             if (!wifiManager.isWifiEnabled()) {
                 wifiManager.setWifiEnabled(true);

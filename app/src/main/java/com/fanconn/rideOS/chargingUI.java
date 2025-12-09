@@ -124,7 +124,7 @@ public class chargingUI extends AppCompatActivity {
             finish();
         });
 
-
+        ahTrackerManager = AhTrackerManager.getInstance(this);
         startUpdatingSOC();
         resetChargingTimeout(); // start timeout initially
     }//END OF ONCREATE
@@ -143,13 +143,15 @@ public class chargingUI extends AppCompatActivity {
     private int actualSOC = 0; // store real SOC from hardware
     private int APUsoc = 0;
     private boolean isChargingAnimationRunning = false;
-
+    AhTrackerManager ahTrackerManager;
     private void startUpdatingSOC() {
         //InactivityManager.getInstance().startTimer(4);
         socUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
+//                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
+                actualSOC = (int)ahTrackerManager.getSOC();
+
 //                Log.d("SOC", "Battery SOC: " + actualSOC);
                 APUsoc = serialPortManager.hb3.getAPUBatteryLevel() / 10;
 

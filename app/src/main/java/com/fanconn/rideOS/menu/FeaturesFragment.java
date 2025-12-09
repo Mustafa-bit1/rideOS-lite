@@ -172,11 +172,11 @@ public class FeaturesFragment extends Fragment {
                 if (serialPortManager != null) {
                     serialPortManager.VCUSendToMCU(finalFrame);
                 }
-                new android.os.Handler().postDelayed(() -> {
-                    if (serialPortManager != null) {
-                        serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387");
-                    }
-                }, 1000); // 3000 milliseconds = 3 seconds
+//                new android.os.Handler().postDelayed(() -> {
+//                    if (serialPortManager != null) {
+//                        serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387");
+//                    }
+//                }, 1000); // 3000 milliseconds = 3 seconds
                 // Optional: display value
                 // valueText.setText(seekBarValue + " ✓");
             }
@@ -332,10 +332,10 @@ public class FeaturesFragment extends Fragment {
             Log.e("FrameOut", "serialPortManager is null, frame not sent");
         }
 
-        new Handler().postDelayed(() -> {
-            if (serialPortManager != null) {
-                serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387");
-            }
-        }, 1000);
+//        new Handler().postDelayed(() -> {
+//            if (serialPortManager != null) {
+//                serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387");
+//            }
+//        }, 1000);
     }
 }

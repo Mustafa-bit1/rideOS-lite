@@ -94,6 +94,8 @@ public class UIUpdater  {
     TelemetryDataManager tm;
     public static UIUpdater instance;
     private BroadcastReceiver tpmsReceiver;
+    AhTrackerManager ahTrackerManager;
+
     public UIUpdater(ActivityMainBinding binding, Context ctx) {
         this.binding = binding;
 
@@ -129,6 +131,8 @@ public class UIUpdater  {
 
         startCanTimeoutChecker();
         registerTpmsReceiver(ctx);
+        ahTrackerManager = AhTrackerManager.getInstance(context);
+        updateCanData18904001(serialPortManager.getHb3());
     }
 
     public static UIUpdater getInstance() {
@@ -428,6 +432,9 @@ public class UIUpdater  {
             case "18964002":
                 updateCanData18964001(hb3);
                 break;
+            case "18954001":
+                updateCanData18954001(hb3);
+                break;
             case "160B8001":
                 updateCanData160B8001(hb3);
                 break;
@@ -477,7 +484,12 @@ public class UIUpdater  {
 //    public static boolean resetParamtersAfterLowbat=false;
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
-        int batteryLevel= hb3.getBatteryLevel() / 10;
+//        int batteryLevel= hb3.getBatteryLevel() / 10;
+        int batteryLevel= (int)ahTrackerManager.getSOC();
+        tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
+
+//        int batteryLevel = Math.max(0, Math.min(100, (int) ahTrackerManager.getSOC()));
+
         String sBatteryLevel = String.valueOf(batteryLevel);
 
 //        if(((hb3.getrealCurrent()-30000)/10)<500 && ((hb3.getrealCurrent()-30000)/10)>-500){
@@ -507,7 +519,7 @@ public class UIUpdater  {
                 Log.d("asdfdg","ENTER 20");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000");//line current 15A, max phase current 300A ,regen 30-40
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000"), 800);
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+//                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
             // Start alert
             Animation tempalert = AnimationUtils.loadAnimation(context, R.anim.alpha);
@@ -787,7 +799,7 @@ public class UIUpdater  {
         // 更新电池电量
         int mainChargingMosState= hb3.getMainChargeMosState();
         int mainDisMosState= hb3.getMainDisChargeMosState();
-        tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
+//        tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
         tm.setTeleBmsLifeCycles(hb3.getBMSlifecycles());
         tm.setTeleBMSMosStates(hb3.getMainChargeMosState()+","+hb3.getMainDisChargeMosState()+","+hb3.getApuChargeMosState()+","+hb3.getApuDisChargeMosState());
     }
@@ -1030,7 +1042,13 @@ public class UIUpdater  {
     private float ahByRegen = 0f;
     public static int chargison;
     public void updateCanData160B8001(Heartbeat3 hb3) {
+        updateCanData18904001(hb3);
         float currentAh = roundTo3(hb3.getChargeAH() / 1000f);
+        Log.d("sadfs","INAHIS "+currentAh );
+
+        ahTrackerManager.updateChargingAh(currentAh);
+        Log.d("sadfs","INAHISSOC "+ahTrackerManager.getSOC());
+        Log.d("sadfs","INAHISREAMININGAH "+ahTrackerManager.getRemainingAh());
 
         if (previousAh == 0f) {
             previousAh = currentAh;
@@ -1089,7 +1107,12 @@ public class UIUpdater  {
 
     // ✅ Updated for 3 decimal point dischargeAh
     public void updateCanData160D8001(Heartbeat3 hb3) {
+        updateCanData18904001(hb3);
         float rawDischargeAH = hb3.getDisChargeAH() / 1000f;
+        Log.d("sadfs","INAHISDIS "+rawDischargeAH );
+        ahTrackerManager.updateDischargingAh(rawDischargeAH);
+
+        Log.d("sadfs","INAHISDISSOC@ "+ahTrackerManager.getSOC() );
         float dischargeAH = roundTo3(rawDischargeAH);
 
         saveDischargeAh(dischargeAH);
@@ -1234,7 +1257,8 @@ public class UIUpdater  {
             }
         }
 
-        int batteryLevel = hb3.getBatteryLevel() / 10;
+//        int batteryLevel = hb3.getBatteryLevel() / 10;
+        float batteryLevel = ahTrackerManager.getSOC();
         String sBatteryLevel;
         if(batteryLevel>=0 && batteryLevel<=100){ sBatteryLevel = String.valueOf(batteryLevel);}
         else sBatteryLevel="Analysing";
@@ -1309,6 +1333,7 @@ public class UIUpdater  {
                         break;
 
                     default:
+                        InactivityManager.getInstance().startTimer(1);
                         stopReverseBeep();
                         binding.neutralicon.setVisibility(View.INVISIBLE);
                         binding.neutral.setVisibility(View.INVISIBLE);
@@ -2105,6 +2130,7 @@ public class UIUpdater  {
                                 .setMessage("Controller switched off abruptly, or a CAN line issue occurred.")
                                 .setPositiveButton("OK", (dialog, which) -> {
                                     // Just close the dialog now
+                                    InactivityManager.getInstance().startTimer(1);
                                     dialog.dismiss();
                                 })
                                 .setCancelable(false)
@@ -2235,17 +2261,48 @@ public class UIUpdater  {
 
 
     public void updateBatteryAnimation(int batteryLevel) {
-        // Clamp battery level between 0-100 and round to the nearest even number
-        int mappedBattery = (batteryLevel > 100) ? 100 : Math.max(0, (batteryLevel / 2) * 2);
 
-        if (mappedBattery == lastBatteryLevel) return; // Skip if battery level hasn't changed
-
-        if (MainActivity.batteryImageMap.containsKey(mappedBattery)) {
-            binding.batteryImageView.setImageResource(MainActivity.batteryImageMap.get(mappedBattery)); // Update ImageView
+        if (binding == null || binding.batteryImageView == null) {
+           // Log.d("BAT", "UI not ready yet — skipping");
+            return;
         }
+
+        // Clamp + map to even number
+        int mappedBattery = (batteryLevel > 100)
+                ? 100
+                : Math.max(0, (batteryLevel / 2) * 2);
+
+//        Log.d("BAT", "---- updateBatteryAnimation ----");
+//        Log.d("BAT", "RAW Level = " + batteryLevel);
+//        Log.d("BAT", "Mapped Level = " + mappedBattery);
+//        Log.d("BAT", "Last Level = " + lastBatteryLevel);
+
+        // Skip duplicate values
+        if (mappedBattery == lastBatteryLevel) {
+            //Log.d("BAT", "SKIPPED (no change)");
+            return;
+        }
+
+        // Check map
+        if (MainActivity.batteryImageMap == null) {
+           // Log.e("BAT", "batteryImageMap is NULL");
+            return;
+        }
+
+        if (!MainActivity.batteryImageMap.containsKey(mappedBattery)) {
+           // Log.e("BAT", "Map missing key = " + mappedBattery);
+            return;
+        }
+
+        // Apply image
+        int imageRes = MainActivity.batteryImageMap.get(mappedBattery);
+        binding.batteryImageView.setImageResource(imageRes);
+
+        //Log.d("BAT", "IMAGE UPDATED to key " + mappedBattery);
 
         lastBatteryLevel = mappedBattery;
     }
+
 
     public void APUupdateBatteryAnimation(int batteryLevel) {
         // Clamp battery level between 0-100 and round to the nearest even number
@@ -2300,6 +2357,9 @@ public class UIUpdater  {
      */
     private void updateCanData10FD07A8(Heartbeat3 hb3) {
 
+    }
+    private void updateCanData18954001(Heartbeat3 hb3) {
+       // tm.setcell1TO3(hb3.getcell1TO3());
     }
 
     /**

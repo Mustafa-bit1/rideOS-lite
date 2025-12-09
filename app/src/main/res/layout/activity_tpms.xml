@@ -52,19 +52,19 @@
             android:layout_marginTop="30dp"
             android:src="@drawable/iicon" />
     </androidx.cardview.widget.CardView>
-    <TextView
-        android:id="@+id/bluetoothOnmsg"
-        android:layout_width="411dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="828dp"
-        android:layout_marginBottom="148dp"
-        android:fontFamily="@font/kanitlite"
-        android:lineSpacingExtra="2dp"
-        android:text="Ensure your scooter bluetooth is ON to get TPMS data realtime."
-        android:textColor="@color/white"
-        android:textSize="17dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+<!--    <TextView-->
+<!--        android:id="@+id/bluetoothOnmsg"-->
+<!--        android:layout_width="411dp"-->
+<!--        android:layout_height="50dp"-->
+<!--        android:layout_marginEnd="828dp"-->
+<!--        android:layout_marginBottom="148dp"-->
+<!--        android:fontFamily="@font/kanitlite"-->
+<!--        android:lineSpacingExtra="2dp"-->
+<!--        android:text="Ensure your scooter bluetooth is ON to get TPMS data realtime."-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="17dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
 
     <TextView
         android:id="@+id/tpmsbluetoothstatus"
