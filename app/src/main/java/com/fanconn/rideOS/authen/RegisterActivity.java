@@ -39,7 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
     int maxSpeedValue = 60;  // Default to 60
     SeekBar seekBarTorque;
     TextView tvTorqueLevel;
-    String selectedTorqueLevel = "Level 1"; // Default
+    String selectedTorqueLevel = "Medium"; // Default
 
     TextView tvEnterPin, tvConfirmPin, TVconfirmpat, TVdrawpat;
     RadioGroup radioGroup;

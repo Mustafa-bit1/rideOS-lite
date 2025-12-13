@@ -33,6 +33,8 @@ public class PatternViewRegister extends View {
     public PatternViewRegister(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
+        setBackgroundColor(Color.TRANSPARENT);
+
     }
 
     public void setOnPatternCompleteListener(PatternCompleteListener listener) {

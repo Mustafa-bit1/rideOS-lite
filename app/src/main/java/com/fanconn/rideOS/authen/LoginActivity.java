@@ -19,6 +19,7 @@ import android.os.VibratorManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -596,71 +597,86 @@ public class LoginActivity extends AppCompatActivity{
     private void validatePin() {
         String inputPin = actualPin.toString();
 
+        try {
+            SharedPreferences encryptedPrefs = EncryptedSharedPreferences.create(
+                    "user_data",   // <- must match riderProfilesFragment
+                    MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
+                    this,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
 
+            // ==============================
+            // DEFAULT PIN CHECK (1234)
+            // ==============================
+            boolean defaultEnabled = encryptedPrefs.getBoolean("default_pin_enabled", false);
+            int remaining = encryptedPrefs.getInt("default_pin_remaining_attempts", 0);
 
-        // ==============================
-// DEFAULT PIN CHECK (1234)
-// ==============================
-        boolean defaultEnabled = prefs.getBoolean("default_pin_enabled", false);
-        int remaining = prefs.getInt("default_pin_remaining_attempts", 0);
+            if (defaultEnabled && inputPin.equals("1234")) {
+                if (remaining > 0) {
+                    remaining--;
+                    encryptedPrefs.edit().putInt("default_pin_remaining_attempts", remaining).apply();
 
-        if (defaultEnabled && inputPin.equals("1234")) {
+                    if (remaining == 0) {
+                        encryptedPrefs.edit().putBoolean("default_pin_enabled", false).apply();
+                    }
 
-            if (remaining > 0) {
-
-                remaining--;
-                prefs.edit().putInt("default_pin_remaining_attempts", remaining).apply();
-
-                if (remaining == 0) {
-                    prefs.edit().putBoolean("default_pin_enabled", false).apply();
-                }
-
-                //showCustomToast("Default PIN login SUCCESS (" + remaining + " tries left)");
-
-                loginSuccess("RIVOT ADMIN(" + remaining + " tries left)");
-                return;
-            }
-            else {
-                prefs.edit().putBoolean("default_pin_enabled", false).apply();
-                //showCustomToasterror("Default PIN permanently disabled");
-                actualPin.setLength(0);
-                etCredential.setText("");
-                return;
-            }
-        }
-// END DEFAULT PIN CHECK
-// ==============================
-        for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-            if (entry.getKey().endsWith("_pin")   && (KeyPresenceManager.get().getIsInRange())) {
-                String username = entry.getKey().replace("user_", "").replace("_pin", "");
-                String storedSalt = prefs.getString("user_" + username + "_salt", "");
-                String storedHash = (String) entry.getValue();
-
-                String hashedInput = hashWithSalt(inputPin, storedSalt);
-
-                if (hashedInput.equals(storedHash)) {
-                    failedAttempts = 0; // Reset on successful login
-                    loginSuccess(username);
+                    loginSuccess("RIVOT ADMIN(" + remaining + " tries left)");
+                    return;
+                } else {
+                    encryptedPrefs.edit().putBoolean("default_pin_enabled", false).apply();
+                    actualPin.setLength(0);
+                    etCredential.setText("");
                     return;
                 }
             }
-        }
+            // END DEFAULT PIN CHECK
+            // ==============================
 
-        failedAttempts++;
-        if (failedAttempts >= MAX_ATTEMPTS) {
-            showCustomToasterror("Too many failed attempts. Please try again later.");
-            playErrorSound();
-            vibrateError();
-        } else {
-            playErrorSound();
-            showCustomToasterror("Invalid PIN");
-            vibrateError();
-        }
+            // Iterate all saved pins and compare
+            for (Map.Entry<String, ?> entry : encryptedPrefs.getAll().entrySet()) {
+                if (entry.getKey().endsWith("_pin") ) {
+                    String username = entry.getKey().replace("user_", "").replace("_pin", "");
+                    String storedSalt = encryptedPrefs.getString("user_" + username + "_salt", "");
+                    String storedHash = (String) entry.getValue();
 
-        // 🔥 Clear PIN input after showing error
-        actualPin.setLength(0);
-        etCredential.setText("");
+                    // if there's no salt or hash skip
+                    if (storedSalt == null || storedSalt.isEmpty() || storedHash == null) continue;
+
+                    String hashedInput = hashWithSalt(inputPin, storedSalt);
+
+                    if (hashedInput != null && hashedInput.equals(storedHash)) {
+                        failedAttempts = 0; // reset
+                        loginSuccess(username);
+                        return;
+                    }
+                }
+            }
+
+            // FAILED ATTEMPTS
+            failedAttempts++;
+            if (failedAttempts >= MAX_ATTEMPTS) {
+                showCustomToasterror("Too many failed attempts. Please try again later.");
+                playErrorSound();
+                vibrateError();
+            } else {
+                playErrorSound();
+                showCustomToasterror("Invalid PIN");
+                vibrateError();
+            }
+
+            actualPin.setLength(0);
+            etCredential.setText("");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            playErrorSound();
+            showCustomToasterror("Error during PIN validation");
+            actualPin.setLength(0);
+            etCredential.setText("");
+        }
     }
+
     int Level1_Line_Current = 35;
     int Level2_Line_Current = 65;
     int Level3_Line_Current = 95;
@@ -705,7 +721,9 @@ public class LoginActivity extends AppCompatActivity{
             if (!isSameRider && !username.equals("Key Rider")) {
                 // Fetch user data
                 String age = prefs.getString("user_" + username + "_age", "N/A");
-                String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
+//                String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
+                String maxSpeedStr = prefs.getString("user_" + username + "_maxspeed", "0");
+
 
                 Log.d("UserData", "Username: " + username);
                 Log.d("UserData", "Age: " + age);
@@ -767,7 +785,7 @@ public class LoginActivity extends AppCompatActivity{
                 // Send frames
                 if (serialPortManager != null) {
                     serialPortManager.VCUSendToMCU(finalSpeedFrame);
-                    Log.d("asdfdg","ENTER Succes Login cmd snet");
+                    Log.d("asdfdg","ENTER Succes Login cmd snet  "+finalSpeedFrame);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 1000);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 2000);
 //                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2500);
@@ -822,7 +840,7 @@ public class LoginActivity extends AppCompatActivity{
             }
 
             final String finalTorqueFrame = torqueFrame; // make it final for lambdas
-
+            Log.d("dacsdvsf","THISISCONTROLECOMS  "+finalTorqueFrame);
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 3500);
             new Handler(Looper.getMainLooper()).postDelayed(
@@ -879,21 +897,27 @@ public class LoginActivity extends AppCompatActivity{
     //finish(); // optional, to avoid returning back to login
 
 
-    private String hashWithSalt(String input, String salt) {
+    private String hashWithSalt(String input, String saltBase64) {
         try {
+            byte[] saltBytes = Base64.decode(saltBase64, Base64.NO_WRAP);
+
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.update(salt.getBytes(StandardCharsets.UTF_8));
+            digest.update(saltBytes);
+
             byte[] hash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
-            StringBuilder hexString = new StringBuilder();
+
+            StringBuilder hex = new StringBuilder();
             for (byte b : hash) {
-                hexString.append(String.format("%02x", b));
+                hex.append(String.format("%02x", b));
             }
-            return hexString.toString();
+            return hex.toString();
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
 
     private void showCustomToast(String message) {
         LayoutInflater inflater = getLayoutInflater();

@@ -327,7 +327,7 @@ public class SerialPortManager {
      */
     public void parseDataFrames(String frame, FrameDataListener listener) {
         if (frame.startsWith("FFAA77") && frame.length() > 14) {
-            if (FrameUtils.verifyFrame(frame)||frame.startsWith("FFAA770303001518FF50E5")) {
+            if (FrameUtils.verifyFrame(frame)||frame.startsWith("FFAA770303001518FF50E5") || frame.startsWith("FFAA770303001518954001")) {
                 if(frame.startsWith("FFAA770303001518FF50E5"))Log.d("sdsfgf","frmae"+frame);
                 String frameType = FrameUtils.getByteSubstring(frame,3,4);
                 switch (frameType) {
@@ -340,6 +340,7 @@ public class SerialPortManager {
                         listener.onHeartbeat2Parsed(hb2);
                         break;
                     case "0303":
+                        Log.d("SerialPortManager", "Frame verification failed--------"+frame);
                         parseHeartbeat3(frame);
                         listener.onHeartbeat3Parsed(hb3);
                         break;
@@ -353,7 +354,7 @@ public class SerialPortManager {
 //                listener.onHeartbeat3Parsed(hb3);
 //            }
             else {
-                //Log.e("SerialPortManager", "Frame verification failed");
+                Log.e("SerialPortManager", "Frame verification failed--------"+frame);
             }
         }
 //        else if (frame.startsWith("FFAA66") && frame.length() > 14) {
@@ -415,6 +416,7 @@ public class SerialPortManager {
      */
     public void parseHeartbeat1(String frame) {
         hb1.setDragonLock(FrameUtils.getByteValue(frame,7));   // 龙头锁状态
+        Log.d("sdfdf","HANDLE LOCK CURRENT STATE "+FrameUtils.getByteValue(frame,7));
         hb1.setSeatLock(FrameUtils.getByteValue(frame,8));   // 坐垫锁状态
         hb1.setSideStand(FrameUtils.getByteValue(frame,9));  //侧支架状态
         hb1.setSeatLockSensor(FrameUtils.getByteValue(frame,10)); // 座椅锁状态
@@ -459,9 +461,17 @@ public class SerialPortManager {
      */
     private void parseHeartbeat3(String frame) {
         if(frame.length()>6)
-        {hb3.setCanId(FrameUtils.getByteSubstring(frame,7,10));  // CAN ID
-        hb3.setCanData(FrameUtils.getByteSubstring(frame,11,18));}  // CAN 数据}
-        else return;
+        {
+            Log.d("sdfgh","FRAMEPARSE11111------"+frame);
+
+            hb3.setCanId(FrameUtils.getByteSubstring(frame,7,10));  // CAN ID
+            hb3.setCanData(FrameUtils.getByteSubstring(frame,11,18));
+        }  // CAN 数据}
+        else {
+            Log.d("sdfgh","FRAMEPARSERETURN------"+frame);
+
+            return;
+        }
         //Log.d("dfsdgb","id's are"+FrameUtils.getByteSubstring(frame,7,10));
         // 根据 CAN ID 进一步解析 CAN 数据
         switch (hb3.getCanId()) {

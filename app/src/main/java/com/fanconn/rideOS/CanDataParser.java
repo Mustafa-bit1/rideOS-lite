@@ -53,6 +53,7 @@ public class CanDataParser {
 
     public static  void parseCanData18954001(Heartbeat3 hb3, String canData) {
         //NTC VALUES
+        Log.d("dassfg","FRAMENUMBEROFICV  "+FrameUtils.getByteSubstring(canData,0,0));
         switch (FrameUtils.getByteSubstring(canData,0,0))
         {
             case "01":

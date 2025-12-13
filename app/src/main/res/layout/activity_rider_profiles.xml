@@ -2,55 +2,604 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="1001dp"
-    android:layout_height="418dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@drawable/fragmentbg"
     tools:context="com.fanconn.rideOS.menu.riderProfilesFragment">
 
-    <HorizontalScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="842dp"
-        android:layout_height="286dp"
-        android:layout_marginStart="224dp"
-        android:layout_marginTop="2dp"
-        android:fillViewport="true"
-        android:scrollbars="none"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <!-- ===========================================================
+                     FIRST SCREEN (VISIBLE INITIALLY)
+         =========================================================== -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/initialContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/ridersContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            />
-    </HorizontalScrollView>
+        <!-- Add Rider Button -->
+        <ImageButton
+            android:id="@+id/btnRegister"
+            android:layout_width="178dp"
+            android:layout_height="217dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="30dp"
+            android:background="@android:color/transparent"
+            android:scaleType="fitXY"
+            android:src="@drawable/addrider_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <ImageButton-->
-<!--        android:id="@+id/returnbtn"-->
-<!--        android:layout_width="70dp"-->
-<!--        android:layout_height="70dp"-->
-<!--        android:layout_marginTop="0dp"-->
-<!--        android:layout_marginEnd="0dp"-->
-<!--        android:background="@android:color/transparent"-->
-<!--        android:scaleType="fitCenter"-->
-<!--        android:src="@drawable/rreturn"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!-- Scroll of Riders -->
+        <HorizontalScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="286dp"
+            android:fillViewport="true"
+            android:scrollbars="none"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="17dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnRegister"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:id="@+id/ridersContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
-        android:id="@+id/btnRegister"
-        android:layout_width="178dp"
-        android:layout_height="217dp"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="790dp"
-        android:adjustViewBounds="true"
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="30dp"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
-        android:src="@drawable/addrider_btn"
+        android:src="@drawable/rideerprofilebackbtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="50dp"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        android:src="@drawable/ridepronextbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageButton
+        android:id="@+id/btnsave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:scaleType="fitXY"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="50dp"
+        android:src="@drawable/ridersavebtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ===========================================================
+                     SECOND SCREEN (SETTINGS TABS)
+         =========================================================== -->
+    <LinearLayout
+        android:id="@+id/settingsParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingTop="20dp"
+        >
+
+        <!-- ==================== TAB SWITCH RADIO GROUP ==================== -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false"
+            app:cardBackgroundColor="@android:color/transparent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/toggle_group_bg"
+                android:padding="9dp"
+                android:gravity="center">
+
+                <RadioGroup
+                    android:id="@+id/topToggleGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <RadioButton
+                        android:id="@+id/basicbtn"
+                        style="@style/riderprofiletogglestyle"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="Basic"
+                        android:padding="8dp"
+                        android:textSize="19dp"
+
+                        android:textColor="#FFFFFF"
+                        android:button="@null" />
+
+
+                    <RadioButton
+                        android:id="@+id/advancedbtn"
+                        style="@style/riderprofiletogglestyle"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="Advanced"
+                        android:padding="8dp"
+                        android:textSize="19dp"
+
+                        android:textColor="#FFFFFF"
+                        android:button="@null" />
+
+                    <RadioButton
+                        android:id="@+id/securitybtn"
+                        style="@style/riderprofiletogglestyle"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="Security"
+                        android:padding="8dp"
+                        android:textSize="19dp"
+                        android:textColor="#FFFFFF"
+                        android:button="@null" />
+
+                </RadioGroup>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- ==================== BASIC TAB ==================== -->
+        <LinearLayout
+            android:id="@+id/basicContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="20dp"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/kanit"
+                    android:text="Name"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="23sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etUsername"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edittext_border"
+                    android:fontFamily="@font/kanit"
+                    android:hint="Enter Name"
+                    android:inputType="textPersonName"
+                    android:textColor="@color/white"
+                    android:textColorHint="#808080"
+                    android:textSize="22sp"
+                    android:paddingStart="30dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/kanit"
+                    android:text="Age"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginEnd="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="23sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/etAge"
+                    android:layout_width="380dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_edittext_border"
+                    android:fontFamily="@font/kanit"
+                    android:hint="Enter Age"
+                    android:layout_marginStart="20dp"
+                    android:inputType="number"
+                    android:textColor="@color/white"
+                    android:textColorHint="#808080"
+                    android:textSize="22sp"
+                    android:paddingStart="30dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+        <!-- ==================== SECURITY TAB ==================== -->
+        <LinearLayout
+            android:id="@+id/securityContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <!-- PIN INPUT -->
+                <LinearLayout
+                    android:id="@+id/pinContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="19dp"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/tvEnterPin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/kanit"
+                            android:text="Enter PIN"
+                            android:layout_marginEnd="43dp"
+                            android:textColor="#FFFFFF"
+                            android:textSize="23sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <EditText
+                            android:id="@+id/etPin"
+                            android:layout_width="180dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_edittext_border"
+                            android:fontFamily="@font/kanit"
+                            android:hint="Enter PIN"
+                            android:inputType="numberPassword"
+                            android:textColor="@color/white"
+                            android:textColorHint="#808080"
+                            android:textSize="22sp"
+                            android:paddingStart="30dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="17dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvConfirmPin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/kanit"
+                            android:text="Confirm PIN"
+                            android:layout_marginEnd="20dp"
+                            android:textColor="#FFFFFF"
+                            android:textSize="23sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <EditText
+                            android:id="@+id/etPinConfirm"
+                            android:layout_width="180dp"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/rounded_edittext_border"
+                            android:fontFamily="@font/kanit"
+                            android:hint="Confrim PIN"
+                            android:inputType="numberPassword"
+                            android:textColor="@color/white"
+                            android:textColorHint="#808080"
+                            android:textSize="22sp"
+                            android:paddingStart="30dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <!-- ⭐ PATTERN SECTION — CENTERED BELOW PIN EXACTLY -->
+
+                <com.fanconn.rideOS.authen.PatternViewRegister
+                    android:id="@+id/patternViewRegister"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/TVdrawpat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Draw Pattern"
+                    android:layout_marginTop="15dp"
+                    android:textColor="#9D9D9D"
+                    android:textSize="21sp"
+                    android:fontFamily="@font/kanit"
+                    android:visibility="gone"/>
+
+
+                <com.fanconn.rideOS.authen.PatternViewRegister
+                    android:id="@+id/patternViewConfirm"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/TVconfirmpat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Confirm Pattern"
+                    android:textColor="#9D9D9D"
+                    android:layout_marginTop="15dp"
+                    android:textSize="21sp"
+                    android:fontFamily="@font/kanit"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- ==================== ADVANCED TAB ==================== -->
+        <LinearLayout
+            android:id="@+id/advancedContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <!-- MAX SPEED -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:layout_marginStart="163dp"
+
+                android:layout_marginTop="10dp">
+
+                <!-- LEFT TEXT -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set Max Speed"
+                    android:textColor="#FFFFFF"
+                    android:textSize="23sp"
+                    android:fontFamily="@font/kanit"
+                    />
+
+                <!-- FIXED SIZE BLOCK TO PREVENT SHAKING -->
+                <FrameLayout
+                    android:layout_width="310dp"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingStart="25dp"
+                    android:paddingEnd="25dp">
+
+                    <SeekBar
+                        android:id="@+id/seekBarMaxSpeed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="40"
+                        android:progress="35"
+                        android:paddingStart="25dp"
+                        android:paddingEnd="25dp"
+                        android:thumb="@drawable/reverse_speed_seekbarthumb"
+                        android:progressTint="#FFEE00" />
+                </FrameLayout>
+
+                <!-- RIGHT VALUE TEXT -->
+                <TextView
+                    android:id="@+id/tvMaxspeedValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="35 kmph"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    android:fontFamily="@font/kanit"
+                    android:layout_marginStart="15dp"/>
+            </LinearLayout>
+
+
+
+            <!-- Main Horizontal Container -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="163dp"
+                android:padding="10dp"
+                >
+
+                <!-- LEFT TEXT -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set Max Torque"
+                    android:textColor="#FFFFFF"
+                    android:textSize="23sp"
+                    android:fontFamily="@font/kanit"/>
+
+                <!-- MIDDLE BLOCK -->
+                <LinearLayout
+                    android:layout_width="310dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="33dp"
+                    android:clipToPadding="false">
+
+                    <!-- SEEK BAR -->
+                    <SeekBar
+                        android:id="@+id/seekBarTorque"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="3"
+                        android:progress="1"
+                        android:paddingStart="25dp"
+                        android:paddingEnd="25dp"
+                        android:thumb="@drawable/reverse_speed_seekbarthumb"
+                        android:progressTint="#F88213" />
+
+                    <!-- LABELS -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="4"
+                        android:layout_marginTop="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Easy"
+                            android:textColor="#2AFF00"
+                            android:gravity="center"
+                            android:textSize="17sp"
+                            android:fontFamily="@font/kanit"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Medium"
+                            android:textColor="#FFEE00"
+                            android:gravity="center"
+                            android:textSize="17sp"
+                            android:fontFamily="@font/kanit"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Rush"
+                            android:textColor="#FC7E09"
+                            android:gravity="center"
+                            android:textSize="17sp"
+                            android:fontFamily="@font/kanit"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Insane"
+                            android:textColor="#FF4040"
+                            android:gravity="center"
+                            android:textSize="17sp"
+                            android:fontFamily="@font/kanit"/>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- RIGHT TORQUE LEVEL -->
+                <TextView
+                    android:id="@+id/tvTorqueLevel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Lvl 1"
+                    android:textColor="#FFFFFF"
+                    android:textSize="28sp"
+                    android:fontFamily="@font/kanit"
+                    android:layout_marginStart="25dp"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+        <!-- ===========================================================
+                     STEP 1 LAYOUT
+         =========================================================== -->
+        <LinearLayout
+            android:id="@+id/stepOneLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Step 1 Content Here"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+
+        <!-- ===========================================================
+                     STEP 2 LAYOUT
+         =========================================================== -->
+        <LinearLayout
+            android:id="@+id/stepTwoLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Step 2 Content Here"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

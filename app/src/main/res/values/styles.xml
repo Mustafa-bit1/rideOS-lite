@@ -37,6 +37,18 @@
         <item name="android:fontFamily">@font/kanit</item>
     </style>
 
+    <style name="riderprofiletogglestyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:background">@drawable/ridefrag_toggle_selector</item>
+        <item name="android:button">@null</item> <!-- Removes default radio icon -->
+        <item name="android:textColor">@color/text_toggle_selector</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:radius">20sp</item>
+        <item name="android:fontFamily">@font/kanit</item>
+    </style>
+
     <style name="QuickButtonStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">92dp</item>
