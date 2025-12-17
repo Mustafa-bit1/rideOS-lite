@@ -8,6 +8,8 @@ public class RealTimeData {
     public double motorTemp;
     public double bmsMosTemp;
     public String ntc;
+    public String data;
+
     public double currentconsumption;
     public double batvoltage;
     public double remainingCapacity_AH;

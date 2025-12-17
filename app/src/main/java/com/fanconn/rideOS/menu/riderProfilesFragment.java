@@ -295,7 +295,6 @@ public class riderProfilesFragment extends Fragment {
             }
         });
 
-
         // NEXT BUTTON
         btnNext.setOnClickListener(v -> {
             hideKeyboard();
@@ -307,18 +306,18 @@ public class riderProfilesFragment extends Fragment {
 
                 // ---- Validation ----
                 if (name.isEmpty()) {
-                    showCustomToast("Please enter your name");
+                    showCustomToasterror("Please enter your name");
                     return;
                 }
 
                 if (ageStr.isEmpty()) {
-                    showCustomToast("Please enter your age");
+                    showCustomToasterror("Please enter your age");
                     return;
                 }
 
                 int age = Integer.parseInt(ageStr);
                 if (age < 18 || age > 110) {
-                    showCustomToast("Invalid age");
+                    showCustomToasterror("Invalid age");
                     return;
                 }
 

@@ -82,8 +82,10 @@ public class TelemetryService extends Service {
     }
 
     private void startTelemetry(String VINNUMBER) {
-//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.134:8081/ws/ev"));
-        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.174.148.224:8081/ws/ev"));
+        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://sb.rivotmotors.com:8081/ws/ev"));
+//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.174.148.224:8081/ws/ev"));
+//                evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.106.224:8081/ws/ev"));
+
 
         evClient.connect();
 
@@ -295,6 +297,7 @@ public class TelemetryService extends Service {
             data.lat_long = "0.0,0.0";   // fallback if GPS not ready
         }
         data.time = java.time.OffsetDateTime.now().toString();
+        data.data = ".";
         return data;
     }
 
@@ -305,9 +308,9 @@ public class TelemetryService extends Service {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    //Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
+                    Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
                 } else {
-                   // Log.e("TelemetryService", "❌ RealTimeData failed with code: " + response.code());
+                    Log.e("TelemetryService", "❌ RealTimeData failed with code: " + response.code());
                     try {
                         Log.e("TelemetryService", "Error body: " + response.errorBody().string());
                     } catch (Exception ignored) {}

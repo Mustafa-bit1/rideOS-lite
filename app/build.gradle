@@ -17,7 +17,7 @@ android {
 
         packagingOptions {
             pickFirst 'libs/arm64-v8a/libnative-lib.so'
-            pickFirst "libs/armeabi-v7a/libnative-lib.so"
+            pickFirst 'libs/armeabi-v7a/libnative-lib.so'
 
             exclude 'META-INF/INDEX.LIST'
             exclude 'META-INF/DEPENDENCIES'
@@ -25,19 +25,13 @@ android {
             exclude 'META-INF/LICENSE.txt'
             exclude 'META-INF/NOTICE'
             exclude 'META-INF/NOTICE.txt'
-            exclude 'META-INF/io.netty.versions.properties'  // Added exclusion for this file
+            exclude 'META-INF/io.netty.versions.properties'
         }
 
         ndk {
             moduleName "native-lib"
             ldLibs "log", "z", "m"
             abiFilters "arm64-v8a", "armeabi-v7a"
-        }
-
-        externalNativeBuild {
-            cmake {
-                cppFlags ""
-            }
         }
     }
 
@@ -48,7 +42,6 @@ android {
             keyAlias 'platform'
             keyPassword 'fanconn'
         }
-
         debug {
             storeFile file("keystore/platform.jks")
             storePassword 'fanconn'
@@ -57,8 +50,22 @@ android {
         }
     }
 
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile(
+                    'proguard-android-optimize.txt'),
+                    'proguard-rules.pro'
+        }
+    }
+
     viewBinding {
         enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     externalNativeBuild {
@@ -67,54 +74,65 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
     sourceSets {
         main {
-            jni {
-                srcDirs 'src/main/jni'
-            }
+            jni.srcDirs = ['src/main/jni']
         }
     }
 }
 
 dependencies {
+
+    // --------------------
+    // AndroidX Core
+    // --------------------
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.firebase:firebase-appdistribution-gradle:5.1.1'
-    implementation 'androidx.security:security-crypto:1.0.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation 'io.github.xmaihh:serialport:2.1.1'
-    implementation 'com.airbnb.android:lottie:6.3.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
     implementation 'androidx.activity:activity:1.10.0'
     implementation 'androidx.core:core-ktx:1.15.0'
 
+    // --------------------
+    // Security
+    // --------------------
+    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
+
+    // --------------------
+    // MQTT (CORRECT & SAFE ✅)
+    // --------------------
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
+    implementation 'com.github.hannesa2:paho.mqtt.android:3.5.1'
+
+
+    // --------------------
+    // Networking / JSON
+    // --------------------
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+    // 🔒 Java-17 safe Jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.5'
+
+    // --------------------
+    // Serial / Hardware
+    // --------------------
+    implementation 'io.github.xmaihh:serialport:2.1.1'
+
+    // --------------------
+    // UI / Animation
+    // --------------------
+    implementation 'com.airbnb.android:lottie:6.3.0'
+
+    // --------------------
+    // WebSocket
+    // --------------------
+    implementation 'org.java-websocket:Java-WebSocket:1.5.3'
+
+    // --------------------
+    // Testing
+    // --------------------
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-    implementation "androidx.security:security-crypto:1.1.0-alpha03"
-
-
-        implementation 'androidx.appcompat:appcompat:1.6.1' // Ensure this version is up to date
-
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
-    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
-
 }

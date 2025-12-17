@@ -63,11 +63,11 @@ import com.fanconn.rideOS.mcuupdate.FileDownloader;
 import com.fanconn.rideOS.mcuupdate.YMode;
 
 import com.fanconn.rideOS.menu.menu;
-import com.fanconn.rideOS.network.CommandHandler;
-import com.fanconn.rideOS.network.CommandListener;
+//import com.fanconn.rideOS.network.CommandHandler;
+//import com.fanconn.rideOS.network.CommandListener;
 import com.fanconn.rideOS.network.EVWebSocketClient;
 import com.fanconn.rideOS.network.ApiService;
-import com.fanconn.rideOS.network.ScooterMqttManager;
+//import com.fanconn.rideOS.network.ScooterMqttManager;
 
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
@@ -401,19 +401,19 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         getFreshLatLong(this);
         isStatusReceiverRegistered = true;
 
-        commandHandler = new CommandHandler((commandType, value, clientId) -> {
-            Log.d("CMD_MAIN", "Command Received: " + commandType + " = " + value);
+//        commandHandler = new CommandHandler((commandType, value, clientId) -> {
+//            Log.d("CMD_MAIN", "Command Received: " + commandType + " = " + value);
+//
+//            // TODO: UART Send here
+//            // serialPortManager.sendCommandToMcu(commandType, value);
+//
+//            sendAckToServer("WHITEBOARD", commandType, value, "success", clientId);
+//        });
 
-            // TODO: UART Send here
-            // serialPortManager.sendCommandToMcu(commandType, value);
-
-            sendAckToServer("WHITEBOARD", commandType, value, "success", clientId);
-        });
-
-        initMqtt();
+        //initMqtt();
 
     }//END OF ONCREATE METHOD
-    private CommandHandler commandHandler;
+    //private CommandHandler commandHandler;
 
     @SuppressLint("MissingPermission")
     private void getFreshLatLong(Context context) {
@@ -2197,33 +2197,33 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     }
 
 
-    private void initMqtt() {
-        String vin = "WHITEBOARD";
-
-        ScooterMqttManager.getInstance().init(
-                this,
-                "tcp://192.168.1.134:1883",
-                "SCOOTER_DASHBOARD_" + vin
-        );
-
-        ScooterMqttManager.getInstance().connect(() -> {
-            Log.d("MQTT", "Connected. Subscribing...");
-
-            try {
-                ScooterMqttManager.getInstance().getClient().subscribe(
-                        "scooter/" + vin + "/command",
-                        1,
-                        new CommandListener(commandHandler)
-                );
-
-
-                Log.d("MQTT", "Subscribed to command topic");
-
-            } catch (Exception e) {
-                Log.e("MQTT", "Subscribe failed", e);
-            }
-        });
-    }
+//    private void initMqtt() {
+//        String vin = "WHITEBOARD";
+//
+//        ScooterMqttManager.getInstance().init(
+//                this,
+//                "tcp://192.168.1.134:1883",
+//                "SCOOTER_DASHBOARD_" + vin
+//        );
+//
+//        ScooterMqttManager.getInstance().connect(() -> {
+//            Log.d("MQTT", "Connected. Subscribing...");
+//
+//            try {
+//                ScooterMqttManager.getInstance().getClient().subscribe(
+//                        "scooter/" + vin + "/command",
+//                        1,
+//                        new CommandListener(commandHandler)
+//                );
+//
+//
+//                Log.d("MQTT", "Subscribed to command topic");
+//
+//            } catch (Exception e) {
+//                Log.e("MQTT", "Subscribe failed", e);
+//            }
+//        });
+//    }
 
 //    private void onCommandReceived(String json) {
 //        Log.d("CMD", "Received command: " + json);
@@ -2249,26 +2249,26 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        }
 //    }
 
-    private void sendAckToServer(String vin, String commandType, int value, String status, String clientId) {
-        try {
-            JSONObject ack = new JSONObject();
-            ack.put("vin", vin);
-            ack.put("commandType", commandType);
-            ack.put("value", value);
-            ack.put("status", status);
-            ack.put("clientId", clientId);
-
-            // FIXED: send ACK to status topic using VIN
-            String topic = "scooter/status/" + vin;
-
-            ScooterMqttManager.getInstance().publish(topic, ack.toString());
-
-            Log.d("ACK", "Sent ACK to backend on: " + topic + " → " + ack.toString());
-
-        } catch (Exception e) {
-            Log.e("ACK", "ACK send failed", e);
-        }
-    }
+//    private void sendAckToServer(String vin, String commandType, int value, String status, String clientId) {
+//        try {
+//            JSONObject ack = new JSONObject();
+//            ack.put("vin", vin);
+//            ack.put("commandType", commandType);
+//            ack.put("value", value);
+//            ack.put("status", status);
+//            ack.put("clientId", clientId);
+//
+//            // FIXED: send ACK to status topic using VIN
+//            String topic = "scooter/status/" + vin;
+//
+//            ScooterMqttManager.getInstance().publish(topic, ack.toString());
+//
+//            Log.d("ACK", "Sent ACK to backend on: " + topic + " → " + ack.toString());
+//
+//        } catch (Exception e) {
+//            Log.e("ACK", "ACK send failed", e);
+//        }
+//    }
 
 
 

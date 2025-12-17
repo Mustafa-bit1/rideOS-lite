@@ -685,9 +685,9 @@ public class LoginActivity extends AppCompatActivity{
     public void loginSuccess(String username) {
         showCustomToast("Welcome " + username + " !");
         if(serialPortManager!=null){
-            serialPortManager.VCUSendToMCU("FFAA550107000A01");
+            serialPortManager.VCUSendToMCU("FFAA550101000A01");
             new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU("FFAA550101000A01"), 100);
+                    () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 100);
         }
 //        UIUpdater.telecurrentrider=username;
         TelemetryDataManager.getInstance().setTeleCurrentRider(username);
@@ -798,13 +798,13 @@ public class LoginActivity extends AppCompatActivity{
             }//END OF SAME USER
 
             String maxTorque = prefs.getString("user_" + username + "_torque", "Easy");
-
+            Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
             int lineCurrent;
             switch (maxTorque) {
                 case "Medium": lineCurrent = Level2_Line_Current; break;
                 case "Rush":   lineCurrent = Level3_Line_Current; break;
                 case "Insane": lineCurrent = Level4_Line_Current; break;
-                case "Easy":
+                case "Easy":   lineCurrent = Level1_Line_Current; break;
                 default:       lineCurrent = Level4_Line_Current; break;
             }
 
@@ -830,7 +830,7 @@ public class LoginActivity extends AppCompatActivity{
             }
             else if (batteryLevel <= 20) { //  line 15A, phase max, all normal
                 torqueFrame = "FFAA550103001510FBA8073C00A000B004C800";
-            } else if (batteryLevel <= 80) { // phase max, all normal  A000(45A regen) - C800(50A)
+            } else if (batteryLevel <= 90) { // phase max, all normal  A000(45A regen) - C800(50A)
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
             } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";

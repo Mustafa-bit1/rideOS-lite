@@ -64,19 +64,59 @@ public class AhTrackerManager {
         save();
     }
 
-    // ⭐ Remaining Ah in battery
+    // Remaining Ah in battery
     public float getRemainingAh() {
         float rem = rideOSInAh - rideOSOutAh;
         Log.d("AH_TRACKER", "RemainingAh = " + rem);
         return rem;
     }
 
-    // ⭐ SOC (%) value
+    // SOC (%) value
     public float getSOC() {
         float rem = getRemainingAh();
-        float soc = (rem / BATTERY_CAPACITY) * 100f;
-        Log.d("AH_TRACKER", "Calculated SOC = " + soc);
+        float capacity = getBatteryCapacity();
+
+        // Safety checks
+        if (capacity <= 0f) {
+            Log.e("AH_TRACKER", "Invalid battery capacity: " + capacity);
+            return 0f;
+        }
+
+        if (rem < 0f) {
+            Log.w("AH_TRACKER", "Remaining Ah is negative: " + rem);
+            rem = 0f;
+        }
+
+        float soc = (rem / capacity) * 100f;
+
+        // Clamp SOC between 0–100
+        if (soc < 0f) soc = 0f;
+        else if (soc > 100f) soc = 100f;
+//
+//        Log.d("AH_TRACKER",
+//                "Model=" + MetadataManager.get().getModel()
+//                        + " RemAh=" + rem
+//                        + " Capacity=" + capacity
+//                        + " SOC=" + soc);
+
         return soc;
+    }
+
+    private float getBatteryCapacity() {
+        String model = MetadataManager.get().getModel();
+
+        if (model == null) return 60f; // default safety
+
+        switch (model) {
+            case "nx100 Pro":
+                return 60f;
+
+            case "nx100 Max":
+                return 90f;
+
+            default:
+                return 60f; // fallback
+        }
     }
 
     // ⭐ Save to SharedPreferences

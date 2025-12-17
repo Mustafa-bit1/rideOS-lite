@@ -60,6 +60,7 @@ public class MetadataManager {
 
     // Getters with safe default values
     public String getVin() { return prefs.getString("vin", "UNKNOWN_VIN"); }
+
     public String getCharger() { return prefs.getString("charger", "UNKNOWN_CHARGER"); }
     public String getOwner() { return prefs.getString("owner", "UNKNOWN_OWNER"); }
     public String getPhone() { return prefs.getString("phone", "UNKNOWN_PHONE"); }

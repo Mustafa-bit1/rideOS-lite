@@ -540,7 +540,7 @@ public class UIUpdater  {
             }, 15_000);
         }
 
-        if (batteryLevel >= 21 && batteryLevel<80 && Lowbatflag) {
+        if (batteryLevel >= 21 && batteryLevel<90 && Lowbatflag) {
 //            resetParamtersAfterLowbat=true;
             Lowbatflag = false;
             if(serialPortManager!=null){
@@ -600,12 +600,12 @@ public class UIUpdater  {
             }
         }
 
-        if((batteryLevel>=65 && batteryLevel<=80) && Dynamic80SOCRegencurrent) {
+        if((batteryLevel>=65 && batteryLevel<=90) && Dynamic80SOCRegencurrent) {
             Dynamic80SOCRegencurrent=false;
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800");//35 - 45 regen(8C00-B400)40A(A000) 50A(C800) , phase cur 300A(B004) , line current 110A(B801) ,
             new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800"), 500);
         }
-        if(batteryLevel>=81) {
+        if(batteryLevel>=91) {
             Dynamic80SOCRegencurrent=true;
         }
 
