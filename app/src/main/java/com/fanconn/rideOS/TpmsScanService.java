@@ -27,98 +27,121 @@ import java.util.Map;
 import java.util.Set;
 
 public class TpmsScanService extends Service {
+
     private static final String TAG = "TPMS-Service";
 
     // Broadcast constants
-    public static final String ACTION_TPMS_UPDATE = "com.fanconn.rideOS.ACTION_TPMS_UPDATE";
+    public static final String ACTION_TPMS_UPDATE  = "com.fanconn.rideOS.ACTION_TPMS_UPDATE";
     public static final String ACTION_TPMS_REQUEST = "com.fanconn.rideOS.ACTION_TPMS_REQUEST";
     public static final String ACTION_TPMS_RESTART = "com.fanconn.rideOS.ACTION_TPMS_RESTART";
-    public static final String EXTRA_MAC = "extra_mac";
-    public static final String EXTRA_MINOR = "extra_minor";
+
+    public static final String EXTRA_MAC    = "extra_mac";
+    public static final String EXTRA_MINOR  = "extra_minor";   // legacy
+    public static final String EXTRA_PSI    = "extra_psi";
+    public static final String EXTRA_TEMP   = "extra_temp";
+    public static final String EXTRA_VOLT   = "extra_voltage";
+    public static final String EXTRA_LOWBAT = "extra_low_battery";
 
     private BluetoothLeScanner scanner;
+
     private final Set<String> validMacs = new HashSet<>();
     private final Map<String, Integer> latestMinorMap = new HashMap<>();
+
+    private final MetadataManager metadata = MetadataManager.get();
+
+    /* ================= BROADCAST RECEIVER ================= */
 
     private final BroadcastReceiver tpmsRequestReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (ACTION_TPMS_REQUEST.equals(action)) {
-                Log.d(TAG, "📡 ACTION_TPMS_REQUEST → sending cached values...");
-                for (Map.Entry<String, Integer> entry : latestMinorMap.entrySet()) {
+
+            if (ACTION_TPMS_REQUEST.equals(intent.getAction())) {
+
+                Log.d(TAG, "📡 ACTION_TPMS_REQUEST → sending cached values");
+
+                for (Map.Entry<String, Integer> e : latestMinorMap.entrySet()) {
                     Intent update = new Intent(ACTION_TPMS_UPDATE);
-                    update.putExtra(EXTRA_MAC, entry.getKey());
-                    update.putExtra(EXTRA_MINOR, entry.getValue());
-                    LocalBroadcastManager.getInstance(TpmsScanService.this).sendBroadcast(update);
+                    update.putExtra(EXTRA_MAC, e.getKey());
+                    update.putExtra(EXTRA_MINOR, e.getValue());
+                    LocalBroadcastManager
+                            .getInstance(TpmsScanService.this)
+                            .sendBroadcast(update);
                 }
-            } else if (ACTION_TPMS_RESTART.equals(action)) {
-                Log.d(TAG, "🔄 ACTION_TPMS_RESTART → restarting BLE scan...");
+
+            } else if (ACTION_TPMS_RESTART.equals(intent.getAction())) {
+
+                Log.d(TAG, "🔄 ACTION_TPMS_RESTART → restarting scan");
+
                 if (scanner != null) {
-                    try {
-                        scanner.stopScan(scanCallback);
-                    } catch (Exception ignore) {}
+                    try { scanner.stopScan(scanCallback); }
+                    catch (Exception ignored) {}
                 }
                 startScanning();
             }
         }
     };
 
-    private final MetadataManager metadata = MetadataManager.get();
+    /* ================= SERVICE LIFECYCLE ================= */
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: Service created");
 
-        // Add your TPMS MACs
         validMacs.add(metadata.getFrontTPMS());
         validMacs.add(metadata.getRearTPMS());
-        Log.d(TAG, "onCreate: Valid TPMS MACs = " + validMacs);
+
+        Log.d(TAG, "Valid TPMS MACs = " + validMacs);
 
         startForegroundService();
         startScanning();
 
-        // Register request & restart receiver
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_TPMS_REQUEST);
-        filter.addAction(ACTION_TPMS_RESTART);
-        LocalBroadcastManager.getInstance(this).registerReceiver(tpmsRequestReceiver, filter);
+        IntentFilter f = new IntentFilter();
+        f.addAction(ACTION_TPMS_REQUEST);
+        f.addAction(ACTION_TPMS_RESTART);
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(tpmsRequestReceiver, f);
     }
 
+    /* ================= FOREGROUND ================= */
+
     private void startForegroundService() {
+
         String channelId = "tpms_scan_channel";
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager nm =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
+            NotificationChannel ch = new NotificationChannel(
                     channelId,
                     "TPMS Scanning",
                     NotificationManager.IMPORTANCE_LOW
             );
-            manager.createNotificationChannel(channel);
+            nm.createNotificationChannel(ch);
         }
 
-        Notification notification = new NotificationCompat.Builder(this, channelId)
+        Notification n = new NotificationCompat.Builder(this, channelId)
                 .setContentTitle("TPMS Service")
-                .setContentText("Scanning for TPMS sensors...")
+                .setContentText("Scanning TPMS sensors")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setOngoing(true)
                 .build();
 
-        startForeground(101, notification);
+        startForeground(101, n);
     }
 
+    /* ================= BLE SCANNING ================= */
+
     private void startScanning() {
+
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null || !adapter.isEnabled()) {
-            Log.e(TAG, "startScanning: Bluetooth not available or not enabled ❌");
+            Log.e(TAG, "Bluetooth unavailable");
             return;
         }
 
         scanner = adapter.getBluetoothLeScanner();
         if (scanner == null) {
-            Log.e(TAG, "startScanning: BLE scanner not available ❌");
+            Log.e(TAG, "BLE scanner unavailable");
             return;
         }
 
@@ -127,57 +150,69 @@ public class TpmsScanService extends Service {
                 .build();
 
         scanner.startScan(null, settings, scanCallback);
-        Log.d(TAG, "startScanning: Started BLE scan for TPMS ✅");
+        Log.d(TAG, "BLE scan started");
     }
 
     private final ScanCallback scanCallback = new ScanCallback() {
+
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
+
             if (result == null || result.getScanRecord() == null) return;
-
-            byte[] data = result.getScanRecord().getBytes();
-            if (data == null || data.length < 29) return;
-
-            int major = ((data[25] & 0xFF) << 8) | (data[26] & 0xFF);
-            int minor = ((data[27] & 0xFF) << 8) | (data[28] & 0xFF);
 
             String mac = result.getDevice().getAddress();
             if (!validMacs.contains(mac)) return;
 
-            String last4 = mac.replace(":", "").toUpperCase();
-            last4 = last4.substring(last4.length() - 4);
+            TpmsParsedData d =
+                    TpmsParser.parse(result.getScanRecord().getBytes());
 
-            String majorHex = String.format("%04X", major);
+            if (!d.valid) return;
 
-            if (majorHex.equals(last4)) {
-                latestMinorMap.put(mac, minor);
+            int psiInt  = (int) Math.round(d.psi);
+            int tempInt = d.temperature;
 
-                Log.d(TAG, "✅ TPMS detected | MAC=" + mac +
-                        " | Major=" + major + " (Hex=" + majorHex + ")" +
-                        " | Minor=" + minor);
+            // Legacy compatibility (minor-style)
+            int minorCompat = ((psiInt & 0xFF) << 8) | (tempInt & 0xFF);
+            latestMinorMap.put(mac, minorCompat);
 
-                Intent intent = new Intent(ACTION_TPMS_UPDATE);
-                intent.putExtra(EXTRA_MAC, mac);
-                intent.putExtra(EXTRA_MINOR, minor);
-                LocalBroadcastManager.getInstance(TpmsScanService.this).sendBroadcast(intent);
-            }
+            Intent i = new Intent(ACTION_TPMS_UPDATE);
+            i.putExtra(EXTRA_MAC, mac);
+            i.putExtra(EXTRA_MINOR, minorCompat);
+            i.putExtra(EXTRA_PSI, d.psi);
+            i.putExtra(EXTRA_TEMP, d.temperature);
+            i.putExtra(EXTRA_VOLT, d.voltage);
+            i.putExtra(EXTRA_LOWBAT, d.lowBattery);
+
+            LocalBroadcastManager
+                    .getInstance(TpmsScanService.this)
+                    .sendBroadcast(i);
+
+            Log.d(TAG,
+                    "TPMS | " + mac +
+                            " | PSI=" + String.format("%.1f", d.psi) +
+                            " | TEMP=" + d.temperature +
+                            " | BAT=" + (d.voltage > 0
+                            ? String.format("%.2fV", d.voltage)
+                            : (d.lowBattery ? "LOW" : "OK")) +
+                            " | TYPE=" + d.type
+            );
         }
     };
 
+    /* ================= CLEANUP ================= */
+
     @Override
     public void onDestroy() {
-        super.onDestroy();
 
         if (scanner != null) {
-            try {
-                scanner.stopScan(scanCallback);
-            } catch (Exception e) {
-                Log.e(TAG, "onDestroy: Failed to stop scan", e);
-            }
+            try { scanner.stopScan(scanCallback); }
+            catch (Exception ignored) {}
         }
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(tpmsRequestReceiver);
-        //Log.d(TAG, "onDestroy: Service destroyed, scan stopped, receiver unregistered ✅");
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(tpmsRequestReceiver);
+
+        super.onDestroy();
     }
 
     @Nullable
