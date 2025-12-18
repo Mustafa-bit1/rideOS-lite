@@ -46,38 +46,48 @@ public class ScooterMqttClient {
     public void connectAndSubscribe() {
 
         MqttConnectOptions options = new MqttConnectOptions();
-        options.setAutomaticReconnect(true);
-        options.setCleanSession(false); // IMPORTANT for reconnects
+        options.setAutomaticReconnect(true);   // Auto reconnect
+        options.setCleanSession(true);          // Drop queued commands
         options.setConnectionTimeout(10);
         options.setKeepAliveInterval(20);
 
         try {
-            client.setCallback(new MqttCallback() {
+
+            client.setCallback(new MqttCallbackExtended() {
+
+                @Override
+                public void connectComplete(boolean reconnect, String serverURI) {
+                    Log.d(TAG, "✅ MQTT connectComplete | reconnect = " + reconnect);
+
+                    String topic = COMMAND_PREFIX + vin;
+                    client.subscribe(topic, 1);
+                    Log.d(TAG, "📡 Subscribed to: " + topic);
+                }
 
                 @Override
                 public void connectionLost(Throwable cause) {
-                    Log.e(TAG, "❌ MQTT connection lost", cause);
+                    //Log.e(TAG, "❌ MQTT connection lost", cause);
                 }
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) {
                     String payload = new String(message.getPayload());
 
-                    Log.d(TAG, "📥 Command received");
-                    Log.d(TAG, "   Topic   : " + topic);
-                    Log.d(TAG, "   Payload : " + payload);
+//                    Log.d(TAG, "📥 Command received");
+//                    Log.d(TAG, "   Topic   : " + topic);
+//                    Log.d(TAG, "   Payload : " + payload);
 
                     handleCommand(payload);
                 }
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken token) {
-                    Log.d(TAG, "✅ MQTT delivery complete");
+                    //Log.d(TAG, "✅ MQTT delivery complete");
                 }
             });
 
             if (client.isConnected()) {
-                Log.d(TAG, "⚠ MQTT already connected");
+                //Log.d(TAG, "⚠ MQTT already connected");
                 return;
             }
 
@@ -85,30 +95,24 @@ public class ScooterMqttClient {
 
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.d(TAG, "✅ Connected to MQTT broker");
-
-                    String topic = COMMAND_PREFIX + vin;
-                    try {
-                        subscribe(topic);
-                    } catch (MqttException e) {
-                        Log.e(TAG, "❌ Subscribe failed", e);
-                    }
+                   // Log.d(TAG, "✅ Connected to MQTT broker");
+                    // ❗ DO NOT subscribe here
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.e(TAG, "❌ MQTT connect failed", exception);
+                    //Log.e(TAG, "❌ MQTT connect failed", exception);
                 }
             });
 
         } catch (Exception e) {
-            Log.e(TAG, "❌ MQTT setup error", e);
+            //Log.e(TAG, "❌ MQTT setup error", e);
         }
     }
 
     private void subscribe(String topic) throws MqttException {
         client.subscribe(topic, 1);
-        Log.d(TAG, "📡 Subscribed to: " + topic);
+        //Log.d(TAG, "📡 Subscribed to: " + topic);
     }
 
     // ----------------------------------------------------
@@ -123,15 +127,15 @@ public class ScooterMqttClient {
             String value = json.optString("value", "UNKNOWN");
             String clientId = json.optString("clientId", "UNKNOWN");
 
-            Log.d(TAG, "➡ CommandType : " + commandType);
-            Log.d(TAG, "➡ Value       : [" + value + "]");
-            Log.d(TAG, "➡ ClientId    : " + clientId);
+//            Log.d(TAG, "➡ CommandType : " + commandType);
+//            Log.d(TAG, "➡ Value       : [" + value + "]");
+//            Log.d(TAG, "➡ ClientId    : " + clientId);
 
             String ackStatus = "success";
 
             // ❌ STRICT VALIDATION — reject ANY whitespace in value
             if (value.matches(".*\\s+.*")) {
-                Log.e(TAG, "❌ Invalid command value (contains spaces): [" + value + "]");
+               // Log.e(TAG, "❌ Invalid command value (contains spaces): [" + value + "]");
                 sendAck(clientId, "invalidcommand");
                 return;
             }
@@ -161,34 +165,34 @@ public class ScooterMqttClient {
                             if(serialApplication.getSerialPortManager().getHb3().getBSG2_BYTE78()==0){
                                 serialApplication.getSerialPortManager().VCUSendToMCU(value);
                                 ackStatus = "success";
-                                Log.d(TAG, "📡 Handle lock command sent to MCU");
+                                //Log.d(TAG, "📡 Handle lock command sent to MCU");
                             }
                             else {
-                                Log.d(TAG, "📡 CAN command failed because rpm is not 0");
+                               // Log.d(TAG, "📡 CAN command failed because rpm is not 0");
                                 ackStatus = "scooter in motion";
                             }
                         }
                         else {
                             serialApplication.getSerialPortManager().VCUSendToMCU(value);
                             ackStatus = "success";
-                            Log.d(TAG, "📡 CAN command sent to MCU");
+                           // Log.d(TAG, "📡 CAN command sent to MCU");
                         }
 
                     } else {
-                        Log.d(TAG, "📡 CAN srial port is null");
+                        //Log.d(TAG, "📡 CAN srial port is null");
                         ackStatus = "invalidcommand";
                     }
                     break;
 
                 case "RESTART":
-                    Log.d(TAG, "🔄 Restart command received");
+                   // Log.d(TAG, "🔄 Restart command received");
                     if ("1".equals(value)) {
                         // ACK will be sent immediately
                         ackStatus = "success";
-                        Log.d(TAG, "🔄 Restart command Succeeded");
+                        //Log.d(TAG, "🔄 Restart command Succeeded");
 
                         // Restart AFTER ACK delivery (5 sec safe delay)
-                        DeviceNetworkController.restartWithDelay(context, 5000);
+                        DeviceNetworkController.restartWithDelay(context, 4000);
 
                     } else {
                         ackStatus = "invalidcommand";
@@ -220,7 +224,7 @@ public class ScooterMqttClient {
                     break;
 
                 default:
-                    Log.e(TAG, "❌ Unknown commandType: " + commandType);
+                    //Log.e(TAG, "❌ Unknown commandType: " + commandType);
                     ackStatus = "invalidcommand";
             }
 
@@ -228,7 +232,7 @@ public class ScooterMqttClient {
             sendAck(clientId, ackStatus);
 
         } catch (Exception e) {
-            Log.e(TAG, "❌ Command parse failed", e);
+            //Log.e(TAG, "❌ Command parse failed", e);
         }
     }
     private void showLoginAndUnlock(Context context) {
@@ -247,9 +251,9 @@ public class ScooterMqttClient {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (LoginActivity.instance != null) {
                 LoginActivity.instance.loginSuccess("Key Rider");
-                Log.d(TAG, "🔓 Remote unlock executed after screen shown");
+               // Log.d(TAG, "🔓 Remote unlock executed after screen shown");
             } else {
-                Log.e(TAG, "❌ LoginActivity instance still null");
+                //Log.e(TAG, "❌ LoginActivity instance still null");
             }
         }, 500); // 300–500 ms is enough
     }
@@ -261,7 +265,7 @@ public class ScooterMqttClient {
     private void sendAck(String clientId, String status) {
 
         if (client == null || !client.isConnected()) {
-            Log.e(TAG, "❌ Cannot send ACK, MQTT not connected");
+            //Log.e(TAG, "❌ Cannot send ACK, MQTT not connected");
             return;
         }
 
@@ -279,12 +283,12 @@ public class ScooterMqttClient {
                     false
             );
 
-            Log.d(TAG, "📤 ACK sent");
-            Log.d(TAG, "   Topic   : " + topic);
-            Log.d(TAG, "   Payload : " + ack);
+//            Log.d(TAG, "📤 ACK sent");
+//            Log.d(TAG, "   Topic   : " + topic);
+//            Log.d(TAG, "   Payload : " + ack);
 
         } catch (Exception e) {
-            Log.e(TAG, "❌ ACK publish failed", e);
+            //Log.e(TAG, "❌ ACK publish failed", e);
         }
     }
 
@@ -296,10 +300,10 @@ public class ScooterMqttClient {
         try {
             if (client != null && client.isConnected()) {
                 client.disconnect();
-                Log.d(TAG, "🔌 MQTT disconnected");
+                //Log.d(TAG, "🔌 MQTT disconnected");
             }
         } catch (Exception e) {
-            Log.e(TAG, "❌ MQTT disconnect error", e);
+            //Log.e(TAG, "❌ MQTT disconnect error", e);
         }
     }
 }

@@ -49,17 +49,17 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="55dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1216dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#DA6200"
-        android:fontFamily="@font/kanit"
-        android:text="?"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <Button-->
+<!--        android:id="@+id/btnRegister"-->
+<!--        android:layout_width="55dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="1216dp"-->
+<!--        android:layout_marginTop="8dp"-->
+<!--        android:backgroundTint="#DA6200"-->
+<!--        android:fontFamily="@font/kanit"-->
+<!--        android:text="?"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 
 <!--    <Button-->

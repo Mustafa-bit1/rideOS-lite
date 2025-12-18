@@ -327,7 +327,7 @@ public class LoginActivity extends AppCompatActivity{
     private boolean isRunning = false;
     private Runnable screenToggleRunnable;
     private boolean isScreenOn = true;
-    private Button btnRegister;
+    //private Button btnRegister;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -365,7 +365,7 @@ public class LoginActivity extends AppCompatActivity{
 
         etCredential = findViewById(R.id.etCredential);
         patternView = findViewById(R.id.patternView);
-        btnRegister = findViewById(R.id.btnRegister);
+       // btnRegister = findViewById(R.id.btnRegister);
         tempWarningMessage = findViewById(R.id.tempWarningMessage);
 
         SwitchCompat switchAuthMethod = findViewById(R.id.switchAuthMethod);
@@ -401,17 +401,17 @@ public class LoginActivity extends AppCompatActivity{
         }
 
 //        btnRegister.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getRegisteredRiderCount() >= 4) {
-                    showCustomToasterror("Maximum 4 Riders");
-                } else {
-                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                    startActivity(intent);
-                }
-            }
-        });
+//        btnRegister.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (getRegisteredRiderCount() >= 4) {
+//                    showCustomToasterror("Maximum 4 Riders");
+//                } else {
+//                    Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+//                    startActivity(intent);
+//                }
+//            }
+//        });
 
 
         // PIN entry listener

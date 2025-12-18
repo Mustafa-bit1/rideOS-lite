@@ -35,11 +35,11 @@ public class MyApp extends Application {
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 scooterMqttClient.connectAndSubscribe();
-                Log.d(TAG, "✅ SCOOTER_MQTT MQTT initialized for VIN: " + vin);
+                //Log.d(TAG, "✅ SCOOTER_MQTT MQTT initialized for VIN: " + vin);
             }, 1500);
         }
         else {
-            Log.e(TAG, "❌  SCOOTER_MQTT VIN missing, MQTT not started");
+            //Log.e(TAG, "❌  SCOOTER_MQTT VIN missing, MQTT not started");
         }
 
         if (!"UNKNOWN_KEY".equals(MetadataManager.get().getSmartKeyId())) {
