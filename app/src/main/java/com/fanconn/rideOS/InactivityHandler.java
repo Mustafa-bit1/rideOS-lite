@@ -45,13 +45,19 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 //                    LoginActivity.isSequenceActive = true; // Start sequence
 //                    serialPortManager.getHb3().setLEDresponse(1);
 //                    serialPortManager.getHb3().sethandleLockresponse(1);
-                EVLockService.getInstance().startLockSequence();    // Start lock
-                Context context2 = MainActivity.instance;
-                if (context2 != null) {
-                    Intent intent = new Intent(context2, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    context2.startActivity(intent);
+                int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
+                if(rpm==0 && UIUpdater.directionalGears==0){
+                    Log.d("sdafgf","ELSEOF TOUCHTIMER IFTIMER");
+                    EVLockService.getInstance().startLockSequence();    // Start lock
+                    Context context2 = MainActivity.instance;
+                    if (context2 != null) {
+                        Intent intent = new Intent(context2, LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        context2.startActivity(intent);
+                    }
                 }
+                else Log.d("sdafgf","ELSEOF TOUCHTIMER TIMER");
+
                 //below is b4 7/7
 //                if (MainActivity.instance != null) {
 //                    MainActivity.instance.finish();

@@ -103,10 +103,11 @@
 
     <FrameLayout
         android:id="@+id/front_camera_container"
-        android:layout_width="280dp"
-        android:layout_height="160dp"
+        android:layout_width="80dp"
+        android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="290dp"
+        android:layout_marginBottom="150dp"
+        android:layout_marginEnd="1180dp"
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextureView
@@ -118,8 +119,10 @@
 
     <FrameLayout
         android:id="@+id/rear_camera_container"
-        android:layout_width="280dp"
-        android:layout_height="160dp"
+        android:layout_width="80dp"
+        android:layout_height="20dp"
+        android:layout_marginEnd="1180dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginBottom="120dp"
         app:layout_constraintEnd_toEndOf="parent">
@@ -481,15 +484,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/neutral1" />
 
-    <ImageView
-        android:id="@+id/picklocation_IV"
+
+    <ImageButton
+        android:id="@+id/low_tire_warning"
         android:layout_width="194dp"
         android:layout_height="192dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="63dp"
+        android:background="@android:color/transparent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/dashboardnfo" />
+        android:visibility="gone"
+        app:srcCompat="@drawable/lowtire_pressure_warning" />
 
     <ImageView
         android:id="@+id/speedImageView"
@@ -758,16 +764,16 @@
         android:visibility="gone"
         app:srcCompat="@drawable/startbutton" />
 
-    <ImageView
-        android:id="@+id/avgSpeed"
-        android:layout_width="194dp"
-        android:layout_height="192dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="68dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/avgspeed"
-        android:visibility="gone"/>
+<!--    <ImageView-->
+<!--        android:id="@+id/avgSpeed"-->
+<!--        android:layout_width="194dp"-->
+<!--        android:layout_height="192dp"-->
+<!--        android:layout_marginStart="28dp"-->
+<!--        android:layout_marginTop="68dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:srcCompat="@drawable/avgspeed"-->
+<!--        android:visibility="gone"/>-->
 
 <!--    <ImageView-->
 <!--        android:id="@+id/odometer"-->
@@ -848,8 +854,97 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/batterry_bar" />
 
+    <!-- ================= RECO CONTAINER ================= -->
 
-    <!--    <ImageView-->
+    <!-- ================= RECO LEFT BUTTON ================= -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/recoContainer"
+        android:layout_width="150dp"
+        android:layout_height="190dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.958"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.25">
+
+        <!-- Leaf Image -->
+        <ImageView
+            android:id="@+id/recoLeaf"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/recoleave"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- +XX km -->
+        <TextView
+            android:id="@+id/recoKmText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kanit"
+            android:text="+0.0 km"
+            android:textColor="#00FF66"
+            android:textSize="35dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recoLeaf" />
+
+        <!-- Trip / Total Reco label -->
+        <TextView
+            android:id="@+id/recoLabelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kanit"
+            android:text="Trip Reco"
+            android:textColor="#8A8A8A"
+            android:textSize="18dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recoKmText" />
+
+        <ImageView
+            android:id="@+id/recoDotIV"
+            android:layout_width="25dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="22dp"
+            android:src="@drawable/recodot1"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toBottomOf="@id/recoLabelText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageButton
+        android:id="@+id/recoNavLeft"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/navleft"
+        android:onClick="recoNavLeft"
+        app:layout_constraintEnd_toStartOf="@id/recoContainer"
+        app:layout_constraintTop_toTopOf="@id/recoContainer"
+        app:layout_constraintBottom_toBottomOf="@id/recoContainer" />
+
+    <!-- ================= RECO RIGHT BUTTON ================= -->
+    <ImageButton
+        android:id="@+id/recoNavRight"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@android:color/transparent"
+        android:src="@drawable/navright"
+        android:onClick="recoNavRight"
+        app:layout_constraintStart_toEndOf="@id/recoContainer"
+        app:layout_constraintTop_toTopOf="@id/recoContainer"
+        app:layout_constraintBottom_toBottomOf="@id/recoContainer" />
+
+<!--        <ImageView-->
 <!--        android:id="@+id/tripreco"-->
 <!--        android:layout_width="194dp"-->
 <!--        android:layout_height="192dp"-->
@@ -1230,8 +1325,17 @@
     <!--        app:layout_constraintStart_toStartOf="parent"-->
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
+    <FrameLayout
+        android:id="@+id/overlayContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 <!--    android:layout_width="1280dp"-->
 <!--    android:layout_height="480dp"-->
 <!--    android:background="@drawable/background"-->

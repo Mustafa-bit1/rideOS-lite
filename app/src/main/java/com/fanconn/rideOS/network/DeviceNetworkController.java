@@ -67,6 +67,19 @@ public class DeviceNetworkController {
             return false;
         }
     }
+    public static void enableAirplaneModeWithAutoOff(Context context, int delayMs) {
+
+        boolean enabled = setAirplaneMode(context, true);
+        if (!enabled) return;
+
+        //Log.d("AIRPLANE", "✈ Airplane mode enabled, will auto-disable in " + delayMs + "ms");
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            setAirplaneMode(context, false);
+           // Log.d("AIRPLANE", "✈ Airplane mode auto-disabled");
+        }, delayMs);
+    }
+
 
     /* ================= DEVICE RESTART ================= */
 

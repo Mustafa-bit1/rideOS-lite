@@ -1,7 +1,10 @@
 package com.fanconn.rideOS;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
@@ -41,6 +44,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
@@ -169,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     //public static int handlelockstate, seatlockstate;
     //public Button bootbutton, handlelockbutton, handleUNlockbutton, riderprofile;
 
-    ImageButton mapbtn,menubtn;
+    ImageButton mapbtn,menubtn,lowtire_preesure_button;
     TripDistanceManager tripManager;
     //String bms1890, bms1893, bms1894, bms1895, bms1896;
     GestureDetector gestureDetector;
@@ -324,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         mapbtn  = findViewById(R.id.mapbtn);
         menubtn = findViewById(R.id.menubtn);
-
+        lowtire_preesure_button= findViewById(R.id.low_tire_warning);
         mapbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -350,7 +354,14 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         });
 
-
+        lowtire_preesure_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, TPMS_activity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
         gestureDetector = new GestureDetector(this, new GestureListener());
 
         tripTextView = binding.tripTextView;
@@ -411,6 +422,21 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        });
 
         //initMqtt();
+        binding.recoContainer.setOnClickListener(v -> showRecoInfo());
+        getSupportFragmentManager().registerFragmentLifecycleCallbacks(
+                new FragmentManager.FragmentLifecycleCallbacks() {
+                    @Override
+                    public void onFragmentDestroyed(@NonNull FragmentManager fm,
+                                                    @NonNull Fragment f) {
+                        if (f instanceof RecoInfoFragment) {
+                            View overlay = findViewById(R.id.overlayContainer);
+                            if (overlay != null) {
+                                overlay.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }, false);
+
 
     }//END OF ONCREATE METHOD
     //private CommandHandler commandHandler;
@@ -815,6 +841,15 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             uiUpdater.tripManager.resetTrip();
             updateDistanceDisplay(); // refresh after reset
         }
+    }
+
+///reco logic
+public void recoNavLeft(View view) {
+    UIUpdater.getInstance().toggleRecoMode();
+}
+
+    public void recoNavRight(View view) {
+        UIUpdater.getInstance().toggleRecoMode();
     }
 
 
@@ -1870,7 +1905,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //            InactivityManager.getInstance().startTimer(1);
 //            //Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
 //        }
-        InactivityManager.getInstance().startTimer(1);
+        if (UIUpdater.directionalGears==0)
+        {
+            InactivityManager.getInstance().startTimer(1);
+        }
         Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
 //         If you need to restart anything like timers here, do so
 //         mHandlerTime.postDelayed(mRunnableTime, 0);
@@ -1999,6 +2037,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         //animateBatteryLevelOnce();
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
         TelemetryService.shdtelemetrywhenunlocked=true;
+
+        uiUpdater.resetTripAhByRegen();
 
         //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            long minRequired = 50 * 1024 * 1024; // 50 MB minimum free space
@@ -2270,6 +2310,16 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        }
 //    }
 
+
+    public void showRecoInfo() {
+        FrameLayout overlay = findViewById(R.id.overlayContainer);
+        overlay.setVisibility(View.VISIBLE);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.overlayContainer, new RecoInfoFragment())
+                .commit();
+    }
 
 
 

@@ -213,11 +213,13 @@ public class ScooterMqttClient {
 
                 case "AIRPLANE":
                     if ("1".equals(value)) {
-                        ackStatus = DeviceNetworkController.setAirplaneMode(context, true)
-                                ? "success" : "failed";
-                    } else if ("0".equals(value)) {
-                        ackStatus = DeviceNetworkController.setAirplaneMode(context, false)
-                                ? "success" : "failed";
+                        ackStatus = "success";
+                        Log.d("AIRPLANE", "✈ Airplane mode auto-disabled");
+                        DeviceNetworkController.enableAirplaneModeWithAutoOff(
+                                context,
+                                3000   // 3 seconds
+                        );
+
                     } else {
                         ackStatus = "invalidcommand";
                     }

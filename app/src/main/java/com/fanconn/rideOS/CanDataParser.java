@@ -166,7 +166,9 @@ public class CanDataParser {
     public static void parseCanData10FA07A8(Heartbeat3 hb3, String canData) {
         // 实现 10FA07A8 CAN 数据的解析逻辑
         hb3.setBSG3_BYTE12(FrameUtils.getByteSubstringAsInt(canData,0,1));    // 提取心跳包 当前母线电压 值
-        hb3.setBSG3_BYTE34(FrameUtils.getByteSubstringAsInt(canData,2,3));    // 提取心跳包 当前母线电流 值
+        hb3.setBSG3_BYTE34(FrameUtils.getByteSubstringAsInt(canData,2,2));    // 提取心跳包 当前母线电流 值
+        Log.d("fdsadg","THISISCURRENTFROMCONTROLER setting----  "+FrameUtils.getByteSubstringAsInt(canData,2,2));
+
         hb3.setBSG3_BYTE5678(FrameUtils.getByteSubstringAsInt(canData,4,7));  // 提取心跳包 圈数 32 位 值
     }
 

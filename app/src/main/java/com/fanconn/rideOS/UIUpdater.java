@@ -17,6 +17,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,10 +136,85 @@ public class UIUpdater  {
         registerTpmsReceiver(ctx);
         ahTrackerManager = AhTrackerManager.getInstance(context);
         updateCanData18904001(serialPortManager.getHb3());
+
+// Show RECO UI
+        binding.recoContainer.setVisibility(View.VISIBLE);
+        binding.recoNavLeft.setVisibility(View.VISIBLE);
+        binding.recoNavRight.setVisibility(View.VISIBLE);
+
+// Initial render
+        updateRecoKm();
+
     }
 
     public static UIUpdater getInstance() {
         return instance;
+    }
+
+    private boolean showingRecoTrip = true; // independent of ODO/TRIP
+    private static final float RECO_KM_PER_AH = 2.5f;
+
+    public void toggleRecoMode() {
+        showingRecoTrip = !showingRecoTrip;
+        updateRecoKm();
+    }
+    public void updateRecoKm() {
+
+        float regenAh = showingRecoTrip
+                ? getTripAhByRegen()
+                : getTotalAhByRegen();
+
+        float km = regenAh * RECO_KM_PER_AH;
+
+        runOnUiThreadSafe(() -> {
+            setRecoKmText(km);
+            binding.recoLabelText.setText(showingRecoTrip ? "Trip Reco" : "Total Reco");
+            updateRecoDotImage();
+        });
+    }
+
+    private void setRecoKmText(float km) {
+
+        String valueText = String.format("+%.1f km", km);
+        SpannableString spannable = new SpannableString(valueText);
+
+        int kmStart = valueText.indexOf("km");
+        if (kmStart != -1) {
+            spannable.setSpan(
+                    new RelativeSizeSpan(0.6f), // smaller "km"
+                    kmStart,
+                    valueText.length(),
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            );
+        }
+
+        binding.recoKmText.setText(spannable);
+    }
+
+    private void updateRecoDotImage() {
+        binding.recoDotIV.setImageResource(
+                showingRecoTrip
+                        ? R.drawable.recodot_trip
+                        : R.drawable.recodot_total
+        );
+    }
+
+    private void runOnUiThreadSafe(Runnable action) {
+        if (activity == null || activity.isFinishing()) return;
+
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            action.run();
+        } else {
+            activity.runOnUiThread(action);
+        }
+    }
+
+    public float getTripRecoKm() {
+        return getTripAhByRegen() * RECO_KM_PER_AH;
+    }
+
+    public float getTotalRecoKm() {
+        return getTotalAhByRegen() * RECO_KM_PER_AH;
     }
 
 
@@ -1037,88 +1115,115 @@ public class UIUpdater  {
 
 
     // Class variables to persist values across calls
+    // =====================
+// Member variables
+// =====================
     private float previousAh = 0f;
-    private float ahByCharger = 0f;
-    private float ahByRegen = 0f;
+
+    private float ahByCharger = 0f;     // Total (stored)
+    private float ahByRegen = 0f;        // Total (stored)
+    private float tripAhByRegen = 0f;    // Trip only (RAM)
+
     public static int chargison;
+
+    // =====================
+// CHARGE + REGEN AH
+// =====================
     public void updateCanData160B8001(Heartbeat3 hb3) {
         updateCanData18904001(hb3);
+
         float currentAh = roundTo3(hb3.getChargeAH() / 1000f);
-        Log.d("sadfs","INAHIS "+currentAh );
+        Log.d("AH", "IN_AH = " + currentAh);
 
         ahTrackerManager.updateChargingAh(currentAh);
-        Log.d("sadfs","INAHISSOC "+ahTrackerManager.getSOC());
-        Log.d("sadfs","INAHISREAMININGAH "+ahTrackerManager.getRemainingAh());
+        Log.d("AH", "SOC = " + ahTrackerManager.getSOC());
+        Log.d("AH", "RemainingAh = " + ahTrackerManager.getRemainingAh());
 
+        // First frame protection
         if (previousAh == 0f) {
             previousAh = currentAh;
-            loadStoredAhValues(); // Load saved values (if any) on first run
-            return; // skip first frame to prevent large delta
+            loadStoredAhValues(); // load persisted totals
+            return;
         }
 
         float delta = currentAh - previousAh;
 
-        // Allow small charging increments
+        // Valid increment range protection
         if (delta > 0.001f && delta < 5.0f) {
-            if (tm.getTeleChargingState()==1) {
+            if (tm.getTeleChargingState() == 1) {
                 ahByCharger += delta;
             } else {
-                ahByRegen += delta;
+                ahByRegen += delta;        // total regen
+                tripAhByRegen += delta;    // trip regen
             }
         }
 
         previousAh = currentAh;
 
-        // Round before storing (3 decimal points everywhere)
+        // Round values
         float roundedTotalAh = roundTo3(currentAh);
         float roundedChargerAh = roundTo3(ahByCharger);
         float roundedRegenAh = roundTo3(ahByRegen);
 
+        // Persist only total values
         saveAhValues(roundedTotalAh, roundedChargerAh, roundedRegenAh);
 
+        // Telemetry update
         tm.setTeleTotalAH(roundedTotalAh);
         tm.setTeleChargerAH(roundedChargerAh);
         tm.setTeleRegenAH(roundedRegenAh);
 
-//      Log.d("BMS", "TotalAh: " + roundedTotalAh +
-//                ", AhByCharger: " + roundedChargerAh +
-//                ", AhByRegen: " + roundedRegenAh);
-//        Log.d("DEBUG", "delta: " + delta + ", telechargingstate: " + telechargingstate);
+        Log.d("AH_REGEN",
+                "TotalRegen=" + roundedRegenAh +
+                        ", TripRegen=" + getTripAhByRegen());
+
+        Log.d("CAN", "TOTALREGENAH      " + getTotalAhByRegen());
+        Log.d("CAN", "TOTALREGENAH_TRIP " + getTripAhByRegen());
+
+        activity.runOnUiThread(this::updateRecoKm);
     }
 
+    // =====================
+// SHARED PREFS
+// =====================
     private void saveAhValues(float totalAh, float chargerAh, float regenAh) {
         SharedPreferences prefs = context.getSharedPreferences("ah_data", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putFloat("totalAh", totalAh);
-        editor.putFloat("chargerAh", chargerAh);
-        editor.putFloat("regenAh", regenAh);
-        editor.apply();
+        prefs.edit()
+                .putFloat("totalAh", totalAh)
+                .putFloat("chargerAh", chargerAh)
+                .putFloat("regenAh", regenAh)
+                .apply();
     }
 
     private void loadStoredAhValues() {
         SharedPreferences prefs = context.getSharedPreferences("ah_data", Context.MODE_PRIVATE);
-        tm.setTeleTotalAH( prefs.getFloat("totalAh", 0f));
+
+        tm.setTeleTotalAH(prefs.getFloat("totalAh", 0f));
         tm.setTeleChargerAH(prefs.getFloat("chargerAh", 0f));
         tm.setTeleRegenAH(prefs.getFloat("regenAh", 0f));
 
         ahByCharger = tm.getTeleChargerAH();
         ahByRegen = tm.getTeleRegenAH();
+
+        tripAhByRegen = 0f; // fresh trip
     }
 
-    // ✅ Updated for 3 decimal point dischargeAh
+    // =====================
+// DISCHARGE AH
+// =====================
     public void updateCanData160D8001(Heartbeat3 hb3) {
         updateCanData18904001(hb3);
-        float rawDischargeAH = hb3.getDisChargeAH() / 1000f;
-        Log.d("sadfs","INAHISDIS "+rawDischargeAH );
-        ahTrackerManager.updateDischargingAh(rawDischargeAH);
 
-        Log.d("sadfs","INAHISDISSOC@ "+ahTrackerManager.getSOC() );
+        float rawDischargeAH = hb3.getDisChargeAH() / 1000f;
+        Log.d("AH", "DIS_AH = " + rawDischargeAH);
+
+        ahTrackerManager.updateDischargingAh(rawDischargeAH);
+        Log.d("AH", "SOC@DIS = " + ahTrackerManager.getSOC());
+
         float dischargeAH = roundTo3(rawDischargeAH);
 
         saveDischargeAh(dischargeAH);
         tm.setTeleDischargeAH(dischargeAH);
-
-        //Log.d("BMS", "DischargeAh: " + String.format("%.3f", dischargeAH));
     }
 
     private void saveDischargeAh(float value) {
@@ -1131,7 +1236,32 @@ public class UIUpdater  {
         return prefs.getFloat("dischargeAh", 0f);
     }
 
-    // Utility method for 3 decimal point rounding
+    // =====================
+// GETTERS
+// =====================
+    public float getTotalAhByRegen() {
+        return roundTo3(ahByRegen);
+    }
+
+    public float getTripAhByRegen() {
+        return roundTo3(tripAhByRegen);
+    }
+
+    // =====================
+// RESET (call on LOCK)
+// =====================
+    public void resetTripAhByRegen() {
+        tripAhByRegen = 0f;
+        Log.d("AH_REGEN", "Trip regen Ah reset");
+
+        // Always refresh reco UI after reset
+        updateRecoKm();
+    }
+
+
+    // =====================
+// UTIL
+// =====================
     private float roundTo3(float value) {
         return Math.round(value * 1000f) / 1000f;
     }
@@ -1300,6 +1430,9 @@ public class UIUpdater  {
 
                     case 1: // Forward
                         powerOnUi();
+                        //if(StopInactivtyTimerDuringPopUp){Log.d("sadfgg","********1");InactivityManager.getInstance().startTimer(1);}
+                        InactivityManager.getInstance().stopTimer();
+
 //                        if(MainActivity.MainisActive)
 //                        {
 //                            goToMainActivityClearStack();
@@ -1322,7 +1455,7 @@ public class UIUpdater  {
                         if(serialPortManager!=null){
                             serialPortManager.VCUSendToMCU("FFAA550101000A01");}
                         // animateSpeedLevelOnce();
-                        if(StopInactivtyTimerDuringPopUp){InactivityManager.getInstance().startTimer(2);}
+                       // if(StopInactivtyTimerDuringPopUp){InactivityManager.getInstance().startTimer(2);}
                         break;
 
                     case 2: // Reverse
@@ -1672,7 +1805,7 @@ public class UIUpdater  {
 //        binding.brk.setVisibility(View.VISIBLE);
 //        binding.startButton.setVisibility(View.VISIBLE);
         binding.reverseui.setVisibility(View.INVISIBLE);
-        binding.avgSpeed.setVisibility(View.INVISIBLE);
+//        binding.avgSpeed.setVisibility(View.INVISIBLE);
         binding.tripTextView.setVisibility(View.INVISIBLE);
         binding.navleft.setVisibility(View.INVISIBLE);
         binding.navright.setVisibility(View.INVISIBLE);
@@ -1689,7 +1822,6 @@ public class UIUpdater  {
         binding.timeTextView.setVisibility(View.VISIBLE);
         binding.BluetoothIV.setVisibility(View.VISIBLE);
         binding.batteryImageView.setVisibility(View.VISIBLE);
-        binding.picklocationIV.setVisibility(View.VISIBLE);//visible
         binding.speedImageView.setVisibility(View.INVISIBLE);
         binding.speedNumberTV.setVisibility(View.INVISIBLE);
         binding.speedTV.setVisibility(View.INVISIBLE);
@@ -1728,7 +1860,7 @@ public class UIUpdater  {
 //        binding.brk.clearAnimation();
 
         stopReverseBeep();
-        binding.avgSpeed.setVisibility(View.VISIBLE);
+//        binding.avgSpeed.setVisibility(View.VISIBLE);
         binding.tripTextView.setVisibility(View.VISIBLE);
         binding.navleft.setVisibility(View.VISIBLE);
         binding.navright.setVisibility(View.VISIBLE);
@@ -1736,7 +1868,6 @@ public class UIUpdater  {
 //        binding.tripreco.setVisibility(View.INVISIBLE);
         binding.startButton.clearAnimation();
         binding.startButton.setVisibility(View.INVISIBLE);
-        binding.picklocationIV.setVisibility(View.INVISIBLE);
         binding.removestand.setVisibility(View.INVISIBLE);
         binding.enginestartIV.setVisibility(View.VISIBLE);
         binding.speedNumberTV.setVisibility(View.VISIBLE);
@@ -1786,7 +1917,7 @@ public class UIUpdater  {
 //        binding.startButton.clearAnimation();
         startReverseBeep();
         binding.startButton.setVisibility(View.INVISIBLE);
-        binding.avgSpeed.setVisibility(View.VISIBLE);
+//        binding.avgSpeed.setVisibility(View.VISIBLE);
         binding.tripTextView.setVisibility(View.INVISIBLE);
         binding.tripresetbtn.setVisibility(View.INVISIBLE);
 //        binding.tripreco.setVisibility(View.VISIBLE);
@@ -1814,7 +1945,6 @@ public class UIUpdater  {
         binding.neutralicon.setVisibility((View.INVISIBLE));
         binding.neutral.setVisibility(View.INVISIBLE);
         binding.brk.setVisibility(View.INVISIBLE);
-        binding.picklocationIV.setVisibility(View.INVISIBLE);
         binding.removestand.setVisibility(View.INVISIBLE);
         binding.ecoimage.setVisibility(View.GONE);
         binding.sports.setVisibility((View.GONE));
@@ -1848,7 +1978,7 @@ public class UIUpdater  {
             binding.startButton.setVisibility(View.INVISIBLE);}
         stopReverseBeep();
         binding.batterryBar.setVisibility(View.VISIBLE);
-        binding.avgSpeed.setVisibility(View.INVISIBLE);
+//        binding.avgSpeed.setVisibility(View.INVISIBLE);
         binding.tripTextView.setVisibility(View.INVISIBLE);
 //        binding.tripreco.setVisibility(View.INVISIBLE);
         binding.navleft.setVisibility(View.INVISIBLE);
@@ -1869,7 +1999,6 @@ public class UIUpdater  {
 
 
         binding.stand.setVisibility((isStand ? View.VISIBLE : View.INVISIBLE)); //visisble
-        binding.picklocationIV.setVisibility((isStand ? View.VISIBLE : View.INVISIBLE));//visible
         binding.speedNumberTV.setVisibility((isStand ? View.INVISIBLE : View.VISIBLE));
         binding.speedTV.setVisibility((isStand ? View.INVISIBLE : View.VISIBLE));
 //                boost.setVisibility((isStand?View.INVISIBLE:View.INVISIBLE));
@@ -2332,7 +2461,7 @@ public class UIUpdater  {
      * @param hb3 解析后的 Heartbeat3 对象
      */
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
-
+            Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
     }
 
     /**
@@ -3133,8 +3262,10 @@ public class UIUpdater  {
                         // Show/hide warning icon
                         if (frontWarning || rearWarning) {
                             binding.tpmsicon.setVisibility(View.VISIBLE);
+                            binding.lowTireWarning.setVisibility(View.VISIBLE);
                         } else {
                             binding.tpmsicon.setVisibility(View.INVISIBLE);
+                            binding.lowTireWarning.setVisibility(View.INVISIBLE);
                         }
                     }
                 }
