@@ -10,25 +10,27 @@
     android:gravity="center_horizontal"
     android:layoutDirection="ltr">
 
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="400dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="256dp"
+        android:background="@android:color/transparent"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/progress_bar_custom" />
+
     <TextView
         android:id="@+id/statusText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/kanit"
+        android:layout_marginTop="20dp"
         android:paddingBottom="16dp"
         android:text="Starting update..."
         android:textColor="@color/white"
         android:textSize="25sp" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:background="@android:color/transparent"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/progress_bar_custom" />
 
 </LinearLayout>
