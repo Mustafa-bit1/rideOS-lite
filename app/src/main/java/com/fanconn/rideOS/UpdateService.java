@@ -1,15 +1,17 @@
 package com.fanconn.rideOS;
 
+import android.app.Dialog;
 import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
+import android.content.*;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,289 +20,343 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.fanconn.rideOS.menu.OS_UpdatesFragment;
-
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class UpdateService extends Service {
 
     private static final String TAG = "UpdateService";
-    private static final String UPDATE_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json";
-    private final Handler handler = new Handler();
-    private final int CHECK_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
-    public static String pendingUpdateApkUrl = null;
 
-    private final Runnable updateRunnable = new Runnable() {
-        @Override
-        public void run() {
-            checkForUpdate(false); // automatic check
-            handler.postDelayed(this, CHECK_INTERVAL);
-        }
-    };
+    private static final String UPDATE_URL =
+            "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json";
+
+    /* ================= ACTIONS ================= */
+
+    public static final String ACTION_INSTALL_UPDATE =
+            "com.fanconn.rideOS.ACTION_INSTALL_UPDATE";
+
+    /* ================= STATE ================= */
+
+    private static volatile long nextAllowedCheckTime = 0;
+    private static volatile File downloadedApkFile = null;
+
+    private Handler mainHandler;
+    private Dialog updateDialog;
+
+    /* ================= SERVICE ================= */
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mainHandler = new Handler(Looper.getMainLooper());
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                installReceiver,
+                new IntentFilter(ACTION_INSTALL_UPDATE)
+        );
+
+        Log.i(TAG, "UpdateService created");
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "UpdateService started");
 
-        if (intent != null) {
-            if (intent.getBooleanExtra("show_prompt_only", false)) {
-                if (pendingUpdateApkUrl != null) {
-                    Log.d(TAG, "Showing deferred update prompt...");
-                    showUpdateDialog(pendingUpdateApkUrl);
-                    pendingUpdateApkUrl = null;
-                }
-                return START_NOT_STICKY;
-            }
+        boolean manualCheck =
+                intent != null && intent.getBooleanExtra("manual_check", false);
 
-            if (intent.getBooleanExtra("manual_check", false)) {
-                checkForUpdate(true);
-                return START_NOT_STICKY;
-            }
+        if (manualCheck || canCheckNow()) {
+            Log.i(TAG, "Starting OTA server check | manual=" + manualCheck);
+            checkForUpdate(manualCheck);
+        } else {
+            Log.i(TAG, "OTA check skipped (remind-later active)");
         }
 
-        handler.post(updateRunnable);
         return START_STICKY;
     }
 
-    private void checkForUpdate(boolean manual) {
+    /* ================= UPDATE CHECK ================= */
+
+    private boolean canCheckNow() {
+        return System.currentTimeMillis() >= nextAllowedCheckTime;
+    }
+
+    private void checkForUpdate(boolean manualCheck) {
         new Thread(() -> {
             try {
-                URL url = new URL(UPDATE_URL);
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
+                Log.i(TAG, "Checking OTA JSON | manual=" + manualCheck);
+
+                HttpURLConnection conn =
+                        (HttpURLConnection) new URL(UPDATE_URL).openConnection();
+                conn.setConnectTimeout(8000);
+                conn.setReadTimeout(8000);
                 conn.connect();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder jsonBuilder = new StringBuilder();
+                BufferedReader br =
+                        new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+                StringBuilder sb = new StringBuilder();
                 String line;
-                while ((line = reader.readLine()) != null) {
-                    jsonBuilder.append(line);
-                }
+                while ((line = br.readLine()) != null) sb.append(line);
+                br.close();
 
-                JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
-                String latestVersion = jsonObject.getString("latest_version");
-                String apkUrl = jsonObject.getString("apk_url");
+                JSONObject json = new JSONObject(sb.toString());
 
-                String currentVersion = getPackageManager()
-                        .getPackageInfo(getPackageName(), 0).versionName;
+                String latestVersion = json.getString("latest_version");
+                String apkUrl = json.getString("apk_url");
 
-                Log.d(TAG, "Current version: " + currentVersion + ", Latest version: " + latestVersion);
+                String currentVersion =
+                        getPackageManager()
+                                .getPackageInfo(getPackageName(), 0)
+                                .versionName;
+
+                Log.i(TAG, "Current=" + currentVersion +
+                        " | Server=" + latestVersion);
 
                 if (!latestVersion.equals(currentVersion)) {
-                    Log.d(TAG, "Update available!");
-                    InactivityManager.getInstance().stopTimer();
-                    promptUserToUpdate(apkUrl);
+                    Log.i(TAG, "OTA update AVAILABLE");
+
+                    mainHandler.post(() -> showUpdatePopup(apkUrl));
+
                 } else {
-                    Log.d(TAG, "App is up-to-date.");
-                    if (manual) {
-                        handler.post(() ->
-                                showCustomToast("App is up-to-date")
+                    Log.i(TAG, "No OTA update available");
+
+                    // ✅ SHOW TOAST ONLY FOR MANUAL CHECK
+                    if (manualCheck) {
+                        mainHandler.post(() ->
+                                showCustomToast("Your system is up to date")
                         );
                     }
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, "Update check failed: " + e.getMessage(), e);
-                if (manual) {
-                    handler.post(() ->
-//                            android.widget.Toast.makeText(getApplicationContext(),
-//                                    "No update available", android.widget.Toast.LENGTH_SHORT).show()
-                            showCustomToast("No update available")
+                Log.e(TAG, "OTA check failed", e);
+
+                if (manualCheck) {
+                    mainHandler.post(() ->
+                            showCustomToast("No update availabe")
                     );
                 }
             }
-
         }).start();
     }
+
     private void showCustomToast(String message) {
-        new Handler(Looper.getMainLooper()).post(() -> {
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.toast_custom, null);
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(() -> {
+            try {
+                LayoutInflater inflater =
+                        (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            ImageView icon = layout.findViewById(R.id.toast_icon);
-            TextView text = layout.findViewById(R.id.toast_text);
+                View layout = inflater.inflate(R.layout.toast_custom, null);
 
-            icon.setImageResource(R.drawable.toastlogo);
-            text.setText(message);
+                ImageView icon = layout.findViewById(R.id.toast_icon);
+                TextView text = layout.findViewById(R.id.toast_text);
 
-            Toast toast = new Toast(getApplicationContext());
-            toast.setDuration(Toast.LENGTH_SHORT);
-            toast.setView(layout);
-            toast.show();
+                icon.setImageResource(R.drawable.toastlogo);
+                text.setText(message);
+
+                Toast toast = new Toast(getApplicationContext());
+                toast.setDuration(Toast.LENGTH_SHORT);
+                toast.setView(layout);
+                toast.show();
+
+                Log.i(TAG, "Custom toast shown: " + message);
+
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to show custom toast", e);
+            }
         });
     }
 
+    /* ================= POPUP ================= */
 
-    private void promptUserToUpdate(String apkUrl) {
-        Log.d(TAG, "Prompting user for update...");
+    private void showUpdatePopup(String apkUrl) {
+        if (apkUrl == null) return;
 
-        // Show if MainActivity OR OS Updates fragment is ready
-        if (MainActivity.MainisActive || OS_UpdatesFragment.showupdatepopup) {
-            showUpdateDialog(apkUrl);
-            OS_UpdatesFragment.showupdatepopup = false;
-        } else {
-            Log.d(TAG, "UI not ready. Deferring update...");
-            pendingUpdateApkUrl = apkUrl;
+        if (updateDialog != null && updateDialog.isShowing()) {
+            Log.w(TAG, "OTA popup already showing");
+            return;
+        }
+
+        Log.i(TAG, "Showing custom OTA popup");
+
+        try {
+            updateDialog = new Dialog(this);
+            updateDialog.setCancelable(false);
+            updateDialog.setCanceledOnTouchOutside(false);
+
+            LayoutInflater inflater =
+                    (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.popupdialog, null);
+
+            TextView title = view.findViewById(R.id.dialogTitle);
+            TextView message = view.findViewById(R.id.dialogMessage);
+            Button btnYes = view.findViewById(R.id.btnYes);
+            Button btnNo = view.findViewById(R.id.btnNo);
+
+            title.setText("Update Available");
+            message.setText("New rideOS update is available.\nDo you want to update now?");
+
+            btnYes.setText("Update Now");
+            btnNo.setText("Remind Later");
+
+            // Stop inactivity timer while popup is visible
+            Log.i(TAG, "Stopping inactivity timer for OTA popup");
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> InactivityManager.getInstance().stopTimer(), 5000);
+
+            btnYes.setOnClickListener(v -> {
+                Log.i(TAG, "User accepted OTA update");
+                updateDialog.dismiss();
+                updateDialog = null;
+                launchProgressAndDownload(apkUrl);
+            });
+
+            btnNo.setOnClickListener(v -> {
+                Log.i(TAG, "User selected Remind Me Later");
+
+                //  Schedule NEXT SERVER CHECK (not popup)
+                nextAllowedCheckTime =
+                        System.currentTimeMillis() + (24 * 60 * 60 * 1000); // 24
+//                                               System.currentTimeMillis() + (10* 1000); // 24hh
+                Log.i(TAG, "Next OTA check scheduled after 24h");
+
+                if (UIUpdater.directionalGears == 0) {
+                    InactivityManager.getInstance().startTimer(1);
+                }
+
+                updateDialog.dismiss();
+                updateDialog = null;
+            });
+
+            updateDialog.setContentView(view);
+
+            Window window = updateDialog.getWindow();
+            if (window != null) {
+                window.setBackgroundDrawableResource(android.R.color.transparent);
+                window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                params.gravity = Gravity.CENTER;
+                window.setAttributes(params);
+            }
+
+            updateDialog.show();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to show OTA popup", e);
         }
     }
 
-    private void showUpdateDialog(String apkUrl) {
-        new Thread(() -> {
-            try {
-                HttpURLConnection conn = (HttpURLConnection) new URL(apkUrl).openConnection();
-                conn.setRequestMethod("HEAD");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
-                int responseCode = conn.getResponseCode();
+    /* ================= DOWNLOAD ================= */
 
-                if (responseCode != 200) {
-                    Log.e(TAG, "APK URL no longer valid. Skipping prompt.");
-                    pendingUpdateApkUrl = null;
-                    return;
-                }
+    private void launchProgressAndDownload(String apkUrl) {
+        Intent i = new Intent(this, UpdateProgressActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
 
-                handler.post(() -> {
-                    try {
-                        Context context = getApplicationContext();
-                        LayoutInflater inflater = LayoutInflater.from(context);
-                        View dialogView = inflater.inflate(R.layout.popupdialog, null);
-
-                        TextView title = dialogView.findViewById(R.id.dialogTitle);
-                        TextView message = dialogView.findViewById(R.id.dialogMessage);
-                        Button btnYes = dialogView.findViewById(R.id.btnYes);
-                        Button btnNo = dialogView.findViewById(R.id.btnNo);
-
-                        title.setText("Update Available");
-                        message.setText("rideOS update available.\nDo you want to update?");
-                        btnYes.setText("Update Now");
-                        btnNo.setText("Remind me later");
-
-                        android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(context)
-                                .setView(dialogView)
-                                .setCancelable(false)
-                                .create();
-
-                        btnYes.setOnClickListener(v -> {
-                            Log.d(TAG, "User accepted the update.");
-                            Intent progressIntent = new Intent(context, UpdateProgressActivity.class);
-                            progressIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(progressIntent);
-                            downloadAndInstall(apkUrl);
-                            dialog.dismiss();
-                        });
-
-                        btnNo.setOnClickListener(v -> {
-                            Log.d(TAG, "Remind later selected");
-                            handler.postDelayed(() -> promptUserToUpdate(apkUrl),
-                                    24 * 60 * 60 * 1000);
-                            dialog.dismiss();
-                        });
-
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            dialog.getWindow().setType(android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
-                        } else {
-                            dialog.getWindow().setType(android.view.WindowManager.LayoutParams.TYPE_PHONE);
-                        }
-
-                        dialog.show();
-                        Log.d(TAG, "Custom update dialog displayed");
-
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to show custom update dialog", e);
-                    }
-                });
-
-            } catch (Exception e) {
-                Log.e(TAG, "APK URL validation failed", e);
-            }
-        }).start();
+        downloadApk(apkUrl);
     }
 
-    private void downloadAndInstall(String apkUrl) {
+    private void downloadApk(String apkUrl) {
         new Thread(() -> {
             try {
-                File apkFile = new File(getExternalFilesDir(null), "update.apk");
-                HttpURLConnection conn = (HttpURLConnection) new URL(apkUrl).openConnection();
-                conn.setRequestMethod("GET");
+                downloadedApkFile =
+                        new File(getExternalFilesDir(null), "update.apk");
+
+                HttpURLConnection conn =
+                        (HttpURLConnection) new URL(apkUrl).openConnection();
+                conn.setConnectTimeout(15000);
+                conn.setReadTimeout(15000);
                 conn.connect();
 
-                int totalLength = conn.getContentLength();
+                int total = conn.getContentLength();
+                Log.i(TAG, "APK size=" + total);
+
                 InputStream is = conn.getInputStream();
-                OutputStream os = new FileOutputStream(apkFile);
+                OutputStream os = new FileOutputStream(downloadedApkFile);
 
-                byte[] buffer = new byte[4096];
+                byte[] buf = new byte[4096];
+                long sum = 0;
+                int lastProgress = 0;
+
                 int len;
-                int downloaded = 0;
+                while ((len = is.read(buf)) > 0) {
+                    os.write(buf, 0, len);
+                    sum += len;
 
-                while ((len = is.read(buffer)) > 0) {
-                    os.write(buffer, 0, len);
-                    downloaded += len;
+                    int progress =
+                            total > 0 ? (int) ((sum * 100) / total)
+                                    : Math.min(90, lastProgress + 1);
 
-                    int progress = (int) (((float) downloaded / totalLength) * 100);
+                    progress = Math.max(0, Math.min(progress, 100));
 
-                    Intent intent = new Intent("com.fanconn.UPDATE_PROGRESS");
-                    intent.putExtra("progress", progress);
-                    LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                    if (progress != lastProgress) {
+                        lastProgress = progress;
+
+                        Intent pi = new Intent("com.fanconn.UPDATE_PROGRESS");
+                        pi.putExtra("progress", progress);
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(pi);
+
+                        Log.d(TAG, "Download progress=" + progress + "%");
+                    }
                 }
 
                 os.close();
                 is.close();
 
-                Log.d(TAG, "APK downloaded to: " + apkFile.getAbsolutePath());
+                Intent done = new Intent("com.fanconn.UPDATE_PROGRESS");
+                done.putExtra("progress", 100);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(done);
 
-                Intent finalIntent = new Intent("com.fanconn.UPDATE_PROGRESS");
-                finalIntent.putExtra("progress", 100);
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(finalIntent);
-
-                installApkSilently(apkFile);
+                Log.i(TAG, "APK download completed");
 
             } catch (Exception e) {
-                Log.e(TAG, "Download/install failed", e);
-                Intent intent = new Intent("com.fanconn.UPDATE_PROGRESS");
-                intent.putExtra("progress", -1);
-                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+                Log.e(TAG, "APK download failed", e);
+
+                Intent fail = new Intent("com.fanconn.UPDATE_PROGRESS");
+                fail.putExtra("progress", -1);
+                LocalBroadcastManager.getInstance(this).sendBroadcast(fail);
             }
         }).start();
     }
 
-    private void installApkSilently(File apkFile) {
-        try {
-            String cmd = "pm install -r " + apkFile.getAbsolutePath();
-            Log.d(TAG, "Executing: " + cmd);
-            Process process = Runtime.getRuntime().exec(cmd);
-            int result = process.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Log.d(TAG, "pm output: " + line);
-            }
+    /* ================= INSTALL ================= */
 
-            if (result == 0) {
-                Log.d(TAG, "APK installed successfully.");
+    private final BroadcastReceiver installReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "ACTION_INSTALL_UPDATE received");
+
+            if (downloadedApkFile != null && downloadedApkFile.exists()) {
+                installApkSilently(downloadedApkFile);
             } else {
-                Log.e(TAG, "Silent install failed with code: " + result);
+                Log.e(TAG, "APK missing, cannot install");
             }
+        }
+    };
+
+    private void installApkSilently(File apk) {
+        try {
+            String cmd = "pm install -r " + apk.getAbsolutePath();
+            Log.i(TAG, "Executing: " + cmd);
+            Runtime.getRuntime().exec(cmd).waitFor();
         } catch (Exception e) {
             Log.e(TAG, "Silent install failed", e);
         }
     }
 
-    private void restartApp() {
-        Intent launchIntent = getPackageManager().getLaunchIntentForPackage(getPackageName());
-        if (launchIntent != null) {
-            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(launchIntent);
-        }
-        android.os.Process.killProcess(android.os.Process.myPid());
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(installReceiver);
+        Log.i(TAG, "UpdateService destroyed");
     }
 
     @Nullable

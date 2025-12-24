@@ -1916,12 +1916,10 @@ public void recoNavLeft(View view) {
         MainisActive = true;
 
         // If deferred update exists, show it
-        if (UpdateService.pendingUpdateApkUrl != null) {
+//        if (UpdateService.pendingUpdateApkUrl != null) {
             //Log.d("MainActivity", "Showing deferred OTA update dialog...");
-            Intent intent = new Intent(this, UpdateService.class);
-            intent.putExtra("show_prompt_only", true);
-            startService(intent);
-        }
+        Intent intent = new Intent(this, UpdateService.class);
+        startService(intent);   // auto check (respects remind-later timer)
 
         if (!isStatusReceiverRegistered) {
             IntentFilter signalFilter = new IntentFilter();
