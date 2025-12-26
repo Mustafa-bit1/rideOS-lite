@@ -201,7 +201,7 @@ public class UpdateService extends Service {
             message.setText("New rideOS update is available.\nDo you want to update now?");
 
             btnYes.setText("Update Now");
-            btnNo.setText("Remind Later");
+            btnNo.setText("Remind Later (24 hours)");
 
             // Stop inactivity timer while popup is visible
             Log.i(TAG, "Stopping inactivity timer for OTA popup");

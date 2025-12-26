@@ -48,6 +48,8 @@ public class MetadataActivity extends AppCompatActivity {
         etfronttpms = findViewById(R.id.etFrontMacAddress);
         etreartpms = findViewById(R.id.etRearMacAddress);
 
+        InactivityManager.getInstance().stopTimer();
+
         loadExistingData();
 
         btnSave.setOnClickListener(v -> {

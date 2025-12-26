@@ -168,7 +168,7 @@ public class UIUpdater  {
 
         runOnUiThreadSafe(() -> {
             setRecoKmText(km);
-            binding.recoLabelText.setText(showingRecoTrip ? "Trip Reco" : "Total Reco");
+            binding.recoLabelText.setText(showingRecoTrip ? "Trip reco" : "Total reco");
             updateRecoDotImage();
         });
     }
@@ -1123,9 +1123,7 @@ public class UIUpdater  {
     private float ahByCharger = 0f;     // Total (stored)
     private float ahByRegen = 0f;        // Total (stored)
     private float tripAhByRegen = 0f;    // Trip only (RAM)
-
     public static int chargison;
-
     // =====================
 // CHARGE + REGEN AH
 // =====================
@@ -1149,12 +1147,15 @@ public class UIUpdater  {
         float delta = currentAh - previousAh;
 
         // Valid increment range protection
-        if (delta > 0.001f && delta < 5.0f) {
+        if (delta > 0.001f && delta < 1.0f) {
             if (tm.getTeleChargingState() == 1) {
                 ahByCharger += delta;
-            } else {
+            } else if (tm.getTeleChargingState() == 0 && rpm>20) {
                 ahByRegen += delta;        // total regen
                 tripAhByRegen += delta;    // trip regen
+            }
+            else {
+                //Do nothing
             }
         }
 
@@ -2243,27 +2244,27 @@ public class UIUpdater  {
                         binding.boost.setVisibility(View.GONE);
 
                         // 🔊 Play error sound only once
-                        if (!controllerErrorSoundPlayed) {
-                            controllerErrorPlayer = MediaPlayer.create(activity, R.raw.controllererror);
-                            controllerErrorPlayer.setOnCompletionListener(mp -> {
-                                mp.release();
-                                controllerErrorPlayer = null;
-                            });
-                            controllerErrorPlayer.start();
-                            controllerErrorSoundPlayed = true;
-                        }
-
-                        // 🚨 Show popup
-                        new AlertDialog.Builder(activity)
-                                .setTitle("Error Alert")
-                                .setMessage("Controller switched off abruptly, or a CAN line issue occurred.")
-                                .setPositiveButton("OK", (dialog, which) -> {
-                                    // Just close the dialog now
-                                    InactivityManager.getInstance().startTimer(1);
-                                    dialog.dismiss();
-                                })
-                                .setCancelable(false)
-                                .show();
+//                        if (!controllerErrorSoundPlayed) {
+//                            controllerErrorPlayer = MediaPlayer.create(activity, R.raw.controllererror);
+//                            controllerErrorPlayer.setOnCompletionListener(mp -> {
+//                                mp.release();
+//                                controllerErrorPlayer = null;
+//                            });
+//                            controllerErrorPlayer.start();
+//                            controllerErrorSoundPlayed = true;
+//                        }
+//
+//                        // 🚨 Show popup
+//                        new AlertDialog.Builder(activity)
+//                                .setTitle("Error Alert")
+//                                .setMessage("Controller switched off abruptly, or a CAN line issue occurred.")
+//                                .setPositiveButton("OK", (dialog, which) -> {
+//                                    // Just close the dialog now
+//                                    InactivityManager.getInstance().startTimer(1);
+//                                    dialog.dismiss();
+//                                })
+//                                .setCancelable(false)
+//                                .show();
                     }
                 }
 

@@ -47,7 +47,7 @@ public class UpdateProgressActivity extends Activity {
                 statusText.setText("Powering the future...");
             }
             else if (progress < 20) {
-                statusText.setText("Preparing system update...");
+                statusText.setText("Preparing system for update...");
             }
             else if (progress < 70) {
                 statusText.setText("Downloading...");
@@ -92,7 +92,7 @@ public class UpdateProgressActivity extends Activity {
                     otsSuccessImg.setVisibility(View.GONE);
                     Log.i(TAG, "OTA success image hidden (installation started)");
 
-                    statusText.setText("Installing update...");
+                    statusText.setText("Restarting...");
 
                     //  Trigger silent install
                     Intent installIntent =
