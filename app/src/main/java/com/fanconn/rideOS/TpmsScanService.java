@@ -71,13 +71,9 @@ public class TpmsScanService extends Service {
             } else if (ACTION_TPMS_RESTART.equals(intent.getAction())) {
 
                 Log.d(TAG, "🔄 ACTION_TPMS_RESTART → restarting scan");
-
-                if (scanner != null) {
-                    try { scanner.stopScan(scanCallback); }
-                    catch (Exception ignored) {}
-                }
-                startScanning();
+                restartScanSafely();
             }
+
         }
     };
 
@@ -100,6 +96,9 @@ public class TpmsScanService extends Service {
         f.addAction(ACTION_TPMS_RESTART);
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(tpmsRequestReceiver, f);
+        lastScanTime = System.currentTimeMillis();
+        scanWatchdog.post(scanWatchdogRunnable);
+
     }
 
     /* ================= FOREGROUND ================= */
@@ -130,8 +129,11 @@ public class TpmsScanService extends Service {
     }
 
     /* ================= BLE SCANNING ================= */
+    private boolean isScanning = false;
 
-    private void startScanning() {
+    private synchronized void startScanning() {
+
+        if (isScanning) return;
 
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null || !adapter.isEnabled()) {
@@ -150,8 +152,14 @@ public class TpmsScanService extends Service {
                 .build();
 
         scanner.startScan(null, settings, scanCallback);
+
+        isScanning = true;
+        lastScanTime = System.currentTimeMillis();
+
         Log.d(TAG, "BLE scan started");
     }
+
+    private long lastScanTime = 0;
 
     private final ScanCallback scanCallback = new ScanCallback() {
 
@@ -159,6 +167,7 @@ public class TpmsScanService extends Service {
         public void onScanResult(int callbackType, ScanResult result) {
 
             if (result == null || result.getScanRecord() == null) return;
+            lastScanTime = System.currentTimeMillis();
 
             String mac = result.getDevice().getAddress();
             if (!validMacs.contains(mac)) return;
@@ -198,22 +207,62 @@ public class TpmsScanService extends Service {
             );
         }
     };
+    private static final long SCAN_STALL_TIMEOUT_MS = 15_000; // 15 sec
+
+    private final android.os.Handler scanWatchdog =
+            new android.os.Handler(android.os.Looper.getMainLooper());
+    private long lastRestartTime = 0;
+
+    private final Runnable scanWatchdogRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            long now = System.currentTimeMillis();
+
+            if (now - lastScanTime > SCAN_STALL_TIMEOUT_MS
+                    && now - lastRestartTime > 30_000) {
+
+                lastRestartTime = now;
+                restartScanSafely();
+            }
+
+
+            scanWatchdog.postDelayed(this, 5000);
+        }
+    };
+    private synchronized void restartScanSafely() {
+
+        stopScanningSafely();
+
+        // Let BLE stack cool down
+        scanWatchdog.postDelayed(this::startScanning, 1000);
+    }
+    private synchronized void stopScanningSafely() {
+        try {
+            if (scanner != null) {
+                scanner.stopScan(scanCallback);
+            }
+        } catch (Exception ignored) {}
+
+        scanner = null;
+        isScanning = false;
+    }
+
 
     /* ================= CLEANUP ================= */
 
     @Override
     public void onDestroy() {
 
-        if (scanner != null) {
-            try { scanner.stopScan(scanCallback); }
-            catch (Exception ignored) {}
-        }
+        scanWatchdog.removeCallbacksAndMessages(null);
+        stopScanningSafely();
 
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(tpmsRequestReceiver);
 
         super.onDestroy();
     }
+
 
     @Nullable
     @Override

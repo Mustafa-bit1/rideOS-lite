@@ -1,6 +1,8 @@
 package com.fanconn.rideOS;
 
 
+import android.util.Log;
+
 public class TpmsParser {
 
     /**
@@ -52,9 +54,10 @@ public class TpmsParser {
 
                 int rawP = (minor >> 8) & 0xFF;
                 int rawT = minor & 0xFF;
-
+                Log.d("dafsdgbf","!%#BUGG GEE ___"+rawT);
                 double psi = rawP * 2.5 * 0.145038;
                 int temp   = rawT - 40;
+                Log.d("dafsdgbf","!%#BUGG GEE ___temp"+temp);
 
                 // iBeacon has NO real voltage, only low-battery flag
                 boolean lowBattery = "7F".equalsIgnoreCase(b[28]);

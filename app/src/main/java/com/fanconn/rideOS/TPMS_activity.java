@@ -122,6 +122,7 @@ public class TPMS_activity extends AppCompatActivity {
         setupBluetoothUI();
         setupBackButton();
         prepareTpmsReceiver();
+        InactivityManager.getInstance().stopTimer();
 
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(new Intent(TpmsScanService.ACTION_TPMS_REQUEST));
@@ -158,7 +159,6 @@ public class TPMS_activity extends AppCompatActivity {
             bluetoothWarningText.setText("Device Bluetooth OFF — sensor data may not be updated.");
         }
     }
-
     /**
      * FINAL receiver: receives FINAL PSI + TEMP packed by service
      */

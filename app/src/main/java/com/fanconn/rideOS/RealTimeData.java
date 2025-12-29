@@ -19,7 +19,7 @@ public class RealTimeData {
     public double outAH;
     public String ev_power_state;
     public String currentRider;
-    public double tirepressure;
+    public String tirepressure;
     public double soc;
     public double apuSoc;
     public String lat_long;

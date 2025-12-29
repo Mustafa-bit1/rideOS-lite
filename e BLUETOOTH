@@ -1,0 +1,228 @@
+[33mcommit c2d348fb157f83c746f8daef4a7ba76a5d1fa329[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Mon Dec 29 10:14:36 2025 +0530
+
+    Purchase maps feature completed
+
+[33mcommit aafcd800b1c613f73afc23a39b73d3df92cab22b[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Fri Dec 26 12:56:23 2025 +0530
+
+    popup as black theme
+
+[33mcommit 661cc15cd55ca9ffa75cd05fa1f41aa70a1fc81b[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Wed Dec 24 17:23:10 2025 +0530
+
+    Enhanced rideOS OAT update process
+
+[33mcommit d5fa4d00ece16ff0dcab97bbb9f5bafe573c24e2[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Dec 23 13:03:08 2025 +0530
+
+    Stable before ota enhancment
+
+[33mcommit a72936a4b2f25d11416d206614414bad08cbb279[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Dec 23 11:01:29 2025 +0530
+
+    recoEngine added
+
+[33mcommit f03563fc0c273dc0901a405e6c88724a54a9d70f[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Thu Dec 18 18:10:19 2025 +0530
+
+    Added tpms data extraction for 2 diffrent protocols
+
+[33mcommit 1e3b681143b7037739c219e23c50b8267cc98274[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Thu Dec 18 11:55:02 2025 +0530
+
+    Solved remaining , removed ? btn from login page,removed logs
+
+[33mcommit 5fdbe1db35542720179d5da82a992dbb37e386fd[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Wed Dec 17 10:24:42 2025 +0530
+
+    Remotely sending cmd-DONE , data clm in realtimedata table -Done
+
+[33mcommit 89a5bf07c7a9746f75ad643baeb85ed4e39ffad8[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Sat Dec 13 10:47:02 2025 +0530
+
+    New add rider UI completed
+
+[33mcommit fd913939b7cfc77f90d37c3e573aac7a21105604[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Dec 9 16:22:01 2025 +0530
+
+    bugs solved like auto lock timer ,23 cell Voltage etc
+
+[33mcommit ce203a64d571fe8a84206f55ae20ac0582689e59[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Fri Dec 5 10:16:22 2025 +0530
+
+    FLASH charger and Fast charger, -3000 current comsumption solved
+
+[33mcommit 77c45c98e08675c870be44da381854d0ca5339bd[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Wed Dec 3 11:36:29 2025 +0530
+
+    SOME Other changes backup
+
+[33mcommit fbbe425cdbff1e32ca8e7c5b7572ddea28b58add[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Fri Nov 21 16:13:36 2025 +0530
+
+    Added TakemeHOME feature,Dynamic TPMS Ui and more
+
+[33mcommit 74f81f5105f840f8e7425d309df05aaacf06a9c8[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Sat Nov 15 12:38:52 2025 +0530
+
+    Added deny last rider deletion , Improved gesture response , Default Master pin for only 3 times Added
+
+[33mcommit 2be81fb105898fa33424b01178311fce0b1e3848[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Sat Nov 8 12:24:52 2025 +0530
+
+    Continous sound on forward , Controller abrupt OFF on CC,dynamic smart key absence and presence
+
+[33mcommit 98240a3cc3efd5553909a548011fd3e24f9b16a1[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Fri Nov 7 11:27:21 2025 +0530
+
+    Smart key feature added ,filter of distance+timeout(6seconds)
+
+[33mcommit 5197fddb8fe2b0e453ff57bc1ed88f721f6a202b[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Fri Oct 31 10:39:22 2025 +0530
+
+    New Charger logic implementaed and aslo sends to CC
+
+[33mcommit e53d789a3f048f267d92bb82731d94a6cb7c0cae[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Wed Oct 29 16:20:30 2025 +0530
+
+    Latest APU detected logic AND Individual Cell voltage
+
+[33mcommit fcb814fe0c103ff33d9e475f2624ceebacff9c3a[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Oct 28 09:51:27 2025 +0530
+
+    Added APU detected Logic AND Individual cell voltages
+
+[33mcommit e2104c0b4a8dc1549ba4be0024108c97dab17a61[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Thu Oct 16 17:25:21 2025 +0530
+
+    Improve wifi button response AND Enter p/w response to connect
+
+[33mcommit c44df32eb77e7d92d8490e857f765c092329379c[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Thu Oct 16 14:52:55 2025 +0530
+
+    Added feature of not allowing age<18 rider and same name rider
+
+[33mcommit 9c08e750ae3b897a3df933085bc9ad8ed07203b1[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Wed Oct 15 17:35:26 2025 +0530
+
+    Added battery fragment AND OTA Update popup on OSfragment completed
+
+[33mcommit b955c6e6d5dc59cbe3ac0249152839e56d12915f[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Oct 14 10:14:54 2025 +0530
+
+    Stagging in batch added AND uptime counter added
+
+[33mcommit 7d53515804639a124ba8612da7e3535ab1fa78be[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Mon Oct 13 16:00:11 2025 +0530
+
+    Uptime feature added AND battery fragment working still
+
+[33mcommit 2e2f53cf251b8b7be5d1fc490bbe8fe88ccd0294[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Mon Oct 6 16:30:53 2025 +0530
+
+    Menu tabs split into menu and settings
+
+[33mcommit a0eb5bac21f3c8429769c2bca150fdb73d30a26a[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Sat Oct 4 17:52:55 2025 +0530
+
+    Ignores the rider and sets alwasy the torue value and phase valuee and regen value
+
+[33mcommit fcf22b7620b31a934d833be534d5504c094fdaeb[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Sat Oct 4 17:15:59 2025 +0530
+
+    Manual ota update button added
+
+[33mcommit c83bb234970869d23faa64578470c928754423d4[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Sep 30 10:03:03 2025 +0530
+
+     Touch disabled while riding
+
+[33mcommit 6ee4c3e4de7102a03f16062a3281962fbbee6dac[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Wed Sep 24 17:59:03 2025 +0530
+
+    controller abruptly OFF timer logic updated AND all sounds stop when in LOGINACTIVITY (pause of Mainactivty)
+
+[33mcommit 08922b744002ae3b2e34121434c132df0f59c6d0[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Wed Sep 24 10:39:19 2025 +0530
+
+    stand sound and reverse sounds stop in resume of mainActivity< MainIsActive flag aslo changed
+
+[33mcommit 521afed0008c9b335577fcb9bbbe4db1c28c719f[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Sep 23 17:41:22 2025 +0530
+
+    wireless page allows to connect any wifinetwork by entering password  AND  low SOC yellowalert goes when SOC>22
+
+[33mcommit cec047a71514a50ef4870bf4a47d29d5257a7cf5[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Sep 23 11:59:37 2025 +0530
+
+    In WirelessFragment >POPUP to Bluetooth AND wifi status in realtime
+
+[33mcommit 674b5d2282e82042d3e1b06a97c00a3a0e43c15f[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Sep 23 11:27:17 2025 +0530
+
+    customPopup added for ota update message
+
+[33mcommit 15be3efb255e8511fc9a5d1ef31a0712a1a79490[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Tue Sep 23 11:23:59 2025 +0530
+
+    In Quick setting LTE btn feature added AND popup before tuning bluetooth OFF added
+
+[33mcommit 8849c42c6f7c1fd9f2196074f04780dda2015026[m
+Author: Mohammed Mustafa <mustafamaniyar999@gmail.com>
+Date:   Mon Sep 22 10:22:25 2025 +0530
+
+    TPMS feature added,UI+telemetry
+
+[33mcommit 657a7d8e22de6f851954a3848523eb7c55405cd4[m
+Merge: 8ef21cd 0442cdf
+Author: Mustafa-bit1 <mustafamaniyar999@gmail.com>
+Date:   Mon Sep 29 10:14:49 2025 +0530
+
+    Merge pull request #1 from Mustafa-bit1/feature/my-changes
+    
+    Feature/my changes
+
+[33mcommit 0442cdf9a780b01ac3a2e44aa403c8f5d7ac6e84[m[33m ([m[1;31morigin/feature/my-changes[m[33m)[m
+Author: devanna <devannaramdurg47@gmail.com.>
+Date:   Mon Sep 29 10:13:06 2025 +0530
+
+    Remove unintended .idea changes
+
+[33mcommit 08ab20814561abdc2c773e5f16da6576536ab710[m
+Author: devanna <devannaramdurg47@gmail.com.>
+Date:   Mon Sep 29 09:39:24 2025 +053

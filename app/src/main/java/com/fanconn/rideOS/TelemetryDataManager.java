@@ -14,7 +14,7 @@ public class TelemetryDataManager {
     private int teleHandleLockState;
     private int teleSeatLockState;
     private String teleBMSMosStates;
-    private float teleTirePressure;
+    private String teleTirePressure;
     private float teleTrip;
     private String teleRider;
     private String teleCurrentRider;
@@ -107,14 +107,14 @@ public class TelemetryDataManager {
         this.teleBMSMosStates = teleBMSMosStates;
     }
 
-    public float getTeleTirePressure() {
+
+    public String getTeleTirePressure() {
         return teleTirePressure;
     }
 
-    public void setTeleTirePressure(float teleTirePressure) {
+    public void setTeleTirePressure(String teleTirePressure) {
         this.teleTirePressure = teleTirePressure;
     }
-
 
     public String getTeleRider() {
         return teleRider;

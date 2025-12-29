@@ -290,6 +290,8 @@ public class TelemetryService extends Service {
         data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + "," + UptimeManager.getUptime();
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
+        Log.d("sdafd","TELETIREPRESUURE2222 IS "+data.tirepressure);
+
         data.soc = TelemetryDataManager.getInstance().getTeleSOC();
         data.apuSoc = TelemetryDataManager.getInstance().getTeleAPUSOC();
         data.lat_long = TelemetryDataManager.getInstance().getTeleLatLong();

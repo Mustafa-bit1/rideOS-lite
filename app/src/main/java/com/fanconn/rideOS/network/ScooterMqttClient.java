@@ -11,6 +11,7 @@ import info.mqtt.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.*;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.fanconn.rideOS.DeviceBluetoothController;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.authen.LoginActivity;
@@ -154,6 +155,18 @@ public class ScooterMqttClient {
                             UIUpdater.getInstance().onDoubleTapAction();
                             Log.d(TAG, "🔒 Remote lock scooter");
                         }
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
+                case "BLUETOOTH":
+                    if ("1".equals(value)) {
+                        ackStatus = DeviceBluetoothController.setBluetooth(true)
+                                ? "success" : "failed";
+                    } else if ("0".equals(value)) {
+                        ackStatus = DeviceBluetoothController.setBluetooth(false)
+                                ? "success" : "failed";
                     } else {
                         ackStatus = "invalidcommand";
                     }
