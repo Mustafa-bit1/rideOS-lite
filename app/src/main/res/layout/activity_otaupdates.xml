@@ -5,10 +5,30 @@
     android:id="@+id/main"
     android:layout_width="1280dp"
     android:layout_height="480dp"
-    android:background="@drawable/bg"
+    android:background="@drawable/mapsbg"
     tools:context=".Maps">
+    <!-- Request Button -->
 
-<!--    <ImageButton-->
+    <!-- Charges Applied Text -->
+
+    <Button
+        android:id="@+id/btnRequest"
+        android:layout_width="220dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="530dp"
+        android:layout_marginBottom="205dp"
+        android:background="@drawable/bg_btn_rounded"
+        android:fontFamily="@font/kanit"
+        android:text="Purchase"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:stateListAnimator="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- Buffering -->
+
+    <!--    <ImageButton-->
 <!--        android:id="@+id/mcuotaupdatebtn"-->
 <!--        android:layout_width="451dp"-->
 <!--        android:layout_height="90dp"-->
@@ -35,6 +55,29 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
+    <TextView
+        android:id="@+id/tvCharges"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/kanit"
+        android:text="Enable rideOSMaps at just 499/-"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRequest" />
+
+    <ProgressBar
+        android:id="@+id/progressBuffer"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:visibility="gone"
+        android:layout_marginBottom="268dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <ImageButton
         android:id="@+id/returnbtn"
         android:layout_width="70dp"
@@ -49,23 +92,23 @@
 
     <TextView
         android:id="@+id/APUbatteryTV"
-        android:layout_width="410dp"
-        android:layout_height="72dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="36dp"
         android:fontFamily="@font/kanit"
         android:shadowColor="#80000000"
         android:shadowDx="5"
         android:shadowDy="3"
         android:shadowRadius="5"
-        android:text="Maps"
+        android:text="rideOSMaps"
         android:textAlignment="textStart"
         android:textColor="#FFFFFFFF"
-        android:textSize="40dp"
+        android:textSize="30dp"
         android:translationY="-10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

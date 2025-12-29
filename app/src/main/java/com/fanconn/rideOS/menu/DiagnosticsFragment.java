@@ -221,6 +221,7 @@ public class DiagnosticsFragment extends Fragment {
                     if (pm != null) pm.reboot(null);
                 })
         );
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         dialog.show();
     }
@@ -253,6 +254,7 @@ public class DiagnosticsFragment extends Fragment {
                     }
                 })
         );
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         dialog.show();
     }

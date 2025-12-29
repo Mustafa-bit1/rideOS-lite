@@ -297,7 +297,7 @@ public class TelemetryService extends Service {
             data.lat_long = "0.0,0.0";   // fallback if GPS not ready
         }
         data.time = java.time.OffsetDateTime.now().toString();
-        data.data = ".";
+        data.data = Maps.getRequestStatus(context)+"";
         return data;
     }
 

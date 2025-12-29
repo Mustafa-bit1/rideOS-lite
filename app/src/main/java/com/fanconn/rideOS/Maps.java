@@ -1,195 +1,143 @@
 package com.fanconn.rideOS;
 
-import android.app.ProgressDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.GestureDetector;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.fanconn.rideOS.mcuupdate.YMode;
-
-import java.io.File;
-
 public class Maps extends AppCompatActivity {
-    SerialPortManager serialPortManager = serialApplication.getSerialPortManager();
-    private File mFirmwareFile;
-    private YMode yMode;
-    private ProgressDialog progressDialog;
-    private String version_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
-    private String saveDir = "/sdcard";
-    ImageButton returnbtn;
-    private GestureDetector gestureDetector;
+
+    private ImageButton returnbtn;
+    private Button btnRequest;
+    private TextView tvCharges;
+    private ProgressBar progressBuffer;
+
+    public static final String PREF_NAME = "rideos_prefs";
+    public static final String KEY_REQUEST_STATUS = "request_status";
+
+    // Handler safety (prevents WindowLeaked)
+    private final Handler handler = new Handler();
+    private final Runnable popupRunnable = this::showResultPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otaupdates);
         setFullScreen();
-//        yMode = new YMode(this);
-//        GestureHelper.enableSwipeGestures(this);
-        returnbtn=findViewById(R.id.returnbtn);
-        returnbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //InactivityManager.getInstance().startTimer(1);
-                finish();
-            }
+
+        returnbtn = findViewById(R.id.returnbtn);
+        btnRequest = findViewById(R.id.btnRequest);
+        tvCharges = findViewById(R.id.tvCharges);
+        progressBuffer = findViewById(R.id.progressBuffer);
+
+        returnbtn.setOnClickListener(v -> finish());
+
+        btnRequest.setOnClickListener(v -> {
+
+            // Persist requestStatus = 1
+            setRequestStatus(this, 1);
+
+            btnRequest.setVisibility(View.GONE);
+            tvCharges.setVisibility(View.GONE);
+            progressBuffer.setVisibility(View.VISIBLE);
+
+            handler.postDelayed(popupRunnable, 2000);
         });
     }
-    float[] startY = new float[1]; // Declare this as a field
+
+    // -------------------- SharedPreferences --------------------
+
+    public static void setRequestStatus(Context context, int status) {
+        SharedPreferences prefs =
+                context.getApplicationContext()
+                        .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        prefs.edit().putInt(KEY_REQUEST_STATUS, status).apply();
+    }
+
+    public static int getRequestStatus(Context context) {
+        SharedPreferences prefs =
+                context.getApplicationContext()
+                        .getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+
+        return prefs.getInt(KEY_REQUEST_STATUS, 0);
+    }
+
+    // -------------------- Popup --------------------
+
+    private void showResultPopup() {
+        if (isFinishing() || isDestroyed()) return;
+
+        progressBuffer.setVisibility(View.GONE);
+
+        Dialog dialog = new Dialog(this);
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        dialog.setContentView(R.layout.popupdialog);
+        dialog.setCancelable(false);
+
+        TextView title = dialog.findViewById(R.id.dialogTitle);
+        TextView message = dialog.findViewById(R.id.dialogMessage);
+        Button btnYes = dialog.findViewById(R.id.btnYes);
+        Button btnNo = dialog.findViewById(R.id.btnNo);
+
+        title.setText("rideOSMaps");
+        message.setText("We recieved your request for rideOSMaps, Our Team will contact you shortly.\nThank You");
+
+        btnYes.setText("OK");
+        btnNo.setVisibility(View.GONE);
+
+        btnYes.setOnClickListener(v -> {
+            dialog.dismiss();
+            //finish();
+        });
+
+        dialog.show();
+    }
+
+    // -------------------- Gesture --------------------
+
+    private final float[] startY = new float[1];
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (GestureHelper.handleGesture(this, ev, startY)) {
-            return true; // handled
+            return true;
         }
         return super.dispatchTouchEvent(ev);
     }
 
+    // -------------------- Fullscreen --------------------
+
     private void setFullScreen() {
-        // 设置窗口标志，启用全屏模式
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
 
-        // 获取装饰视图
         View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
-        // 设置系统 UI 选项，隐藏导航栏和状态栏，启用粘性沉浸模式
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
 
-//    public void MCUOTA_Onclick(View view) {
-//        if (FrameUtils.isNetworkAvailable(this)) {
-//            new FetchVersionTask().execute(version_URL);
-//        } else {
-//            Log.d("OTA_onClick", "no network ....");
-//            Toast.makeText(Maps.this, R.string.tips_mcuota_no_network, Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//
-//    private class FetchVersionTask extends AsyncTask<String, Void, Integer> {
-//
-//    @Override
-//    protected Integer doInBackground(String... urls) {
-//        try {
-//            return FileDownloader.fetchVersion(urls[0]);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return -1;
-//        }
-//    }
-//
-//    @Override
-//    protected void onPostExecute(Integer mcuOtaVer_new) {
-//        int mcuOtaVer_local = serialPortManager.mad.getMcuVersions();
-//        Log.d("UIUpdater", "updateMacVersions mcuOtaVer_local: " + mcuOtaVer_local);
-//        Log.d("UIUpdater", "updateMacVersions mcuOtaVer_new: " + mcuOtaVer_new);
-//        if (mcuOtaVer_new != -1) {
-//            if (mcuOtaVer_new > mcuOtaVer_local) {
-//                showUpdateDialog();
-//            } else {
-//                Toast.makeText(Maps.this, R.string.tips_mcuota_latest_version, Toast.LENGTH_SHORT).show();
-//                showCustomToast("This is the latest version, do not update!");
-//            }
-//        } else {
-//            Toast.makeText(Maps.this, R.string.tips_mcuota_file_fetch_version, Toast.LENGTH_SHORT).show();
-//        }
-//    }
-//}
-//
-//    private void showUpdateDialog() {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(Maps.this);
-//        builder.setTitle(getString(R.string.tips_mcuota_update))
-//                .setMessage(getString(R.string.tips_mcuota_update_content))
-//                .setIcon(android.R.drawable.ic_dialog_alert)
-//                .setPositiveButton(getString(R.string.tips_mcuota_confirm), (dialog, which) -> startFirmwareDownload())
-//                .setNegativeButton(getString(R.string.tips_mcuota_cancel), (dialog, which) -> showCustomToast("Cancel update!"))
-//                .setCancelable(false);
-//        AlertDialog dialog = builder.create();
-//        dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        dialog.getWindow().getDecorView().setSystemUiVisibility(
-//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//        );
-//        dialog.show();
-//    }
-//
-//    private void startFirmwareDownload() {
-//        new Thread(() -> {
-//            String fileUrl;
-//            try {
-//                fileUrl = FileDownloader.fetchDownloadUrl(version_URL);
-//                // 下载文件到本地
-//                FileDownloader.downloadFile(fileUrl, saveDir);
-//                mFirmwareFile = new File(saveDir, fileUrl.substring(fileUrl.lastIndexOf('/') + 1));
-//                if (mFirmwareFile.exists()) {
-//                    runOnUiThread(() -> showProgressDialog());
-//                    yMode.send(mFirmwareFile, progress -> runOnUiThread(() -> updateProgressDialog(progress)));
-//                    runOnUiThread(() -> hideProgressDialog());
-//                } else {
-//                    Toast.makeText(Maps.this, R.string.tips_mcuota_file_unexist, Toast.LENGTH_SHORT).show();
-//                }
-//            } catch (IOException | InterruptedException e) {
-//                Log.e("startFirmwareDownload", "Error downloading or sending firmware", e);
-//                Toast.makeText(Maps.this, R.string.tips_mcuota_Error_downloading_or_sending_firmware, Toast.LENGTH_SHORT).show();
-//            }
-//        }).start();
-//    }
-//
-//    // 显示进度条对话框并设置初始进度
-//    private void showProgressDialog() {
-//        progressDialog = new ProgressDialog(this);
-//        progressDialog.setTitle("Firmware Update");
-//        progressDialog.setMessage("Updating firmware, please wait...");
-//        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-//        progressDialog.setMax(100);
-//        progressDialog.setProgress(0);
-//        progressDialog.setCancelable(false);
-//        progressDialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//        progressDialog.getWindow().getDecorView().setSystemUiVisibility(
-//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//        );
-//        progressDialog.show();
-//    }
-//
-//    // 更新进度条进度
-//    private void updateProgressDialog(int progress) {
-//        if (progressDialog != null) {
-//            progressDialog.setProgress(progress);
-//        }
-//    }
-//
-//    // 隐藏进度条对话框
-//    private void hideProgressDialog() {
-//        if (progressDialog != null && progressDialog.isShowing()) {
-//            progressDialog.dismiss();
-//
-//        }
-//    }
+    // -------------------- Cleanup --------------------
 
-//    private void showCustomToast(String message) {
-//        LayoutInflater inflater = getLayoutInflater();
-//        View layout = inflater.inflate(R.layout.toast_custom, null);
-//        ImageView icon = layout.findViewById(R.id.toast_icon);
-//        TextView text = layout.findViewById(R.id.toast_text);
-//        icon.setImageResource(R.drawable.toastlogo);
-//        text.setText(message);
-//        Toast toast = new Toast(getApplicationContext());
-//        toast.setDuration(Toast.LENGTH_SHORT);
-//        toast.setView(layout);
-//        toast.show();
-//    }
+    @Override
+    protected void onDestroy() {
+        handler.removeCallbacks(popupRunnable);
+        super.onDestroy();
+    }
 }

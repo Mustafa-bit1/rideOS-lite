@@ -21,7 +21,7 @@ public class UpdateProgressActivity extends Activity {
 
     private static final String TAG = "UpdateProgressActivity";
     private ProgressBar progressBar;
-    private TextView statusText;
+    private TextView statusText,statuspercentText;
     private Handler handler;
     private boolean countdownStarted = false;
     private boolean finalUiShown = false;
@@ -42,30 +42,29 @@ public class UpdateProgressActivity extends Activity {
             }
 
             progressBar.setProgress(progress);
-
-            if (progress < 10) {
-                statusText.setText("Powering the future...");
-            }
-            else if (progress < 20) {
-                statusText.setText("Preparing system for update...");
-            }
-            else if (progress < 70) {
+            statuspercentText.setText(progress+"%");
+            if (progress < 80) {
                 statusText.setText("Downloading...");
             }
-            else if (progress < 90) {
-                statusText.setText("Finalizing download...");
-            }
             else if (progress < 100) {
-                statusText.setText("Update ready. Preparing installation...");
+                statusText.setText("Installing update...");
             }
+//            else if (progress < 60) {
+//                statusText.setText("Downloading...");
+//            }
+//            else if (progress < 70) {
+//                statusText.setText("Download complete...");
+//            }
+//            else if (progress < 80) {
+//                statusText.setText("Optimizing system for update...");
+//            }
             else {
                 if (!countdownStarted) {
                     countdownStarted = true;
-                    statusText.setText("Optimizing system for update");
+                    statusText.setText("Installing update...");
                     startCountdown();
                 }
             }
-
         }
     };
 
@@ -82,7 +81,7 @@ public class UpdateProgressActivity extends Activity {
             @Override
             public void run() {
                 if (sec[0] > 0) {
-                    statusText.setText("Installing update in " + sec[0] + "s");
+                    statusText.setText("Restarting system in " + sec[0]);
                     sec[0]--;
                     handler.postDelayed(this, 1000);
                 } else {
@@ -92,7 +91,7 @@ public class UpdateProgressActivity extends Activity {
                     otsSuccessImg.setVisibility(View.GONE);
                     Log.i(TAG, "OTA success image hidden (installation started)");
 
-                    statusText.setText("Restarting...");
+                    //statusText.setText("Restarting...");
 
                     //  Trigger silent install
                     Intent installIntent =
@@ -171,6 +170,7 @@ public class UpdateProgressActivity extends Activity {
 
         progressBar = findViewById(R.id.progressBar);
         statusText = findViewById(R.id.statusText);
+        statuspercentText= findViewById(R.id.statuspercentText);
         handler = new Handler(Looper.getMainLooper());
 
         progressBar.setMax(100);
