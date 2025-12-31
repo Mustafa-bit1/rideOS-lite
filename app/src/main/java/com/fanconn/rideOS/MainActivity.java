@@ -1516,30 +1516,27 @@ public void recoNavLeft(View view) {
      * 获取系统时间
      */
     private void acquisitionTime() {
-        //获取系统时间，每秒一次
+
+        TimeManager timeManager = TimeManager.getInstance(this);
+
         mRunnableTime = new Runnable() {
             @Override
             public void run() {
-                // 获取当前时间
-                Date currentTime = new Date();
 
-                // 设置时间显示格式
-                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
+                // Get corrected formatted time
+                String formattedTime =
+                        timeManager.getFormattedTime("hh:mm a");
 
-                // 格式化时间
-                String formattedTime = timeFormat.format(currentTime);
-
-                // 将格式化后的时间显示在 TextView 上
                 binding.timeTextView.setText(formattedTime);
 
-                // 每隔一秒钟更新一次时间
+                // Update every second
                 mHandlerTime.postDelayed(this, 1000);
             }
         };
 
-        // 开始获取时间
         mHandlerTime.post(mRunnableTime);
     }
+
 
     /**
      * 设置全屏模式，隐藏导航栏和状态栏。
@@ -1892,6 +1889,7 @@ public void recoNavLeft(View view) {
     @Override
     protected void onResume() {
         super.onResume();
+        acquisitionTime();
         LoginisActive = true;
         UIUpdater.islock=true;
         isVisible = true;

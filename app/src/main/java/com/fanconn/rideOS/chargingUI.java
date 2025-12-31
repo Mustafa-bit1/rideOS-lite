@@ -96,7 +96,7 @@ public class chargingUI extends AppCompatActivity {
             mediaPlayer.start();
         }
 
-        acquisitionTime();
+        //git addacquisitionTime();
         wakeScreenIfNeeded();
         if (MainActivity.uiUpdater != null) {
             MainActivity.uiUpdater.setChargingUI(this);
@@ -128,6 +128,30 @@ public class chargingUI extends AppCompatActivity {
         startUpdatingSOC();
         resetChargingTimeout(); // start timeout initially
     }//END OF ONCREATE
+
+    private Handler mHandlerTime = new Handler(Looper.getMainLooper());
+    private Runnable mRunnableTime;
+
+    private void acquisitionTime() {
+
+        TimeManager timeManager = TimeManager.getInstance(this);
+
+        mRunnableTime = new Runnable() {
+            @Override
+            public void run() {
+
+                String formattedTime =
+                        timeManager.getFormattedTime("hh:mm a");
+
+                binding.timeTextView.setText(formattedTime);
+
+                // Update every second
+                mHandlerTime.postDelayed(this, 1000);
+            }
+        };
+
+        mHandlerTime.post(mRunnableTime);
+    }
 
     private void wakeScreenIfNeeded() {
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -403,11 +427,17 @@ public class chargingUI extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        acquisitionTime();   // start / resume updates
+
         //InactivityManager.getInstance().startTimer(4);
         InactivityManager.getInstance().startTimer(4);
 //        Log.d("sdfgdfh","RESUMED CHARGINGUI");
     }
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHandlerTime.removeCallbacks(mRunnableTime); // stop updates
+    }
     // Optional for external use
     private boolean seenNonWakeFrameSinceScreenOff = true;
 
@@ -423,26 +453,7 @@ public class chargingUI extends AppCompatActivity {
         return seenNonWakeFrameSinceScreenOff;
     }
 
-    private Handler mHandlerTime = new Handler(Looper.getMainLooper());
-    private Runnable mRunnableTime;
 
-    private void acquisitionTime() {
-        mRunnableTime = new Runnable() {
-            @Override
-            public void run() {
-                Date currentTime = new Date();
-                SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a", Locale.getDefault());
-                String formattedTime = timeFormat.format(currentTime);
-
-                binding.timeTextView.setText(formattedTime);
-
-                mHandlerTime.postDelayed(this, 1000); // update every second
-            }
-        };
-
-        mHandlerTime.post(mRunnableTime);
-
-    }
 
 //    @Override
 //    public void onUserInteraction() {
