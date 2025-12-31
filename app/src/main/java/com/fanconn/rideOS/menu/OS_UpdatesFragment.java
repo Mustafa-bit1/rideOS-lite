@@ -1,5 +1,6 @@
 package com.fanconn.rideOS.menu;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -12,17 +13,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.Manifest;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.fanconn.rideOS.MyApp;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.UpdateService;
 import com.fanconn.rideOS.UptimeManager;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -36,31 +38,81 @@ import java.util.Locale;
 public class OS_UpdatesFragment extends Fragment {
 
     private ImageButton otaupdatebtn;
-    private Handler uptimeHandler = new Handler();
     private TextView tvUptime;
+    private Handler uptimeHandler = new Handler();
     private Runnable uptimeRunnable;
+
+    // Expandable release notes
+    private LinearLayout layoutReleaseNotes;
+    private TextView tvReleasePoints;
+    private boolean isExpanded = false;
+
+    // Server data
+    private String releasePoints = "Loading...";
+    private ImageButton arrowImg;
+
     public static boolean showupdatepopup;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.activity_os_updates, container, false);
+
+        // Header UI
+        otaupdatebtn = view.findViewById(R.id.otaupdatebtn);
+        arrowImg = view.findViewById(R.id.arrowdown);
+
+        // Expandable section
+        layoutReleaseNotes = view.findViewById(R.id.layoutReleaseNotes);
+        tvReleasePoints = view.findViewById(R.id.tvReleasePoints);
+        arrowImg = view.findViewById(R.id.arrowdown);
+
+        // Reset state every time fragment opens
+        layoutReleaseNotes.setVisibility(View.GONE);
+        isExpanded = false;
+
+        // Other UI
+        tvUptime = view.findViewById(R.id.tvUptime);
+
         updateVersionInfo(view);
         fetchServerUpdateInfo(view);
-
-        otaupdatebtn = view.findViewById(R.id.otaupdatebtn);
-        tvUptime = view.findViewById(R.id.tvUptime);
         startUptimeTimer();
 
         otaupdatebtn.setOnClickListener(v -> {
-            OS_UpdatesFragment.showupdatepopup = true; // Mark it as a manual check
+            showupdatepopup = true;
             Intent intent = new Intent(getContext(), UpdateService.class);
             intent.putExtra("manual_check", true);
-            getContext().startService(intent);
+            requireContext().startService(intent);
         });
+        layoutReleaseNotes = view.findViewById(R.id.layoutReleaseNotes);
+        tvReleasePoints = view.findViewById(R.id.tvReleasePoints);
 
+        layoutReleaseNotes.setVisibility(View.GONE); // default state
+        isExpanded = false;
+        arrowImg.setOnClickListener(v -> toggleReleaseNotes());
 
         return view;
     }
+
+    // ---------------- EXPAND / COLLAPSE ----------------
+
+    private void toggleReleaseNotes() {
+        if (isExpanded) {
+            layoutReleaseNotes.setVisibility(View.GONE);
+            arrowImg.setImageResource(R.drawable.arrowdown); // DOWN
+            isExpanded = false;
+        } else {
+            tvReleasePoints.setText(formattedReleasePoints);
+            layoutReleaseNotes.setVisibility(View.VISIBLE);
+            arrowImg.setImageResource(R.drawable.uparrow); // UP
+            isExpanded = true;
+        }
+    }
+
+
+    // ---------------- UPTIME ----------------
+
     private void startUptimeTimer() {
         uptimeRunnable = new Runnable() {
             @Override
@@ -68,31 +120,34 @@ public class OS_UpdatesFragment extends Fragment {
                 if (tvUptime != null) {
                     tvUptime.setText("Uptime: " + UptimeManager.getUptime());
                 }
-                uptimeHandler.postDelayed(this, 1000); // update UI every second
+                uptimeHandler.postDelayed(this, 1000);
             }
         };
         uptimeHandler.post(uptimeRunnable);
     }
 
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        uptimeHandler.removeCallbacks(uptimeRunnable);
-    }
+    // ---------------- SERVER OTA INFO ----------------
+    private String formattedReleasePoints = "";
 
     private void fetchServerUpdateInfo(View view) {
+
         TextView serverVersionTV = view.findViewById(R.id.server_version);
         TextView serverReleaseDateTV = view.findViewById(R.id.server_release_date);
 
         new Thread(() -> {
             try {
-                URL url = new URL("http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json");
+                URL url = new URL(
+                        "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json"
+                );
+
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.connect();
 
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream())
+                );
+
                 StringBuilder jsonBuilder = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -101,10 +156,25 @@ public class OS_UpdatesFragment extends Fragment {
                 reader.close();
 
                 JSONObject jsonObject = new JSONObject(jsonBuilder.toString());
+
                 String latestVersion = jsonObject.getString("latest_version");
                 String releaseDate = jsonObject.optString("release_date", "N/A");
 
-                // SAFE UI update
+                // ===== BULLET POINT PARSING =====
+                JSONArray pointsArray = jsonObject.optJSONArray("release_points");
+                StringBuilder bulletBuilder = new StringBuilder();
+
+                if (pointsArray != null) {
+                    for (int i = 0; i < pointsArray.length(); i++) {
+                        bulletBuilder.append("•  ")
+                                .append(pointsArray.getString(i))
+                                .append("\n");
+                    }
+                    formattedReleasePoints = bulletBuilder.toString().trim();
+                } else {
+                    formattedReleasePoints = "• No release details available";
+                }
+
                 if (isAdded()) {
                     requireActivity().runOnUiThread(() -> {
                         serverVersionTV.setText("Latest Version " + latestVersion);
@@ -114,81 +184,75 @@ public class OS_UpdatesFragment extends Fragment {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                formattedReleasePoints = "• No update available";
 
                 if (isAdded()) {
                     requireActivity().runOnUiThread(() -> {
-                        serverVersionTV.setText("Latest Version : Not found");
-                        serverReleaseDateTV.setText("Release Date : -");
+                        serverVersionTV.setText("Latest Version : Software up-to-date");
+                        serverReleaseDateTV.setText("Release Date");
                     });
                 }
             }
         }).start();
     }
 
+    // ---------------- DEVICE / BUILD INFO ----------------
 
     private void updateVersionInfo(View view) {
+
         TextView versionText = view.findViewById(R.id.version);
-        TextView insatlleddata = view.findViewById(R.id.installeddate);
-        TextView buildnum = view.findViewById(R.id.buildnum);
-        TextView deviceNameTV = view.findViewById(R.id.devicenameTV);  // Add this line
+        TextView installedDateTV = view.findViewById(R.id.installeddate);
+        TextView buildNumTV = view.findViewById(R.id.buildnum);
+        TextView deviceNameTV = view.findViewById(R.id.devicenameTV);
+        TextView bluetoothTV = view.findViewById(R.id.bluetoothTV);
 
         String versionName = "N/A";
         long updateTime = 0;
+
         try {
-            PackageInfo pInfo = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), 0);
+            PackageInfo pInfo = requireContext()
+                    .getPackageManager()
+                    .getPackageInfo(requireContext().getPackageName(), 0);
             versionName = pInfo.versionName;
             updateTime = pInfo.lastUpdateTime;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
+        } catch (Exception ignored) {}
 
-        String installDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date(updateTime));
-        insatlleddata.setText(installDate);
+        installedDateTV.setText(
+                new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                        .format(new Date(updateTime))
+        );
 
-        String buildNumber = Build.DISPLAY;
-        buildnum.setText(buildNumber);
+        buildNumTV.setText( "GA_"+Build.DISPLAY);
+        versionText.setText("rideOS " + versionName);
 
-        String versionInfo = "rideOS " + versionName+"_GA";
-        versionText.setText(versionInfo);
-
-        String deviceName = Settings.Global.getString(requireContext().getContentResolver(), "device_name");
+        String deviceName = Settings.Global.getString(
+                requireContext().getContentResolver(), "device_name"
+        );
         if (deviceName == null) deviceName = Build.DEVICE;
-
         deviceNameTV.setText(deviceName);
 
-        TextView bluetoothTV = view.findViewById(R.id.bluetoothTV);
+        String bluetoothName = "Unavailable";
+        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 
-// Default fallback
-        String bluetoothName = "Unknown";
+        if (adapter != null) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+                    ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.BLUETOOTH_CONNECT
+                    ) == PackageManager.PERMISSION_GRANTED) {
 
-// Get Bluetooth Adapter and Name
-        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (bluetoothAdapter != null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED) {
-                bluetoothName = bluetoothAdapter.getName();
+                bluetoothName = adapter.getName();
             }
         }
 
-        if (bluetoothName == null || bluetoothName.isEmpty()) {
-            bluetoothName = "Unavailable";
-        }
-
         bluetoothTV.setText(bluetoothName);
-
-    }
-    private String getDeviceName() {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.toLowerCase().startsWith(manufacturer.toLowerCase())) {
-            return capitalize(model);
-        } else {
-            return capitalize(manufacturer) + " " + model;
-        }
     }
 
-    private String capitalize(String s) {
-        if (s == null || s.length() == 0) return "";
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
-    }
+    // ---------------- CLEANUP ----------------
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        uptimeHandler.removeCallbacks(uptimeRunnable);
+    }
 }

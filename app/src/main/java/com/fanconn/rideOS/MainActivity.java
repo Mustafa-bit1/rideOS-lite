@@ -94,10 +94,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private String version_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
     private String saveDir = "/sdcard";
     public static UIUpdater uiUpdater;
-    private Runnable mRunnableTime;  // 用于定时更新系统时间显示的任务
     private boolean isSIMCardExist = false;
     private boolean isSDCardExist = false;
-    private Handler mHandlerTime = new Handler();
     //    private CameraHandler cameraHandler;
 //    private MusicPlayer musicPlayer;  // 音乐播放器
     private int cameraState = 0; // 0: 无预览, 1: 后摄预览, 2: 前摄预览
@@ -193,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private ImageButton tripResetBtn;
     private TextView tripTextView;
     private boolean showingTrip = false; // false = Odo, true = Trip
+    private Handler mHandlerTime = new Handler();
+    private Runnable mRunnableTime;  // 用于定时更新系统时间显示的任务
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

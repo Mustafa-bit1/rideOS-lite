@@ -683,6 +683,7 @@ public class LoginActivity extends AppCompatActivity{
     int Level4_Line_Current = 110;
 
     public void loginSuccess(String username) {
+//        Log.d("sdafsgd","LOGIWELCOMEHERE");
         showCustomToast("Welcome " + username + " !");
         if(serialPortManager!=null){
             serialPortManager.VCUSendToMCU("FFAA550101000A01");
@@ -770,7 +771,7 @@ public class LoginActivity extends AppCompatActivity{
                 String durationHex = boostPrefs.getString("boost_duration_hex", "00");
                 String intervalHex = boostPrefs.getString("boost_interval_hex", "00");
 
-                String finalSpeedFrame = "FFAA550103001510FCA807" + speedByte01 + speedByte02 + "00000000" + durationHex + intervalHex;
+                String finalSpeedFrame = "FFAA550103001510FCA807" + speedByte01 + speedByte02 + "00000000" + durationHex + intervalHex;//FFAA550103001510FCA807740E00000000051E  speed 3700(740E) 5seconds and 30 seconds boost
 //                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "000088040000";
 //                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "7800B004A000";//max phase 300A ,  regen currents as 30A(7800) and 40A(A000)
 

@@ -2058,7 +2058,7 @@ public class UIUpdater  {
 
     public void initIndicatorLogic(Context context) {
         soundPool = new SoundPool.Builder().setMaxStreams(1).build();
-        soundId = soundPool.load(context, R.raw.turn2, 1);
+        soundId = soundPool.load(context, R.raw.turnspecial, 1);
         soundPool.setOnLoadCompleteListener((sp, id, status) -> {
             soundLoaded = (status == 0);
         });

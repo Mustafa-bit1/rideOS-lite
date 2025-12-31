@@ -8,78 +8,135 @@
     tools:context="com.fanconn.rideOS.menu.OS_UpdatesFragment">
 
     <!-- Header Section -->
-    <FrameLayout
-        android:id="@+id/frameLayout"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/osUpdateCard"
         android:layout_width="0dp"
-        android:layout_height="125dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp">
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp"
+        app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="#3B3B3B"
+        >
 
-        <!-- Background Image -->
-        <ImageView
-            android:id="@+id/imageView3"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/osupdate_version_info_pic" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp"
+            android:paddingEnd="30dp"
+            android:paddingStart="20dp">
 
-        <!-- Overlay Layout -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            <!-- MAIN CONTENT -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <!-- Release Date (top-left) -->
 
-            <!-- Latest Version (bottom-left) -->
+                <TextView
+                    android:id="@+id/server_version"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kanit"
+                    android:text="Latest Version -"
+                    android:textColor="#FFFFFF"
+                    android:textSize="22sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- OTA Update Button (right side, centered vertically) -->
+                <TextView
+                    android:id="@+id/server_release_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/kanit"
+                    android:text="Release Date: -"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/server_version" />
 
-            <TextView
-                android:id="@+id/server_release_date"
-                android:layout_width="wrap_content"
+                <!-- SEE WHAT'S NEW ROW -->
+                <LinearLayout
+                    android:id="@+id/layoutWhatsNew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="14dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/server_release_date">
+
+                    <ImageButton
+                        android:id="@+id/arrowdown"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/arrowdown"
+                        />
+                </LinearLayout>
+
+
+                <ImageButton
+                    android:id="@+id/otaupdatebtn"
+                    android:layout_width="180dp"
+                    android:layout_height="52dp"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/otaupdatebtn"
+                    android:scaleType="fitXY"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!-- EXPANDABLE SECTION -->
+            <!-- EXPANDABLE SECTION -->
+            <LinearLayout
+                android:id="@+id/layoutReleaseNotes"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
-                android:layout_marginTop="52dp"
-                android:fontFamily="@font/kanitlite"
-                android:text="Release Date: -"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:paddingTop="14dp">
 
-            <TextView
-                android:id="@+id/server_version"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="28dp"
-                android:layout_marginBottom="78dp"
-                android:fontFamily="@font/kanit"
-                android:text="App version -"
-                android:textColor="@android:color/white"
-                android:textSize="18dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#444444"
+                    android:layout_marginBottom="10dp"/>
 
-            <ImageButton
-                android:id="@+id/otaupdatebtn"
-                android:layout_width="180dp"
-                android:layout_height="52dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/otaupdatebtn"
-                android:scaleType="fitXY"
-                android:adjustViewBounds="true"
-                android:padding="0dp"
-                android:textSize="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginEnd="16dp"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </FrameLayout>
+                <!-- SCROLLABLE RELEASE NOTES -->
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
+
+                    <TextView
+                        android:id="@+id/tvReleasePoints"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#DDDDDD"
+                        android:textSize="23sp"
+                        android:layout_marginStart="20dp"
+                        android:lineSpacingExtra="6dp"
+                        android:fontFamily="@font/kanitlite"/>
+                </ScrollView>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 
     <!-- Scrollable Content Section -->
     <ScrollView
@@ -87,16 +144,17 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/frameLayout"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/osUpdateCard">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingStart="36dp"
+            android:paddingEnd="36dp">
 
             <!-- Current Version -->
             <LinearLayout
@@ -110,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingStart="11dp"
+                    android:paddingStart="1dp"
                     android:text="Current version"
                     android:textColor="#FFFFFF"
                     android:textSize="23sp" />
@@ -125,7 +183,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/kanitlite"
-                        android:paddingEnd="11dp"
+                        android:paddingEnd="1dp"
                         android:text="rideOS"
                         android:textColor="#FFFFFF"
                         android:textSize="25sp" />
@@ -152,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingStart="11dp"
+                    android:paddingStart="1dp"
                     android:text="App uptime"
                     android:textColor="#FFFFFF"
                     android:textSize="23sp" />
@@ -162,7 +220,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingEnd="11dp"
+                    android:paddingEnd="1dp"
                     android:text="rideOS_base"
                     android:textColor="#FFFFFF"
                     android:textSize="25sp" />
@@ -181,7 +239,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingStart="11dp"
+                    android:paddingStart="1dp"
                     android:text="Build"
                     android:textColor="#FFFFFF"
                     android:textSize="23sp" />
@@ -191,7 +249,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingEnd="11dp"
+                    android:paddingEnd="1dp"
                     android:text="rideOS_base"
                     android:textColor="#FFFFFF"
                     android:textSize="25sp" />
@@ -209,7 +267,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingStart="11dp"
+                    android:paddingStart="1dp"
                     android:text="Device Name"
                     android:textColor="#FFFFFF"
                     android:textSize="23sp" />
@@ -219,7 +277,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingEnd="11dp"
+                    android:paddingEnd="1dp"
                     android:text=""
                     android:textColor="#FFFFFF"
                     android:textSize="25sp" />
@@ -237,7 +295,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="@font/kanitlite"
-                    android:paddingStart="11dp"
+                    android:paddingStart="1dp"
                     android:text="Device Bluetooth"
                     android:textColor="#FFFFFF"
                     android:textSize="23sp" />
@@ -251,7 +309,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/kanitlite"
-                        android:paddingEnd="11dp"
+                        android:paddingEnd="1dp"
                         android:text="Device Bluetooth name"
                         android:textColor="#FFFFFF"
                         android:textSize="18sp" />
@@ -261,7 +319,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/kanitlite"
-                        android:paddingEnd="11dp"
+                        android:paddingEnd="1dp"
                         android:text=""
                         android:textColor="#FFFFFF"
                         android:textSize="25sp" />

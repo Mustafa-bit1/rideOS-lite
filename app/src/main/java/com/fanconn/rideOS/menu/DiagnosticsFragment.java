@@ -117,6 +117,10 @@ public class DiagnosticsFragment extends Fragment {
         highTorque.setOnClickListener(v -> {
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400");//FFAA550103001510FBA807B8018C000000B400 35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,
             new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510FCA807100E00000000051E"),
+                    1200
+            );
+            new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
                     1200
             );
