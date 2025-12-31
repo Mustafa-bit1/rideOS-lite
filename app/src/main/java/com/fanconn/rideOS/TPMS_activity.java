@@ -122,7 +122,7 @@ public class TPMS_activity extends AppCompatActivity {
         setupBluetoothUI();
         setupBackButton();
         prepareTpmsReceiver();
-        InactivityManager.getInstance().stopTimer();
+//        InactivityManager.getInstance().stopTimer();
 
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(new Intent(TpmsScanService.ACTION_TPMS_REQUEST));

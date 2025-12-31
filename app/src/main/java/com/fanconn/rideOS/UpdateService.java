@@ -204,7 +204,7 @@ public class UpdateService extends Service {
             btnNo.setText("Remind Later(24H)");
 
             // Stop inactivity timer while popup is visible
-            Log.i(TAG, "Stopping inactivity timer for OTA popup");
+            Log.i(TAG, "TOUCH Stopping inactivity timer for OTA popup");
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> InactivityManager.getInstance().stopTimer(), 5000);
 

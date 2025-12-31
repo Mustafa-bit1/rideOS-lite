@@ -102,9 +102,8 @@ public class chargingUI extends AppCompatActivity {
             MainActivity.uiUpdater.setChargingUI(this);
         }
 //        InactivityManager.getInstance().setCallback(this);
-        if(true){Log.d("sadfsg","TIMERE$");
-            InactivityManager.getInstance().stopTimer();
-            InactivityManager.getInstance().startTimer(4);}
+//            InactivityManager.getInstance().stopTimer();
+//            InactivityManager.getInstance().startTimer(4);
 
         // Register BroadcastReceiver
         if (!isReceiverRegistered) {
@@ -134,18 +133,17 @@ public class chargingUI extends AppCompatActivity {
 
     private void acquisitionTime() {
 
+        if (mRunnableTime != null) return; // 🔒 PREVENT DUPLICATES
+
         TimeManager timeManager = TimeManager.getInstance(this);
 
         mRunnableTime = new Runnable() {
             @Override
             public void run() {
-
                 String formattedTime =
                         timeManager.getFormattedTime("hh:mm a");
 
                 binding.timeTextView.setText(formattedTime);
-
-                // Update every second
                 mHandlerTime.postDelayed(this, 1000);
             }
         };
@@ -300,11 +298,10 @@ public class chargingUI extends AppCompatActivity {
             return R.drawable.battery_level_3;
         }
     }
-    private Handler pulseHandler;
+    private final Handler pulseHandler = new Handler(Looper.getMainLooper());
     private Runnable pulseRunnable;
 
     private void startBatteryPulseAnimation() {
-        pulseHandler = new Handler(Looper.getMainLooper());
 
         pulseRunnable = new Runnable() {
             boolean goingUp = true;
@@ -313,6 +310,12 @@ public class chargingUI extends AppCompatActivity {
 
             @Override
             public void run() {
+
+                // 🛑 SAFETY CHECK
+                if (pulseHandler == null || isFinishing() || isDestroyed()) {
+                    return;
+                }
+
                 if (goingUp) {
                     displaySOC += 2;
                     if (displaySOC >= 100) {
@@ -337,18 +340,26 @@ public class chargingUI extends AppCompatActivity {
                 }
 
                 chargingUiBatteryAnimation(displaySOC);
-                pulseHandler.postDelayed(this, 20);
+
+                // 🛑 DOUBLE SAFETY
+                if (pulseHandler != null) {
+                    pulseHandler.postDelayed(this, 20);
+                }
             }
+
         };
 
         pulseHandler.post(pulseRunnable);
     }
 
     private void stopBatteryPulseAnimation() {
-        if (pulseHandler != null && pulseRunnable != null) {
-            pulseHandler.removeCallbacks(pulseRunnable);
+        if (pulseRunnable != null) {
+            pulseHandler.removeCallbacksAndMessages(null);
+            pulseRunnable = null;
         }
     }
+
+
 
     private int chargingUiLastlevel = -1; // Store last battery level to avoid redundant updates
 
@@ -370,7 +381,7 @@ public class chargingUI extends AppCompatActivity {
         timeoutHandler.removeCallbacks(timeoutRunnable);
         timeoutRunnable = () -> {
             //Log.d("chargingUI", "No FFAA770303001514028001 frame received in 3 seconds — finishing");
-            InactivityManager.getInstance().stopTimer();
+//            InactivityManager.getInstance().stopTimer();
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
             if (powerManager != null && !powerManager.isInteractive()) {
                 PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
@@ -379,9 +390,10 @@ public class chargingUI extends AppCompatActivity {
                 );
                 wakeLock.acquire(3000);
             }
+            TelemetryDataManager.getInstance().setTeleChargingState(0);
             finish();
 //            UIUpdater.telechargingstate=0;
-            TelemetryDataManager.getInstance().setTeleChargingState(0);
+
 
             Log.d("sdafgd","CANCLINGCHARGING");
         };
@@ -391,37 +403,54 @@ public class chargingUI extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        //  Start EV lock sequence
         EVLockService.getInstance().startLockSequence();
 
-        //Log.d("ChargingUI", "onDestroy called — launching LoginActivity...");
+        //  Stop charging pulse animation safely
+        stopBatteryPulseAnimation();
 
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+        //  Stop time update runnable
+        if (mRunnableTime != null) {
+            mHandlerTime.removeCallbacks(mRunnableTime);
+            mRunnableTime = null;
+        }
 
-        //Log.d("chargingUI", "Now destroyed");
-        mHandlerTime.removeCallbacks(mRunnableTime);
-        LoginActivity.ChargingUiClosedByUserFlag = true;
+        //  Stop timeout & SOC update handlers
+        timeoutHandler.removeCallbacksAndMessages(null);
+        socUpdateHandler.removeCallbacksAndMessages(null);
 
+        //  Unregister BroadcastReceiver
         if (isReceiverRegistered) {
             try {
-                LocalBroadcastManager.getInstance(this).unregisterReceiver(frameReceiver);
-            } catch (IllegalArgumentException e) {
-                //Log.e("chargingUI", "Receiver not registered", e);
+                LocalBroadcastManager.getInstance(this)
+                        .unregisterReceiver(frameReceiver);
+            } catch (IllegalArgumentException ignored) {
             }
             isReceiverRegistered = false;
         }
 
-        timeoutHandler.removeCallbacks(timeoutRunnable);
-        socUpdateHandler.removeCallbacks(socUpdateRunnable);
-
+        // 🔊 Release MediaPlayer
         if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
+            try {
+                if (mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                }
+            } catch (IllegalStateException ignored) {
             }
             mediaPlayer.release();
             mediaPlayer = null;
         }
+
+        //  Flag for LoginActivity
+        LoginActivity.ChargingUiClosedByUserFlag = true;
+
+        //  Navigate to LoginActivity
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
     }
 
     @Override
@@ -436,8 +465,12 @@ public class chargingUI extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        mHandlerTime.removeCallbacks(mRunnableTime); // stop updates
+        if (mRunnableTime != null) {
+            mHandlerTime.removeCallbacks(mRunnableTime);
+            mRunnableTime = null;
+        }
     }
+
     // Optional for external use
     private boolean seenNonWakeFrameSinceScreenOff = true;
 
