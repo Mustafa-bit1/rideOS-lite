@@ -92,7 +92,7 @@ public class Maps extends AppCompatActivity {
         Button btnNo = dialog.findViewById(R.id.btnNo);
 
         title.setText("rideOS Maps");
-        message.setText("Thank you for showing interest\nWe recieved your request for Maps\nOur Team will contact you shortly.");
+        message.setText("Thanks for your interest.\nYour request for Maps has been received.\nOur team will reach out to you soon.");
 
         btnYes.setText("OK");
         btnNo.setVisibility(View.GONE);

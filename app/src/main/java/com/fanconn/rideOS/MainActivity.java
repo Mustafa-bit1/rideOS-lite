@@ -1988,6 +1988,7 @@ public void recoNavLeft(View view) {
         } catch (IllegalArgumentException e) {
             e.printStackTrace(); // Receiver was not registered or already unregistered
         }
+        Log.d("sdfghjk","SMARTKEY MAINATCITY DESTROY CALLED ");
         instance = null; // clean up
         // Make sure the receiver is unregistered
         if (isReceiverRegistered) {

@@ -7,6 +7,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.LinkAddress;
+import android.net.LinkProperties;
+import android.net.Network;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -36,12 +40,15 @@ import com.fanconn.rideOS.mcuupdate.YMode;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.net.Inet4Address;
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 public class DiagnosticsFragment extends Fragment {
     private AhTrackerManager ahTrackerManager;
+    private TextView ipTV;
 
     private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON,In60,In90,out0, LEDOFF, debugbtn,highTorque;
     private ImageButton  rebootbtn, shutdownbtn;
@@ -67,12 +74,15 @@ public class DiagnosticsFragment extends Fragment {
         initListeners(view);
         updateDisplay(view);
         updateVersionInfo(view);
+        String ip = getDeviceIpAddress();
+        ipTV.setText("IP Address: " + ip);
 
         view.findViewById(R.id.btnmetadata).setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), MetadataActivity.class);
             startActivity(intent);
         });
         ahTrackerManager = AhTrackerManager.getInstance(requireContext());
+        InactivityManager.getInstance().stopTimer();
 
         return view;
 
@@ -98,6 +108,8 @@ public class DiagnosticsFragment extends Fragment {
         Devicesettings = view.findViewById(R.id.Devicesettings);
         debugbtn = view.findViewById(R.id.debug);
         tireDimensionDisplay = view.findViewById(R.id.tireDimensionDisplay);
+        ipTV = view.findViewById(R.id.ipTV);
+
     }
     private void initListeners(View view) {
         WifiManager wifiManager = (WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -186,6 +198,27 @@ public class DiagnosticsFragment extends Fragment {
         shutdownbtn.setOnClickListener(v -> showShutdownDialog());
     }//END OF onCreateView
 
+    private String getDeviceIpAddress() {
+        ConnectivityManager cm =
+                (ConnectivityManager) requireContext()
+                        .getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (cm == null) return "No Network";
+
+        Network network = cm.getActiveNetwork();
+        if (network == null) return "Disconnected";
+
+        LinkProperties props = cm.getLinkProperties(network);
+        if (props == null) return "No IP";
+
+        for (LinkAddress linkAddress : props.getLinkAddresses()) {
+            InetAddress addr = linkAddress.getAddress();
+            if (!addr.isLoopbackAddress() && addr instanceof Inet4Address) {
+                return addr.getHostAddress();
+            }
+        }
+        return "IP Not Found";
+    }
 
     // ------------------ HELPER: SEND CMD TWICE THEN CALLBACK ------------------
     private void sendCommandTwiceThen(Runnable afterTask) {
