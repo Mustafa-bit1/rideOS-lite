@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private boolean showingTrip = false; // false = Odo, true = Trip
     private Handler mHandlerTime = new Handler();
     private Runnable mRunnableTime;  // 用于定时更新系统时间显示的任务
+    ImageView keyImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -391,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         uiUpdater.setTripManager(tripManager);
 
         setupDoubleTapDetector();
+        keyImage = findViewById(R.id.keyOutImage); // reference to the image
 
         //===wifi dynamic img ======
 
@@ -2317,6 +2319,17 @@ public void recoNavLeft(View view) {
                 .commit();
     }
 
+    public void updateKeyImage(boolean keyInRange) {
+        if (keyImage == null) return;
+
+        runOnUiThread(() -> {
+            if (keyInRange) {
+                keyImage.setImageResource(R.drawable.keyin);   // key in range
+            } else {
+                keyImage.setImageResource(R.drawable.keyout);  // key out of range
+            }
+        });
+    }
 
 
 }

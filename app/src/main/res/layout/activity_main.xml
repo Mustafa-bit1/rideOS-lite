@@ -38,20 +38,20 @@
 
 
     <!--    <ImageView-->
-<!--        android:id="@+id/ready_IV"-->
-<!--        android:layout_width="70dp"-->
-<!--        android:layout_height="15dp"-->
-<!--        android:layout_alignParentStart="true"-->
-<!--        android:layout_alignParentTop="true"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginStart="616dp"-->
-<!--        android:layout_marginBottom="80dp"-->
-<!--        android:translationY="5dp"-->
-<!--        android:visibility="visible"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:srcCompat="@drawable/ready" />-->
+    <!--        android:id="@+id/ready_IV"-->
+    <!--        android:layout_width="70dp"-->
+    <!--        android:layout_height="15dp"-->
+    <!--        android:layout_alignParentStart="true"-->
+    <!--        android:layout_alignParentTop="true"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        android:layout_marginStart="616dp"-->
+    <!--        android:layout_marginBottom="80dp"-->
+    <!--        android:translationY="5dp"-->
+    <!--        android:visibility="visible"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:srcCompat="@drawable/ready" />-->
 
 
 
@@ -88,18 +88,18 @@
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 
-<!--    <ImageView-->
-<!--        android:id="@+id/Ota_IV"-->
-<!--        android:layout_width="45dp"-->
-<!--        android:layout_height="45dp"-->
-<!--        android:layout_alignParentRight="true"-->
-<!--        android:layout_marginStart="16dp"-->
-<!--        android:layout_marginTop="4dp"-->
-<!--        android:onClick="MCUOTA_onClick"-->
-<!--        android:src="@drawable/ota"-->
-<!--        android:translationY="0dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/Ota_IV"-->
+    <!--        android:layout_width="45dp"-->
+    <!--        android:layout_height="45dp"-->
+    <!--        android:layout_alignParentRight="true"-->
+    <!--        android:layout_marginStart="16dp"-->
+    <!--        android:layout_marginTop="4dp"-->
+    <!--        android:onClick="MCUOTA_onClick"-->
+    <!--        android:src="@drawable/ota"-->
+    <!--        android:translationY="0dp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <FrameLayout
         android:id="@+id/front_camera_container"
@@ -140,7 +140,7 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginTop="27dp"
-        android:layout_marginEnd="272dp"
+        android:layout_marginEnd="282dp"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/blueth" />
@@ -310,7 +310,7 @@
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginTop="29dp"
-        android:layout_marginEnd="321dp"
+        android:layout_marginEnd="331dp"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/network" />
@@ -320,21 +320,21 @@
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:layout_marginTop="27dp"
-        android:layout_marginEnd="225dp"
+        android:layout_marginEnd="235dp"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/wifioffimg" />
 
-<!--    <Button-->
-<!--        android:id="@+id/mosswitch"-->
-<!--        android:layout_width="190dp"-->
-<!--        android:layout_height="50dp"-->
-<!--        android:layout_marginStart="216dp"-->
-<!--        android:layout_marginTop="320dp"-->
-<!--        android:backgroundTint="#B10505"-->
-<!--        android:text="Swicth to APU"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    <Button-->
+    <!--        android:id="@+id/mosswitch"-->
+    <!--        android:layout_width="190dp"-->
+    <!--        android:layout_height="50dp"-->
+    <!--        android:layout_marginStart="216dp"-->
+    <!--        android:layout_marginTop="320dp"-->
+    <!--        android:backgroundTint="#B10505"-->
+    <!--        android:text="Swicth to APU"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <ImageView
         android:id="@+id/rectangleGearsTV"
@@ -579,29 +579,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/APUbatteryTV"
-        android:layout_width="82dp"
-        android:layout_height="22dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="760dp"
-        android:layout_marginTop="44dp"
-        android:fontFamily="@font/kanit"
-        android:shadowColor="#80000000"
-        android:shadowDx="5"
-        android:shadowDy="3"
-        android:shadowRadius="5"
-        android:text="APU 0%"
-        android:visibility="gone"
-        android:textAlignment="textStart"
-        android:textColor="#FFFFFFFF"
-        android:textSize="17dp"
-        android:translationY="-10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/reverseui"
@@ -764,26 +741,26 @@
         android:visibility="gone"
         app:srcCompat="@drawable/startbutton" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/avgSpeed"-->
-<!--        android:layout_width="194dp"-->
-<!--        android:layout_height="192dp"-->
-<!--        android:layout_marginStart="28dp"-->
-<!--        android:layout_marginTop="68dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:srcCompat="@drawable/avgspeed"-->
-<!--        android:visibility="gone"/>-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/avgSpeed"-->
+    <!--        android:layout_width="194dp"-->
+    <!--        android:layout_height="192dp"-->
+    <!--        android:layout_marginStart="28dp"-->
+    <!--        android:layout_marginTop="68dp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:srcCompat="@drawable/avgspeed"-->
+    <!--        android:visibility="gone"/>-->
 
-<!--    <ImageView-->
-<!--        android:id="@+id/odometer"-->
-<!--        android:layout_width="243dp"-->
-<!--        android:layout_height="32dp"-->
-<!--        android:layout_marginStart="486dp"-->
-<!--        android:layout_marginTop="408dp"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:srcCompat="@drawable/tripkm" />-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/odometer"-->
+    <!--        android:layout_width="243dp"-->
+    <!--        android:layout_height="32dp"-->
+    <!--        android:layout_marginStart="486dp"-->
+    <!--        android:layout_marginTop="408dp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:srcCompat="@drawable/tripkm" />-->
 
     <TextView
         android:id="@+id/tripTextView"
@@ -944,16 +921,16 @@
         app:layout_constraintTop_toTopOf="@id/recoContainer"
         app:layout_constraintBottom_toBottomOf="@id/recoContainer" />
 
-<!--        <ImageView-->
-<!--        android:id="@+id/tripreco"-->
-<!--        android:layout_width="194dp"-->
-<!--        android:layout_height="192dp"-->
-<!--        android:layout_marginTop="72dp"-->
-<!--        android:layout_marginEnd="30dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:srcCompat="@drawable/tripreco"-->
-<!--        />-->
+    <!--        <ImageView-->
+    <!--        android:id="@+id/tripreco"-->
+    <!--        android:layout_width="194dp"-->
+    <!--        android:layout_height="192dp"-->
+    <!--        android:layout_marginTop="72dp"-->
+    <!--        android:layout_marginEnd="30dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        app:srcCompat="@drawable/tripreco"-->
+    <!--        />-->
 
     <ImageView
         android:id="@+id/yellowalert"
@@ -978,7 +955,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/redalert"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        />
 
     <ImageView
         android:id="@+id/chargingbike"
@@ -998,20 +976,20 @@
         />
 
     <!--    <ImageView-->
-<!--        android:id="@+id/percenticon"-->
-<!--        android:layout_width="56dp"-->
-<!--        android:layout_height="41dp"-->
-<!--        android:layout_alignParentStart="true"-->
-<!--        android:layout_alignParentTop="true"-->
-<!--        android:layout_alignParentEnd="true"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_marginEnd="470dp"-->
-<!--        android:layout_marginBottom="202dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:srcCompat="@drawable/percenticon"-->
+    <!--        android:id="@+id/percenticon"-->
+    <!--        android:layout_width="56dp"-->
+    <!--        android:layout_height="41dp"-->
+    <!--        android:layout_alignParentStart="true"-->
+    <!--        android:layout_alignParentTop="true"-->
+    <!--        android:layout_alignParentEnd="true"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        android:layout_marginEnd="470dp"-->
+    <!--        android:layout_marginBottom="202dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:srcCompat="@drawable/percenticon"-->
 
-<!--        />-->
+    <!--        />-->
 
     <TextView
         android:id="@+id/chargingSOC"
@@ -1042,7 +1020,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/chargingicon"
         android:visibility="gone"
-
         />
 
     <ImageView
@@ -1055,20 +1032,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/tempicon"
         android:visibility="gone"
-
         />
 
     <ImageView
         android:id="@+id/tpmsicon"
         android:layout_width="32dp"
         android:layout_height="44dp"
-        android:layout_marginStart="856dp"
+        android:layout_marginStart="765dp"
         android:layout_marginTop="19dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/tpmsicon"
-        android:visibility="gone"
 
+        />
+    <ImageView
+        android:id="@+id/keyOutImage"
+        android:layout_width="40dp"
+        android:layout_height="28dp"
+        android:layout_marginStart="714dp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/keyout"
         />
 
     <ImageView
@@ -1100,22 +1085,47 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:layout_marginEnd="523dp"
-        android:visibility="gone"
+        android:layout_marginEnd="435dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/battery_level_1" />
 
-<!--    <ImageView-->
-<!--        android:id="@+id/chargingicononmainactivty"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="27dp"-->
-<!--        android:layout_marginEnd="412dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        android:visibility="gone"-->
-<!--        app:srcCompat="@drawable/chargingicononmainactivty" />-->
+
+    <TextView
+        android:id="@+id/APUbatteryTV"
+        android:layout_width="82dp"
+        android:layout_height="22dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="848dp"
+
+        android:layout_marginTop="44dp"
+        android:fontFamily="@font/kanit"
+        android:shadowColor="#80000000"
+        android:shadowDx="5"
+        android:shadowDy="3"
+        android:shadowRadius="5"
+        android:text="APU 100%"
+        android:textAlignment="textStart"
+        android:textColor="#FFFFFFFF"
+        android:textSize="17dp"
+        android:translationY="-10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--    <ImageView-->
+    <!--        android:id="@+id/chargingicononmainactivty"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="27dp"-->
+    <!--        android:layout_marginEnd="412dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent"-->
+    <!--        android:visibility="gone"-->
+    <!--        app:srcCompat="@drawable/chargingicononmainactivty" />-->
 
     <TextView
         android:id="@+id/textstatus"
@@ -1172,122 +1182,122 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-<!--    &lt;!&ndash; TPMS CONTAINER (hidden by default, shown only in Neutral gear) &ndash;&gt;-->
-<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--        android:id="@+id/tpmsContainer"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--     >-->
+    <!--    &lt;!&ndash; TPMS CONTAINER (hidden by default, shown only in Neutral gear) &ndash;&gt;-->
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/tpmsContainer"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--     >-->
 
-<!--&lt;!&ndash;        <androidx.cardview.widget.CardView&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_width="100dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginStart="303dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginTop="325dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:cardBackgroundColor="#262626"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:cardCornerRadius="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
+    <!--&lt;!&ndash;        <androidx.cardview.widget.CardView&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="100dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginStart="303dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginTop="325dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:cardBackgroundColor="#262626"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:cardCornerRadius="12dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
 
-<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/rearpressurevalue"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginTop="8dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:text="- psi"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+    <!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:id="@+id/rearpressurevalue"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginTop="8dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:text="- psi"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
 
-<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/reartempvalue"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginTop="38dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:text="- °C"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+    <!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:id="@+id/reartempvalue"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginTop="38dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:text="- °C"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
 
-<!--&lt;!&ndash;        </androidx.cardview.widget.CardView>&ndash;&gt;-->
+    <!--&lt;!&ndash;        </androidx.cardview.widget.CardView>&ndash;&gt;-->
 
-<!--&lt;!&ndash;        <androidx.cardview.widget.CardView&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_width="100dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginStart="887dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginTop="325dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:cardBackgroundColor="#262626"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:cardCornerRadius="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
+    <!--&lt;!&ndash;        <androidx.cardview.widget.CardView&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="100dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginStart="887dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginTop="325dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:cardBackgroundColor="#262626"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:cardCornerRadius="12dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintStart_toStartOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent">&ndash;&gt;-->
 
-<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/frontpressurevalue"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginTop="8dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:text="- psi"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+    <!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:id="@+id/frontpressurevalue"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginTop="8dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:text="- psi"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
 
-<!--&lt;!&ndash;            <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                android:id="@+id/fronttempvalue"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_marginTop="38dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:text="- °C"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
+    <!--&lt;!&ndash;            <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:id="@+id/fronttempvalue"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_width="100dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_height="30dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginStart="12dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:layout_marginTop="38dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:fontFamily="@font/kanit"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:text="- °C"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textColor="@android:color/white"&ndash;&gt;-->
+    <!--&lt;!&ndash;                android:textSize="20dp" />&ndash;&gt;-->
 
-<!--&lt;!&ndash;        </androidx.cardview.widget.CardView>&ndash;&gt;-->
+    <!--&lt;!&ndash;        </androidx.cardview.widget.CardView>&ndash;&gt;-->
 
-<!--&lt;!&ndash;        <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;            android:id="@+id/reartpmsIdealStatus"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_width="180dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginTop="272dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginEnd="828dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:fontFamily="@font/kanit"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:lineSpacingExtra="-20dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:text="No sensor detected"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textColor="#3BFF21"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textSize="25dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+    <!--&lt;!&ndash;        <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:id="@+id/reartpmsIdealStatus"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="180dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginTop="272dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginEnd="828dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:fontFamily="@font/kanit"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:lineSpacingExtra="-20dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:text="No sensor detected"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textColor="#3BFF21"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textSize="25dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
 
-<!--&lt;!&ndash;        <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;            android:id="@+id/fronttpmsIdealStatus"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_width="180dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginTop="275dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:layout_marginEnd="253dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:fontFamily="@font/kanit"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:lineSpacingExtra="-20dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:text="No sensor detected"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textColor="#FFC30F"&ndash;&gt;-->
-<!--&lt;!&ndash;            android:textSize="25dp"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
-<!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
+    <!--&lt;!&ndash;        <TextView&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:id="@+id/fronttpmsIdealStatus"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_width="180dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_height="70dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginTop="275dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:layout_marginEnd="253dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:fontFamily="@font/kanit"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:lineSpacingExtra="-20dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:text="No sensor detected"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textAlignment="center"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textColor="#FFC30F"&ndash;&gt;-->
+    <!--&lt;!&ndash;            android:textSize="25dp"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintEnd_toEndOf="parent"&ndash;&gt;-->
+    <!--&lt;!&ndash;            app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
 
-<!--        <ImageView-->
-<!--            android:id="@+id/tpmsbikeIMG"-->
-<!--            android:layout_width="486dp"-->
-<!--            android:layout_height="332dp"-->
-<!--            android:layout_marginTop="146dp"-->
-<!--            android:layout_marginEnd="395dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:srcCompat="@drawable/tpmsgg" />-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/tpmsbikeIMG"-->
+    <!--            android:layout_width="486dp"-->
+    <!--            android:layout_height="332dp"-->
+    <!--            android:layout_marginTop="146dp"-->
+    <!--            android:layout_marginEnd="395dp"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"-->
+    <!--            app:srcCompat="@drawable/tpmsgg" />-->
 
-<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 
 
@@ -1336,851 +1346,851 @@
 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-<!--    android:layout_width="1280dp"-->
-<!--    android:layout_height="480dp"-->
-<!--    android:background="@drawable/background"-->
-<!--    tools:context="rideOSActivity">-->
-
-<!--    <RelativeLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        tools:layout_editor_absoluteX="85dp"-->
-<!--        tools:layout_editor_absoluteY="130dp">-->
-
-<!--        &lt;!&ndash; 图像视图 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/speed_IV"-->
-<!--            android:layout_width="320dp"-->
-<!--            android:layout_height="320dp"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            app:srcCompat="@drawable/speed" />-->
-
-<!--        &lt;!&ndash; 速度数字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/speedNumberTV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:gravity="center"-->
-<!--            android:text="0"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:fontFamily="@font/opti"-->
-<!--            android:textSize="130dp"-->
-<!--            android:translationY="-5dp" />-->
-
-<!--        &lt;!&ndash; 三速 图像视图 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/rectangle_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:translationY="-110dp"-->
-<!--            app:srcCompat="@drawable/rectangle" />-->
-
-<!--        &lt;!&ndash; 三速 文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/rectangleTV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:gravity="center"-->
-<!--            android:text="2"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="30dp"-->
-<!--            android:translationY="-110dp" />-->
-
-<!--        &lt;!&ndash; 方向档位 图像视图 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/rectangleGears_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/speed_IV"-->
-<!--            android:layout_toLeftOf="@id/speed_IV"-->
-<!--            android:translationY="30dp"-->
-<!--            app:srcCompat="@drawable/rectangle" />-->
-
-<!--        &lt;!&ndash; 方向档位 文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/rectangleGearsTV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/speed_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:layout_toLeftOf="@id/speed_IV"-->
-<!--            android:gravity="center"-->
-<!--            android:text="D"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="25dp"-->
-<!--            android:translationY="26dp" />-->
-
-<!--        &lt;!&ndash; ready 图像视图 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/ready_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/speedTV"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:translationY="5dp"-->
-<!--            android:visibility="visible"-->
-<!--            app:srcCompat="@drawable/ready" />-->
-
-<!--        &lt;!&ndash; 速度文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/speedTV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/speedNumberTV"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:text="Km/h"-->
-<!--            android:textColor="#FF9E9E9E"-->
-<!--            android:textSize="25dp"-->
-<!--            android:translationY="-10dp" />-->
-
-<!--        &lt;!&ndash; 近光灯图像视图 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/lowerBeam_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentTop="true"-->
-<!--            android:layout_centerHorizontal="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            android:translationY="0dp"-->
-<!--            app:srcCompat="@drawable/low_beam_off" />-->
-
-<!--        &lt;!&ndash;远光灯图像视图 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/highBeam_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_toRightOf="@id/lowerBeam_IV"-->
-<!--            android:layout_marginStart="00dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:translationY="0dp"-->
-<!--            app:srcCompat="@drawable/lamp_off" />-->
-
-<!--        &lt;!&ndash; 电池图标 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/battery_IV"-->
-<!--            android:layout_width="150dp"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:layout_alignBottom="@id/speed_IV"-->
-<!--            android:layout_marginStart="15dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_toRightOf="@id/speed_IV"-->
-<!--            android:src="@drawable/battery_level_5"-->
-<!--            android:translationY="-10dp" />-->
-
-<!--        &lt;!&ndash; 电池文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/batteryTV"-->
-<!--            android:layout_width="150dp"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:layout_alignBottom="@id/speed_IV"-->
-<!--            android:layout_marginStart="15dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_toRightOf="@id/speed_IV"-->
-<!--            android:gravity="center"-->
-<!--            android:text="100%"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="30dp"-->
-<!--            android:translationY="-10dp" />-->
-
-<!--        &lt;!&ndash; 发动机故障图标 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/failure_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignBottom="@id/battery_IV"-->
-<!--            android:layout_marginStart="5dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_toRightOf="@id/battery_IV"-->
-<!--            android:src="@drawable/failure"-->
-<!--            android:translationY="20dp"-->
-<!--            android:visibility="invisible" />-->
-
-<!--        &lt;!&ndash; 温度图标 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/temperature_IV"-->
-<!--            android:layout_width="150dp"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:layout_alignBottom="@id/speed_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginEnd="15dp"-->
-<!--            android:layout_toLeftOf="@id/speed_IV"-->
-<!--            android:src="@drawable/temperature"-->
-<!--            android:translationY="-10dp" />-->
-
-<!--        &lt;!&ndash; 温度文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/temperatureTV"-->
-<!--            android:layout_width="150dp"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:layout_alignBottom="@id/speed_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginEnd="15dp"-->
-<!--            android:layout_toLeftOf="@id/speed_IV"-->
-<!--            android:gravity="center"-->
-<!--            android:text="26.4°"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="30dp"-->
-<!--            android:translationY="-10dp" />-->
-
-<!--        &lt;!&ndash; 左转图标 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/turnLeft_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/temperatureTV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="110dp"-->
-<!--            android:layout_marginBottom="80dp"-->
-<!--            android:layout_toLeftOf="@id/speed_IV"-->
-<!--            android:src="@drawable/lmp_l"-->
-<!--            android:translationY="-10dp" />-->
-
-<!--        &lt;!&ndash; 右转图标 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/turnRight_IV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/battery_IV"-->
-<!--            android:layout_marginStart="110dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="80dp"-->
-<!--            android:layout_toRightOf="@id/speed_IV"-->
-<!--            android:src="@drawable/lmp_r"-->
-<!--            android:translationY="-10dp" />-->
-
-<!--        &lt;!&ndash; 坐垫锁图标  &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/seatCushionLock_IV"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="20dp"-->
-<!--            android:layout_above="@id/smallBatteryVoltage_TV"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginRight="0dp"-->
-<!--            android:layout_marginBottom="13dp"-->
-<!--            android:src="@drawable/lock"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 坐垫锁文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/seatCushionLock_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_toLeftOf="@id/seatCushionLock_IV"-->
-<!--            android:layout_above="@id/smallBattery_TV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:text="@string/Seat_cushion_lock"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 龙头锁图标 &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/frontLock_IV"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="20dp"-->
-<!--            android:layout_above="@id/seatCushionLock_IV"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="13dp"-->
-<!--            android:src="@drawable/unlocked"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 龙头锁文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/frontLock_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/seatCushionLock_TV"-->
-<!--            android:layout_toLeftOf="@id/frontLock_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:text="@string/handlebar_lock"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 小电池电压文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/smallBattery_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/gesture_TV"-->
-<!--            android:layout_toLeftOf="@id/smallBatteryVoltage_TV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:text="@string/small_battery_voltage"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 小电池电压值视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/smallBatteryVoltage_TV"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/gestureStatus_TV"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginRight="0dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:text="4.12 V"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 手势传感器文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/gesture_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_toLeftOf="@id/gestureStatus_TV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:text="@string/gesture_sensor_status"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 手势传感器状态文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/gestureStatus_TV"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="3dp"-->
-<!--            android:text="@string/nothing"-->
-<!--            android:textColor="#FF93836C"-->
-<!--            android:textSize="14dp"-->
-<!--            android:translationY="-0dp" />-->
-
-<!--        &lt;!&ndash; 侧支架磁感文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/sideSupportInduction_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/sideSupportInductionStatus_TV"-->
-<!--            android:layout_alignParentLeft="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:text="@string/magnetism_status"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 侧支架磁感状态文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/sideSupportInductionStatus_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentLeft="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:text="@string/magnetic"-->
-<!--            android:textColor="#FF93836C"-->
-<!--            android:textSize="14dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 座椅锁磁感文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/seatInduction_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/seatInductionStatus_TV"-->
-<!--            android:layout_alignParentLeft="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:text="@string/seat_magnetism_status"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 座椅锁磁感状态文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/seatInductionStatus_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/sideSupportInduction_TV"-->
-<!--            android:layout_alignParentLeft="true"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:text="@string/magnetic"-->
-<!--            android:textColor="#FF93836C"-->
-<!--            android:textSize="14dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 六轴文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/sixAxis_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/sixAxisDate_TV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:text="@string/six_axis_data"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="16dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 六轴数据文字视图 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/sixAxisDate_TV"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/seatInduction_TV"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:text="uAcc ：0, 0, 0\nuGyro：0, 0, 0"-->
-<!--            android:textColor="#FF93836C"-->
-<!--            android:textSize="14dp"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 蓝牙图标  发送按钮  &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/BluetoothSend_IV"-->
-<!--            android:layout_width="25dp"-->
-<!--            android:layout_height="25dp"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="10dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:onClick="BluetoothSend_onClick"-->
-<!--            android:src="@drawable/send"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 蓝牙MAC地址  &ndash;&gt;-->
-<!--        <EditText-->
-<!--            android:id="@+id/BluetoothMAC_input"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_toLeftOf="@id/BluetoothSend_IV"-->
-<!--            android:maxLength="17"-->
-<!--            android:text="51:00:23:11:01:DE"-->
-<!--            android:textColor="#FF9E9E9E"-->
-<!--            android:textSize="13dp" />-->
-
-<!--        &lt;!&ndash; 蓝牙图标  &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/Bluetooth_IV"-->
-<!--            android:layout_width="48dp"-->
-<!--            android:layout_height="48dp"-->
-<!--            android:layout_toLeftOf="@id/BluetoothMAC_input"-->
-<!--            android:src="@drawable/bluetooth"-->
-<!--            android:translationY="0dp" />-->
-
-<!--        &lt;!&ndash; 时间显示文字视图  &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/timeTextView"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentLeft="true"-->
-<!--            android:layout_alignParentTop="true"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:text="12:34 AM"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="20dp" />-->
-
-<!--        &lt;!&ndash; 多功能图标  &ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/Menu_IV"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:layout_below="@id/timeTextView"-->
-<!--            android:layout_marginStart="10dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:src="@drawable/menu_3"-->
-<!--            android:translationY="0dp"-->
-<!--            android:onClick="Menu_onClick"/>-->
-
-<!--        &lt;!&ndash; 歌曲播放进度控制条 &ndash;&gt;-->
-<!--        <SeekBar-->
-<!--            android:id="@+id/seekbar"-->
-<!--            android:layout_width="300dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/speed_IV"-->
-<!--            android:layout_centerInParent="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:progressTint="#FF4EA9AB"-->
-<!--            android:progressBackgroundTint="#FFEDEDED"-->
-<!--            android:thumbTint="#FF4EA9AB"-->
-<!--            android:progress="0"-->
-<!--            android:translationY="15dp" />-->
-
-<!--        &lt;!&ndash; 歌曲当前播放时间 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/current_time"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/seekbar"-->
-<!--            android:layout_toLeftOf="@id/seekbar"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:gravity="center"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="12dp"-->
-<!--            android:text="0:00"-->
-<!--            android:translationY="-5dp"/>-->
-
-<!--        &lt;!&ndash; 歌曲总时间 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/total_time"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/seekbar"-->
-<!--            android:layout_toRightOf="@id/seekbar"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:gravity="center"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:textSize="12dp"-->
-<!--            android:text="0:00"-->
-<!--            android:translationY="-5dp"/>-->
-
-<!--        &lt;!&ndash; 歌曲名称 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/song_title"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above="@id/seekbar"-->
-<!--            android:layout_alignStart="@id/seekbar"-->
-<!--            android:layout_marginStart="15dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="40dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:text="路边的野花不要采"-->
-<!--            android:textSize="10dp"-->
-<!--            android:translationY="15dp"/>-->
-
-<!--        &lt;!&ndash; 循环/单曲循环/随机播放、播放/暂停、上一首、下一首按钮布局 &ndash;&gt;-->
-<!--        <LinearLayout-->
-<!--            android:id="@+id/musicSpace"-->
-<!--            android:layout_width="250dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/seekbar"-->
-<!--            android:layout_alignStart="@id/seekbar"-->
-<!--            android:orientation="horizontal"-->
-<!--            android:gravity="bottom"-->
-<!--            android:translationY="18dp">-->
-
-<!--            &lt;!&ndash; 循环/单曲循环/随机播放按钮 &ndash;&gt;-->
-<!--            <ImageView-->
-<!--                android:id="@+id/loop_IV"-->
-<!--                android:layout_width="20dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:src="@drawable/sequential"-->
-<!--                android:layout_marginStart="15dp"-->
-<!--                android:layout_marginTop="0dp"-->
-<!--                android:layout_marginEnd="40dp"-->
-<!--                android:layout_marginBottom="0dp"-->
-<!--                android:translationY="0dp"-->
-<!--                android:text="Loop"-->
-<!--                android:onClick="Loop_onClick"/>-->
-
-<!--            &lt;!&ndash; 上一首按钮 &ndash;&gt;-->
-<!--            <ImageView-->
-<!--                android:id="@+id/previous_IV"-->
-<!--                android:layout_width="20dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:src="@drawable/previous"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginTop="0dp"-->
-<!--                android:layout_marginEnd="0dp"-->
-<!--                android:layout_marginBottom="0dp"-->
-<!--                android:translationY="0dp"-->
-<!--                android:text="Previous"-->
-<!--                android:onClick="Previous_onClick"/>-->
-
-<!--            &lt;!&ndash; 播放/暂停按钮 &ndash;&gt;-->
-<!--            <ImageView-->
-<!--                android:id="@+id/play_pause_IV"-->
-<!--                android:layout_width="25dp"-->
-<!--                android:layout_height="25dp"-->
-<!--                android:src="@drawable/pause3"-->
-<!--                android:layout_marginStart="20dp"-->
-<!--                android:layout_marginTop="0dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:layout_marginBottom="0dp"-->
-<!--                android:translationY="0dp"-->
-<!--                android:text="Play/Pause"-->
-<!--                android:onClick="Play_Pause_onClick"/>-->
-
-<!--            &lt;!&ndash; 下一首按钮 &ndash;&gt;-->
-<!--            <ImageView-->
-<!--                android:id="@+id/next_IV"-->
-<!--                android:layout_width="20dp"-->
-<!--                android:layout_height="20dp"-->
-<!--                android:src="@drawable/next"-->
-<!--                android:layout_marginStart="0dp"-->
-<!--                android:layout_marginTop="0dp"-->
-<!--                android:layout_marginEnd="20dp"-->
-<!--                android:layout_marginBottom="0dp"-->
-<!--                android:translationY="0dp"-->
-<!--                android:text="Next"-->
-<!--                android:onClick="Next_onClick"/>-->
-
-<!--        </LinearLayout>-->
-
-<!--        &lt;!&ndash; 音量调节控制条 &ndash;&gt;-->
-<!--        <SeekBar-->
-<!--            android:id="@+id/volume_seekbar"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_toRightOf="@id/musicSpace"-->
-<!--            android:layout_below="@id/musicSpace"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:progressTint="#FF4EA9AB"-->
-<!--            android:progressBackgroundTint="#FFEDEDED"-->
-<!--            android:thumbTint="#FF4EA9AB"-->
-<!--            android:progress="50"-->
-<!--            android:translationY="-1dp"/>-->
-
-<!--        &lt;!&ndash; 音量调节标识&ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/volume_IV"-->
-<!--            android:layout_width="16dp"-->
-<!--            android:layout_height="16dp"-->
-<!--            android:layout_toRightOf="@id/volume_seekbar"-->
-<!--            android:layout_alignTop="@id/volume_seekbar"-->
-<!--            android:src="@drawable/volume"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:translationY="0dp"-->
-<!--            android:onClick="volume_onClick"/>-->
-
-<!--        &lt;!&ndash; ota 图标&ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/Ota_IV"-->
-<!--            android:layout_width="45dp"-->
-<!--            android:layout_height="45dp"-->
-<!--            android:src="@drawable/ota"-->
-<!--            android:layout_above="@id/Ota_title"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="5dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:translationY="0dp"-->
-<!--            android:onClick="OTA_onClick"/>-->
-
-<!--        &lt;!&ndash; ota 状态 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/Ota_title"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_above ="@id/frontLock_IV"-->
-<!--            android:layout_alignParentRight="true"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="15dp"-->
-<!--            android:layout_marginBottom="20dp"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:text="OTA"-->
-<!--            android:textSize="11dp"-->
-<!--            android:translationY="0dp"/>-->
-
-<!--        &lt;!&ndash; camera 图标&ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/camera_IV"-->
-<!--            android:layout_width="45dp"-->
-<!--            android:layout_height="45dp"-->
-<!--            android:src="@drawable/camera"-->
-<!--            android:layout_above="@id/Ota_title"-->
-<!--            android:layout_toLeftOf="@id/Ota_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="5dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:translationY="0dp"-->
-<!--            android:onClick="camera_onClick"/>-->
-
-<!--        &lt;!&ndash; camera 状态 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/camera_title"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/camera_IV"-->
-<!--            android:layout_alignStart="@id/camera_IV"-->
-<!--            android:layout_marginStart="1dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:text="摄像头"-->
-<!--            android:textSize="10dp"-->
-<!--            android:translationY="0dp"/>-->
-
-<!--        &lt;!&ndash; SIM卡 图标&ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/SIM_IV"-->
-<!--            android:layout_width="45dp"-->
-<!--            android:layout_height="45dp"-->
-<!--            android:src="@drawable/sim_normal"-->
-<!--            android:layout_above="@id/Ota_title"-->
-<!--            android:layout_toLeftOf="@id/SD_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="5dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:translationY="0dp"-->
-<!--            android:onClick="SIM_onClick"/>-->
-
-<!--        &lt;!&ndash; SIM卡 状态 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/SIM_title"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/SIM_IV"-->
-<!--            android:layout_alignStart="@id/SIM_IV"-->
-<!--            android:layout_marginStart="5dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:text="SIM 正常"-->
-<!--            android:textSize="10dp"-->
-<!--            android:translationY="0dp"/>-->
-
-<!--        &lt;!&ndash; SD卡 图标&ndash;&gt;-->
-<!--        <ImageView-->
-<!--            android:id="@+id/SD_IV"-->
-<!--            android:layout_width="45dp"-->
-<!--            android:layout_height="45dp"-->
-<!--            android:src="@drawable/sd_normal"-->
-<!--            android:layout_above="@id/Ota_title"-->
-<!--            android:layout_toLeftOf="@id/camera_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="5dp"-->
-<!--            android:layout_marginBottom="5dp"-->
-<!--            android:translationY="0dp"-->
-<!--            android:onClick="SD_Card_onClick"/>-->
-
-<!--        &lt;!&ndash; SD卡 状态 &ndash;&gt;-->
-<!--        <TextView-->
-<!--            android:id="@+id/SD_title"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_below="@id/SD_IV"-->
-<!--            android:layout_alignStart="@id/SD_IV"-->
-<!--            android:layout_marginStart="5dp"-->
-<!--            android:layout_marginTop="5dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="0dp"-->
-<!--            android:textColor="#FFFFFFFF"-->
-<!--            android:text="SD 正常"-->
-<!--            android:textSize="10dp"-->
-<!--            android:translationY="0dp"/>-->
-
-<!--        <FrameLayout-->
-<!--            android:id="@+id/Front_FrameLayout"-->
-<!--            android:layout_width="280dp"-->
-<!--            android:layout_height="160dp"-->
-<!--            android:layout_toLeftOf="@id/turnLeft_IV"-->
-<!--            android:layout_above="@id/sixAxis_TV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="10dp"-->
-<!--            android:layout_marginBottom="10dp"-->
-<!--            android:gravity="center">-->
-
-<!--            <TextureView-->
-<!--                android:id="@+id/front_camera_surface_view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:visibility="visible" />-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/front_camera_fail"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@drawable/front_camera_warning"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:visibility="invisible"/>-->
-
-<!--        </FrameLayout>-->
-
-<!--        <FrameLayout-->
-<!--            android:id="@+id/Rear_FrameLayout"-->
-<!--            android:layout_width="280dp"-->
-<!--            android:layout_height="160dp"-->
-<!--            android:layout_toRightOf="@id/turnRight_IV"-->
-<!--            android:layout_above="@id/Ota_IV"-->
-<!--            android:layout_marginStart="0dp"-->
-<!--            android:layout_marginTop="0dp"-->
-<!--            android:layout_marginEnd="0dp"-->
-<!--            android:layout_marginBottom="20dp"-->
-<!--            android:gravity="center">-->
-
-<!--            <TextureView-->
-<!--                android:id="@+id/rear_camera_surface_view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:visibility="invisible" />-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/rear_camera_fail"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:src="@drawable/rear_camera_warning"-->
-<!--                android:layout_gravity="center"-->
-<!--                android:visibility="invisible"/>-->
-
-<!--        </FrameLayout>-->
-
-<!--    </RelativeLayout>-->
-
-
-<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+    <!--    android:layout_width="1280dp"-->
+    <!--    android:layout_height="480dp"-->
+    <!--    android:background="@drawable/background"-->
+    <!--    tools:context="rideOSActivity">-->
+
+    <!--    <RelativeLayout-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        tools:layout_editor_absoluteX="85dp"-->
+    <!--        tools:layout_editor_absoluteY="130dp">-->
+
+    <!--        &lt;!&ndash; 图像视图 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/speed_IV"-->
+    <!--            android:layout_width="320dp"-->
+    <!--            android:layout_height="320dp"-->
+    <!--            android:layout_centerInParent="true"-->
+    <!--            app:srcCompat="@drawable/speed" />-->
+
+    <!--        &lt;!&ndash; 速度数字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/speedNumberTV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_centerInParent="true"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="0"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:fontFamily="@font/opti"-->
+    <!--            android:textSize="130dp"-->
+    <!--            android:translationY="-5dp" />-->
+
+    <!--        &lt;!&ndash; 三速 图像视图 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/rectangle_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_centerInParent="true"-->
+    <!--            android:translationY="-110dp"-->
+    <!--            app:srcCompat="@drawable/rectangle" />-->
+
+    <!--        &lt;!&ndash; 三速 文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/rectangleTV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_centerInParent="true"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="2"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="30dp"-->
+    <!--            android:translationY="-110dp" />-->
+
+    <!--        &lt;!&ndash; 方向档位 图像视图 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/rectangleGears_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/speed_IV"-->
+    <!--            android:layout_toLeftOf="@id/speed_IV"-->
+    <!--            android:translationY="30dp"-->
+    <!--            app:srcCompat="@drawable/rectangle" />-->
+
+    <!--        &lt;!&ndash; 方向档位 文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/rectangleGearsTV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/speed_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="10dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:layout_toLeftOf="@id/speed_IV"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="D"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="25dp"-->
+    <!--            android:translationY="26dp" />-->
+
+    <!--        &lt;!&ndash; ready 图像视图 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/ready_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/speedTV"-->
+    <!--            android:layout_centerInParent="true"-->
+    <!--            android:translationY="5dp"-->
+    <!--            android:visibility="visible"-->
+    <!--            app:srcCompat="@drawable/ready" />-->
+
+    <!--        &lt;!&ndash; 速度文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/speedTV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/speedNumberTV"-->
+    <!--            android:layout_centerInParent="true"-->
+    <!--            android:text="Km/h"-->
+    <!--            android:textColor="#FF9E9E9E"-->
+    <!--            android:textSize="25dp"-->
+    <!--            android:translationY="-10dp" />-->
+
+    <!--        &lt;!&ndash; 近光灯图像视图 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/lowerBeam_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentTop="true"-->
+    <!--            android:layout_centerHorizontal="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="10dp"-->
+    <!--            android:translationY="0dp"-->
+    <!--            app:srcCompat="@drawable/low_beam_off" />-->
+
+    <!--        &lt;!&ndash;远光灯图像视图 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/highBeam_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_toRightOf="@id/lowerBeam_IV"-->
+    <!--            android:layout_marginStart="00dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:translationY="0dp"-->
+    <!--            app:srcCompat="@drawable/lamp_off" />-->
+
+    <!--        &lt;!&ndash; 电池图标 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/battery_IV"-->
+    <!--            android:layout_width="150dp"-->
+    <!--            android:layout_height="150dp"-->
+    <!--            android:layout_alignBottom="@id/speed_IV"-->
+    <!--            android:layout_marginStart="15dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_toRightOf="@id/speed_IV"-->
+    <!--            android:src="@drawable/battery_level_5"-->
+    <!--            android:translationY="-10dp" />-->
+
+    <!--        &lt;!&ndash; 电池文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/batteryTV"-->
+    <!--            android:layout_width="150dp"-->
+    <!--            android:layout_height="150dp"-->
+    <!--            android:layout_alignBottom="@id/speed_IV"-->
+    <!--            android:layout_marginStart="15dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_toRightOf="@id/speed_IV"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="100%"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="30dp"-->
+    <!--            android:translationY="-10dp" />-->
+
+    <!--        &lt;!&ndash; 发动机故障图标 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/failure_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignBottom="@id/battery_IV"-->
+    <!--            android:layout_marginStart="5dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_toRightOf="@id/battery_IV"-->
+    <!--            android:src="@drawable/failure"-->
+    <!--            android:translationY="20dp"-->
+    <!--            android:visibility="invisible" />-->
+
+    <!--        &lt;!&ndash; 温度图标 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/temperature_IV"-->
+    <!--            android:layout_width="150dp"-->
+    <!--            android:layout_height="150dp"-->
+    <!--            android:layout_alignBottom="@id/speed_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginEnd="15dp"-->
+    <!--            android:layout_toLeftOf="@id/speed_IV"-->
+    <!--            android:src="@drawable/temperature"-->
+    <!--            android:translationY="-10dp" />-->
+
+    <!--        &lt;!&ndash; 温度文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/temperatureTV"-->
+    <!--            android:layout_width="150dp"-->
+    <!--            android:layout_height="150dp"-->
+    <!--            android:layout_alignBottom="@id/speed_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginEnd="15dp"-->
+    <!--            android:layout_toLeftOf="@id/speed_IV"-->
+    <!--            android:gravity="center"-->
+    <!--            android:text="26.4°"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="30dp"-->
+    <!--            android:translationY="-10dp" />-->
+
+    <!--        &lt;!&ndash; 左转图标 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/turnLeft_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/temperatureTV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="110dp"-->
+    <!--            android:layout_marginBottom="80dp"-->
+    <!--            android:layout_toLeftOf="@id/speed_IV"-->
+    <!--            android:src="@drawable/lmp_l"-->
+    <!--            android:translationY="-10dp" />-->
+
+    <!--        &lt;!&ndash; 右转图标 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/turnRight_IV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/battery_IV"-->
+    <!--            android:layout_marginStart="110dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="80dp"-->
+    <!--            android:layout_toRightOf="@id/speed_IV"-->
+    <!--            android:src="@drawable/lmp_r"-->
+    <!--            android:translationY="-10dp" />-->
+
+    <!--        &lt;!&ndash; 坐垫锁图标  &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/seatCushionLock_IV"-->
+    <!--            android:layout_width="48dp"-->
+    <!--            android:layout_height="20dp"-->
+    <!--            android:layout_above="@id/smallBatteryVoltage_TV"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginRight="0dp"-->
+    <!--            android:layout_marginBottom="13dp"-->
+    <!--            android:src="@drawable/lock"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 坐垫锁文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/seatCushionLock_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_toLeftOf="@id/seatCushionLock_IV"-->
+    <!--            android:layout_above="@id/smallBattery_TV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="10dp"-->
+    <!--            android:text="@string/Seat_cushion_lock"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 龙头锁图标 &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/frontLock_IV"-->
+    <!--            android:layout_width="48dp"-->
+    <!--            android:layout_height="20dp"-->
+    <!--            android:layout_above="@id/seatCushionLock_IV"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="13dp"-->
+    <!--            android:src="@drawable/unlocked"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 龙头锁文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/frontLock_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/seatCushionLock_TV"-->
+    <!--            android:layout_toLeftOf="@id/frontLock_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="10dp"-->
+    <!--            android:text="@string/handlebar_lock"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 小电池电压文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/smallBattery_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/gesture_TV"-->
+    <!--            android:layout_toLeftOf="@id/smallBatteryVoltage_TV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="10dp"-->
+    <!--            android:text="@string/small_battery_voltage"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 小电池电压值视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/smallBatteryVoltage_TV"-->
+    <!--            android:layout_width="48dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/gestureStatus_TV"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginRight="0dp"-->
+    <!--            android:layout_marginBottom="10dp"-->
+    <!--            android:text="4.12 V"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 手势传感器文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/gesture_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentBottom="true"-->
+    <!--            android:layout_toLeftOf="@id/gestureStatus_TV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:text="@string/gesture_sensor_status"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 手势传感器状态文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/gestureStatus_TV"-->
+    <!--            android:layout_width="48dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:layout_alignParentBottom="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="3dp"-->
+    <!--            android:text="@string/nothing"-->
+    <!--            android:textColor="#FF93836C"-->
+    <!--            android:textSize="14dp"-->
+    <!--            android:translationY="-0dp" />-->
+
+    <!--        &lt;!&ndash; 侧支架磁感文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/sideSupportInduction_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/sideSupportInductionStatus_TV"-->
+    <!--            android:layout_alignParentLeft="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="10dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:text="@string/magnetism_status"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 侧支架磁感状态文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/sideSupportInductionStatus_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentLeft="true"-->
+    <!--            android:layout_alignParentBottom="true"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:text="@string/magnetic"-->
+    <!--            android:textColor="#FF93836C"-->
+    <!--            android:textSize="14dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 座椅锁磁感文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/seatInduction_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/seatInductionStatus_TV"-->
+    <!--            android:layout_alignParentLeft="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="10dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:text="@string/seat_magnetism_status"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 座椅锁磁感状态文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/seatInductionStatus_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/sideSupportInduction_TV"-->
+    <!--            android:layout_alignParentLeft="true"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:text="@string/magnetic"-->
+    <!--            android:textColor="#FF93836C"-->
+    <!--            android:textSize="14dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 六轴文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/sixAxis_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/sixAxisDate_TV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="10dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:text="@string/six_axis_data"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="16dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 六轴数据文字视图 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/sixAxisDate_TV"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/seatInduction_TV"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:text="uAcc ：0, 0, 0\nuGyro：0, 0, 0"-->
+    <!--            android:textColor="#FF93836C"-->
+    <!--            android:textSize="14dp"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 蓝牙图标  发送按钮  &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/BluetoothSend_IV"-->
+    <!--            android:layout_width="25dp"-->
+    <!--            android:layout_height="25dp"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginTop="10dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:onClick="BluetoothSend_onClick"-->
+    <!--            android:src="@drawable/send"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 蓝牙MAC地址  &ndash;&gt;-->
+    <!--        <EditText-->
+    <!--            android:id="@+id/BluetoothMAC_input"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_toLeftOf="@id/BluetoothSend_IV"-->
+    <!--            android:maxLength="17"-->
+    <!--            android:text="51:00:23:11:01:DE"-->
+    <!--            android:textColor="#FF9E9E9E"-->
+    <!--            android:textSize="13dp" />-->
+
+    <!--        &lt;!&ndash; 蓝牙图标  &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/Bluetooth_IV"-->
+    <!--            android:layout_width="48dp"-->
+    <!--            android:layout_height="48dp"-->
+    <!--            android:layout_toLeftOf="@id/BluetoothMAC_input"-->
+    <!--            android:src="@drawable/bluetooth"-->
+    <!--            android:translationY="0dp" />-->
+
+    <!--        &lt;!&ndash; 时间显示文字视图  &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/timeTextView"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_alignParentLeft="true"-->
+    <!--            android:layout_alignParentTop="true"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:text="12:34 AM"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="20dp" />-->
+
+    <!--        &lt;!&ndash; 多功能图标  &ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/Menu_IV"-->
+    <!--            android:layout_width="40dp"-->
+    <!--            android:layout_height="40dp"-->
+    <!--            android:layout_below="@id/timeTextView"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:src="@drawable/menu_3"-->
+    <!--            android:translationY="0dp"-->
+    <!--            android:onClick="Menu_onClick"/>-->
+
+    <!--        &lt;!&ndash; 歌曲播放进度控制条 &ndash;&gt;-->
+    <!--        <SeekBar-->
+    <!--            android:id="@+id/seekbar"-->
+    <!--            android:layout_width="300dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/speed_IV"-->
+    <!--            android:layout_centerInParent="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:progressTint="#FF4EA9AB"-->
+    <!--            android:progressBackgroundTint="#FFEDEDED"-->
+    <!--            android:thumbTint="#FF4EA9AB"-->
+    <!--            android:progress="0"-->
+    <!--            android:translationY="15dp" />-->
+
+    <!--        &lt;!&ndash; 歌曲当前播放时间 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/current_time"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/seekbar"-->
+    <!--            android:layout_toLeftOf="@id/seekbar"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:gravity="center"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="12dp"-->
+    <!--            android:text="0:00"-->
+    <!--            android:translationY="-5dp"/>-->
+
+    <!--        &lt;!&ndash; 歌曲总时间 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/total_time"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/seekbar"-->
+    <!--            android:layout_toRightOf="@id/seekbar"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:gravity="center"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:textSize="12dp"-->
+    <!--            android:text="0:00"-->
+    <!--            android:translationY="-5dp"/>-->
+
+    <!--        &lt;!&ndash; 歌曲名称 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/song_title"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above="@id/seekbar"-->
+    <!--            android:layout_alignStart="@id/seekbar"-->
+    <!--            android:layout_marginStart="15dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="40dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:text="路边的野花不要采"-->
+    <!--            android:textSize="10dp"-->
+    <!--            android:translationY="15dp"/>-->
+
+    <!--        &lt;!&ndash; 循环/单曲循环/随机播放、播放/暂停、上一首、下一首按钮布局 &ndash;&gt;-->
+    <!--        <LinearLayout-->
+    <!--            android:id="@+id/musicSpace"-->
+    <!--            android:layout_width="250dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/seekbar"-->
+    <!--            android:layout_alignStart="@id/seekbar"-->
+    <!--            android:orientation="horizontal"-->
+    <!--            android:gravity="bottom"-->
+    <!--            android:translationY="18dp">-->
+
+    <!--            &lt;!&ndash; 循环/单曲循环/随机播放按钮 &ndash;&gt;-->
+    <!--            <ImageView-->
+    <!--                android:id="@+id/loop_IV"-->
+    <!--                android:layout_width="20dp"-->
+    <!--                android:layout_height="20dp"-->
+    <!--                android:src="@drawable/sequential"-->
+    <!--                android:layout_marginStart="15dp"-->
+    <!--                android:layout_marginTop="0dp"-->
+    <!--                android:layout_marginEnd="40dp"-->
+    <!--                android:layout_marginBottom="0dp"-->
+    <!--                android:translationY="0dp"-->
+    <!--                android:text="Loop"-->
+    <!--                android:onClick="Loop_onClick"/>-->
+
+    <!--            &lt;!&ndash; 上一首按钮 &ndash;&gt;-->
+    <!--            <ImageView-->
+    <!--                android:id="@+id/previous_IV"-->
+    <!--                android:layout_width="20dp"-->
+    <!--                android:layout_height="20dp"-->
+    <!--                android:src="@drawable/previous"-->
+    <!--                android:layout_marginStart="20dp"-->
+    <!--                android:layout_marginTop="0dp"-->
+    <!--                android:layout_marginEnd="0dp"-->
+    <!--                android:layout_marginBottom="0dp"-->
+    <!--                android:translationY="0dp"-->
+    <!--                android:text="Previous"-->
+    <!--                android:onClick="Previous_onClick"/>-->
+
+    <!--            &lt;!&ndash; 播放/暂停按钮 &ndash;&gt;-->
+    <!--            <ImageView-->
+    <!--                android:id="@+id/play_pause_IV"-->
+    <!--                android:layout_width="25dp"-->
+    <!--                android:layout_height="25dp"-->
+    <!--                android:src="@drawable/pause3"-->
+    <!--                android:layout_marginStart="20dp"-->
+    <!--                android:layout_marginTop="0dp"-->
+    <!--                android:layout_marginEnd="20dp"-->
+    <!--                android:layout_marginBottom="0dp"-->
+    <!--                android:translationY="0dp"-->
+    <!--                android:text="Play/Pause"-->
+    <!--                android:onClick="Play_Pause_onClick"/>-->
+
+    <!--            &lt;!&ndash; 下一首按钮 &ndash;&gt;-->
+    <!--            <ImageView-->
+    <!--                android:id="@+id/next_IV"-->
+    <!--                android:layout_width="20dp"-->
+    <!--                android:layout_height="20dp"-->
+    <!--                android:src="@drawable/next"-->
+    <!--                android:layout_marginStart="0dp"-->
+    <!--                android:layout_marginTop="0dp"-->
+    <!--                android:layout_marginEnd="20dp"-->
+    <!--                android:layout_marginBottom="0dp"-->
+    <!--                android:translationY="0dp"-->
+    <!--                android:text="Next"-->
+    <!--                android:onClick="Next_onClick"/>-->
+
+    <!--        </LinearLayout>-->
+
+    <!--        &lt;!&ndash; 音量调节控制条 &ndash;&gt;-->
+    <!--        <SeekBar-->
+    <!--            android:id="@+id/volume_seekbar"-->
+    <!--            android:layout_width="100dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_toRightOf="@id/musicSpace"-->
+    <!--            android:layout_below="@id/musicSpace"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:progressTint="#FF4EA9AB"-->
+    <!--            android:progressBackgroundTint="#FFEDEDED"-->
+    <!--            android:thumbTint="#FF4EA9AB"-->
+    <!--            android:progress="50"-->
+    <!--            android:translationY="-1dp"/>-->
+
+    <!--        &lt;!&ndash; 音量调节标识&ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/volume_IV"-->
+    <!--            android:layout_width="16dp"-->
+    <!--            android:layout_height="16dp"-->
+    <!--            android:layout_toRightOf="@id/volume_seekbar"-->
+    <!--            android:layout_alignTop="@id/volume_seekbar"-->
+    <!--            android:src="@drawable/volume"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:translationY="0dp"-->
+    <!--            android:onClick="volume_onClick"/>-->
+
+    <!--        &lt;!&ndash; ota 图标&ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/Ota_IV"-->
+    <!--            android:layout_width="45dp"-->
+    <!--            android:layout_height="45dp"-->
+    <!--            android:src="@drawable/ota"-->
+    <!--            android:layout_above="@id/Ota_title"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="5dp"-->
+    <!--            android:layout_marginBottom="5dp"-->
+    <!--            android:translationY="0dp"-->
+    <!--            android:onClick="OTA_onClick"/>-->
+
+    <!--        &lt;!&ndash; ota 状态 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/Ota_title"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_above ="@id/frontLock_IV"-->
+    <!--            android:layout_alignParentRight="true"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:layout_marginEnd="15dp"-->
+    <!--            android:layout_marginBottom="20dp"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:text="OTA"-->
+    <!--            android:textSize="11dp"-->
+    <!--            android:translationY="0dp"/>-->
+
+    <!--        &lt;!&ndash; camera 图标&ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/camera_IV"-->
+    <!--            android:layout_width="45dp"-->
+    <!--            android:layout_height="45dp"-->
+    <!--            android:src="@drawable/camera"-->
+    <!--            android:layout_above="@id/Ota_title"-->
+    <!--            android:layout_toLeftOf="@id/Ota_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="5dp"-->
+    <!--            android:layout_marginBottom="5dp"-->
+    <!--            android:translationY="0dp"-->
+    <!--            android:onClick="camera_onClick"/>-->
+
+    <!--        &lt;!&ndash; camera 状态 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/camera_title"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/camera_IV"-->
+    <!--            android:layout_alignStart="@id/camera_IV"-->
+    <!--            android:layout_marginStart="1dp"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:text="摄像头"-->
+    <!--            android:textSize="10dp"-->
+    <!--            android:translationY="0dp"/>-->
+
+    <!--        &lt;!&ndash; SIM卡 图标&ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/SIM_IV"-->
+    <!--            android:layout_width="45dp"-->
+    <!--            android:layout_height="45dp"-->
+    <!--            android:src="@drawable/sim_normal"-->
+    <!--            android:layout_above="@id/Ota_title"-->
+    <!--            android:layout_toLeftOf="@id/SD_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="5dp"-->
+    <!--            android:layout_marginBottom="5dp"-->
+    <!--            android:translationY="0dp"-->
+    <!--            android:onClick="SIM_onClick"/>-->
+
+    <!--        &lt;!&ndash; SIM卡 状态 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/SIM_title"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/SIM_IV"-->
+    <!--            android:layout_alignStart="@id/SIM_IV"-->
+    <!--            android:layout_marginStart="5dp"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:text="SIM 正常"-->
+    <!--            android:textSize="10dp"-->
+    <!--            android:translationY="0dp"/>-->
+
+    <!--        &lt;!&ndash; SD卡 图标&ndash;&gt;-->
+    <!--        <ImageView-->
+    <!--            android:id="@+id/SD_IV"-->
+    <!--            android:layout_width="45dp"-->
+    <!--            android:layout_height="45dp"-->
+    <!--            android:src="@drawable/sd_normal"-->
+    <!--            android:layout_above="@id/Ota_title"-->
+    <!--            android:layout_toLeftOf="@id/camera_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="5dp"-->
+    <!--            android:layout_marginBottom="5dp"-->
+    <!--            android:translationY="0dp"-->
+    <!--            android:onClick="SD_Card_onClick"/>-->
+
+    <!--        &lt;!&ndash; SD卡 状态 &ndash;&gt;-->
+    <!--        <TextView-->
+    <!--            android:id="@+id/SD_title"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_below="@id/SD_IV"-->
+    <!--            android:layout_alignStart="@id/SD_IV"-->
+    <!--            android:layout_marginStart="5dp"-->
+    <!--            android:layout_marginTop="5dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="0dp"-->
+    <!--            android:textColor="#FFFFFFFF"-->
+    <!--            android:text="SD 正常"-->
+    <!--            android:textSize="10dp"-->
+    <!--            android:translationY="0dp"/>-->
+
+    <!--        <FrameLayout-->
+    <!--            android:id="@+id/Front_FrameLayout"-->
+    <!--            android:layout_width="280dp"-->
+    <!--            android:layout_height="160dp"-->
+    <!--            android:layout_toLeftOf="@id/turnLeft_IV"-->
+    <!--            android:layout_above="@id/sixAxis_TV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="10dp"-->
+    <!--            android:layout_marginBottom="10dp"-->
+    <!--            android:gravity="center">-->
+
+    <!--            <TextureView-->
+    <!--                android:id="@+id/front_camera_surface_view"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                android:visibility="visible" />-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/front_camera_fail"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:src="@drawable/front_camera_warning"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:visibility="invisible"/>-->
+
+    <!--        </FrameLayout>-->
+
+    <!--        <FrameLayout-->
+    <!--            android:id="@+id/Rear_FrameLayout"-->
+    <!--            android:layout_width="280dp"-->
+    <!--            android:layout_height="160dp"-->
+    <!--            android:layout_toRightOf="@id/turnRight_IV"-->
+    <!--            android:layout_above="@id/Ota_IV"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:layout_marginTop="0dp"-->
+    <!--            android:layout_marginEnd="0dp"-->
+    <!--            android:layout_marginBottom="20dp"-->
+    <!--            android:gravity="center">-->
+
+    <!--            <TextureView-->
+    <!--                android:id="@+id/rear_camera_surface_view"-->
+    <!--                android:layout_width="match_parent"-->
+    <!--                android:layout_height="match_parent"-->
+    <!--                android:visibility="invisible" />-->
+
+    <!--            <ImageView-->
+    <!--                android:id="@+id/rear_camera_fail"-->
+    <!--                android:layout_width="wrap_content"-->
+    <!--                android:layout_height="wrap_content"-->
+    <!--                android:src="@drawable/rear_camera_warning"-->
+    <!--                android:layout_gravity="center"-->
+    <!--                android:visibility="invisible"/>-->
+
+    <!--        </FrameLayout>-->
+
+    <!--    </RelativeLayout>-->
+
+
+    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->

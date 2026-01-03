@@ -54,13 +54,18 @@ public class BLEScanService extends Service {
             lastSeenTime = now;
 
             if (rssi > RSSI_OUT_RANGE_THRESHOLD) {
-                // Strong enough signal → reset
+                // Strong enough signal → reset / key in range
                 if (!keyInRange.get() && rssi > RSSI_IN_RANGE_THRESHOLD) {
                     keyInRange.set(true);
                     consecutiveOutOfRangeCount = 0;
                     outOfRangeNotified = false;
-                    keyLostWhileMoving = false;
+                    keyLostWhileMoving = false;  // ✅ Reset stale flag
                     Log.i(TAG, "🟢 SMARTKEY Key detected close (RSSI: " + rssi + ")");
+
+                    // Update key image to "keyIn"
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.updateKeyImage(true);
+                    }
 
                     if (UIUpdater.getInstance() != null) {
                         UIUpdater.getInstance().stopKeylostRedAlertAnimation();
@@ -87,21 +92,27 @@ public class BLEScanService extends Service {
                                 () -> SerialPortManager.getInstance().VCUSendToMCU("FFAA550101000A01"), 500
                         );
                     } else {
-                        Log.d(TAG, "🔒 SMARTKEY Key detected but skipping unlock skipped — scooter is LOCKED.");
+                        Log.d(TAG, "🔒 SMARTKEY Key detected but skipping unlock — scooter is LOCKED.");
                     }
                 }
 
             } else {
-                // Weak RSSI
+                // Weak RSSI → possible out of range
                 consecutiveOutOfRangeCount++;
                 Log.w(TAG, "⚠️ SMARTKEY Possible out of range (" + rssi + " dBm) (" +
                         consecutiveOutOfRangeCount + "/" + OUT_OF_RANGE_THRESHOLD_COUNT + ")");
 
                 if (consecutiveOutOfRangeCount >= OUT_OF_RANGE_THRESHOLD_COUNT && !outOfRangeNotified) {
                     handleActualOutOfRange();
+
+                    // Update key image to "keyOut"
+                    if (MainActivity.instance != null) {
+                        MainActivity.instance.updateKeyImage(false);
+                    }
                 }
             }
         }
+
 
         @Override
         public void onBatchScanResults(java.util.List<ScanResult> results) {
