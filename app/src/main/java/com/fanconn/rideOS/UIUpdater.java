@@ -1403,6 +1403,8 @@ public class UIUpdater  {
         if (STAND == 1 && (standChanged || LoginActivity.forceStandUIDUEToCharging)) {
             LoginActivity.forceStandUIDUEToCharging=false;
             InactivityManager.getInstance().startTimer(1);
+            if(serialPortManager!=null){
+                serialPortManager.VCUSendToMCU("FFAA550101000A01");}
             standui();
             return;
         }

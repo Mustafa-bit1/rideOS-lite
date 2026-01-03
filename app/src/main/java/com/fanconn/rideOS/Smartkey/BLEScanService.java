@@ -59,6 +59,7 @@ public class BLEScanService extends Service {
                     keyInRange.set(true);
                     consecutiveOutOfRangeCount = 0;
                     outOfRangeNotified = false;
+                    keyLostWhileMoving = false;
                     Log.i(TAG, "🟢 SMARTKEY Key detected close (RSSI: " + rssi + ")");
 
                     if (UIUpdater.getInstance() != null) {
@@ -134,6 +135,7 @@ public class BLEScanService extends Service {
             stopSelf();
             return;
         }
+        handler.post(rpmCheckRunnable);
 
         scanner = adapter.getBluetoothLeScanner();
         Log.i(TAG, "⏳ SMARTKEY Waiting for key...");
@@ -161,13 +163,15 @@ public class BLEScanService extends Service {
         }
     }
 
+    private boolean keyLostWhileMoving = false;
 
     private void handleActualOutOfRange() {
+        // Already out-of-range or already notified → do nothing
         if (!keyInRange.get() || outOfRangeNotified) return;
 
         keyInRange.set(false);
-        outOfRangeNotified = true;   // ✅ prevent duplicate triggers
-        consecutiveOutOfRangeCount = 0; // ✅ reset counter for next detection
+        outOfRangeNotified = true;   // prevent duplicate triggers
+        consecutiveOutOfRangeCount = 0; // reset counter for next detection
 
         Log.e(TAG, "🔴 SMARTKEY Actual OUT OF RANGE confirmed after " +
                 OUT_OF_RANGE_THRESHOLD_COUNT + " checks");
@@ -176,37 +180,54 @@ public class BLEScanService extends Service {
 
         if (MainActivity.MainisActive) {
             if (rpm == 0) {
-                // 🚦 Vehicle stopped → Lock immediately
+                // Vehicle stopped → Lock immediately
                 Log.e(TAG, "🔒 SMARTKEY Key lost & RPM=0 → Locking scooter");
                 EVLockService.getInstance().startLockSequence();
 
-                Context context2 = MainActivity.instance;
-                if (context2 != null) {
-                    Intent intent = new Intent(context2, LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                            Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    context2.startActivity(intent);
-                }
-
                 if (UIUpdater.getInstance() != null) {
+                    UIUpdater.getInstance().onDoubleTapAction();
                     UIUpdater.getInstance().stopKeylostRedAlertAnimation();
                     UIUpdater.getInstance().stopBeeping();
                 }
+
             } else {
-                // 🏍 Vehicle moving → Warning animation + beep
+                // Vehicle moving → Warning animation + beep
                 Log.w(TAG, "⚠️ SMARTKEY Key lost while driving (RPM>0)");
+                keyLostWhileMoving = true;  // Remember to lock later
                 if (UIUpdater.getInstance() != null) {
                     UIUpdater.getInstance().startKeylostRedAlertAnimation();
                     UIUpdater.getInstance().startBeeping(4);
                 }
             }
+
         } else {
             Log.e(TAG, "⚠️ SMARTKEY MainActivity not active, skipping UI update");
         }
 
+        // Notify KeyPresenceManager that key is out-of-range
         KeyPresenceManager.get().notifyOutOfRange();
     }
+
+    private final Runnable rpmCheckRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (keyLostWhileMoving) {
+                int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
+                if (rpm == 0) {
+                    Log.e(TAG, "🔒 SMARTKEY Vehicle stopped after key lost → Locking scooter");
+                    EVLockService.getInstance().startLockSequence();
+                    keyLostWhileMoving = false;
+
+                    if (UIUpdater.getInstance() != null) {
+                        UIUpdater.getInstance().onDoubleTapAction();
+                        UIUpdater.getInstance().stopKeylostRedAlertAnimation();
+                        UIUpdater.getInstance().stopBeeping();
+                    }
+                }
+            }
+            handler.postDelayed(this, 500); // check every 0.5s
+        }
+    };
 
     private ScanSettings buildScanSettings() {
         return new ScanSettings.Builder()
