@@ -3,6 +3,7 @@ package com.fanconn.rideOS.Smartkey;
 import android.app.*;
 import android.bluetooth.*;
 import android.bluetooth.le.*;
+import android.content.Context;
 import android.content.Intent;
 import android.os.*;
 import android.util.Log;
@@ -11,202 +12,202 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
-import com.fanconn.rideOS.*;
+import com.fanconn.rideOS.EVLockService;
+import com.fanconn.rideOS.MainActivity;
+import com.fanconn.rideOS.MetadataManager;
+import com.fanconn.rideOS.SerialPortManager;
+import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.authen.LoginActivity;
 
-public class BLEScanService extends Service
-        implements KeyPresenceManager.PresenceListener {
+import java.util.concurrent.atomic.AtomicBoolean;
 
-    private static final String TAG = "SMARTKEY-Service";
+public class BLEScanService extends Service {
+    private static final String TAG = "BLEKeyService";
+    private SerialPortManager serialPortManager;
+    private static final String TARGET_MAC = MetadataManager.get().getSmartKeyId();
     private static final long SCAN_INTERVAL_MS = 4000;
+    private static final long OUT_OF_RANGE_TIMEOUT_MS = 6000;
+    private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;
+
+    private static final int RSSI_IN_RANGE_THRESHOLD = -75;
+    private static final int RSSI_OUT_RANGE_THRESHOLD = -80;
 
     private BluetoothLeScanner scanner;
-    private Handler handler;
-    private String targetMac;
+    private final Handler handler = new Handler(Looper.getMainLooper());
+    private long lastSeenTime = 0;
+    private AtomicBoolean keyInRange = new AtomicBoolean(false);
+    private int consecutiveOutOfRangeCount = 0;
+    private boolean outOfRangeNotified = false;
 
-    /** 🔐 Key lost while riding → lock AFTER stop */
-    private boolean pendingLockAfterStop = false;
+    private final ScanCallback scanCallback = new ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            if (result == null || result.getDevice() == null) return;
 
-    // =========================================================
-    // ================= SERVICE ===============================
-    // =========================================================
-    @Override
-    public void onCreate() {
-        super.onCreate();
+            String mac = result.getDevice().getAddress();
+            if (!TARGET_MAC.equals(mac)) return;
 
-        handler = new Handler(Looper.getMainLooper());
-        targetMac = MetadataManager.get().getSmartKeyId();
+            int rssi = result.getRssi();
+            long now = System.currentTimeMillis();
 
-        startForegroundNotification();
+            // Always update last seen time
+            lastSeenTime = now;
 
-        BluetoothManager bm =
-                ContextCompat.getSystemService(this, BluetoothManager.class);
-        BluetoothAdapter adapter = bm != null ? bm.getAdapter() : null;
+            if (rssi > RSSI_OUT_RANGE_THRESHOLD) {
+                // Strong enough signal → reset
+                if (!keyInRange.get() && rssi > RSSI_IN_RANGE_THRESHOLD) {
+                    keyInRange.set(true);
+                    consecutiveOutOfRangeCount = 0;
+                    outOfRangeNotified = false;
+                    Log.i(TAG, "🟢 SMARTKEY Key detected close (RSSI: " + rssi + ")");
 
-        if (adapter == null || !adapter.isEnabled()) {
-            Log.e(TAG, "SMARTKEY Bluetooth unavailable");
-            stopSelf();
-            return;
+                    if (UIUpdater.getInstance() != null) {
+                        UIUpdater.getInstance().stopKeylostRedAlertAnimation();
+                        UIUpdater.getInstance().stopBeeping();
+                    }
+
+                    if (LoginActivity.instance != null) {
+                        LoginActivity.instance.loginSuccess("Key Rider");
+                        Log.d(TAG, "✅ SMARTKEY loginSuccess() called directly");
+                    } else {
+                        Log.w(TAG, "⚠️ SMARTKEY LoginActivity not active — cannot call loginSuccess()");
+                    }
+
+                    KeyPresenceManager.get().notifyInRange();
+                } else {
+                    // Still in range
+                    consecutiveOutOfRangeCount = 0;
+                    outOfRangeNotified = false;
+                    Log.d(TAG, "✅ SMARTKEY RSSI update: " + rssi);
+
+                    if (MainActivity.MainisActive) {
+                        SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A01");
+                        new Handler(Looper.getMainLooper()).postDelayed(
+                                () -> SerialPortManager.getInstance().VCUSendToMCU("FFAA550101000A01"), 500
+                        );
+                    } else {
+                        Log.d(TAG, "🔒 SMARTKEY Key detected but skipping unlock skipped — scooter is LOCKED.");
+                    }
+                }
+
+            } else {
+                // Weak RSSI
+                consecutiveOutOfRangeCount++;
+                Log.w(TAG, "⚠️ SMARTKEY Possible out of range (" + rssi + " dBm) (" +
+                        consecutiveOutOfRangeCount + "/" + OUT_OF_RANGE_THRESHOLD_COUNT + ")");
+
+                if (consecutiveOutOfRangeCount >= OUT_OF_RANGE_THRESHOLD_COUNT && !outOfRangeNotified) {
+                    handleActualOutOfRange();
+                }
+            }
         }
 
-        scanner = adapter.getBluetoothLeScanner();
-        KeyPresenceManager.get().setListener(this);
+        @Override
+        public void onBatchScanResults(java.util.List<ScanResult> results) {
+            for (ScanResult r : results)
+                onScanResult(ScanSettings.CALLBACK_TYPE_ALL_MATCHES, r);
+        }
+    };
 
-        Log.i(TAG, "SMARTKEY BLEScanService STARTED");
-        handler.post(scanRunnable);
-    }
-
-    // =========================================================
-    // ================= SCAN LOOP =============================
-    // =========================================================
     private final Runnable scanRunnable = new Runnable() {
         @Override
         public void run() {
-
+            if (scanner == null) return;
             scanner.startScan(null, buildScanSettings(), scanCallback);
-
             handler.postDelayed(() -> {
                 scanner.stopScan(scanCallback);
-
-                KeyPresenceManager.get()
-                        .tickCheck(System.currentTimeMillis());
-
-                checkPendingLockOnStop(); // 🔑 IMPORTANT
-
+                checkKeyTimeout();
                 handler.postDelayed(scanRunnable, 1000);
             }, SCAN_INTERVAL_MS);
         }
     };
 
-    // =========================================================
-    // ================= BLE CALLBACK ==========================
-    // =========================================================
-    private final ScanCallback scanCallback = new ScanCallback() {
-        @Override
-        public void onScanResult(int type, ScanResult result) {
-            if (result == null || result.getDevice() == null) return;
-            if (!targetMac.equals(result.getDevice().getAddress())) return;
-
-            KeyPresenceManager.get()
-                    .onAdvertisement(result.getRssi(),
-                            System.currentTimeMillis());
-        }
-    };
-
-    // =========================================================
-    // ================= SMARTKEY EVENTS =======================
-    // =========================================================
-
-    /**
-     * 🔓 First detection of key (allowed unlock)
-     */
     @Override
-    public void onFirstInRange() {
+    public void onCreate() {
+        super.onCreate();
+        startForegroundNotification();
 
-        Log.i(TAG, "SMARTKEY FIRST IN RANGE → UNLOCK");
-
-        // Cancel pending lock if any
-        if (pendingLockAfterStop) {
-            Log.i(TAG, "SMARTKEY Pending lock cancelled (key returned)");
-            pendingLockAfterStop = false;
-        }
-
-        if (UIUpdater.getInstance() != null) {
-            UIUpdater.getInstance().stopKeylostRedAlertAnimation();
-            UIUpdater.getInstance().stopBeeping();
-        }
-
-        if (LoginActivity.instance != null) {
-            LoginActivity.instance.loginSuccess("SmartKey Rider");
-        }
-
-        if (MainActivity.MainisActive) {
-            SerialPortManager.getInstance()
-                    .VCUSendToMCU("FFAA550107000A01");
-
-            new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> SerialPortManager.getInstance()
-                            .VCUSendToMCU("FFAA550101000A01"),
-                    500
-            );
-        }
-    }
-
-    /**
-     * 🔴 Key confirmed OUT of range
-     */
-    @Override
-    public void onConfirmedOut() {
-
-        int rpm = SerialPortManager.getInstance()
-                .getHb3().getBSG2_BYTE78();
-
-        Log.e(TAG, "SMARTKEY CONFIRMED OUT | RPM=" + rpm);
-
-        if (rpm > 0) {
-            // 🚨 Riding → warn only
-            pendingLockAfterStop = true;
-
-            Log.w(TAG,
-                    "SMARTKEY Key lost while riding → wait for stop");
-
-            if (UIUpdater.getInstance() != null) {
-                UIUpdater.getInstance()
-                        .startKeylostRedAlertAnimation();
-                UIUpdater.getInstance().startBeeping(4);
-            }
+        BluetoothManager manager = ContextCompat.getSystemService(this, BluetoothManager.class);
+        BluetoothAdapter adapter = manager != null ? manager.getAdapter() : null;
+        if (adapter == null || !adapter.isEnabled()) {
+            Log.e(TAG, "❌ SMARTKEY Bluetooth not available or disabled");
+            stopSelf();
             return;
         }
 
-        // 🛑 Already stopped → lock now
-        lockScooterAndLaunchLogin();
+        scanner = adapter.getBluetoothLeScanner();
+        Log.i(TAG, "⏳ SMARTKEY Waiting for key...");
+        handler.post(scanRunnable);
     }
 
-    // =========================================================
-    // ================= RPM CHECK =============================
-    // =========================================================
-    private void checkPendingLockOnStop() {
+    private void checkKeyTimeout() {
+        long now = System.currentTimeMillis();
 
-        if (!pendingLockAfterStop) return;
+        // If already notified as out-of-range, just wait silently
+        if (outOfRangeNotified) {
+            Log.i(TAG, "⏳ SMARTKEY Waiting for key to return...");
+            return;
+        }
 
-        int rpm = SerialPortManager.getInstance()
-                .getHb3().getBSG2_BYTE78();
+        // If no signal recently — count as possible timeout
+        if ((now - lastSeenTime) > OUT_OF_RANGE_TIMEOUT_MS) {
+            consecutiveOutOfRangeCount++;
+            Log.w(TAG, "⚠️ SMARTKEY Possible out of range by timeout (" +
+                    consecutiveOutOfRangeCount + "/" + OUT_OF_RANGE_THRESHOLD_COUNT + ")");
 
-        if (rpm == 0 && !KeyPresenceManager.get().isInRange()) {
-
-            Log.e(TAG,
-                    "SMARTKEY STOPPED + key still lost → LOCKING");
-
-            pendingLockAfterStop = false;
-            lockScooterAndLaunchLogin();
+            if (consecutiveOutOfRangeCount >= OUT_OF_RANGE_THRESHOLD_COUNT) {
+                handleActualOutOfRange();
+            }
         }
     }
 
-    // =========================================================
-    // ================= LOCK + LOGIN ==========================
-    // =========================================================
-    private void lockScooterAndLaunchLogin() {
 
-        Log.e(TAG, "SMARTKEY LOCKING SCOOTER");
+    private void handleActualOutOfRange() {
+        if (!keyInRange.get() || outOfRangeNotified) return;
 
-        EVLockService.getInstance().startLockSequence();
+        keyInRange.set(false);
+        outOfRangeNotified = true;   // ✅ prevent duplicate triggers
+        consecutiveOutOfRangeCount = 0; // ✅ reset counter for next detection
 
-        if (UIUpdater.getInstance() != null) {
-            UIUpdater.getInstance()
-                    .stopKeylostRedAlertAnimation();
-            UIUpdater.getInstance().stopBeeping();
+        Log.e(TAG, "🔴 SMARTKEY Actual OUT OF RANGE confirmed after " +
+                OUT_OF_RANGE_THRESHOLD_COUNT + " checks");
+
+        int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
+
+        if (MainActivity.MainisActive) {
+            if (rpm == 0) {
+                // 🚦 Vehicle stopped → Lock immediately
+                Log.e(TAG, "🔒 SMARTKEY Key lost & RPM=0 → Locking scooter");
+                EVLockService.getInstance().startLockSequence();
+
+                Context context2 = MainActivity.instance;
+                if (context2 != null) {
+                    Intent intent = new Intent(context2, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                            Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    context2.startActivity(intent);
+                }
+
+                if (UIUpdater.getInstance() != null) {
+                    UIUpdater.getInstance().stopKeylostRedAlertAnimation();
+                    UIUpdater.getInstance().stopBeeping();
+                }
+            } else {
+                // 🏍 Vehicle moving → Warning animation + beep
+                Log.w(TAG, "⚠️ SMARTKEY Key lost while driving (RPM>0)");
+                if (UIUpdater.getInstance() != null) {
+                    UIUpdater.getInstance().startKeylostRedAlertAnimation();
+                    UIUpdater.getInstance().startBeeping(4);
+                }
+            }
+        } else {
+            Log.e(TAG, "⚠️ SMARTKEY MainActivity not active, skipping UI update");
         }
 
-        Intent i = new Intent(this, LoginActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(i);
+        KeyPresenceManager.get().notifyOutOfRange();
     }
 
-    // =========================================================
-    // ================= UTILS ================================
-    // =========================================================
     private ScanSettings buildScanSettings() {
         return new ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -214,37 +215,28 @@ public class BLEScanService extends Service
     }
 
     private void startForegroundNotification() {
+        String channelId = "blekey_channel";
+        NotificationChannel channel =
+                new NotificationChannel(channelId, "BLE Key", NotificationManager.IMPORTANCE_LOW);
+        NotificationManager nm = getSystemService(NotificationManager.class);
+        if (nm != null) nm.createNotificationChannel(channel);
 
-        String ch = "smartkey_channel";
-
-        NotificationChannel nc = new NotificationChannel(
-                ch, "SmartKey",
-                NotificationManager.IMPORTANCE_LOW);
-
-        NotificationManager nm =
-                getSystemService(NotificationManager.class);
-        if (nm != null) nm.createNotificationChannel(nc);
-
-        Notification n = new NotificationCompat.Builder(this, ch)
-                .setContentTitle("SmartKey Active")
-                .setContentText("Monitoring key presence")
-                .setSmallIcon(
-                        android.R.drawable.stat_sys_data_bluetooth)
+        Notification notif = new NotificationCompat.Builder(this, channelId)
+                .setContentTitle("Scooter Key Active")
+                .setContentText("Monitoring BLE key presence...")
+                .setSmallIcon(android.R.drawable.stat_sys_data_bluetooth)
+                .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
                 .build();
 
-        startForeground(1, n);
+        startForeground(1, notif);
     }
 
-    // =========================================================
-    // ================= CLEANUP ===============================
-    // =========================================================
     @Override
     public void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacksAndMessages(null);
         if (scanner != null) scanner.stopScan(scanCallback);
-        KeyPresenceManager.get().setListener(null);
-        Log.i(TAG, "SMARTKEY BLEScanService STOPPED");
+        handler.removeCallbacksAndMessages(null);
+        Log.i(TAG, "🛑 SMARTKEY BLE key service stopped");
     }
 
     @Nullable

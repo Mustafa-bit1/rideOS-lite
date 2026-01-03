@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fanconn.rideOS.Smartkey.KeyPresenceManager;
 import com.fanconn.rideOS.authen.LoginActivity;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
 
@@ -576,14 +575,14 @@ public class UIUpdater  {
 //            Log.d("sadfsgg","CURRWNTCSMALL VALUES IS "+(hb3.getrealCurrent()-30000)/10);
 //        }
 
-//        float current = (hb3.getrealCurrent() - 30000) / 10;
-//
-//        if (current > -500 && current < 500) {
-//            tm.setTeleCurrentConsumption(current);
-//            Log.d("CURR", "Valid current: " + current);
-//        } else {
-//            Log.d("CURR", "Invalid current rejected: " + current);
-//        }
+        float current = (hb3.getrealCurrent() - 30000) / 10;
+
+        if (current > -500 && current < 500) {
+            tm.setTeleCurrentConsumption(current);
+            Log.d("CURR", "Valid current: " + current);
+        } else {
+            Log.d("CURR", "Invalid current rejected: " + current);
+        }
 
         tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
         int range= (int) Math.floor(batteryLevel * 2.0);  // Get the whole number part
@@ -619,7 +618,7 @@ public class UIUpdater  {
             }, 15_000);
         }
 
-        if (batteryLevel >= 21 && batteryLevel<95 && Lowbatflag) {
+        if (batteryLevel >= 21 && batteryLevel<90 && Lowbatflag) {
 //            resetParamtersAfterLowbat=true;
             Lowbatflag = false;
             if(serialPortManager!=null){
@@ -679,12 +678,12 @@ public class UIUpdater  {
             }
         }
 
-        if((batteryLevel>=65 && batteryLevel<=95) && Dynamic80SOCRegencurrent) {
+        if((batteryLevel>=65 && batteryLevel<=90) && Dynamic80SOCRegencurrent) {
             Dynamic80SOCRegencurrent=false;
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800");//35 - 45 regen(8C00-B400)40A(A000) 50A(C800) , phase cur 300A(B004) , line current 110A(B801) ,
             new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800"), 500);
         }
-        if(batteryLevel>=96) {
+        if(batteryLevel>=91) {
             Dynamic80SOCRegencurrent=true;
         }
 
@@ -834,7 +833,10 @@ public class UIUpdater  {
             }
         }, 1000);
     }
+
+
     private boolean AlreadyInChargingUI = false;
+
     public void updateCanData18FF50E5(Heartbeat3 hb3) {
        //Log.d("ChargingDebug", "RESETING FROM UIUPDATORrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
         TelemetryDataManager.getInstance().setTeleChargingStateError(hb3.getChargingErrorbit());
@@ -1283,7 +1285,7 @@ public class UIUpdater  {
 //            return R.drawable.battery_level_5;
 //        }
 //    }
-    public static boolean isStand=false;
+    private boolean isStand=false;
     //private boolean isReady=false;
 
     /**
@@ -1306,7 +1308,6 @@ public class UIUpdater  {
     }
     public void updateCanData10F807A8(Heartbeat3 hb3) {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
-        Log.d("ghkjd","TOUCHTIMER directional values is --------"+directionalGears);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
         int READY = FrameUtils.extractBits(hb3.getBSG1_BYTE3(), 0, 0);
         boolean isReady = (READY == 1);
@@ -1323,7 +1324,7 @@ public class UIUpdater  {
                 Log.d("CAN", "🔴 Not ready - stopping beep");
             }
             if (!MainActivity.isVisible && directionalGears==1) {
-                Log.d("UIUPDATER", "TAKEMEHOME111");
+                //Log.d("UIUPDATER", "TAKEMEHOME111");
 
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -2462,12 +2463,6 @@ public class UIUpdater  {
      */
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
             Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
-        float current = ((float) (hb3.getBSG3_BYTE34()) / 10)*-1;
-
-
-            tm.setTeleCurrentConsumption(current);
-            Log.d("CURR", "Valid current: " + current);
-
     }
 
     /**
@@ -2718,15 +2713,13 @@ public class UIUpdater  {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            KeyPresenceManager.get().notifyManualLock();
 
             Context context = MainActivity.instance;
             if (context != null) {
-                Log.d("dsafsvd"," SMARTKEY else part of DOUBLECLIK IF");
                 Intent intent = new Intent(context, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 context.startActivity(intent);
-            }else Log.d("dsafsvd"," SMARTKEY else part of DOUBLECLIK");
+            }
 
         }
         //Log.d("UIUpdater", "Double-tap triggered inUIUPDSTOR");

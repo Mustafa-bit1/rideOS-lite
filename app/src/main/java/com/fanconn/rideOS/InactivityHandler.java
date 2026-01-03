@@ -46,8 +46,8 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 //                    serialPortManager.getHb3().setLEDresponse(1);
 //                    serialPortManager.getHb3().sethandleLockresponse(1);
                 int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
-                if((rpm==0 && UIUpdater.directionalGears!=1)||UIUpdater.isStand){
-                    Log.d("sdafgf","rpm 0 and direct =0  TOUCHTIMER IFTIMER");
+                if(rpm==0 && UIUpdater.directionalGears==0){
+                    Log.d("sdafgf","ELSEOF TOUCHTIMER IFTIMER");
                     EVLockService.getInstance().startLockSequence();    // Start lock
                     Context context2 = MainActivity.instance;
                     if (context2 != null) {
@@ -56,7 +56,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                         context2.startActivity(intent);
                     }
                 }
-                else Log.d("sdafgf","rpm NOT 0 and direct NOT 0  TOUCHTIMER TIMER");
+                else Log.d("sdafgf","ELSEOF TOUCHTIMER TIMER");
 
                 //below is b4 7/7
 //                if (MainActivity.instance != null) {

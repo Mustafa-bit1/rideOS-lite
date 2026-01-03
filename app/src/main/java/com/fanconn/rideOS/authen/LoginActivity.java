@@ -53,7 +53,6 @@ import androidx.security.crypto.MasterKeys;
 import com.fanconn.rideOS.MetadataManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
-import com.fanconn.rideOS.Smartkey.BLEScanService;
 import com.fanconn.rideOS.Smartkey.KeyPresenceManager;
 import com.fanconn.rideOS.SoundPlayer;
 import com.fanconn.rideOS.TelemetryDataManager;
@@ -434,7 +433,6 @@ public class LoginActivity extends AppCompatActivity{
             for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
                 if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue())) {
                     String username = entry.getKey().replace("user_", "").replace("_pattern", "");
-
                     loginSuccess(username);
                     return;
                 }
@@ -622,6 +620,7 @@ public class LoginActivity extends AppCompatActivity{
                     if (remaining == 0) {
                         encryptedPrefs.edit().putBoolean("default_pin_enabled", false).apply();
                     }
+
                     loginSuccess("RIVOT ADMIN(" + remaining + " tries left)");
                     return;
                 } else {
@@ -1090,7 +1089,6 @@ public class LoginActivity extends AppCompatActivity{
             UIUpdater.getInstance().ReadystopBeeping();
             UIUpdater.getInstance().stopReverseBeep();
             UIUpdater.getInstance().stopBlinking();
-            UIUpdater.getInstance().stopKeylostRedAlertAnimation();
         }
 
 //        int batteryLevel=serialPortManager.getHb3().getBatteryLevel() / 10;

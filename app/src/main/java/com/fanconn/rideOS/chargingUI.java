@@ -359,6 +359,8 @@ public class chargingUI extends AppCompatActivity {
         }
     }
 
+
+
     private int chargingUiLastlevel = -1; // Store last battery level to avoid redundant updates
 
     public void chargingUiBatteryAnimation(int batteryLevel) {
