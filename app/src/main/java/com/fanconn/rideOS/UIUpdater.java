@@ -623,7 +623,7 @@ public class UIUpdater  {
             Lowbatflag = false;
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400"); //max all phase 300, line 100 , regen 35-45
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             }
             binding.yellowalert.clearAnimation();
             binding.LowBatmsg.clearAnimation();
@@ -669,12 +669,12 @@ public class UIUpdater  {
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728008C00B004B400");//line current 10A(2800), phase current max, regen currents as 35A(8C00) to make 6 (1800) and 45A(B400) to make 8 (2000)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             }
         }
 
@@ -2586,7 +2586,7 @@ public class UIUpdater  {
             Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
             alertDialog.dismiss();
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
-            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
         });
 
         alertDialog.show();
