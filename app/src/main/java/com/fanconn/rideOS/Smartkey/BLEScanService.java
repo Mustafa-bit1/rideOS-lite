@@ -21,9 +21,8 @@ import com.fanconn.rideOS.authen.LoginActivity;
 public class BLEScanService extends Service {
 
     private static final String TAG = "BLEKeyService";
-
     private static final String TARGET_MAC = MetadataManager.get().getSmartKeyId();
-    private static final String TARGET_NAME ="ME2009";// MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
+    private static final String TARGET_NAME = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
     private static final long SCAN_INTERVAL_MS = 4000;
     private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;
 
@@ -65,7 +64,7 @@ public class BLEScanService extends Service {
                 } else if (isAndroidKey && rssi >= RSSI_IN_RANGE_THRESHOLD) {
                     unlock(TARGET_NAME, deviceName, rssi);
                 } else {
-                    Log.d(TAG, "❌ Weak RSSI ignored (" + rssi + ")");
+                    //Log.d(TAG, "❌ Weak RSSI ignored (" + rssi + ")");
                 }
                 return;
             }

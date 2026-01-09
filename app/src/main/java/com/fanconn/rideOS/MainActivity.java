@@ -338,6 +338,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                     InactivityManager.getInstance().stopTimer();
                     startActivity(intent);
                 }
+                //forceStopSelfAndLaunchOther();
             }
         });
         menubtn.setOnClickListener(v -> {
@@ -442,6 +443,27 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
     }//END OF ONCREATE METHOD
     //private CommandHandler commandHandler;
+    private void forceStopSelfAndLaunchOther() {
+        String myPkg = getPackageName();
+        String targetPkg = "com.fanconn.rideOSfw";
+
+        try {
+            // 1. Launch other app FIRST
+            Intent intent = getPackageManager().getLaunchIntentForPackage(targetPkg);
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+
+            // 2. Force-stop THIS app (same as Settings → Force stop)
+            Runtime.getRuntime().exec(new String[]{
+                    "sh", "-c", "am force-stop " + myPkg
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @SuppressLint("MissingPermission")
     private void getFreshLatLong(Context context) {

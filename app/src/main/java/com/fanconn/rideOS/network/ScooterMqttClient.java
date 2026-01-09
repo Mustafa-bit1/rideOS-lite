@@ -30,6 +30,11 @@ public class ScooterMqttClient {
     // MUST MATCH SPRING BOOT
     private static final String COMMAND_PREFIX = "commands/";
     private static final String STATUS_PREFIX  = "status/";
+    private static final String CAN_HEADER = "FFAA5501030015";
+    private static final String CAN_HEADER_UART = "FFAA5501";
+
+    private static final int CAN_FRAME_LEN = 38;
+
 
     public ScooterMqttClient(Context context, String brokerUrl, String vin) {
         this.context = context.getApplicationContext();
@@ -150,10 +155,13 @@ public class ScooterMqttClient {
                         showLoginAndUnlock(context);
                     } else if ("0".equals(value)) {
                         // LOCK SCOOTER
-                        if (UIUpdater.getInstance() != null) {
+                        if (UIUpdater.getInstance() != null && serialApplication.getSerialPortManager().getHb3().getBSG2_BYTE78() == 0) {
                             ackStatus = "success";
                             UIUpdater.getInstance().onDoubleTapAction();
-                            Log.d(TAG, "🔒 Remote lock scooter");
+                            Log.d(TAG, " Remote lock scooter");
+                        }
+                        else {
+                            ackStatus = "Scooter in motion";
                         }
                     } else {
                         ackStatus = "invalidcommand";
@@ -173,29 +181,60 @@ public class ScooterMqttClient {
                     break;
 
                 case "CAN":
-                    if (serialApplication.getSerialPortManager() != null) {
-                        if(value.startsWith("FFAA5501")){
-                            if(serialApplication.getSerialPortManager().getHb3().getBSG2_BYTE78()==0){
-                                serialApplication.getSerialPortManager().VCUSendToMCU(value);
-                                ackStatus = "success";
-                                //Log.d(TAG, "📡 Handle lock command sent to MCU");
-                            }
-                            else {
-                               // Log.d(TAG, "📡 CAN command failed because rpm is not 0");
-                                ackStatus = "scooter in motion";
-                            }
-                        }
-                        else {
-                            serialApplication.getSerialPortManager().VCUSendToMCU(value);
-                            ackStatus = "success";
-                           // Log.d(TAG, "📡 CAN command sent to MCU");
+
+                    if (serialApplication.getSerialPortManager() == null) {
+                        ackStatus = "invalidcommand";
+                        Log.e(TAG, "CANWRONG SerialPortManager is null");
+                        break;
+                    }
+
+                    if (value == null || (value.length() % 2) != 0) {
+                        ackStatus = "invalidframe";
+                        Log.e(TAG, "CANWRONG Null or odd-length frame: " + value);
+                        break;
+                    }
+
+                    // ---- CAN FRAME ----
+                    if (value.startsWith(CAN_HEADER)) {
+
+                        if (value.length() != CAN_FRAME_LEN) {
+                            ackStatus = "invalidCommand";
+                            Log.e(TAG, "CANWRONG Invalid CAN frame length: "
+                                    + value.length() + " data=" + value);
+                            break;
                         }
 
-                    } else {
-                        //Log.d(TAG, "📡 CAN srial port is null");
-                        ackStatus = "invalidcommand";
+                        Log.d(TAG, "CAN CANWRONG OK frame: " + value);
+                        serialApplication.getSerialPortManager().VCUSendToMCU(value);
+                        ackStatus = "success";
+                        break;
                     }
+
+                    // ---- UART (NON-CAN) FRAME ----
+                    else if (value.startsWith(CAN_HEADER_UART)) {
+
+                        Log.d(TAG, "UART frame: " + value);
+
+                        if ("FFAA550101000A00".equals(value)
+                                && serialApplication.getSerialPortManager().getHb3() != null
+                                && serialApplication.getSerialPortManager()
+                                .getHb3().getBSG2_BYTE78() != 0) {
+
+                            ackStatus = "Scooter in motion";
+                            break;
+                        }
+
+                        serialApplication.getSerialPortManager().VCUSendToMCU(value);
+                        ackStatus = "success";
+                        break;
+                    }
+
+                    // ---- UNKNOWN FRAME ----
+                    Log.d(TAG, "Unknown frame ignored: " + value);
+                    ackStatus = "Invalid_cmd";
                     break;
+
+
 
                 case "RESTART":
                    // Log.d(TAG, "🔄 Restart command received");
@@ -250,6 +289,8 @@ public class ScooterMqttClient {
             //Log.e(TAG, "❌ Command parse failed", e);
         }
     }
+
+
     private void showLoginAndUnlock(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         if (powerManager != null && !powerManager.isInteractive()) {

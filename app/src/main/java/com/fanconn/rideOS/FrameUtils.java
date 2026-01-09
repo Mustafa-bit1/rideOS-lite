@@ -191,6 +191,57 @@ public class FrameUtils {
      * @param hexString 十六进制字符串
      * @return 数值累加总和(校验和值)
      */
+
+//    public static int produceChecksum(String hexString) {
+//
+//        if (hexString == null) {
+//            Log.e("FrameUtils", "Checksum failed: hexString is null");
+//            return 0;
+//        }
+//
+//        hexString = hexString.trim();
+//
+//        if (hexString.isEmpty()) {
+//            Log.e("FrameUtils", "Checksum failed: hexString is empty");
+//            return 0;
+//        }
+//
+//        // Hex string MUST be even length
+//        if ((hexString.length() % 2) != 0) {
+//            Log.e("FrameUtils", "Checksum failed: odd length hex string = "
+//                    + hexString.length() + " data=" + hexString);
+//            return 0;
+//        }
+//
+//        // Optional but good: validate hex chars
+//        if (!hexString.matches("[0-9A-Fa-f]+")) {
+//            Log.e("FrameUtils", "Checksum failed: invalid hex chars = " + hexString);
+//            return 0;
+//        }
+//
+//        int sum = 0;
+//
+//        try {
+//            for (int i = 0; i < hexString.length(); i += 2) {
+//
+//                // Extra safety (never crashes)
+//                if (i + 2 > hexString.length()) {
+//                    Log.e("FrameUtils", "Checksum loop overflow at index " + i);
+//                    break;
+//                }
+//
+//                String byteString = hexString.substring(i, i + 2);
+//                int byteValue = Integer.parseInt(byteString, 16);
+//                sum += byteValue;
+//            }
+//        } catch (Exception e) {
+//            Log.e("FrameUtils", "Checksum exception: " + hexString, e);
+//            return 0;
+//        }
+//
+//        return sum;
+//    }
+
     public static int produceChecksum(String hexString) {
         // 检查是否是有效的十六进制字符串
         if (!isValidHexString(hexString)) {

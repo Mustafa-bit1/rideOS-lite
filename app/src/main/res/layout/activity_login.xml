@@ -91,7 +91,7 @@
         android:layout_width="260dp"
         android:layout_height="60dp"
         android:layout_marginStart="1008dp"
-        android:layout_marginTop="412dp"
+        android:layout_marginTop="400dp"
         android:fontFamily="@font/kanit"
         android:gravity="center"
         android:padding="0dp"
