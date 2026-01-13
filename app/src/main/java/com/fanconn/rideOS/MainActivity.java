@@ -40,6 +40,7 @@ import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -52,8 +53,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -149,8 +154,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         @Override
         public void onReceive(Context context, Intent intent) {
             String frame = intent.getStringExtra("frame_data");
-//            if(frame.startsWith("FFAA770303001510F907A8"))
-//                Log.d("FRAME", "Received iSpeedNNNNNNNN " + frame);
+            if(frame.startsWith("FFAA66"))
+                Log.d("FRAME", "Received FRAME 6666666 " + frame);
             //Log.d("kdfsg","SERIAL FRAME : "+frame);
 //            if(frame.length()>22){
 //            if(frame.startsWith("FFAA77030300151890400"))
@@ -338,12 +343,13 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                     InactivityManager.getInstance().stopTimer();
                     startActivity(intent);
                 }
-                //forceStopSelfAndLaunchOther();
             }
         });
-        menubtn.setOnClickListener(v -> {
-            Log.d("MainActivity", "Menu button clicked");
 
+
+        menubtn.setOnClickListener(v -> {
+//            Log.d("MainActivity", "Menu button clicked");
+            Log.d("MainActivity", "Menu OTA MCUVERSION "+serialPortManager.mad.getMcuVersions());
             if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
                 Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening menu");
 
@@ -1092,6 +1098,7 @@ public void recoNavLeft(View view) {
                 Log.e("startFirmwareDownload", "Error downloading or sending firmware", e);
                 Toast.makeText(MainActivity.this, R.string.tips_mcuota_Error_downloading_or_sending_firmware, Toast.LENGTH_SHORT).show();
             }
+
         }).start();
     }
 
@@ -2352,7 +2359,91 @@ public void recoNavLeft(View view) {
             }
         });
     }
+    private static final String PREFS_OTA = "ota_prefs";
+    private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
 
+    private void saveLastMcuVersion(int version) {
+        getSharedPreferences(PREFS_OTA, MODE_PRIVATE)
+                .edit()
+                .putInt(KEY_LAST_MCU_VERSION, version)
+                .apply();
+    }
 
+    private int getLastSavedMcuVersion() {
+        return getSharedPreferences(PREFS_OTA, MODE_PRIVATE)
+                .getInt(KEY_LAST_MCU_VERSION, 0);
+    }
+
+    private int getEffectiveLocalMcuVersion() {
+        int liveVersion = 0;
+
+        if (serialPortManager != null && serialPortManager.mad != null) {
+            liveVersion = serialPortManager.mad.getMcuVersions();
+        }
+
+        if (liveVersion > 0) {
+            // ✅ MCU responded correctly → store it
+            saveLastMcuVersion(liveVersion);
+            Log.d("OTA", "Using LIVE MCU version: " + liveVersion);
+            return liveVersion;
+        }
+
+        // ⚠️ MCU failed → fallback
+        int storedVersion = getLastSavedMcuVersion();
+        Log.w("OTA", "MCU version invalid, fallback to stored: " + storedVersion);
+        return storedVersion;
+    }
+
+    public static int fetchServerVersion(String versionUrl) {
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
+
+        try {
+            URL url = new URL(versionUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.e("OTA", "HTTP error: " + connection.getResponseCode());
+                return -1;
+            }
+
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder json = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+
+            // Example version.json:
+            // { "version": 12, "url": "xxx.bin" }
+            JSONObject obj = new JSONObject(json.toString());
+            return obj.getInt("version");
+
+        } catch (Exception e) {
+            Log.e("OTA", "Failed to fetch version", e);
+            return -1;
+        } finally {
+            try {
+                if (reader != null) reader.close();
+            } catch (Exception ignored) {}
+            if (connection != null) connection.disconnect();
+        }
+    }
+    private void showCustomToast(String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_custom, null);
+        ImageView icon = layout.findViewById(R.id.toast_icon);
+        TextView text = layout.findViewById(R.id.toast_text);
+        icon.setImageResource(R.drawable.toastlogo);
+        text.setText(message);
+        Toast toast = new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
 }
 

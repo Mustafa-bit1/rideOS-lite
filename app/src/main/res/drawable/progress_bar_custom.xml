@@ -17,7 +17,7 @@
         <clip>
             <shape android:shape="rectangle">
                 <corners android:radius="6dp"/>
-                <solid android:color="#FFFFFF"/> <!-- Progress fill -->
+                <solid android:color="#01FF58"/> <!-- Progress fill -->
             </shape>
         </clip>
     </item>

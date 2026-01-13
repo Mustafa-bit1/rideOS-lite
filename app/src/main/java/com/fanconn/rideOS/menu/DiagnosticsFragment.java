@@ -118,6 +118,8 @@ public class DiagnosticsFragment extends Fragment {
         view.findViewById(R.id.mcuotaupdatebtn).setOnClickListener(v -> MCUOTA_Onclick(v));
 
         bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550102000A01"));
+
+//        bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160000800200000000000000"));
         handlelockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A00"));
         handleUNlockbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550101000A01"));
         view.findViewById(R.id.resetAhvalues).setOnClickListener(v -> {
@@ -125,7 +127,6 @@ public class DiagnosticsFragment extends Fragment {
             ahTrackerManager.resetAll();
 
         });
-
         highTorque.setOnClickListener(v -> {
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400");//FFAA550103001510FBA807B8018C000000B400 35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,
             new Handler(Looper.getMainLooper()).postDelayed(
@@ -133,10 +134,25 @@ public class DiagnosticsFragment extends Fragment {
                     1200
             );
             new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"),
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
                     1200
             );
         });
+//        highTorque.setOnClickListener(v -> {
+//            serialPortManager.VCUSendToMCU("FFAA5501030015189040010000000000000064");//FFAA550103001510FBA807B8018C000000B400 35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU("FFAA5501030015189840010000000000000000"),
+//                    1000
+//            );
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU("FFAA5501030015189040010000000000000064"),
+//                    2000
+//            );
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU("FFAA5501030015189840010000000000000000"),
+//                    2500
+//            );
+//        });
 
         lockScreen.setOnClickListener(v -> {
             // Start lock

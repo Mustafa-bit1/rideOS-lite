@@ -1,62 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLayout"
     android:layout_width="1280dp"
     android:layout_height="480dp"
-    android:background="@drawable/updatebar">
-
-    <ImageView
-        android:id="@+id/otssuccesimg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="158dp"
-        android:layout_marginEnd="539dp"
-        android:visibility="gone"
-        android:src="@drawable/otasucces3" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="@android:style/Widget.ProgressBar.Horizontal"
-        android:layout_width="400dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="440dp"
-        android:layout_marginBottom="138dp"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/progress_bar_custom" />
-
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="87dp"
+    android:background="@drawable/rideosotabg">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:textAlignment="center"
-        android:fontFamily="@font/kanit"
-        android:text="Downloading..."
-        android:textColor="@color/white"
-        android:textSize="25sp" />
+        android:layout_marginTop="230dp"
+        android:padding="24dp">
 
-    <TextView
-        android:id="@+id/statuspercentText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="384dp"
-        android:layout_marginBottom="135dp"
-        android:fontFamily="@font/kanit"
-        android:gravity="center"
-        android:text="100%"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="22sp" />
+        <!-- Success Image -->
+        <ImageView
+            android:id="@+id/otssuccesimg"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/otaupdatesucces"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp"
+            />
+
+        <!-- Progress + Percentage -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:gravity="center_vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="600dp"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/progress_bar_custom" />
+
+            <TextView
+                android:id="@+id/statuspercentText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kanitlite"
+                android:text="0%"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:layout_marginStart="12dp" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/kanitlite"
+            android:text="Downloading..."
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:textAlignment="center"
+            android:layout_marginBottom="20dp" />
+    </LinearLayout>
 
 
 </RelativeLayout>

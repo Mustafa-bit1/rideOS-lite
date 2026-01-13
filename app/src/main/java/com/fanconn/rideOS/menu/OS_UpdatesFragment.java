@@ -2,6 +2,7 @@ package com.fanconn.rideOS.menu;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +18,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.fanconn.rideOS.FrameUtils;
 import com.fanconn.rideOS.R;
+import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UpdateService;
 import com.fanconn.rideOS.UptimeManager;
+import com.fanconn.rideOS.serialApplication;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -36,8 +42,10 @@ import java.util.Date;
 import java.util.Locale;
 
 public class OS_UpdatesFragment extends Fragment {
+    public SerialPortManager serialPortManager;  // 串口管理类
 
     private ImageButton otaupdatebtn;
+    //private ImageButton mcuotaupdatebtn;
     private TextView tvUptime;
     private Handler uptimeHandler = new Handler();
     private Runnable uptimeRunnable;
@@ -52,6 +60,8 @@ public class OS_UpdatesFragment extends Fragment {
     private ImageButton arrowImg;
 
     public static boolean showupdatepopup;
+    private Context ctx;
+    private String version_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,7 +71,9 @@ public class OS_UpdatesFragment extends Fragment {
 
         // Header UI
         otaupdatebtn = view.findViewById(R.id.otaupdatebtn);
+       // mcuotaupdatebtn = view.findViewById(R.id.Fmcuotaupdatebtn);
         arrowImg = view.findViewById(R.id.arrowdown);
+        serialPortManager = serialApplication.getSerialPortManager();
 
         // Expandable section
         layoutReleaseNotes = view.findViewById(R.id.layoutReleaseNotes);
@@ -74,6 +86,7 @@ public class OS_UpdatesFragment extends Fragment {
 
         // Other UI
         tvUptime = view.findViewById(R.id.tvUptime);
+        ctx = requireContext();
 
         updateVersionInfo(view);
         fetchServerUpdateInfo(view);
@@ -85,6 +98,43 @@ public class OS_UpdatesFragment extends Fragment {
             intent.putExtra("manual_check", true);
             requireContext().startService(intent);
         });
+
+//        mcuotaupdatebtn.setOnClickListener(v -> {
+//
+//            // 1️⃣ Internet check (Activity required)
+//            if (!FrameUtils.isNetworkAvailable(requireActivity())) {
+//                showCustomToast("No internet connection");
+//                return;
+//            }
+//
+//            new Thread(() -> {
+//
+//                int serverVersion = fetchServerVersion(version_URL);
+//                int localVersion  = getEffectiveLocalMcuVersion();
+//
+//                Log.d("OTA", "Server version = " + serverVersion);
+//                Log.d("OTA", "Local version  = " + localVersion);
+//
+//                // 2️⃣ FINAL decision (no mutation later)
+//                final boolean updateRequired =
+//                        serverVersion > 0 &&
+//                                serverVersion > localVersion;
+//
+//                if (!isAdded()) return;
+//
+//                // 3️⃣ UI thread
+//                requireActivity().runOnUiThread(() -> {
+//                    if (updateRequired) {
+//                        forceStopSelfAndLaunchOther();
+//                    } else {
+//                        showCustomToast("No update available");
+//                    }
+//                });
+//
+//            }).start();
+//        });
+
+
         layoutReleaseNotes = view.findViewById(R.id.layoutReleaseNotes);
         tvReleasePoints = view.findViewById(R.id.tvReleasePoints);
 
@@ -93,6 +143,38 @@ public class OS_UpdatesFragment extends Fragment {
         arrowImg.setOnClickListener(v -> toggleReleaseNotes());
 
         return view;
+    }
+    private void forceStopSelfAndLaunchOther() {
+
+        if (!isAdded()) return; // Fragment safety
+
+        Context context = requireContext();
+        String myPkg = context.getPackageName();
+        String targetPkg = "com.fanconn.rideOSfw";
+
+        try {
+            // 1️⃣ Launch other app FIRST
+            Intent intent = context.getPackageManager()
+                    .getLaunchIntentForPackage(targetPkg);
+
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                Log.e("OTA", "Target app not found: " + targetPkg);
+                return;
+            }
+
+            // 2️⃣ Force-stop THIS app
+            Runtime.getRuntime().exec(new String[]{
+                    "sh", "-c", "am force-stop " + myPkg
+            });
+
+            Log.i("OTA", "Force-stopped self and launched target app");
+
+        } catch (Exception e) {
+            Log.e("OTA", "Failed to force stop and launch", e);
+        }
     }
 
     // ---------------- EXPAND / COLLAPSE ----------------
@@ -197,8 +279,16 @@ public class OS_UpdatesFragment extends Fragment {
     }
 
     // ---------------- DEVICE / BUILD INFO ----------------
+    private static final int REQUIRED_TAPS = 10;
+    private static final long TAP_TIMEOUT_MS = 1500; // 1.2 sec max gap
+
+    private int buildTapCount = 0;
+    private long lastTapTime = 0;
+    private static final String TAG = "HiddenMcuOta";
 
     private void updateVersionInfo(View view) {
+
+        Log.d(TAG, "updateVersionInfo() called");
 
         TextView versionText = view.findViewById(R.id.version);
         TextView installedDateTV = view.findViewById(R.id.installeddate);
@@ -213,23 +303,44 @@ public class OS_UpdatesFragment extends Fragment {
             PackageInfo pInfo = requireContext()
                     .getPackageManager()
                     .getPackageInfo(requireContext().getPackageName(), 0);
+
             versionName = pInfo.versionName;
             updateTime = pInfo.lastUpdateTime;
-        } catch (Exception ignored) {}
+
+            Log.d(TAG, "App version=" + versionName +
+                    " updateTime=" + updateTime);
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to read package info", e);
+        }
 
         installedDateTV.setText(
                 new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
                         .format(new Date(updateTime))
         );
 
-        buildNumTV.setText( "GA_"+Build.DISPLAY);
+        buildNumTV.setText("GA_" + Build.DISPLAY);
         versionText.setText("rideOS " + versionName);
+
+        Log.d(TAG, "Build number displayed: GA_" + Build.DISPLAY);
+
+        // 🔐 Hidden 7-tap activation
+        buildNumTV.setOnClickListener(v -> {
+            Log.d(TAG, "Build number tapped");
+            handleBuildNumberTap();
+        });
 
         String deviceName = Settings.Global.getString(
                 requireContext().getContentResolver(), "device_name"
         );
-        if (deviceName == null) deviceName = Build.DEVICE;
+
+        if (deviceName == null) {
+            deviceName = Build.DEVICE;
+            Log.w(TAG, "Device name not found in settings, using Build.DEVICE");
+        }
+
         deviceNameTV.setText(deviceName);
+        Log.d(TAG, "Device name=" + deviceName);
 
         String bluetoothName = "Unavailable";
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
@@ -242,17 +353,204 @@ public class OS_UpdatesFragment extends Fragment {
                     ) == PackageManager.PERMISSION_GRANTED) {
 
                 bluetoothName = adapter.getName();
+                Log.d(TAG, "Bluetooth name=" + bluetoothName);
+            } else {
+                Log.w(TAG, "Bluetooth permission not granted");
             }
+        } else {
+            Log.w(TAG, "Bluetooth adapter is null");
         }
 
         bluetoothTV.setText(bluetoothName);
     }
 
+    private void triggerHiddenMcuOta() {
+
+        Log.i(TAG, "triggerHiddenMcuOta() started");
+
+        if (!FrameUtils.isNetworkAvailable(requireActivity())) {
+            Log.e(TAG, "No internet connection → aborting MCU OTA");
+            showCustomToast("No internet connection");
+            return;
+        }
+
+        Log.d(TAG, "Internet available, checking versions");
+
+        new Thread(() -> {
+
+            int serverVersion = fetchServerVersion(version_URL);
+            int localVersion  = getEffectiveLocalMcuVersion();
+
+            Log.d(TAG, "MCU Server version=" + serverVersion);
+            Log.d(TAG, "MCU Local version=" + localVersion);
+
+            final boolean updateRequired =
+                    serverVersion > 0 &&
+                            serverVersion > localVersion;
+
+            Log.d(TAG, "MCU updateRequired=" + updateRequired);
+
+            if (!isAdded()) {
+                Log.w(TAG, "Fragment not attached, aborting UI update");
+                return;
+            }
+
+            requireActivity().runOnUiThread(() -> {
+                if (updateRequired) {
+                    Log.i(TAG, "MCU update REQUIRED → launching updater");
+                    forceStopSelfAndLaunchOther();
+                } else {
+                    Log.i(TAG, "MCU already up-to-date");
+                    showCustomToast("No update available");
+                }
+            });
+
+        }).start();
+    }
+
+
     // ---------------- CLEANUP ----------------
+    private void handleBuildNumberTap() {
+
+        long now = System.currentTimeMillis();
+
+        // Reset if delayed
+        if (now - lastTapTime > TAP_TIMEOUT_MS) {
+            Log.w(TAG, "Tap timeout exceeded → resetting tap counter");
+            buildTapCount = 0;
+        }
+
+        lastTapTime = now;
+        buildTapCount++;
+
+        //Log.d(TAG, "Build taps=" + buildTapCount + "/" + REQUIRED_TAPS);
+
+        if (buildTapCount < REQUIRED_TAPS) {
+            //showCustomToast("Tap " + (REQUIRED_TAPS - buildTapCount) + " more times");
+            return;
+        }
+
+        //Activation reached
+        Log.i(TAG, "Hidden MCU OTA mode ACTIVATED");
+
+        buildTapCount = 0;
+        lastTapTime = 0;
+
+        showCustomToast("Update mode enabled");
+        triggerHiddenMcuOta();
+    }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         uptimeHandler.removeCallbacks(uptimeRunnable);
     }
+
+    private static final String PREFS_OTA = "ota_prefs";
+    private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
+
+    private void saveLastMcuVersion(int version) {
+        if (version <= 0) return;
+
+        requireContext()
+                .getSharedPreferences(PREFS_OTA, Context.MODE_PRIVATE)
+                .edit()
+                .putInt(KEY_LAST_MCU_VERSION, version)
+                .apply();
+    }
+
+    private int getLastSavedMcuVersion() {
+        return requireContext()
+                .getSharedPreferences(PREFS_OTA, Context.MODE_PRIVATE)
+                .getInt(KEY_LAST_MCU_VERSION, 0);
+    }
+    private int getEffectiveLocalMcuVersion() {
+        int liveVersion = 0;
+
+        try {
+            if (serialPortManager != null && serialPortManager.mad != null) {
+                liveVersion = serialPortManager.mad.getMcuVersions();
+            }
+        } catch (Exception e) {
+            Log.e("OTA", "MCU version read failed", e);
+        }
+
+        if (liveVersion > 0) {
+            saveLastMcuVersion(liveVersion);
+            Log.d("OTA", "LIVE MCU version used: " + liveVersion);
+            return liveVersion;
+        }
+
+        int storedVersion = getLastSavedMcuVersion();
+        Log.w("OTA", "MCU invalid, fallback to stored version: " + storedVersion);
+        return storedVersion;
+    }
+    public static int fetchServerVersion(String versionUrl) {
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
+
+        try {
+            URL url = new URL(versionUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(5000);
+
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                Log.e("OTA", "HTTP error: " + connection.getResponseCode());
+                return -1;
+            }
+
+            reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder json = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                json.append(line);
+            }
+
+            // Example version.json:
+            // { "version": 12, "url": "xxx.bin" }
+            JSONObject obj = new JSONObject(json.toString());
+            return obj.getInt("version");
+
+        } catch (Exception e) {
+            Log.e("OTA", "Failed to fetch version", e);
+            return -1;
+        } finally {
+            try {
+                if (reader != null) reader.close();
+            } catch (Exception ignored) {}
+            if (connection != null) connection.disconnect();
+        }
+    }
+    private boolean isUpdateRequired(int serverVersion) {
+
+        int localVersion = getEffectiveLocalMcuVersion();
+
+        Log.d("OTA", "Server version = " + serverVersion);
+        Log.d("OTA", "Local version  = " + localVersion);
+
+        // ❌ Any invalid version → STOP
+        if (serverVersion <= 0 || localVersion <= 0) {
+            Log.w("OTA", "Invalid version detected, update blocked");
+            return false;
+        }
+
+        boolean updateRequired = serverVersion > localVersion;
+
+        Log.d("OTA", "Update required = " + updateRequired);
+        return updateRequired;
+    }
+
+    private void showCustomToast(String message) {
+        View layout = LayoutInflater.from(ctx).inflate(R.layout.toast_custom, null);
+        ((ImageView) layout.findViewById(R.id.toast_icon)).setImageResource(R.drawable.toastlogo);
+        ((TextView) layout.findViewById(R.id.toast_text)).setText(message);
+        Toast t = new Toast(ctx);
+        t.setDuration(Toast.LENGTH_SHORT);
+        t.setView(layout);
+        t.show();
+    }
+
 }

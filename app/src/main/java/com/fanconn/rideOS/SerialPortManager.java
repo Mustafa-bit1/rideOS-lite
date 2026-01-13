@@ -375,6 +375,7 @@ public class SerialPortManager {
 //            }
 //        }
         else if (frame.startsWith("FFAA66") && frame.length() > 14) {
+            Log.e("SerialPortManager", "FFAA66 Frame verification failed");
 
             if (FrameUtils.verifyFrame(frame)) {
                 McuBleMacAddressDnswer(frame);

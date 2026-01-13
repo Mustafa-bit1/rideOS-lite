@@ -438,7 +438,7 @@ public class LoginActivity extends AppCompatActivity{
                 }
             }
             playErrorSound();
-            showCustomToasterror("Invalid Pattern OR Smart Key Not Found");
+            showCustomToasterror("Invalid Pattern");
             vibrateError();
         });
 

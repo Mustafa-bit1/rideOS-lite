@@ -63,6 +63,8 @@ public class TelemetryService extends Service {
     public static int sendRealtimeDataOnceEvenAfterLocking = 0;
     private SerialPortManager serialPortManager;
     private Heartbeat1 hb1;
+    private static final String PREFS_OTA = "ota_prefs";
+    private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
 
     @Override
     public void onCreate() {
@@ -134,14 +136,15 @@ public class TelemetryService extends Service {
                     sendVehicleData(context, (float) roundTo2Decimal(TelemetryDataManager.getInstance().getTeleODO()), TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
                             TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+"-"+UptimeManager.getUptime(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
                             TelemetryDataManager.getInstance().getTeleBmsLifeCycles(), TelemetryDataManager.getInstance().getTeleLatLong());
+                        sendRealTimeData(vin);
 
-                    if (shdtelemetrywhenunlocked) {
-                        sendRealTimeData(vin);
-                        sendRealtimeDataOnceEvenAfterLocking = 0;
-                    } else if (sendRealtimeDataOnceEvenAfterLocking == 0) {
-                        sendRealTimeData(vin);
-                        sendRealtimeDataOnceEvenAfterLocking++;
-                    }
+//                    if (shdtelemetrywhenunlocked) {
+//                        sendRealTimeData(vin);
+//                        sendRealtimeDataOnceEvenAfterLocking = 0;
+//                    } else if (sendRealtimeDataOnceEvenAfterLocking == 0) {
+//                        sendRealTimeData(vin);
+//                        sendRealtimeDataOnceEvenAfterLocking++;
+//                    }
 
                     telemetryHandler.postDelayed(this, 1000);
                 }
@@ -299,7 +302,9 @@ public class TelemetryService extends Service {
             data.lat_long = "0.0,0.0";   // fallback if GPS not ready
         }
         data.time = java.time.OffsetDateTime.now().toString();
-        data.data = Maps.getRequestStatus(context)+"";
+        int mcuVersion = getEffectiveMcuVersion();
+        data.data = "maps="+Maps.getRequestStatus(context) + ",mcuV=" + mcuVersion;
+
         return data;
     }
 
@@ -446,6 +451,37 @@ public class TelemetryService extends Service {
         super.onDestroy();
     }
 
+    private int getLastSavedMcuVersion() {
+        return getSharedPreferences(PREFS_OTA, MODE_PRIVATE)
+                .getInt(KEY_LAST_MCU_VERSION, 0);
+    }
+
+    private int getEffectiveMcuVersion() {
+        int liveVersion = 0;
+
+        try {
+            if (serialPortManager != null && serialPortManager.mad != null) {
+                liveVersion = serialPortManager.mad.getMcuVersions();
+            }
+        } catch (Exception e) {
+            Log.e("OTA", "MCU version read failed", e);
+        }
+
+        if (liveVersion > 0) {
+            // optional: store again if you want
+            getSharedPreferences(PREFS_OTA, MODE_PRIVATE)
+                    .edit()
+                    .putInt(KEY_LAST_MCU_VERSION, liveVersion)
+                    .apply();
+
+            Log.d("OTA", "Telemetry using LIVE MCU version: " + liveVersion);
+            return liveVersion;
+        }
+
+        int stored = getLastSavedMcuVersion();
+        Log.w("OTA", "Telemetry using STORED MCU version: " + stored);
+        return stored;
+    }
 
     @Nullable
     @Override
