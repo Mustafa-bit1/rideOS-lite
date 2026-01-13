@@ -183,6 +183,34 @@
 
 
         <!-- 4G -->
+<!--        <LinearLayout-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:orientation="vertical"-->
+<!--            android:gravity="center">-->
+
+<!--            <Button-->
+<!--                android:id="@+id/ltetoggle"-->
+<!--                style="@style/QuickButtonStyle"-->
+<!--                android:text="Device Data"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:backgroundTint="#555555"-->
+<!--                android:textColor="#FFFFFF"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/ltetoggleStatusText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:textSize="12sp"-->
+<!--                android:gravity="center"-->
+<!--                android:fontFamily="@font/kanit"-->
+<!--                android:layout_marginTop="2dp"/>-->
+<!--        </LinearLayout>-->
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -191,23 +219,24 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/ltetoggle"
+                android:id="@+id/autoBrightnessToggle"
                 style="@style/QuickButtonStyle"
-                android:text="Device Data"
+                android:text="Brightness"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
                 android:backgroundTint="#555555"
                 android:textColor="#FFFFFF"/>
+
             <TextView
-                android:id="@+id/ltetoggleStatusText"
+                android:id="@+id/autoBrightnessStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
                 android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:gravity="center"
+                android:textSize="13sp"
                 android:fontFamily="@font/kanit"
+                android:gravity="center"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
         <!-- Bluetooth -->
@@ -219,13 +248,13 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/Somethingbtn"
+                android:id="@+id/Settingbtn"
                 style="@style/QuickButtonStyle"
-                android:text="New feature"
+                android:text="All settings"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:backgroundTint="#555555"
+                android:backgroundTint="#1C78BE"
                 android:textColor="#FFFFFF"/>
 
             <!-- Optional: Add status TextView for Bluetooth too -->
@@ -233,7 +262,7 @@
                 android:id="@+id/bluetoothStatusText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="Settings"
                 android:textColor="#FFFFFF"
                 android:textSize="13sp"
                 android:gravity="center"
@@ -250,19 +279,19 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/soundstoggle"
+                android:id="@+id/blue_tpmsbtn"
                 style="@style/QuickButtonStyle"
-                android:text="New Feature"
+                android:text="TPMS"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:backgroundTint="#555555"
+                android:backgroundTint="#1C78BE"
                 android:textColor="#FFFFFF"/>
             <TextView
                 android:id="@+id/soundstoggleStatusText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="Tyre pressure"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:gravity="center"
@@ -272,31 +301,31 @@
     </LinearLayout>
 
     <!-- Bottom Right Buttons -->
-    <ImageButton
-        android:id="@+id/tpmsbtn"
-        android:layout_width="176dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="412dp"
-        android:layout_marginStart="856dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:foreground="@drawable/btn_click_effect"
-        android:padding="0dp"
-        android:src="@drawable/tpmsbtninquicksettings"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/tpmsbtn"-->
+<!--        android:layout_width="176dp"-->
+<!--        android:layout_height="42dp"-->
+<!--        android:layout_marginTop="412dp"-->
+<!--        android:layout_marginStart="856dp"-->
+<!--        android:adjustViewBounds="true"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:foreground="@drawable/btn_click_effect"-->
+<!--        android:padding="0dp"-->
+<!--        android:src="@drawable/tpmsbtninquicksettings"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
-    <ImageButton
-        android:id="@+id/allSetbtn"
-        android:layout_width="176dp"
-        android:layout_height="42dp"
-        android:layout_marginTop="412dp"
-        android:layout_marginStart="1060dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:foreground="@drawable/btn_click_effect"
-        android:padding="0dp"
-        android:src="@drawable/allsettingsbtninquicksetting"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/allSetbtn"-->
+<!--        android:layout_width="176dp"-->
+<!--        android:layout_height="42dp"-->
+<!--        android:layout_marginTop="412dp"-->
+<!--        android:layout_marginStart="1060dp"-->
+<!--        android:adjustViewBounds="true"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:foreground="@drawable/btn_click_effect"-->
+<!--        android:padding="0dp"-->
+<!--        android:src="@drawable/allsettingsbtninquicksetting"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

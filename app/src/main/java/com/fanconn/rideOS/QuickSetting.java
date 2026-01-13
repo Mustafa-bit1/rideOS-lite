@@ -1,27 +1,18 @@
 package com.fanconn.rideOS;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.Settings;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.view.GestureDetector;
@@ -34,9 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -45,38 +34,27 @@ import com.fanconn.rideOS.menu.BrightnessManager;
 import com.fanconn.rideOS.menu.settings;
 
 import java.lang.reflect.Method;
-import java.util.Set;
 
 public class QuickSetting extends AppCompatActivity {
 
     private GestureDetector gestureDetector;
     private BrightnessManager brightnessManager;
-    private BluetoothAdapter bluetoothAdapter;
+
     private final Handler handler = new Handler(Looper.getMainLooper());
-    ImageButton tpmsBtn,allSetbtn;
-    private static final int REQUEST_BLUETOOTH_CONNECT = 1001;
-    private Button lteToggle;
-    private TextView lteStatusText;
-    private Button wifiToggle;
-    private TextView wifiStatusText;
+
+    private Button wifiToggle, autoBrightnessToggle, Settingbtn, blue_tpmsbtn;
+    //private Button lteToggle;
+    private TextView wifiStatusText, autoBrightnessText, lteStatusText,autoBrightnessStatus;
+    private SeekBar brightnessSlider;
+
+    /* ---------------- WIFI RECEIVER ---------------- */
 
     private final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-
-            if (wifiManager == null) return;
-
-            String action = intent.getAction();
-            if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(action) ||
-                    WifiManager.NETWORK_STATE_CHANGED_ACTION.equals(action) ||
-                    WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION.equals(action)) {
-                // Update UI on any Wi-Fi state or network change
-                updateWifiUI(
-                        wifiManager,
-                        findViewById(R.id.wifiToggle),
-                        findViewById(R.id.wifiStatusText)
-                );
+            WifiManager wm = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+            if (wm != null) {
+                updateWifiUI(wm);
             }
         }
     };
@@ -87,7 +65,6 @@ public class QuickSetting extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
         filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        filter.addAction(WifiManager.SUPPLICANT_CONNECTION_CHANGE_ACTION);
         registerReceiver(wifiReceiver, filter);
     }
 
@@ -97,6 +74,7 @@ public class QuickSetting extends AppCompatActivity {
         unregisterReceiver(wifiReceiver);
     }
 
+    /* ---------------- ACTIVITY ---------------- */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,271 +83,191 @@ public class QuickSetting extends AppCompatActivity {
         setContentView(R.layout.activity_quick_setting);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, bars.top, bars.right, 0);
             return insets;
         });
 
         gestureDetector = new GestureDetector(this, new QuickGestureListener());
 
-        // Request WRITE_SETTINGS permission
+        // WRITE_SETTINGS permission
         if (!Settings.System.canWrite(this)) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            startActivity(new Intent(
+                    Settings.ACTION_MANAGE_WRITE_SETTINGS,
+                    Uri.parse("package:" + getPackageName())
+            ));
         }
 
-        tpmsBtn = findViewById(R.id.tpmsbtn);
-        allSetbtn = findViewById(R.id.allSetbtn);
+        /* ---------------- BRIGHTNESS ---------------- */
 
-
-        tpmsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(QuickSetting.this, TPMS_activity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        allSetbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(QuickSetting.this,settings.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
-
-        // Init Brightness
         brightnessManager = new BrightnessManager(this);
-        SeekBar brightnessSlider = findViewById(R.id.brightnessSlider);
-        TextView autoBrightnessText = findViewById(R.id.autoBrightnessText);
-        brightnessManager.applyToSeekBar(brightnessSlider, autoBrightnessText);
+        brightnessSlider = findViewById(R.id.brightnessSlider);
+        autoBrightnessText = findViewById(R.id.autoBrightnessText);
+        autoBrightnessStatus = findViewById(R.id.autoBrightnessStatus);
+        autoBrightnessToggle = findViewById(R.id.autoBrightnessToggle);
 
-        // Volume
+        brightnessManager.applyToSeekBar(brightnessSlider, autoBrightnessText);
+        syncBrightnessUI();
+
+        autoBrightnessToggle.setOnClickListener(v -> {
+            boolean wasAuto = brightnessManager.isAutoBrightnessEnabled();
+
+            brightnessManager.setAutoBrightnessEnabled(!wasAuto);
+            syncBrightnessUI();
+
+            // 🔥 VERY IMPORTANT
+            if (wasAuto) {
+                // Auto → Manual transition
+                rebindBrightnessSlider();
+            }
+        });
+
+        /* ---------------- VOLUME ---------------- */
+
         SeekBar volumeSlider = findViewById(R.id.volumeSlider);
         ImageButton muteButton = findViewById(R.id.muteButton);
         brightnessManager.applyToVolumeSlider(volumeSlider, muteButton);
 
-        // WiFi
+        /* ---------------- WIFI ---------------- */
+
         wifiToggle = findViewById(R.id.wifiToggle);
         wifiStatusText = findViewById(R.id.wifiStatusText);
+
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-//        updateWifiUI(wifiManager, wifiToggle, wifiStatusText);
+        updateWifiUI(wifiManager);
+
         wifiToggle.setOnClickListener(v -> {
             boolean currentlyEnabled = wifiManager.isWifiEnabled();
 
-            int customOnColor = Color.parseColor("#1C78BE");
-            int customOffColor = Color.parseColor("#555555");
+            // 🔥 Instant UI feedback
+            setWifiUiImmediate(!currentlyEnabled);
 
-            // Instant UI update
-            if (!currentlyEnabled) {
-                wifiToggle.setBackgroundTintList(ColorStateList.valueOf(customOnColor));
-                wifiStatusText.setText("Turning ON...");
-            } else {
-                wifiToggle.setBackgroundTintList(ColorStateList.valueOf(customOffColor));
-                wifiStatusText.setText("Turning OFF...");
-            }
-
-            // Toggle Wi-Fi
+            // Actual system toggle (async)
             wifiManager.setWifiEnabled(!currentlyEnabled);
         });
 
 
         wifiToggle.setOnLongClickListener(v -> {
-            Intent i = new Intent(QuickSetting.this, com.fanconn.rideOS.menu.menu.class);
+            Intent i = new Intent(this, com.fanconn.rideOS.menu.menu.class);
             i.putExtra("openFragment", "wireless");
-
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
             startActivity(i);
             finish();
             return true;
         });
 
+        /* ---------------- SETTINGS & TPMS ---------------- */
 
-        // Bluetooth
-//        bluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
-//        Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);
-//        TextView bluetoothStatusText = findViewById(R.id.bluetoothStatusText);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-//                ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//            ActivityCompat.requestPermissions(this,
-//                    new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_CONNECT);
-//        } else {
-//            updateBluetoothUI(bluetoothToggle, bluetoothStatusText);
-//        }
-//
-//        bluetoothToggle.setOnClickListener(v -> {
-//            if (bluetoothAdapter == null) {
-//                bluetoothStatusText.setText("Not supported");
-//                return;
-//            }
-//
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-//                    ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
-//                return;
-//            }
-//
-//            if (bluetoothAdapter.isEnabled()) {
-//                // Show warning dialog before turning off
-//                createDialog(
-//                        "Warning",
-//                        "RIVOT smart key feature and tire pressure monitoring system may not work,  Are you sure you want to turn OFF the Bluetooth?",
-//                        "Turn Off",
-//                        () -> {
-//                            bluetoothAdapter.disable();
-//                            bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
-//                            bluetoothStatusText.setText("");
-//                        }
-//                ).show();
-//            } else {
-//                bluetoothAdapter.enable();
-//                bluetoothToggle.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
-//                bluetoothStatusText.setText("Turning on...");
-//                handler.postDelayed(() -> updateBluetoothUI(bluetoothToggle, bluetoothStatusText), 3000);
-//            }
-//        });
+        Settingbtn = findViewById(R.id.Settingbtn);
+        blue_tpmsbtn = findViewById(R.id.blue_tpmsbtn);
 
+        Settingbtn.setOnClickListener(v -> {
+            startActivity(new Intent(this, settings.class));
+            finish();
+        });
 
-        // LTE / Mobile Data
-        lteToggle = findViewById(R.id.ltetoggle);
-        lteStatusText = findViewById(R.id.ltetoggleStatusText);
-        updateMobileDataUI();
+        blue_tpmsbtn.setOnClickListener(v -> {
+            startActivity(new Intent(this, TPMS_activity.class));
+            finish();
+        });
 
-        lteToggle.setOnClickListener(v -> handleLteToggle());
+        /* ---------------- LTE ---------------- */
+
+//        lteToggle = findViewById(R.id.ltetoggle);
+//        lteStatusText = findViewById(R.id.ltetoggleStatusText);
+//
+//        updateMobileDataUI();
+//        lteToggle.setOnClickListener(v -> toggleMobileData());
     }
 
-    // ---- WiFi ----
-    private void updateWifiUI(WifiManager wifiManager, Button button, TextView statusText) {
-        int customOnColor = Color.parseColor("#1C78BE");
-        int customOffColor = Color.parseColor("#555555");
+    /* ---------------- BRIGHTNESS UI ---------------- */
 
-        if (wifiManager.isWifiEnabled()) {
-            button.setBackgroundTintList(ColorStateList.valueOf(customOnColor));
+    private void syncBrightnessUI() {
+        boolean auto = brightnessManager.isAutoBrightnessEnabled();
 
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            if (wifiInfo != null && wifiInfo.getNetworkId() != -1 && wifiInfo.getSupplicantState().toString().equals("COMPLETED")) {
-                String ssid = wifiInfo.getSSID();
-                statusText.setText(ssid != null ? ssid.replace("\"", "") : "Connected");
-            } else {
-                statusText.setText("Not connected");
-            }
+        int on = Color.parseColor("#1C78BE");
+        int off = Color.parseColor("#555555");
+
+        autoBrightnessToggle.setBackgroundTintList(
+                ColorStateList.valueOf(auto ? on : off)
+        );
+        autoBrightnessToggle.setText(auto ? "Auto Brightness ON" : "Auto Brightness OFF");
+        autoBrightnessStatus.setText((auto ? "Auto Brightness ON" : "Auto Brightness OFF"));
+        if(auto){
+            autoBrightnessText.setText("Auto brightness ON");
+        }
+        brightnessSlider.setEnabled(!auto);
+        brightnessSlider.setAlpha(auto ? 0.4f : 1.0f);
+    }
+
+    /* ---------------- WIFI UI ---------------- */
+
+    private void updateWifiUI(WifiManager wm) {
+        int on = Color.parseColor("#1C78BE");
+        int off = Color.parseColor("#555555");
+
+        if (wm.isWifiEnabled()) {
+            wifiToggle.setBackgroundTintList(ColorStateList.valueOf(on));
+            WifiInfo info = wm.getConnectionInfo();
+            wifiStatusText.setText(
+                    info != null && info.getNetworkId() != -1
+                            ? info.getSSID().replace("\"", "")
+                            : "Not connected"
+            );
         } else {
-            button.setBackgroundTintList(ColorStateList.valueOf(customOffColor));
-            statusText.setText("");
+            wifiToggle.setBackgroundTintList(ColorStateList.valueOf(off));
+            wifiStatusText.setText("");
         }
     }
 
+    /* ---------------- MOBILE DATA ---------------- */
 
-    // ---- Bluetooth ----
-//    private void updateBluetoothUI(Button button, TextView statusText) {
-//        if (bluetoothAdapter != null && bluetoothAdapter.isEnabled()) {
-//            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#1C78BE")));
-//            String deviceName = getConnectedBluetoothDeviceName();
-//            statusText.setText(deviceName.isEmpty() ? "Not connected" : deviceName);
-//        } else {
-//            button.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#555555")));
-//            statusText.setText("");
-//        }
-//    }
-//
-//    private String getConnectedBluetoothDeviceName() {
-//        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) return "";
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-//                ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-//            return "";
-//        }
-//        Set<BluetoothDevice> bondedDevices = bluetoothAdapter.getBondedDevices();
-//        for (BluetoothDevice device : bondedDevices) {
-//            int state = bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET);
-//            if (state == BluetoothProfile.STATE_CONNECTED) {
-//                return device.getName();
-//            }
-//        }
-//        return "";
-//    }
-
-    // ---- Mobile Data (LTE) ----
-    private boolean hasSimCard() {
-        TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (tm == null) return false;
-        return tm.getSimState() == TelephonyManager.SIM_STATE_READY;
-    }
-
-    private void handleLteToggle() {
+    private void toggleMobileData() {
         if (!hasSimCard()) {
             Toast.makeText(this, "No SIM card detected", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        boolean newState = !getMobileDataState();
-        setMobileDataEnabled(newState);
+        setMobileDataEnabled(!getMobileDataState());
         updateMobileDataUI();
     }
 
     private void updateMobileDataUI() {
-        int customOnColor = Color.parseColor("#1C78BE");
-        int customOffColor = Color.parseColor("#555555");
-
-        boolean enabled = getMobileDataState();
-
-        lteToggle.setEnabled(hasSimCard());
-        lteToggle.setBackgroundTintList(ColorStateList.valueOf(enabled ? customOnColor : customOffColor));
-        lteStatusText.setText(enabled ? "Data On" : "Data Off");
+//        int on = Color.parseColor("#1C78BE");
+//        int off = Color.parseColor("#555555");
+//
+//        boolean enabled = getMobileDataState();
+//        lteToggle.setBackgroundTintList(ColorStateList.valueOf(enabled ? on : off));
+//        lteStatusText.setText(enabled ? "Data On" : "Data Off");
     }
 
-    // ---- Reflection to control mobile data ----
+    private boolean hasSimCard() {
+        TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+        return tm != null && tm.getSimState() == TelephonyManager.SIM_STATE_READY;
+    }
+
     private boolean getMobileDataState() {
         try {
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            Method getDataEnabled = TelephonyManager.class.getDeclaredMethod("getDataEnabled");
-            getDataEnabled.setAccessible(true);
-            return (boolean) getDataEnabled.invoke(tm);
+            TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            Method m = TelephonyManager.class.getDeclaredMethod("getDataEnabled");
+            m.setAccessible(true);
+            return (boolean) m.invoke(tm);
         } catch (Exception e) {
-            e.printStackTrace();
             return false;
         }
     }
 
     private void setMobileDataEnabled(boolean enabled) {
         try {
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            Method setDataEnabled = TelephonyManager.class.getDeclaredMethod("setDataEnabled", boolean.class);
-            setDataEnabled.setAccessible(true);
-            setDataEnabled.invoke(tm, enabled);
+            TelephonyManager tm = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+            Method m = TelephonyManager.class.getDeclaredMethod("setDataEnabled", boolean.class);
+            m.setAccessible(true);
+            m.invoke(tm, enabled);
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Cannot toggle mobile data. Requires system privileges.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Requires system privileges", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // ---- Permissions ----
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode,
-//                                           @NonNull String[] permissions,
-//                                           @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == REQUEST_BLUETOOTH_CONNECT) {
-//            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Button bluetoothToggle = findViewById(R.id.bluetoothtoggle);
-//                TextView bluetoothStatusText = findViewById(R.id.bluetoothStatusText);
-//                updateBluetoothUI(bluetoothToggle, bluetoothStatusText);
-//            } else {
-//                Toast.makeText(this, "Bluetooth permission denied", Toast.LENGTH_SHORT).show();
-//            }
-//        }
-//    }
+    /* ---------------- GESTURES ---------------- */
 
-    // ---- Gestures ----
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
@@ -389,48 +287,51 @@ public class QuickSetting extends AppCompatActivity {
     }
 
     private class QuickGestureListener extends GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            float diffY = e2.getY() - e1.getY();
-            if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                if (diffY < 0) {
-                    finish();
-                    return true;
-                }
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float vx, float vy) {
+            if (e2.getY() - e1.getY() < -100) {
+                finish();
+                return true;
             }
             return false;
         }
     }
+    private void rebindBrightnessSlider() {
+        brightnessSlider.setOnSeekBarChangeListener(null);
 
-    private AlertDialog createDialog(String titleText, String messageText, String positiveText, Runnable positiveAction) {
-        View dialogView = getLayoutInflater().inflate(R.layout.popupdialog, null);
-        TextView title = dialogView.findViewById(R.id.dialogTitle);
-        TextView message = dialogView.findViewById(R.id.dialogMessage);
-        Button btnYes = dialogView.findViewById(R.id.btnYes);
-        Button btnNo = dialogView.findViewById(R.id.btnNo);
+        brightnessManager.applyToSeekBar(
+                brightnessSlider,
+                autoBrightnessText
+        );
 
-        title.setText(titleText);
-        message.setText(messageText);
-        btnYes.setText(positiveText);
-        btnNo.setText("Cancel");
+        // Force one write to system
+        int current = Settings.System.getInt(
+                getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS,
+                128
+        );
+        Settings.System.putInt(
+                getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS,
+                current
+        );
+    }
+    private void setWifiUiImmediate(boolean turningOn) {
+        int on = Color.parseColor("#1C78BE");
+        int off = Color.parseColor("#555555");
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setCancelable(false)
-                .create();
-
-        btnYes.setOnClickListener(v -> {
-            positiveAction.run();
-            dialog.dismiss();
-        });
-        btnNo.setOnClickListener(v -> dialog.dismiss());
-
-        return dialog;
+        if (turningOn) {
+            wifiToggle.setBackgroundTintList(ColorStateList.valueOf(on));
+            wifiStatusText.setText("Turning ON...");
+        } else {
+            wifiToggle.setBackgroundTintList(ColorStateList.valueOf(off));
+            wifiStatusText.setText("Turning OFF...");
+        }
     }
 
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        syncBrightnessUI();
+    }
 }

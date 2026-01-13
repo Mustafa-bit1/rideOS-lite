@@ -6,14 +6,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,6 +39,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -62,7 +67,7 @@ public class OS_UpdatesFragment extends Fragment {
     public static boolean showupdatepopup;
     private Context ctx;
     private String version_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
-
+    private Button lteToggle;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -79,7 +84,9 @@ public class OS_UpdatesFragment extends Fragment {
         layoutReleaseNotes = view.findViewById(R.id.layoutReleaseNotes);
         tvReleasePoints = view.findViewById(R.id.tvReleasePoints);
         arrowImg = view.findViewById(R.id.arrowdown);
-
+        lteToggle = view.findViewById(R.id.ltetoggle);
+        updateMobileDataUI();
+        lteToggle.setOnClickListener(v -> toggleMobileData());
         // Reset state every time fragment opens
         layoutReleaseNotes.setVisibility(View.GONE);
         isExpanded = false;
@@ -551,6 +558,57 @@ public class OS_UpdatesFragment extends Fragment {
         t.setDuration(Toast.LENGTH_SHORT);
         t.setView(layout);
         t.show();
+    }
+    private void toggleMobileData() {
+        if (!hasSimCard()) {
+            showCustomToast("No SIM card detected");
+            //Toast.makeText(this, "No SIM card detected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        setMobileDataEnabled(!getMobileDataState());
+        updateMobileDataUI();
+    }
+
+    private void updateMobileDataUI() {
+        int on = Color.parseColor("#0283FF");
+        int off = Color.parseColor("#555555");
+
+        boolean enabled = getMobileDataState();
+        lteToggle.setBackgroundTintList(ColorStateList.valueOf(enabled ? on : off));
+        lteToggle.setText(enabled ? "Data ON" : "Data OFF");
+    }
+
+    private boolean hasSimCard() {
+        TelephonyManager tm =
+                (TelephonyManager) requireContext().getSystemService(Context.TELEPHONY_SERVICE);
+        return tm != null && tm.getSimState() == TelephonyManager.SIM_STATE_READY;
+    }
+
+
+    private boolean getMobileDataState() {
+        try {
+            TelephonyManager tm =
+                    (TelephonyManager) requireContext().getSystemService(Context.TELEPHONY_SERVICE);
+            Method m = TelephonyManager.class.getDeclaredMethod("getDataEnabled");
+            m.setAccessible(true);
+            return (boolean) m.invoke(tm);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
+    private void setMobileDataEnabled(boolean enabled) {
+        try {
+            TelephonyManager tm =
+                    (TelephonyManager) requireContext().getSystemService(Context.TELEPHONY_SERVICE);
+            Method m = TelephonyManager.class.getDeclaredMethod("setDataEnabled", boolean.class);
+            m.setAccessible(true);
+            m.invoke(tm, enabled);
+        } catch (Exception e) {
+            Toast.makeText(requireContext(),
+                    "Requires system privileges", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

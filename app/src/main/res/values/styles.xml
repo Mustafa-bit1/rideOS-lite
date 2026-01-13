@@ -63,6 +63,19 @@
         <item name="android:textSize">20dp</item>
     </style>
 
+    <style name="DataButtonStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">92dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:background">@drawable/rounded_button1</item>
+        <item name="android:backgroundTint">#444444</item>
+        <item name="android:fontFamily">@font/kanit</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">20dp</item>
+    </style>
     <!-- Slide Animation Theme for Activity -->
     <style name="TransparentSlideTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
