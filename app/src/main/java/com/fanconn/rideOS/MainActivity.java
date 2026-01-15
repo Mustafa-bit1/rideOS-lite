@@ -1916,6 +1916,7 @@ public void recoNavLeft(View view) {
     public static boolean LoginisActive = false;
     public static boolean MainisActive = false;
     public static boolean isVisible = false;
+    public static boolean isrideOSOTA = false;
 
     @Override
     protected void onResume() {
@@ -1924,7 +1925,7 @@ public void recoNavLeft(View view) {
         LoginisActive = true;
         UIUpdater.islock=true;
         isVisible = true;
-
+        MainActivity.isrideOSOTA = false;
 //        if (!isReceiverRegistered) {
 //            IntentFilter filter = new IntentFilter("FRAME_RECEIVED");
 //            LocalBroadcastManager.getInstance(this).registerReceiver(frameReceiver, filter);

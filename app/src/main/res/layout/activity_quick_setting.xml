@@ -240,35 +240,7 @@
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
         <!-- Bluetooth -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
 
-            <Button
-                android:id="@+id/Settingbtn"
-                style="@style/QuickButtonStyle"
-                android:text="All settings"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:backgroundTint="#1C78BE"
-                android:textColor="#FFFFFF"/>
-
-            <!-- Optional: Add status TextView for Bluetooth too -->
-            <TextView
-                android:id="@+id/bluetoothStatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:fontFamily="@font/kanit"
-                android:layout_marginTop="2dp"/>
-        </LinearLayout>
 
         <!-- Sounds -->
         <LinearLayout
@@ -297,7 +269,35 @@
                 android:gravity="center"
                 android:layout_marginTop="2dp"/>
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
+            <Button
+                android:id="@+id/Settingbtn"
+                style="@style/QuickButtonStyle"
+                android:text="New feature"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:backgroundTint="#1C78BE"
+                android:textColor="#FFFFFF"/>
+
+            <!-- Optional: Add status TextView for Bluetooth too -->
+            <TextView
+                android:id="@+id/bluetoothStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:gravity="center"
+                android:fontFamily="@font/kanit"
+                android:layout_marginTop="2dp"/>
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Bottom Right Buttons -->
@@ -315,17 +315,17 @@
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent" />-->
 
-<!--    <ImageButton-->
-<!--        android:id="@+id/allSetbtn"-->
-<!--        android:layout_width="176dp"-->
-<!--        android:layout_height="42dp"-->
-<!--        android:layout_marginTop="412dp"-->
-<!--        android:layout_marginStart="1060dp"-->
-<!--        android:adjustViewBounds="true"-->
-<!--        android:background="@android:color/transparent"-->
-<!--        android:foreground="@drawable/btn_click_effect"-->
-<!--        android:padding="0dp"-->
-<!--        android:src="@drawable/allsettingsbtninquicksetting"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent" />-->
+    <ImageButton
+        android:id="@+id/allSetbtn"
+        android:layout_width="176dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="412dp"
+        android:layout_marginStart="1060dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:foreground="@drawable/btn_click_effect"
+        android:padding="0dp"
+        android:src="@drawable/allsettingsbtninquicksetting"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

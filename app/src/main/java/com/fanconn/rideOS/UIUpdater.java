@@ -1310,21 +1310,26 @@ public class UIUpdater  {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
         int READY = FrameUtils.extractBits(hb3.getBSG1_BYTE3(), 0, 0);
+        //Log.d("CAN", "🟢 ISREDVALUE ENTERED ISREADY======"+READY);
+
         boolean isReady = (READY == 1);
         if (isReady) {
+            //Log.d("CAN", "🟢 ISRED ENTERED ISREADY");
+
             if (!startReasySound && directionalGears==1) {
                 startReasySound = true;
                 ReadystartBeeping();
-                Log.d("CAN", "🟢 Ready detected - starting beep");
+               // Log.d("CAN", "🟢 ISRED ENTERED LOGIC ISREADY");
             }
         } else {
+            //Log.d("CAN", "🔴 ISRED ENTERED ELSE");
             if (startReasySound) {
                 startReasySound = false;
                 ReadystopBeeping();
-                Log.d("CAN", "🔴 Not ready - stopping beep");
+                //Log.d("CAN", "🔴 ISRED ENTERED LOGIC ELSE");
             }
-            if (!MainActivity.isVisible && directionalGears==1) {
-                //Log.d("UIUPDATER", "TAKEMEHOME111");
+            if (!MainActivity.isVisible && directionalGears==1 && !MainActivity.isrideOSOTA) {
+                //Log.d("CAN", "🔴 ISRED ENTERED SECONDS LOGIC ELSE");
 
                 Intent intent = new Intent(activity, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -1440,7 +1445,7 @@ public class UIUpdater  {
 //                        {
 //                            goToMainActivityClearStack();
 //                        }
-                        if (!MainActivity.isVisible) {
+                        if (!MainActivity.isVisible && !MainActivity.isrideOSOTA) {
                             //Log.d("UIUPDATER", "TAKEMEHOME2222");
 
                             Intent intent = new Intent(activity, MainActivity.class);
@@ -2465,6 +2470,7 @@ public class UIUpdater  {
      */
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
             Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
+           // tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/10);
     }
 
     /**

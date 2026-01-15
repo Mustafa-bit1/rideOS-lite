@@ -41,8 +41,10 @@ public class QuickSetting extends AppCompatActivity {
     private BrightnessManager brightnessManager;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
+    ImageButton tpmsBtn,allSetbtn;
 
-    private Button wifiToggle, autoBrightnessToggle, Settingbtn, blue_tpmsbtn;
+    private Button wifiToggle, autoBrightnessToggle,blue_tpmsbtn;
+    //private Button Settingbtn;
     //private Button lteToggle;
     private TextView wifiStatusText, autoBrightnessText, lteStatusText,autoBrightnessStatus;
     private SeekBar brightnessSlider;
@@ -97,7 +99,17 @@ public class QuickSetting extends AppCompatActivity {
                     Uri.parse("package:" + getPackageName())
             ));
         }
-
+//        tpmsBtn = findViewById(R.id.tpmsbtn);
+        allSetbtn = findViewById(R.id.allSetbtn);
+        allSetbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(QuickSetting.this,settings.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+            }
+        });
         /* ---------------- BRIGHTNESS ---------------- */
 
         brightnessManager = new BrightnessManager(this);
@@ -157,13 +169,13 @@ public class QuickSetting extends AppCompatActivity {
 
         /* ---------------- SETTINGS & TPMS ---------------- */
 
-        Settingbtn = findViewById(R.id.Settingbtn);
+        //Settingbtn = findViewById(R.id.Settingbtn);
         blue_tpmsbtn = findViewById(R.id.blue_tpmsbtn);
 
-        Settingbtn.setOnClickListener(v -> {
-            startActivity(new Intent(this, settings.class));
-            finish();
-        });
+//        Settingbtn.setOnClickListener(v -> {
+//            startActivity(new Intent(this, settings.class));
+//            finish();
+//        });
 
         blue_tpmsbtn.setOnClickListener(v -> {
             startActivity(new Intent(this, TPMS_activity.class));
