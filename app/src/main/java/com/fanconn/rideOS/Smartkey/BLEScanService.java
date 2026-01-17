@@ -3,7 +3,10 @@ package com.fanconn.rideOS.Smartkey;
 import android.app.*;
 import android.bluetooth.*;
 import android.bluetooth.le.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.*;
 import android.util.Log;
 
@@ -23,7 +26,9 @@ public class BLEScanService extends Service {
     private static final String TAG = "BLEKeyService";
     private static final String TARGET_MAC = MetadataManager.get().getSmartKeyId();
     private static final String TARGET_NAME = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
-    private static final long SCAN_INTERVAL_MS = 4000;
+    private static final long SCAN_INTERVAL_MS = 3000;
+    private long lastTimeoutIncrementTime = 0;
+
     private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;
 
     private static final int RSSI_IN_RANGE_THRESHOLD = -70;
@@ -183,6 +188,11 @@ public class BLEScanService extends Service {
     private final Runnable scanRunnable = new Runnable() {
         @Override
         public void run() {
+            BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+            if (adapter != null && adapter.isEnabled()) {
+                scanner = adapter.getBluetoothLeScanner();
+            }
+
             if (scanner != null) {
                 scanner.startScan(null, buildScanSettings(), scanCallback);
             }
@@ -196,20 +206,55 @@ public class BLEScanService extends Service {
             }, SCAN_INTERVAL_MS);
         }
     };
+    private final BroadcastReceiver btReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) {
+                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+                if (state == BluetoothAdapter.STATE_ON) {
+                    Log.i(TAG, "🔵 Bluetooth ON → restarting BLE scan");
+                    if (scanner != null) scanner.stopScan(scanCallback);
+                    handler.post(scanRunnable);
+                }
+            }
+        }
+    };
 
     private void checkTimeout() {
         if (!keyInRange) return;
 
+        if ((System.currentTimeMillis() - lastSeenTime) > 15000) {
+            Log.w(TAG, "🔄 No BLE results for long time, restarting scanner");
+            if (scanner != null) {
+                scanner.stopScan(scanCallback);
+            }
+
+            // ✅ Force scan loop restart (critical fix)
+            handler.removeCallbacks(scanRunnable);
+            handler.post(scanRunnable);
+        }
+
         long now = System.currentTimeMillis();
+
         if ((now - lastSeenTime) > SCAN_INTERVAL_MS) {
-            consecutiveOutOfRangeCount++;
-            Log.w(TAG, "⚠️ " + unlockedBy + " timeout (" +
-                    consecutiveOutOfRangeCount + "/" + OUT_OF_RANGE_THRESHOLD_COUNT + ")");
-            if (consecutiveOutOfRangeCount >= OUT_OF_RANGE_THRESHOLD_COUNT) {
-                handleOutOfRange();
+
+            // ✅ Prevent double increment in same window
+            if ((now - lastTimeoutIncrementTime) >= SCAN_INTERVAL_MS) {
+
+                consecutiveOutOfRangeCount++;
+                lastTimeoutIncrementTime = now;
+
+                Log.w(TAG, "⚠️ " + unlockedBy + " timeout (" +
+                        consecutiveOutOfRangeCount + "/" + OUT_OF_RANGE_THRESHOLD_COUNT + ")");
+
+                if (consecutiveOutOfRangeCount >= OUT_OF_RANGE_THRESHOLD_COUNT) {
+                    handleOutOfRange();
+                }
             }
         }
+
     }
+
 
     private ScanSettings buildScanSettings() {
         return new ScanSettings.Builder()
@@ -235,11 +280,19 @@ public class BLEScanService extends Service {
         }
 
         scanner = adapter.getBluetoothLeScanner();
+
+        // ✅ Prevent duplicate scan loops
+        handler.removeCallbacks(scanRunnable);
         handler.post(scanRunnable);
+
         handler.post(rpmCheckRunnable);
+
+        registerReceiver(btReceiver,
+                new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
 
         Log.i(TAG, "⏳ BLEScanService started");
     }
+
 
     @Override
     public void onDestroy() {
@@ -247,6 +300,12 @@ public class BLEScanService extends Service {
         if (scanner != null) scanner.stopScan(scanCallback);
         handler.removeCallbacksAndMessages(null);
         Log.i(TAG, "🛑 BLEScanService stopped");
+        try {
+            unregisterReceiver(btReceiver);
+        } catch (IllegalArgumentException ignored) {}
+
+
+
     }
 
     private void startForegroundNotification() {
