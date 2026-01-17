@@ -315,15 +315,6 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/kanitlite"
-                        android:paddingEnd="1dp"
-                        android:text="Device Bluetooth name"
-                        android:textColor="#FFFFFF"
-                        android:textSize="18sp" />
-
-                    <TextView
                         android:id="@+id/bluetoothTV"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -332,6 +323,7 @@
                         android:text=""
                         android:textColor="#FFFFFF"
                         android:textSize="25sp" />
+
                 </LinearLayout>
 
             </LinearLayout>

@@ -187,7 +187,6 @@ public class UIUpdater  {
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             );
         }
-
         binding.recoKmText.setText(spannable);
     }
 

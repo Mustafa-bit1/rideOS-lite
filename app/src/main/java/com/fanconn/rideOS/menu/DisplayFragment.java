@@ -1,5 +1,6 @@
 package com.fanconn.rideOS.menu;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -7,8 +8,12 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +29,7 @@ public class DisplayFragment extends Fragment {
     private SwitchCompat autoBrightnessSwitch;
     private TextView brightnessValue;
     private BrightnessManager brightnessManager;
+    private Context ctx;
 
     @Nullable
     @Override
@@ -32,11 +38,27 @@ public class DisplayFragment extends Fragment {
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_display, container, false);
+        ctx = requireContext();
 
         // Initialize views
         brightnessSlider = view.findViewById(R.id.brightnessSlider);
         brightnessValue = view.findViewById(R.id.brightnessValue);
         autoBrightnessSwitch = view.findViewById(R.id.autoBrightnessSwitch);
+
+        RadioGroup themeGroup = view.findViewById(R.id.Theme);
+        RadioButton darkTheme = view.findViewById(R.id.DarkTheme);
+        RadioButton lightTheme = view.findViewById(R.id.LightThem);
+        RadioButton autoTheme = view.findViewById(R.id.AutoTheme);
+
+        darkTheme.setChecked(true);
+        lightTheme.setOnClickListener(v -> {
+            showCustomToast("Coming soon");
+            darkTheme.setChecked(true);
+        });
+        autoTheme.setOnClickListener(v -> {
+            showCustomToast("Coming soon");
+            darkTheme.setChecked(true);
+        });
 
         // Set custom switch drawables
         autoBrightnessSwitch.setThumbDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_thumb));
@@ -74,6 +96,7 @@ public class DisplayFragment extends Fragment {
     private void updateSwitchUI(boolean isChecked) {
         autoBrightnessSwitch.setText(isChecked ? "Enabled" : "Disabled");
         brightnessSlider.setEnabled(!isChecked);
+        brightnessSlider.setAlpha(isChecked ? 0.4f : 1.0f);
 
         if (isChecked) {
             brightnessValue.setText("Auto Brightness: ON");
@@ -81,5 +104,14 @@ public class DisplayFragment extends Fragment {
             int percent = (int) ((brightnessSlider.getProgress() / 255f) * 100);
             brightnessValue.setText("Adjust overall screen brightness : " + percent + "%");
         }
+    }
+    private void showCustomToast(String message) {
+        View layout = LayoutInflater.from(ctx).inflate(R.layout.toast_custom, null);
+        ((ImageView) layout.findViewById(R.id.toast_icon)).setImageResource(R.drawable.toastlogo);
+        ((TextView) layout.findViewById(R.id.toast_text)).setText(message);
+        Toast t = new Toast(ctx);
+        t.setDuration(Toast.LENGTH_SHORT);
+        t.setView(layout);
+        t.show();
     }
 }

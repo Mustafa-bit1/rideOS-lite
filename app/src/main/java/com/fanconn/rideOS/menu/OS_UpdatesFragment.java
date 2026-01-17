@@ -326,10 +326,10 @@ public class OS_UpdatesFragment extends Fragment {
                         .format(new Date(updateTime))
         );
 
-        buildNumTV.setText("GA_" + Build.DISPLAY);
+        buildNumTV.setText(Build.DISPLAY+"_GA");
         versionText.setText("rideOS " + versionName);
 
-        Log.d(TAG, "Build number displayed: GA_" + Build.DISPLAY);
+        //Log.d(TAG, "Build number displayed: GA_" + Build.DISPLAY);
 
         // 🔐 Hidden 7-tap activation
         buildNumTV.setOnClickListener(v -> {
@@ -443,7 +443,7 @@ public class OS_UpdatesFragment extends Fragment {
         buildTapCount = 0;
         lastTapTime = 0;
 
-        showCustomToast("Update mode enabled");
+        //showCustomToast("Update mode enabled");
         triggerHiddenMcuOta();
     }
 

@@ -1,5 +1,7 @@
 package com.fanconn.rideOS;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -16,6 +18,8 @@ public class InactivityManager {
     private int secondsRemaining = 0;
     private boolean isRunning = false;
     private InactivityManager() {}
+    public static final String PREFS_NAME = "rideos_settings";
+    public static final String KEY_INACTIVITY_TIMEOUT_SEC = "inactivity_timeout_sec";
 
     public static synchronized InactivityManager getInstance() {
         if (instance == null) {
@@ -26,6 +30,38 @@ public class InactivityManager {
 
     public void setCallback(InactivityCallback callback) {
         this.callback = callback;
+    }
+    public void init(Context context) {
+        SharedPreferences prefs =
+                context.getSharedPreferences("rideos_settings", Context.MODE_PRIVATE);
+
+        int timeoutSec = prefs.getInt("inactivity_timeout_sec", 20); // default 20s
+        timeoutMillis = timeoutSec * 1000L;
+
+        Log.d("InactivityManager",
+                "Loaded inactivity timeout = " + timeoutSec + " seconds");
+    }
+    public void setTimeoutSeconds(Context context, int timeoutSec) {
+
+        timeoutMillis = timeoutSec * 1000L;
+
+        SharedPreferences prefs =
+                context.getSharedPreferences("rideos_settings", Context.MODE_PRIVATE);
+
+        prefs.edit()
+                .putInt("inactivity_timeout_sec", timeoutSec)
+                .apply();
+
+        Log.d("InactivityManager",
+                "Timeout updated & saved = " + timeoutSec + " seconds");
+
+        // Restart timer if active
+        if (isRunning && currentCode != -1) {
+            startTimer(currentCode);
+        }
+    }
+    public int getTimeoutSeconds() {
+        return (int) (timeoutMillis / 1000);
     }
 
     public void startTimer(int code) {

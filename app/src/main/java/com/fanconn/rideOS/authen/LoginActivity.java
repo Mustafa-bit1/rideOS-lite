@@ -690,6 +690,8 @@ public class LoginActivity extends AppCompatActivity{
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 100);
         }
+        TelemetryService.shdtelemetrywhenunlocked=true;
+
 //        UIUpdater.telecurrentrider=username;
         TelemetryDataManager.getInstance().setTeleCurrentRider(username);
         actualPin.setLength(0);

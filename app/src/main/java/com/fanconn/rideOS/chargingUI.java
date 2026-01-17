@@ -112,7 +112,7 @@ public class chargingUI extends AppCompatActivity {
             isReceiverRegistered = true;
         }
 
-        TelemetryService.shdtelemetrywhenunlocked=true;
+        //TelemetryService.shdtelemetrywhenunlocked=true;
 
         binding.chargingtologinbtn.setOnClickListener(v -> {
             isChargingAnimationRunning = false;

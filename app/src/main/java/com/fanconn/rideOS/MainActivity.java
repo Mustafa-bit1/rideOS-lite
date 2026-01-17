@@ -2064,7 +2064,7 @@ public void recoNavLeft(View view) {
 //        Log.d("MainActivity", "Running unlock sequence from post-login...");
         //animateBatteryLevelOnce();
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
-        TelemetryService.shdtelemetrywhenunlocked=true;
+        //TelemetryService.shdtelemetrywhenunlocked=true;
 
         uiUpdater.resetTripAhByRegen();
 

@@ -283,7 +283,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:backgroundTint="#1C78BE"
+                android:backgroundTint="#555555"
                 android:textColor="#FFFFFF"/>
 
             <!-- Optional: Add status TextView for Bluetooth too -->
@@ -291,7 +291,7 @@
                 android:id="@+id/bluetoothStatusText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text=""
                 android:textColor="#FFFFFF"
                 android:textSize="13sp"
                 android:gravity="center"

@@ -14,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -303,7 +304,7 @@ public class TelemetryService extends Service {
         }
         data.time = java.time.OffsetDateTime.now().toString();
         int mcuVersion = getEffectiveMcuVersion();
-        data.data = "maps="+Maps.getRequestStatus(context) + ",mcuV=" + mcuVersion;
+        data.data = "maps="+Maps.getRequestStatus(context) + ",mcuV=" + mcuVersion+",AOSPv="+Build.DISPLAY+"_GA";
 
         return data;
     }

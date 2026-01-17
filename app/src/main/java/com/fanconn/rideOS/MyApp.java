@@ -21,6 +21,7 @@ public class MyApp extends Application {
         MetadataManager.init(this);
         appStartTime = System.currentTimeMillis();
         UptimeManager.start();
+        InactivityManager.getInstance().init(this);
 
         new InactivityHandler(this);
         registerActivityLifecycleCallbacks(new TouchTracker());

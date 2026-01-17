@@ -25,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
+import com.fanconn.rideOS.InactivityManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.serialApplication;
@@ -43,6 +44,9 @@ public class FeaturesFragment extends Fragment {
     private AudioManager audioManager;
     private SharedPreferences prefs;
     private boolean isMuted;
+    private static final int MIN_SEC = 20;
+    private static final int MAX_SEC = 60;
+    private static final int STEP_SEC = 10;
 
     @Nullable
     @Override
@@ -77,6 +81,53 @@ public class FeaturesFragment extends Fragment {
 //
 //        boostSwitch.setThumbDrawable(thumbDrawable2);
 //        boostSwitch.setTrackDrawable(trackDrawable2);
+        SeekBar inactivitySeekBar = view.findViewById(R.id.seek_inactivity);
+        TextView inactivityTv = view.findViewById(R.id.tv_inactivity_time);
+
+        InactivityManager inactivityManager = InactivityManager.getInstance();
+
+// Get saved value from manager (already loaded from prefs)
+        int savedTimeoutSec = inactivityManager.getTimeoutSeconds();
+
+// Clamp old values (like 120)
+        if (savedTimeoutSec < MIN_SEC) savedTimeoutSec = MIN_SEC;
+        if (savedTimeoutSec > MAX_SEC) savedTimeoutSec = MAX_SEC;
+
+// Convert seconds → progress
+        int progress = (savedTimeoutSec - MIN_SEC) / STEP_SEC;
+
+        inactivitySeekBar.setProgress(progress);
+        inactivityTv.setText(savedTimeoutSec + " sec");
+
+        Log.d("FeaturesFragment",
+                "Loaded saved inactivity timeout = " + savedTimeoutSec + "s");
+
+
+        inactivitySeekBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar,
+                                                  int progress,
+                                                  boolean fromUser) {
+
+                        if (!fromUser) return;
+
+                        int timeoutSec = MIN_SEC + (progress * STEP_SEC);
+
+                        inactivityTv.setText(timeoutSec + " sec");
+
+                        InactivityManager.getInstance()
+                                .setTimeoutSeconds(requireContext(), timeoutSec);
+
+                        Log.d("FeaturesFragment",
+                                "User changed inactivity timeout to " + timeoutSec + " sec");
+                    }
+
+                    @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+                });
 
         rollProtectSwitch.setThumbDrawable(thumbDrawable3);
         rollProtectSwitch.setTrackDrawable(trackDrawable3);
@@ -149,8 +200,9 @@ public class FeaturesFragment extends Fragment {
             @Override
             public void run() {
                 int seekBarValue = seekBar.getProgress() + min;
+                Log.d("adfsgd","REVERSERSETTEDAS "+seekBarValue);
                 double numerator = seekBarValue * 3.3125 * 1000;
-                double denominator = 60.0 * 1.4825;
+                double denominator = 60.0 * 1.5536444;
                 double x = numerator / denominator;
                 int xRounded = (int) Math.round(x);
 
@@ -182,7 +234,7 @@ public class FeaturesFragment extends Fragment {
             }
         };
 
-        seekBar.setMax(10); // because 15 - 5 = 10
+        seekBar.setMax(5); // because 15 - 5 = 10
         seekBar.setProgress(savedProgress); // restore saved value
         valueText.setText(String.valueOf(savedProgress + min)); // show saved value
 
@@ -268,9 +320,6 @@ public class FeaturesFragment extends Fragment {
 // Reuse BrightnessManager for volume
         BrightnessManager manager = new BrightnessManager(requireContext());
         manager.applyToVolumeSlider(volumeSlider, muteButton);
-
-
-
 
         return view;
     }
