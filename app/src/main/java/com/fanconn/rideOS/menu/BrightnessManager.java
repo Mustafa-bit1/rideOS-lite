@@ -78,15 +78,8 @@ public class BrightnessManager {
                 if (!isAuto && Settings.System.canWrite(context)) {
                     Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, progress);
 
-                    if (context instanceof Activity) {
-                        Window window = ((Activity) context).getWindow();
-                        WindowManager.LayoutParams layoutParams = window.getAttributes();
-                        layoutParams.screenBrightness = progress / 255f;
-                        window.setAttributes(layoutParams);
-                    }
-
                     if (brightnessText != null) {
-                        int percent = (int) ((progress / 255f) * 100);
+                        int percent = (progress * 100) / seekBar.getMax();
                         if (context.getClass().getSimpleName().equals("QuickSetting")) {
                             brightnessText.setText(percent + "%");
                         } else {

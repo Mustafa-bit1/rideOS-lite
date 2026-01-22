@@ -66,6 +66,7 @@
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:paddingEnd="15dp"
+                android:max="255"
                 android:progressDrawable="@drawable/custom_seekbar"
                 android:splitTrack="false"
                 android:thumb="@drawable/brigness_seekbarhtumb"

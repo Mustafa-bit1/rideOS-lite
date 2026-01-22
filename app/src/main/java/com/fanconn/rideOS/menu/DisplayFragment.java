@@ -101,7 +101,9 @@ public class DisplayFragment extends Fragment {
         if (isChecked) {
             brightnessValue.setText("Auto Brightness: ON");
         } else {
-            int percent = (int) ((brightnessSlider.getProgress() / 255f) * 100);
+            int percent = (brightnessSlider.getProgress() * 100)
+                    / brightnessSlider.getMax();
+
             brightnessValue.setText("Adjust overall screen brightness : " + percent + "%");
         }
     }
@@ -114,4 +116,19 @@ public class DisplayFragment extends Fragment {
         t.setView(layout);
         t.show();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        int current = brightnessManager.getCurrentBrightness();
+        brightnessSlider.setProgress(current);
+
+        int percent = (current * 100) / brightnessSlider.getMax();
+        brightnessValue.setText(
+                "Adjust overall screen brightness : " + percent + "%"
+        );
+    }
+
+
 }

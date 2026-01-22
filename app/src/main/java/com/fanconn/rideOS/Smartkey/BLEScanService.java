@@ -22,31 +22,23 @@ import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.authen.LoginActivity;
 
 public class BLEScanService extends Service {
-
     private static final String TAG = "BLEKeyService";
     private static final String TARGET_MAC = MetadataManager.get().getSmartKeyId();
     private static final String TARGET_NAME = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
     private static final long SCAN_INTERVAL_MS = 3000;
     private long lastTimeoutIncrementTime = 0;
-
     private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;
-
     private static final int RSSI_IN_RANGE_THRESHOLD = -70;
     private static final int RSSI_OUT_RANGE_THRESHOLD = -100;
-
     private BluetoothLeScanner scanner;
     private final Handler handler = new Handler(Looper.getMainLooper());
-
     private boolean keyInRange = false;
     private String unlockedBy = null;
-
     private int consecutiveOutOfRangeCount = 0;
     private long lastSeenTime = 0;
     private boolean keyLostWhileMoving = false;
-
     // ---------------- BLE Scan Callback ----------------
     private final ScanCallback scanCallback = new ScanCallback() {
-
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             if (result == null || result.getDevice() == null) return;
@@ -73,7 +65,6 @@ public class BLEScanService extends Service {
                 }
                 return;
             }
-
             // ---------- MONITOR ----------
             boolean correctKey =
                     ("SMARTKEY".equals(unlockedBy) && isSmartKey) ||
@@ -103,7 +94,6 @@ public class BLEScanService extends Service {
             }
         }
     };
-
     // ---------------- Unlock ----------------
     private void unlock(String keyType, String id, int rssi) {
 
