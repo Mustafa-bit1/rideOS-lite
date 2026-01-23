@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.net.wifi.WifiNetworkSpecifier;
@@ -111,15 +112,20 @@ public class WirelessFragment extends Fragment {
 
     // --- Wi-Fi helpers ---
     private boolean isWifiSecured(String ssid) {
+        if (wifiManager == null) return false;
+
         List<ScanResult> results = wifiManager.getScanResults();
+        if (results == null) return false;
+
         for (ScanResult result : results) {
-            if (result.SSID.equals(ssid)) {
-                String capabilities = result.capabilities;
-                return capabilities.contains("WEP") || capabilities.contains("WPA") || capabilities.contains("WPA2");
+            if (ssid.equals(result.SSID)) {
+                String caps = result.capabilities;
+                return caps.contains("WEP") || caps.contains("WPA");
             }
         }
         return false;
     }
+
 
     private void showWifiPasswordDialog(String ssid) {
         LayoutInflater inflater = LayoutInflater.from(requireContext());
@@ -166,74 +172,47 @@ public class WirelessFragment extends Fragment {
     }
 
     private void connectToWifi(String ssid, String password) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (ssid == null || ssid.isEmpty()) return;
-
-            if (password != null && !password.isEmpty()) saveWifiNetwork(ssid, password);
-
-            WifiNetworkSpecifier.Builder builder = new WifiNetworkSpecifier.Builder()
-                    .setSsid(ssid);
-
-            if (password != null && !password.isEmpty())
-                builder.setWpa2Passphrase(password);
-
-            WifiNetworkSpecifier specifier = builder.build();
-
-            NetworkRequest request = new NetworkRequest.Builder()
-                    .addTransportType(android.net.NetworkCapabilities.TRANSPORT_WIFI)
-                    .setNetworkSpecifier(specifier)
-                    .build();
-
-            ConnectivityManager cm = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-            ConnectivityManager.NetworkCallback networkCallback = new ConnectivityManager.NetworkCallback() {
-                @Override
-                public void onAvailable(@NonNull Network network) {
-                    super.onAvailable(network);
-                    cm.bindProcessToNetwork(network);
-                    handler.post(() -> {
-                        if (isAdded() && getContext() != null) {
-                            Toast.makeText(getContext(), "Connected to " + ssid, Toast.LENGTH_SHORT).show();
-                            updateButtonStates();
-                        }
-                    });
-
-                }
-
-                @Override
-                public void onUnavailable() {
-                    super.onUnavailable();
-                    handler.post(() -> Toast.makeText(requireContext(), "Failed to connect to " + ssid, Toast.LENGTH_SHORT).show());
-                }
-            };
-
-            Toast.makeText(requireContext(), "Connecting to " + ssid, Toast.LENGTH_SHORT).show();
-            cm.requestNetwork(request, networkCallback);
-
-        } else {
-            Toast.makeText(requireContext(), "Wi-Fi connection supported only on Android 10+", Toast.LENGTH_SHORT).show();
-        }
+        connectAndSaveWifiSystemApp(ssid, password);
     }
+    private void connectAndSaveWifiSystemApp(String ssid, String password) {
+        if (ssid == null || ssid.isEmpty()) return;
 
-    private void saveWifiNetwork(String ssid, String password) {
-        if (ssid == null || password == null) return;
-        SharedPreferences prefs = requireContext().getSharedPreferences("wifi_prefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        WifiManager wifiManager =
+                (WifiManager) requireContext()
+                        .getApplicationContext()
+                        .getSystemService(Context.WIFI_SERVICE);
 
-        String queueStr = prefs.getString("wifi_queue", "");
-        String[] queue = queueStr.isEmpty() ? new String[]{} : queueStr.split(",");
+        if (wifiManager == null) return;
 
-        String newQueueStr = ssid;
-        int count = 1;
-        for (String oldSSID : queue) {
-            if (!oldSSID.equals(ssid) && count < 3) {
-                newQueueStr += "," + oldSSID;
-                count++;
-            }
+        WifiConfiguration config = new WifiConfiguration();
+        config.SSID = "\"" + ssid + "\"";
+        config.status = WifiConfiguration.Status.ENABLED;
+
+        if (password != null && !password.isEmpty()) {
+            config.preSharedKey = "\"" + password + "\"";
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+        } else {
+            config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
         }
 
-        editor.putString("wifi_queue", newQueueStr);
-        editor.putString("wifi_" + ssid, password);
-        editor.apply();
+        int netId = wifiManager.addNetwork(config);
+
+        if (netId == -1) {
+            Toast.makeText(getContext(),
+                    "Failed to save Wi-Fi",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(netId, true);
+        wifiManager.reconnect();
+
+        Toast.makeText(getContext(),
+                "Saved & connected to " + ssid,
+                Toast.LENGTH_SHORT).show();
+
+        updateButtonStates();
     }
 
     // --- Lifecycle overrides ---
@@ -319,7 +298,9 @@ public class WirelessFragment extends Fragment {
                     }
                     break;
                 case WifiManager.SCAN_RESULTS_AVAILABLE_ACTION:
+                    if (fragment.wifiManager == null) return;
                     List<ScanResult> results = fragment.wifiManager.getScanResults();
+                    if (results == null) return;
                     fragment.wifiAdapter.clear();
                     for (ScanResult result : results) {
                         if (result.SSID != null && !result.SSID.isEmpty())
@@ -340,10 +321,10 @@ public class WirelessFragment extends Fragment {
     }
 
     private boolean hasPermissions() {
-        for (String perm : getRequiredPermissions()) {
-            if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED)
-                return false;
-        }
+//        for (String perm : getRequiredPermissions()) {
+//            if (ContextCompat.checkSelfPermission(requireContext(), perm) != PackageManager.PERMISSION_GRANTED)
+//                return false;
+//        }
         return true;
     }
 

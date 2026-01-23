@@ -31,7 +31,7 @@
             android:layout_width="155dp"
             android:layout_height="46dp"
             android:textSize="19dp"
-            android:text="Auxillary" />
+            android:text="APU" />
     </RadioGroup>
 
     <!-- Top Container for Main Battery -->
@@ -42,13 +42,19 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
+        <ImageView
+            android:layout_width="518dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/batterybar"
+           />
         <!-- LEFT: BATTERY % -->
         <LinearLayout
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="470dp"
             android:gravity="center_horizontal">
 
             <LinearLayout
@@ -62,15 +68,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kanit"
-                    android:text="- %"
-                    android:textColor="#54FF29"
+                    android:text="00.00%"
+                    android:textColor="#01FF58"
                     android:textSize="50sp" />
 
                 <TextView
                     android:id="@+id/Batterytv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Battery"
+                    android:text="battery level"
                     android:fontFamily="@font/kanit"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
@@ -106,14 +112,14 @@
                     android:layout_height="wrap_content"
                     android:text="- km"
                     android:fontFamily="@font/kanit"
-                    android:textColor="#54FF29"
+                    android:textColor="#01FF58"
                     android:textSize="50sp" />
 
                 <TextView
                     android:id="@+id/Rangetext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Range"
+                    android:text="range"
                     android:fontFamily="@font/kanit"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
@@ -138,13 +144,19 @@
         android:gravity="center_vertical"
         android:visibility="gone">
 
+        <ImageView
+            android:layout_width="518dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/apubatterybar"
+            />
         <!-- LEFT: AUX BATTERY % -->
         <LinearLayout
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginTop="20dp"
-            android:layout_marginStart="470dp"
             android:gravity="center_horizontal">
 
             <LinearLayout
@@ -157,16 +169,16 @@
                     android:id="@+id/topAuxValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0 %"
+                    android:text="0%"
                     android:fontFamily="@font/kanit"
-                    android:textColor="#54FF29"
+                    android:textColor="#01FF58"
                     android:textSize="50sp" />
 
                 <TextView
                     android:id="@+id/topAuxBatteryText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Battery"
+                    android:text="battery level"
                     android:fontFamily="@font/kanit"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
@@ -201,14 +213,14 @@
                     android:layout_height="wrap_content"
                     android:text="0 km"
                     android:fontFamily="@font/kanit"
-                    android:textColor="#54FF29"
+                    android:textColor="#01FF58"
                     android:textSize="50sp" />
 
                 <TextView
                     android:id="@+id/topAuxRangeText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Range"
+                    android:text="range"
                     android:fontFamily="@font/kanit"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
@@ -444,7 +456,7 @@
                 android:text="Charge Switch : - |  Discharge Switch : -"
                 android:fontFamily="@font/kanitlite"
                 android:textColor="#FFFFFF"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </ScrollView>
 
@@ -671,7 +683,7 @@
                 android:layout_marginTop="10dp"
                 android:text="Charge Switch : - |  Discharge Switch : -"
                 android:textColor="#FFFFFF"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </ScrollView>
 

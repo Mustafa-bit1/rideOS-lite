@@ -2469,7 +2469,7 @@ public class UIUpdater  {
      */
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
             Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
-           // tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/10);
+            //tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/1000);
     }
 
     /**

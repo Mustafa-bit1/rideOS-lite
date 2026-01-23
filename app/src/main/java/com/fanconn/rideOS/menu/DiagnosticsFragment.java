@@ -75,7 +75,7 @@ public class DiagnosticsFragment extends Fragment {
         updateDisplay(view);
         updateVersionInfo(view);
         String ip = getDeviceIpAddress();
-        ipTV.setText("IP Address: " + ip);
+        ipTV.setText("Board ID: " + ip);
 
         view.findViewById(R.id.btnmetadata).setOnClickListener(v -> {
             Intent intent = new Intent(requireActivity(), MetadataActivity.class);
