@@ -33,6 +33,7 @@ public class MyApp extends Application {
 
         if (vin != null && !vin.isEmpty() && !"UNKNOWN".equalsIgnoreCase(vin)) {
             scooterMqttClient = new ScooterMqttClient(this, brokerUrl, vin);
+            startSmartKeyService();
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 scooterMqttClient.connectAndSubscribe();
@@ -43,9 +44,6 @@ public class MyApp extends Application {
             //Log.e(TAG, "❌  SCOOTER_MQTT VIN missing, MQTT not started");
         }
 
-        if (!"UNKNOWN_KEY".equals(MetadataManager.get().getSmartKeyId())) {
-            startSmartKeyService();
-        }
     }
 
     private void startSmartKeyService() {

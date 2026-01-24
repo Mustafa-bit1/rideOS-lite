@@ -37,6 +37,8 @@ public class BLEScanService extends Service {
     private int consecutiveOutOfRangeCount = 0;
     private long lastSeenTime = 0;
     private boolean keyLostWhileMoving = false;
+    private boolean isScanning = false;
+
     // ---------------- BLE Scan Callback ----------------
     private final ScanCallback scanCallback = new ScanCallback() {
         @Override
@@ -179,36 +181,65 @@ public class BLEScanService extends Service {
         @Override
         public void run() {
             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-            if (adapter != null && adapter.isEnabled()) {
-                scanner = adapter.getBluetoothLeScanner();
+
+            if (adapter == null || !adapter.isEnabled()) {
+                Log.w(TAG, "⚠️ Bluetooth disabled, skipping scan");
+                handler.postDelayed(this, 1000);
+                return;
             }
 
-            if (scanner != null) {
-                scanner.startScan(null, buildScanSettings(), scanCallback);
+            scanner = adapter.getBluetoothLeScanner();
+            if (scanner == null) {
+                handler.postDelayed(this, 1000);
+                return;
             }
+
+            try {
+                if (!isScanning) {
+                    scanner.startScan(null, buildScanSettings(), scanCallback);
+                    isScanning = true;
+                    Log.d(TAG, "▶️ BLE scan started");
+                }
+            } catch (IllegalStateException e) {
+                Log.w(TAG, "⚠️ startScan failed (BT state change)");
+            }
+
 
             handler.postDelayed(() -> {
-                if (scanner != null) {
-                    scanner.stopScan(scanCallback);
-                }
+                safeStopScan();
                 checkTimeout();
                 handler.postDelayed(scanRunnable, 1000);
             }, SCAN_INTERVAL_MS);
         }
     };
+
     private final BroadcastReceiver btReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) {
-                int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
-                if (state == BluetoothAdapter.STATE_ON) {
-                    Log.i(TAG, "🔵 Bluetooth ON → restarting BLE scan");
-                    if (scanner != null) scanner.stopScan(scanCallback);
-                    handler.post(scanRunnable);
+            if (!BluetoothAdapter.ACTION_STATE_CHANGED.equals(intent.getAction())) return;
+
+            int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
+
+            if (state == BluetoothAdapter.STATE_OFF) {
+                Log.w(TAG, "🔴 Bluetooth OFF → stopping BLE scan");
+
+                handler.removeCallbacks(scanRunnable);
+                safeStopScan();
+
+                // Optional: treat as key lost
+                if (keyInRange) {
+                    handleOutOfRange();
                 }
+            }
+
+            else if (state == BluetoothAdapter.STATE_ON) {
+                Log.i(TAG, "🔵 Bluetooth ON → restarting BLE scan");
+                handler.removeCallbacks(scanRunnable);
+                handler.post(scanRunnable);
             }
         }
     };
+
 
     private void checkTimeout() {
         if (!keyInRange) return;
@@ -216,7 +247,7 @@ public class BLEScanService extends Service {
         if ((System.currentTimeMillis() - lastSeenTime) > 15000) {
             Log.w(TAG, "🔄 No BLE results for long time, restarting scanner");
             if (scanner != null) {
-                scanner.stopScan(scanCallback);
+                safeStopScan();
             }
 
             // ✅ Force scan loop restart (critical fix)
@@ -284,18 +315,19 @@ public class BLEScanService extends Service {
     }
 
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (scanner != null) scanner.stopScan(scanCallback);
+
         handler.removeCallbacksAndMessages(null);
-        Log.i(TAG, "🛑 BLEScanService stopped");
+        safeStopScan();
+
         try {
             unregisterReceiver(btReceiver);
-        } catch (IllegalArgumentException ignored) {}
+        } catch (Exception ignored) {}
 
-
-
+        Log.i(TAG, "🛑 BLEScanService stopped");
     }
 
     private void startForegroundNotification() {
@@ -317,6 +349,19 @@ public class BLEScanService extends Service {
 
         startForeground(1, notification);
     }
+    private void safeStopScan() {
+        try {
+            BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+            if (adapter != null && adapter.isEnabled() && scanner != null && isScanning) {
+                scanner.stopScan(scanCallback);
+                isScanning = false;
+                Log.d(TAG, "⏹️ BLE scan stopped");
+            }
+        } catch (IllegalStateException e) {
+            Log.w(TAG, "⚠️ stopScan ignored (Bluetooth OFF)");
+        }
+    }
+
 
     @Nullable
     @Override
