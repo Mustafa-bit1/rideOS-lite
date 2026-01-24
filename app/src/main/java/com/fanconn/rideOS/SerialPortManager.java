@@ -340,7 +340,7 @@ public class SerialPortManager {
                         listener.onHeartbeat2Parsed(hb2);
                         break;
                     case "0303":
-                        Log.d("SerialPortManager", "Frame verification failed--------"+frame);
+                        //Log.d("SerialPortManager", "Frame verification failed--------"+frame);
                         parseHeartbeat3(frame);
                         listener.onHeartbeat3Parsed(hb3);
                         break;
@@ -354,7 +354,7 @@ public class SerialPortManager {
 //                listener.onHeartbeat3Parsed(hb3);
 //            }
             else {
-                Log.e("SerialPortManager", "Frame verification failed--------"+frame);
+                //Log.e("SerialPortManager", "Frame verification failed--------"+frame);
             }
         }
 //        else if (frame.startsWith("FFAA66") && frame.length() > 14) {
@@ -375,7 +375,7 @@ public class SerialPortManager {
 //            }
 //        }
         else if (frame.startsWith("FFAA66") && frame.length() > 14) {
-            Log.e("SerialPortManager", "FFAA66 Frame verification failed");
+            //Log.e("SerialPortManager", "FFAA66 Frame verification failed");
 
             if (FrameUtils.verifyFrame(frame)) {
                 McuBleMacAddressDnswer(frame);
@@ -463,7 +463,7 @@ public class SerialPortManager {
     private void parseHeartbeat3(String frame) {
         if(frame.length()>6)
         {
-            Log.d("sdfgh","FRAMEPARSE11111------"+frame);
+            //Log.d("sdfgh","FRAMEPARSE11111------"+frame);
 
             hb3.setCanId(FrameUtils.getByteSubstring(frame,7,10));  // CAN ID
             hb3.setCanData(FrameUtils.getByteSubstring(frame,11,18));

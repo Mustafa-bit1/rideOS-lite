@@ -83,7 +83,7 @@ public class AhTrackerManager {
         }
 
         if (rem < 0f) {
-            Log.w("AH_TRACKER", "Remaining Ah is negative: " + rem);
+            //Log.w("AH_TRACKER", "Remaining Ah is negative: " + rem);
             rem = 0f;
         }
 

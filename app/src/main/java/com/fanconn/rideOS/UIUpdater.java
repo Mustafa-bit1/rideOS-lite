@@ -2471,7 +2471,7 @@ public class UIUpdater  {
      * @param hb3 解析后的 Heartbeat3 对象
      */
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
-            Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
+            //Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
             //tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/1000);
     }
 

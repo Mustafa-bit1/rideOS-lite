@@ -180,7 +180,8 @@ public class TelemetryService extends Service {
         String rideOSversion;
         try {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-            rideOSversion = "rideOS " + pInfo.versionName+"_GA";
+            int mcuVersion = getEffectiveMcuVersion();
+            rideOSversion = "rideOS " + pInfo.versionName+"_GA"+",AOSPv="+Build.DISPLAY+"_GA"+",MCUv="+mcuVersion;
         } catch (PackageManager.NameNotFoundException e) {
             rideOSversion = "rideOS N/A";
         }
@@ -303,8 +304,8 @@ public class TelemetryService extends Service {
             data.lat_long = "0.0,0.0";   // fallback if GPS not ready
         }
         data.time = java.time.OffsetDateTime.now().toString();
-        int mcuVersion = getEffectiveMcuVersion();
-        data.data = "maps="+Maps.getRequestStatus(context) + ",mcuV=" + mcuVersion+",AOSPv="+Build.DISPLAY+"_GA";
+        //int mcuVersion = getEffectiveMcuVersion();
+        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage();
 
         return data;
     }
@@ -316,7 +317,7 @@ public class TelemetryService extends Service {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
-                    Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
+                    //Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
                 } else {
                     Log.e("TelemetryService", "❌ RealTimeData failed with code: " + response.code());
                     try {

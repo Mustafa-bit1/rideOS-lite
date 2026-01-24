@@ -24,6 +24,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public class TpmsScanService extends Service {
@@ -197,7 +198,7 @@ public class TpmsScanService extends Service {
                     .sendBroadcast(i);
 
             Log.d(TAG,
-                    "TPMS | " + mac +
+                    "TPMSBATTAERY | " + mac +
                             " | PSI=" + String.format("%.1f", d.psi) +
                             " | TEMP=" + d.temperature +
                             " | BAT=" + (d.voltage > 0
@@ -205,6 +206,17 @@ public class TpmsScanService extends Service {
                             : (d.lowBattery ? "LOW" : "OK")) +
                             " | TYPE=" + d.type
             );
+            if(d.voltage>0  && Objects.equals(mac, metadata.getFrontTPMS())){
+                Log.d("asfaf","THSIISTPMSBATTERYVOATGE FRONT "+String.format("%.2fV", d.voltage));
+                TelemetryDataManager.getInstance()
+                        .setTeleFTirePressureVoltage(String.format("%.2fV", d.voltage));
+
+            }
+            else if (d.voltage>0  && Objects.equals(mac, metadata.getRearTPMS())) {
+                Log.d("asfaf","THSIISTPMSBATTERYVOATGE REAR "+String.format("%.2fV", d.voltage));
+                TelemetryDataManager.getInstance()
+                        .setTeleRTirePressureVoltage(String.format("%.2fV", d.voltage));
+            }
         }
     };
     private static final long SCAN_STALL_TIMEOUT_MS = 15_000; // 15 sec
