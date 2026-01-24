@@ -1032,6 +1032,9 @@ public class UIUpdater  {
                     case 4:
                         mediaPlayer = MediaPlayer.create(context, R.raw.batlowalert2);
                         break;
+                    case 5:
+                        mediaPlayer = MediaPlayer.create(context, R.raw.low_tire_speech);
+                        break;
                     default:
                         Log.w("Beep", "Unknown beep code: " + code);
                         stopBeeping(); // Or just return; if you want to keep isBeeping true
@@ -3191,16 +3194,28 @@ public class UIUpdater  {
             apuPopupDialog = null;
         }
     }
+    /* ================== TPMS STATE ================== */
+
     private boolean frontWarning = false;
     private boolean rearWarning  = false;
 
-    private static final double MIN_PRESSURE_PSI = 20.0;
-    private static final int MAX_TEMP_C = 50;
+    private static final double MIN_PRESSURE_PSI = 30.0;
+    private static final int MAX_TEMP_C = 60;
 
     private MetadataManager metadata = MetadataManager.get();
 
     private Double frontPsi = null, frontTemp = null;
     private Double rearPsi  = null, rearTemp  = null;
+
+    /* 🧠 Last PSI memory */
+    private Integer lastFrontPsi = null;
+    private Integer lastRearPsi  = null;
+
+    /* 🔊 Shared MediaPlayer (IMPORTANT) */
+    private MediaPlayer tirePlayer = null;
+    private boolean istireSoundPlaying = false;
+
+    /* ================== TPMS RECEIVER ================== */
 
     private void registerTpmsReceiver(Context ctx) {
 
@@ -3213,36 +3228,61 @@ public class UIUpdater  {
                 String mac = intent.getStringExtra(TpmsScanService.EXTRA_MAC);
                 if (mac == null) return;
 
-                double psi = intent.getDoubleExtra(TpmsScanService.EXTRA_PSI, -1);
-                int temp   = intent.getIntExtra(TpmsScanService.EXTRA_TEMP, Integer.MIN_VALUE);
+                double psiRaw = intent.getDoubleExtra(
+                        TpmsScanService.EXTRA_PSI, -1
+                );
+                int temp = intent.getIntExtra(
+                        TpmsScanService.EXTRA_TEMP, Integer.MIN_VALUE
+                );
 
-                if (psi < 0 || temp == Integer.MIN_VALUE) return;
+                if (psiRaw < 0 || temp == Integer.MIN_VALUE) return;
 
-                /* ================= FRONT / REAR ASSIGN ================= */
+                int psi = (int) Math.round(psiRaw);
 
+                /* ================= FRONT ================= */
                 if (mac.equals(metadata.getFrontTPMS())) {
 
-                    frontPsi  = psi;
+                    frontPsi  = (double) psi;
                     frontTemp = (double) temp;
+
                     frontWarning = (psi < MIN_PRESSURE_PSI || temp > MAX_TEMP_C);
 
-                } else if (mac.equals(metadata.getRearTPMS())) {
+                    // 🔊 Play sound ONLY if PSI DROPS and BELOW 30
+                    if (lastFrontPsi != null) {
+                        if (psi < lastFrontPsi && psi < MIN_PRESSURE_PSI) {
+                            playLowTireSound();
+                        }
+                    }
 
-                    rearPsi  = psi;
-                    rearTemp = (double) temp;
-                    rearWarning = (psi < MIN_PRESSURE_PSI || temp > MAX_TEMP_C);
+                    lastFrontPsi = psi;
                 }
 
-                /* ================= TELEMETRY PAYLOAD ================= */
+                /* ================= REAR ================= */
+                if (mac.equals(metadata.getRearTPMS())) {
+
+                    rearPsi  = (double) psi;
+                    rearTemp = (double) temp;
+
+                    rearWarning = (psi < MIN_PRESSURE_PSI || temp > MAX_TEMP_C);
+
+                    if (lastRearPsi != null) {
+                        if (psi < lastRearPsi && psi < MIN_PRESSURE_PSI) {
+                            playLowTireSound();
+                        }
+                    }
+
+                    lastRearPsi = psi;
+                }
+
+                /* ================= TELEMETRY ================= */
 
                 String tpmsPayload = buildTirePressurePayload();
-
                 TelemetryDataManager.getInstance()
                         .setTeleTirePressure(tpmsPayload);
 
                 Log.d("TPMS-UI", "TELE_TIRE_PRESSURE = " + tpmsPayload);
 
-                /* ================= WARNING ICON ================= */
+                /* ================= UI ================= */
 
                 if (frontWarning || rearWarning) {
                     binding.tpmsicon.setVisibility(View.VISIBLE);
@@ -3254,11 +3294,47 @@ public class UIUpdater  {
             }
         };
 
-        IntentFilter filter = new IntentFilter(TpmsScanService.ACTION_TPMS_UPDATE);
-        LocalBroadcastManager.getInstance(ctx).registerReceiver(tpmsReceiver, filter);
+        IntentFilter filter =
+                new IntentFilter(TpmsScanService.ACTION_TPMS_UPDATE);
+
+        LocalBroadcastManager
+                .getInstance(ctx)
+                .registerReceiver(tpmsReceiver, filter);
 
         Log.d("TPMS-UI", "TPMS receiver registered");
     }
+
+    /* ================== SOUND PLAYER ================== */
+
+    private void playLowTireSound() {
+
+        // 🚫 Ignore if already playing
+        if (istireSoundPlaying) return;
+
+        // ✅ Create ONCE, reuse forever
+        if (tirePlayer == null) {
+            tirePlayer = MediaPlayer.create(
+                    getInstance().context,
+                    R.raw.low_tire_speech
+            );
+
+            if (tirePlayer == null) return;
+
+            tirePlayer.setOnCompletionListener(mp -> {
+                istireSoundPlaying = false;
+                mp.seekTo(0); // reset for next trigger
+            });
+        }
+
+        try {
+            istireSoundPlaying = true;
+            tirePlayer.start();
+        } catch (IllegalStateException e) {
+            istireSoundPlaying = false;
+        }
+    }
+
+    /* ================== PAYLOAD ================== */
 
     private String buildTirePressurePayload() {
 
@@ -3279,12 +3355,23 @@ public class UIUpdater  {
         return sb.length() == 0 ? "NA" : sb.toString();
     }
 
+    /* ================== CLEANUP ================== */
 
     public void cleanup(Context ctx) {
+
         if (tpmsReceiver != null) {
-            LocalBroadcastManager.getInstance(ctx).unregisterReceiver(tpmsReceiver);
+            LocalBroadcastManager
+                    .getInstance(ctx)
+                    .unregisterReceiver(tpmsReceiver);
             tpmsReceiver = null;
         }
+
+        if (tirePlayer != null) {
+            tirePlayer.release();
+            tirePlayer = null;
+        }
     }
+
+
 
 }

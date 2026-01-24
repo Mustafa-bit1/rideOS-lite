@@ -12,6 +12,7 @@ import org.eclipse.paho.client.mqttv3.*;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.fanconn.rideOS.DeviceBluetoothController;
+import com.fanconn.rideOS.MainActivity;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.authen.LoginActivity;
@@ -234,9 +235,7 @@ public class ScooterMqttClient {
                     ackStatus = "Invalid_cmd";
                     break;
 
-
-
-                case "RESTART":
+                case "BOARDRESTART":
                    // Log.d(TAG, "🔄 Restart command received");
                     if ("1".equals(value)) {
                         // ACK will be sent immediately
@@ -250,6 +249,19 @@ public class ScooterMqttClient {
                         ackStatus = "invalidcommand";
                     }
                     break;
+
+                case "rideOSRESTART":
+                    if ("1".equals(value)) {
+                        ackStatus = "success";
+
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            AppRestartManager.relaunchAppFresh(context);
+                        }, 3000); // 3 sec safe delay
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
 
                 case "DATA":
                     if ("1".equals(value)) {
