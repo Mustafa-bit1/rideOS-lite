@@ -12,10 +12,14 @@ import org.eclipse.paho.client.mqttv3.*;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.fanconn.rideOS.DeviceBluetoothController;
+import com.fanconn.rideOS.FrameUtils;
 import com.fanconn.rideOS.MainActivity;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UIUpdater;
+import com.fanconn.rideOS.UpdateService;
+import com.fanconn.rideOS.aosp_mainActivity;
 import com.fanconn.rideOS.authen.LoginActivity;
+import com.fanconn.rideOS.mcuupdate.McuOtaExecutor;
 import com.fanconn.rideOS.serialApplication;
 
 import org.json.JSONObject;
@@ -262,6 +266,19 @@ public class ScooterMqttClient {
                     }
                     break;
 
+                case "AOSPOTA":
+                    ackStatus = "success";
+                    openAospOtaScreen(context);
+                    break;
+
+                case "MCUOTA":
+                    handleMcuOtaCommandAsync(context, clientId);
+                    return; //
+
+                case "rideOSOTA":
+                    ackStatus = "success";
+                    startRideOSRemoteOta(context);
+                    break;
 
                 case "DATA":
                     if ("1".equals(value)) {
@@ -373,5 +390,85 @@ public class ScooterMqttClient {
         } catch (Exception e) {
             //Log.e(TAG, "❌ MQTT disconnect error", e);
         }
+    }
+
+    private void openAospOtaScreen(Context context) {
+
+        Intent intent = new Intent(context, aosp_mainActivity.class);
+
+        //  Silent OTA flag
+        intent.putExtra(aosp_mainActivity.EXTRA_SILENT_OTA, true);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        context.startActivity(intent);
+    }
+    private void startRideOSRemoteOta(Context context) {
+
+        if (!FrameUtils.isNetworkAvailable(context)) {
+            Log.e("MQTT", "❌ No internet, rideOS OTA aborted");
+            return;
+        }
+
+        Intent intent = new Intent(context, UpdateService.class);
+        intent.putExtra(UpdateService.EXTRA_REMOTE_SILENT, true);  //  silent
+        context.startService(intent);
+    }
+
+    private void triggerMcuOtaFromMqtt() {
+        Log.i(TAG, "MCU OTA command received from MQTT");
+
+        // ✅ Context-safe network check
+        if (!FrameUtils.isNetworkAvailable(context)) {
+            Log.e(TAG, "No internet → MCU OTA blocked");
+            return;
+        }
+
+        // ✅ Launch MCU OTA exactly like hidden build-tap flow
+        McuOtaExecutor.startMcuOta(context);
+    }
+
+    private String MCU_VERSION_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
+
+    private void handleMcuOtaCommandAsync(Context context, String clientId) {
+
+        new Thread(() -> {
+
+            Log.i("MQTT", "MCUOTA command received");
+
+            String ackStatus;
+
+            if (!FrameUtils.isNetworkAvailable(context)) {
+                ackStatus = "no-network";
+                sendAck(clientId, ackStatus);
+                return;
+            }
+
+            int localVersion =
+                    McuOtaExecutor.getEffectiveLocalMcuVersion(context);
+
+            int serverVersion =
+                    McuOtaExecutor.fetchServerVersion(MCU_VERSION_URL);
+
+            Log.i("MQTT", "MCU local=" + localVersion +
+                    ", server=" + serverVersion);
+
+            if (serverVersion <= 0) {
+                ackStatus = "version-fetch-failed";
+                Log.i("MQTT", "Failed to fetch No json on server");
+
+            } else if (serverVersion <= localVersion) {
+                Log.i("MQTT", "MCU up to date");
+                ackStatus = "up-to-date";
+            } else {
+                ackStatus = "success";
+                Log.i("MQTT", "MCU update REQUIRED → launching OTA");
+                McuOtaExecutor.startMcuOta(context);
+            }
+
+            sendAck(clientId, ackStatus);
+
+        }).start();
     }
 }

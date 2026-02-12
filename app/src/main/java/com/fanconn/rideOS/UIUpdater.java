@@ -577,7 +577,7 @@ public class UIUpdater  {
         float current = (hb3.getrealCurrent() - 30000) / 10;
 
         if (current > -500 && current < 500) {
-            tm.setTeleCurrentConsumption(current);
+            //tm.setTeleCurrentConsumption(current);
             Log.d("CURR", "Valid current: " + current);
         } else {
             Log.d("CURR", "Invalid current rejected: " + current);
@@ -2471,9 +2471,31 @@ public class UIUpdater  {
      * @param hb3 解析后的 Heartbeat3 对象
      */
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
-            //Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
-            //tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/1000);
+//          Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
+//            tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/10);
+        float current = getFormattedBusCurrent(hb3.getBSG3_BYTE34());
+        tm.setTeleCurrentConsumption(current);
+        Log.d("fdsadg", "THIS ISAFTE NEGATIVE CURRENT FROM CONTROLLER = " + current);
+
     }
+    public static float getFormattedBusCurrent(String byte34Hex) {
+
+        // Step 1: parse HEX string to int
+        int raw = Integer.parseInt(byte34Hex, 16);
+
+        // Step 2: signed 16-bit conversion
+        if (raw > 0x7FFF) {          // 32767
+            raw -= 0x10000;         // 65536
+        }
+
+        // Step 3: apply resolution (0.1 A / bit)
+        float current = raw * 0.1f;
+
+        // Step 4: return formatted string
+        return current;
+    }
+
+
 
     /**
      * 更新 CAN 数据 10FB07A8

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="1280dp"
     android:layout_height="480dp"
-    android:background="@drawable/quicksetbg"
+    android:background="@drawable/quicksetbg1"
     tools:context=".QuickSetting">
 
     <!-- Brightness & Volume Containers Side-by-side -->
@@ -57,6 +57,7 @@
                     android:layout_marginStart="248dp"
                     android:fontFamily="@font/kanitlite"
                     android:text="90%"
+                    android:visibility="gone"
                     android:textAlignment="textEnd"
                     android:textColor="#FFEB3B"
                     android:textSize="17sp" />
@@ -166,19 +167,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginBottom="10dp"
                 android:backgroundTint="#555555"
                 android:textColor="#FFFFFF"/>
 
-            <TextView
-                android:id="@+id/wifiStatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:fontFamily="@font/kanit"
-                android:gravity="center"
-                android:layout_marginTop="2dp"/>
+<!--            <TextView-->
+<!--                android:id="@+id/wifiStatusText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:textSize="13sp"-->
+<!--                -->
+<!--                android:fontFamily="@font/kanit"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginTop="2dp"/>-->
         </LinearLayout>
 
 
@@ -225,19 +228,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginBottom="10dp"
+
                 android:backgroundTint="#555555"
                 android:textColor="#FFFFFF"/>
 
-            <TextView
-                android:id="@+id/autoBrightnessStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:fontFamily="@font/kanit"
-                android:gravity="center"
-                android:layout_marginTop="2dp"/>
+<!--            <TextView-->
+<!--                android:id="@+id/autoBrightnessStatus"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:textSize="13sp"-->
+<!--                android:fontFamily="@font/kanit"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginTop="2dp"/>-->
         </LinearLayout>
         <!-- Bluetooth -->
 
@@ -256,18 +261,20 @@
                 android:text="TPMS"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginBottom="10dp"
+
                 android:layout_weight="1"
                 android:backgroundTint="#1C78BE"
                 android:textColor="#FFFFFF"/>
-            <TextView
-                android:id="@+id/soundstoggleStatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tyre pressure"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp"
-                android:gravity="center"
-                android:layout_marginTop="2dp"/>
+<!--            <TextView-->
+<!--                android:id="@+id/soundstoggleStatusText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:textSize="12sp"-->
+<!--                android:gravity="center"-->
+<!--                android:layout_marginTop="2dp"/>-->
         </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
@@ -283,20 +290,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:layout_marginBottom="10dp"
                 android:backgroundTint="#555555"
                 android:textColor="#FFFFFF"/>
 
             <!-- Optional: Add status TextView for Bluetooth too -->
-            <TextView
-                android:id="@+id/bluetoothStatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:gravity="center"
-                android:fontFamily="@font/kanit"
-                android:layout_marginTop="2dp"/>
+<!--            <TextView-->
+<!--                android:id="@+id/bluetoothStatusText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text=""-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:textSize="13sp"-->
+<!--                android:gravity="center"-->
+<!--                android:fontFamily="@font/kanit"-->
+<!--                android:layout_marginTop="2dp"/>-->
         </LinearLayout>
     </LinearLayout>
 

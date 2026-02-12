@@ -40,8 +40,22 @@ public class BrightnessManager {
     }
 
     public void setAutoBrightnessEnabled(boolean enabled) {
-        prefs.edit().putBoolean("auto_brightness_enabled", enabled).apply();
+
+        // 1️⃣ Update SYSTEM brightness mode
+        Settings.System.putInt(
+                context.getContentResolver(),
+                Settings.System.SCREEN_BRIGHTNESS_MODE,
+                enabled
+                        ? Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
+                        : Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
+        );
+
+        // 2️⃣ Persist for UI sync
+        prefs.edit()
+                .putBoolean("auto_brightness_enabled", enabled)
+                .apply();
     }
+
 
     public int getCurrentBrightness() {
         try {
@@ -67,7 +81,7 @@ public class BrightnessManager {
                 if (context.getClass().getSimpleName().equals("QuickSetting")) {
                     brightnessText.setText(percent + "%");
                 } else {
-                    brightnessText.setText("Adjust overall screen brightness : " + percent + "%");
+                    brightnessText.setText(percent + "%");
                 }
             }
         }
@@ -75,7 +89,7 @@ public class BrightnessManager {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar sb, int progress, boolean fromUser) {
-                if (!isAuto && Settings.System.canWrite(context)) {
+                if (!isAutoBrightnessEnabled() && Settings.System.canWrite(context)) {
                     Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, progress);
 
                     if (brightnessText != null) {
@@ -83,7 +97,7 @@ public class BrightnessManager {
                         if (context.getClass().getSimpleName().equals("QuickSetting")) {
                             brightnessText.setText(percent + "%");
                         } else {
-                            brightnessText.setText("Adjust overall screen brightness : " + percent + "%");
+                            brightnessText.setText(percent + "%");
                         }
                     }
                 }
@@ -100,21 +114,30 @@ public class BrightnessManager {
     // ------------------- VOLUME ------------------------
 
     public void applyToVolumeSlider(SeekBar volumeSlider, ImageButton muteButton) {
+
         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        int savedVolume = volumePrefs.getInt("volume_level", maxVolume / 2);
+        int systemVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+        int savedVolume = volumePrefs.getInt("volume_level", systemVolume);
         isMuted = volumePrefs.getBoolean("is_muted", false);
 
         volumeSlider.setMax(maxVolume);
-        volumeSlider.setProgress(isMuted ? 0 : savedVolume);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, isMuted ? 0 : savedVolume, 0);
 
+        // ✅ UI sync only (NO system change here)
+        volumeSlider.setProgress(isMuted ? 0 : systemVolume);
         updateMuteIcon(muteButton, isMuted);
 
+        /* ========== SLIDER ========== */
         volumeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser) return;
+
                 boolean muted = progress == 0;
+
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+
                 volumePrefs.edit()
                         .putInt("volume_level", progress)
                         .putBoolean("is_muted", muted)
@@ -135,23 +158,32 @@ public class BrightnessManager {
             }
         });
 
+        /* ========== MUTE BUTTON ========== */
         muteButton.setOnClickListener(v -> {
+
             if (isMuted) {
-                int restoreVolume = volumePrefs.getInt("volume_level", maxVolume / 2);
-                if (restoreVolume == 0) restoreVolume = maxVolume / 2;
+                // restore from system, not prefs
+                int restoreVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                if (restoreVolume == 0) restoreVolume = maxVolume / 3; // safe minimal audible
+
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, restoreVolume, 0);
                 volumeSlider.setProgress(restoreVolume);
+
                 volumePrefs.edit().putBoolean("is_muted", false).apply();
                 isMuted = false;
+
             } else {
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
                 volumeSlider.setProgress(0);
+
                 volumePrefs.edit().putBoolean("is_muted", true).apply();
                 isMuted = true;
             }
+
             updateMuteIcon(muteButton, isMuted);
         });
     }
+
 
     private void updateMuteIcon(ImageButton muteButton, boolean muted) {
         if (muteButton != null) {

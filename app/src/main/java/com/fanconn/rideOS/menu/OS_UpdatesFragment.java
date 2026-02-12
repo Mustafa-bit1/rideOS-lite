@@ -28,10 +28,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.fanconn.rideOS.FrameUtils;
+import com.fanconn.rideOS.InactivityManager;
+import com.fanconn.rideOS.MainActivity;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UpdateService;
 import com.fanconn.rideOS.UptimeManager;
+import com.fanconn.rideOS.aosp_mainActivity;
+import com.fanconn.rideOS.aosp_ota_update_check;
+import com.fanconn.rideOS.mcuupdate.McuOtaExecutor;
 import com.fanconn.rideOS.serialApplication;
 
 import org.json.JSONArray;
@@ -48,7 +53,6 @@ import java.util.Locale;
 
 public class OS_UpdatesFragment extends Fragment {
     public SerialPortManager serialPortManager;  // 串口管理类
-
     private ImageButton otaupdatebtn;
     //private ImageButton mcuotaupdatebtn;
     private TextView tvUptime;
@@ -85,8 +89,72 @@ public class OS_UpdatesFragment extends Fragment {
         tvReleasePoints = view.findViewById(R.id.tvReleasePoints);
         arrowImg = view.findViewById(R.id.arrowdown);
         lteToggle = view.findViewById(R.id.ltetoggle);
+//        AOSP_OTA_btn = view.findViewById(R.id.AOSP_OTA_btn);
         updateMobileDataUI();
         lteToggle.setOnClickListener(v -> toggleMobileData());
+//        AOSP_OTA_btn.setOnClickListener(v -> {
+//
+//            InactivityManager.getInstance().stopTimer();
+//
+//            //  Internet check
+//            if (!FrameUtils.isNetworkAvailable(requireActivity())) {
+//                //Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+//                showCustomToast("No internet connection");
+//                return;
+//            }
+//
+//            //  Disable button to avoid double clicks
+//            AOSP_OTA_btn.setEnabled(false);
+//
+//            int localVersion = Integer.parseInt(Build.ID); // same as activity
+//            String versionUrl = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
+//
+//            // 3️ Lightweight OTA check
+//            aosp_ota_update_check.checkAospUpdate(versionUrl, localVersion,
+//                    new aosp_ota_update_check.Callback() {
+//
+//                        @Override
+//                        public void onResult(boolean updateAvailable) {
+//                            if (!isAdded()) return;
+//
+//                            requireActivity().runOnUiThread(() -> {
+//                                AOSP_OTA_btn.setEnabled(true);
+//
+//                                if (updateAvailable) {
+//                                    // ✅ OPEN activity only if update exists
+//                                    Intent intent = new Intent(requireActivity(), aosp_mainActivity.class);
+//                                    startActivity(intent);
+//                                } else {
+////                                    // ❌ Stay in fragment
+////                                    Toast.makeText(
+////                                            getContext(),
+////                                            "Software is already up to date",
+////                                            Toast.LENGTH_SHORT
+////                                    ).show();
+//                                    showCustomToast("Software is already up to date");
+//
+//                                }
+//                            });
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            if (!isAdded()) return;
+//
+//                            requireActivity().runOnUiThread(() -> {
+//                                AOSP_OTA_btn.setEnabled(true);
+////                                Toast.makeText(
+////                                        getContext(),
+////                                        "Server error.Please try again.",
+////                                        Toast.LENGTH_SHORT
+////                                ).show();
+//                                showCustomToast("Server error.Please try again");
+//
+//                            });
+//                        }
+//                    });
+//        });
+
         // Reset state every time fragment opens
         layoutReleaseNotes.setVisibility(View.GONE);
         isExpanded = false;
@@ -100,11 +168,72 @@ public class OS_UpdatesFragment extends Fragment {
         startUptimeTimer();
 
         otaupdatebtn.setOnClickListener(v -> {
-            showupdatepopup = true;
-            Intent intent = new Intent(getContext(), UpdateService.class);
-            intent.putExtra("manual_check", true);
-            requireContext().startService(intent);
+
+            InactivityManager.getInstance().stopTimer();
+
+            // 1️⃣ Internet check
+            if (!FrameUtils.isNetworkAvailable(requireActivity())) {
+//                Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+                showCustomToast("No internet connection");
+
+                return;
+            }
+
+            // 2️⃣ Disable button (avoid double clicks)
+            otaupdatebtn.setEnabled(false);
+
+            // 3️⃣ Check AOSP version FIRST
+            int localAospVersion = Integer.parseInt(Build.ID);
+            String versionUrl = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
+
+            aosp_ota_update_check.checkAospUpdate(
+                    versionUrl,
+                    localAospVersion,
+                    new aosp_ota_update_check.Callback() {
+
+                        @Override
+                        public void onResult(boolean aospUpdateAvailable) {
+                            if (!isAdded()) return;
+
+                            requireActivity().runOnUiThread(() -> {
+
+                                //  CASE 1: AOSP update available → STOP HERE
+                                if (aospUpdateAvailable) {
+                                    otaupdatebtn.setEnabled(true);
+                                    InactivityManager.getInstance().stopTimer();
+
+                                    Intent intent = new Intent(requireActivity(), aosp_mainActivity.class);
+                                    intent.putExtra(aosp_mainActivity.EXTRA_SILENT_OTA, false);  //  explicit manual mode
+                                    startActivity(intent);
+
+                                    return; //  Do NOT check app OTA
+                                }
+
+                                // 🟢 CASE 2: AOSP up to date → check APP OTA
+                                checkAppUpdate();
+                            });
+                        }
+
+                        @Override
+                        public void onError() {
+                            if (!isAdded()) return;
+
+                            requireActivity().runOnUiThread(() -> {
+                                otaupdatebtn.setEnabled(true);
+//                                Toast.makeText(
+//                                        getContext(),
+//                                        "Server error. Please try again.",
+//                                        Toast.LENGTH_SHORT
+//                                ).show();
+                                checkAppUpdate();
+                                showCustomToast("Server error. Please try again.");
+                            });
+                        }
+                    }
+            );
         });
+
+
 
 //        mcuotaupdatebtn.setOnClickListener(v -> {
 //
@@ -151,6 +280,20 @@ public class OS_UpdatesFragment extends Fragment {
 
         return view;
     }
+
+    private void checkAppUpdate() {
+
+        // Enable button back (app OTA may open popup)
+        otaupdatebtn.setEnabled(true);
+
+        showupdatepopup = true;
+
+        Intent intent = new Intent(getContext(), UpdateService.class);
+        intent.putExtra("manual_check", true);
+        requireContext().startService(intent);
+    }
+
+
     private void forceStopSelfAndLaunchOther() {
 
         if (!isAdded()) return; // Fragment safety
@@ -302,6 +445,10 @@ public class OS_UpdatesFragment extends Fragment {
         TextView buildNumTV = view.findViewById(R.id.buildnum);
         TextView deviceNameTV = view.findViewById(R.id.devicenameTV);
         TextView bluetoothTV = view.findViewById(R.id.bluetoothTV);
+        TextView firmwareV = view.findViewById(R.id.firmwareV);
+        int localVersion =
+                McuOtaExecutor.getEffectiveLocalMcuVersion(ctx);
+        firmwareV.setText(localVersion+"_GA");
 
         String versionName = "N/A";
         long updateTime = 0;
@@ -610,5 +757,7 @@ public class OS_UpdatesFragment extends Fragment {
                     "Requires system privileges", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
 }

@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="1280dp"
-    android:layout_height="480dp"
-    android:background="@drawable/bgsquare"
-    tools:context=".MainActivity">
+    android:layout_height="480dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bgsquare"
+        tools:context=".MainActivity">
+
 
     <!--远光灯图像视图 -->
 
@@ -765,13 +772,14 @@ android:visibility="gone"
         android:id="@+id/tripTextView"
         android:layout_width="220dp"
         android:layout_height="36dp"
-        android:layout_marginTop="404dp"
+        android:layout_marginTop="407dp"
         android:fontFamily="@font/kanit"
         android:text="00.00 km"
         android:textAlignment="center"
         android:textColor="#868686"
         android:textSize="24dp"
         android:visibility="gone"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -790,28 +798,27 @@ android:visibility="gone"
 
     <ImageButton
         android:id="@+id/navleft"
-        android:layout_width="42dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="492dp"
-        android:layout_marginBottom="35dp"
+        android:layout_width="82dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="472dp"
+        android:layout_marginBottom="30dp"
         android:background="@android:color/transparent"
         android:onClick="navLeft"
-        android:visibility="gone"
-        android:scaleType="fitXY"
         android:src="@drawable/navleft"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/navright"
-        android:layout_width="42dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="460dp"
-        android:layout_marginBottom="35dp"
+        android:layout_width="82dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="440dp"
+        android:layout_marginBottom="30dp"
         android:background="@android:color/transparent"
         android:onClick="navRight"
-        android:scaleType="fitXY"
         android:visibility="gone"
+
         android:src="@drawable/navright"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -840,10 +847,10 @@ android:visibility="gone"
         android:layout_height="190dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.958"
+        app:layout_constraintHorizontal_bias="0.945"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.25">
+        app:layout_constraintVertical_bias="0.258">
 
         <!-- Leaf Image -->
         <ImageView
@@ -861,11 +868,11 @@ android:visibility="gone"
             android:id="@+id/recoKmText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:fontFamily="@font/kanit"
             android:text="+0.0 km"
             android:textColor="#00FF66"
             android:textSize="35dp"
-            android:layout_marginTop="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recoLeaf" />
@@ -888,19 +895,19 @@ android:visibility="gone"
             android:layout_width="25dp"
             android:layout_height="10dp"
             android:layout_marginTop="22dp"
-            android:src="@drawable/recodot1"
             android:scaleType="fitCenter"
-            app:layout_constraintTop_toBottomOf="@id/recoLabelText"
+            android:src="@drawable/recodot1"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/recoLabelText" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageButton
         android:id="@+id/recoNavLeft"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="56dp"
+        android:layout_height="186dp"
         android:background="@android:color/transparent"
         android:src="@drawable/navleft"
         android:onClick="recoNavLeft"
@@ -911,8 +918,8 @@ android:visibility="gone"
     <!-- ================= RECO RIGHT BUTTON ================= -->
     <ImageButton
         android:id="@+id/recoNavRight"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="56dp"
+        android:layout_height="186dp"
         android:background="@android:color/transparent"
         android:src="@drawable/navright"
         android:onClick="recoNavRight"
@@ -1181,6 +1188,18 @@ android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <FrameLayout
+        android:id="@+id/overlayContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>
+
 
     <!--    &lt;!&ndash; TPMS CONTAINER (hidden by default, shown only in Neutral gear) &ndash;&gt;-->
     <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
@@ -1335,15 +1354,7 @@ android:visibility="gone"
     <!--        app:layout_constraintStart_toStartOf="parent"-->
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-    <FrameLayout
-        android:id="@+id/overlayContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <!--    android:layout_width="1280dp"-->

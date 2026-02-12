@@ -78,4 +78,48 @@
     <string name="tips_rear_camera_preview">后摄预览</string>
     <string name="tips_no_find_front_camera">未找到前摄</string>
     <string name="tips_no_find_rear_camera">未找到后摄</string>
+    <string name="latest_version">Software up-to-date, no update required</string>
+    <string name="downloading_updates">Downloading</string>
+    <string name="update_tips">Update</string>
+    <string name="update_failed">Update failed</string>
+
+    <string name="new_version">New software version available, Do you want to update?</string>
+    <string name="yes">YES</string>
+    <string name="Restart_after_upgrade">Restart</string>
+
+    <string name="cancel">cancel</string>
+    <string name="restart_confirmation">Restart System</string>
+    <string name="really_reboot">The system has been upgraded, Restart system</string>
+    <string name="no">no</string>
+    <string name="error">The system update failed. Please try again or contact your administrator.</string>
+    <string name="ok">OK</string>
+    <string name="check_update">Update</string>
+
+    <string name="chosse_update_mode">ChosseUpdateMode</string>
+    <string name="json_update_not_exist">Not found config.json or update.zip</string>
+    <string name="start_updating">Start</string>
+    <string name="updating">Be updating(1/2)...</string>
+    <string name="local_update_mode">LocalUpdateMode</string>
+    <string name="updating_parsing">preparing system for update, please do not off your scooter...</string>
+    <string name="updated_content">Updated content:</string>
+    <string name="really_update">Do you really want to apply this update?</string>
+    <string name="no_file">The configs directory without the config.json file!</string>
+    <string name="not_detected">Not detected</string>
+    <string name="update_file">update file!</string>
+    <string name="security_exception">Security exception:</string>
+    <string name="cannot_accessed">file cannot be accessed!</string>
+    <string name="stop_updating">StopUpdating</string>
+    <string name="really_stop_update">Are you sure to stop updating?</string>
+    <string name="wait">OTA is switching partitions, please wait!</string>
+
+    <string name="local_update">本地更新</string>
+    <string name="about">关于</string>
+    <string name="reboot">Reboot</string>
+    <string name="update_completed">Software updated successfully</string>
+    <string name="estimated_time">Downloading, estimated time 12 minutes</string>
+    <string name="ota_switch">Installing your update , please do not exit the current interface (2/2)...</string>
+    <string name="ota_update">Please do not exit the current screen during upgrade (1/2)...</string>
+    <string name="no_network">no network!</string>
+    <string name="find_new_versions">New version avaliable, Update!</string>
+
 </resources>

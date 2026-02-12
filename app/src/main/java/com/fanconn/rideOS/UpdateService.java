@@ -57,9 +57,11 @@ public class UpdateService extends Service {
                 installReceiver,
                 new IntentFilter(ACTION_INSTALL_UPDATE)
         );
+        InactivityManager.getInstance().stopTimer();
 
         Log.i(TAG, "UpdateService created");
     }
+    public static final String EXTRA_REMOTE_SILENT = "remote_silent";
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -67,10 +69,15 @@ public class UpdateService extends Service {
         boolean manualCheck =
                 intent != null && intent.getBooleanExtra("manual_check", false);
 
-        if (manualCheck || canCheckNow()) {
-            Log.i(TAG, "Starting OTA server check | manual=" + manualCheck);
-            checkForUpdate(manualCheck);
-        } else {
+        boolean remoteSilent =
+                intent != null && intent.getBooleanExtra(EXTRA_REMOTE_SILENT, false);
+
+        Log.i(TAG, "UpdateService start | manual=" + manualCheck + " | remoteSilent=" + remoteSilent);
+
+        if (manualCheck || remoteSilent || canCheckNow()) {
+            checkForUpdate(manualCheck, remoteSilent);
+        }
+        else {
             Log.i(TAG, "OTA check skipped (remind-later active)");
         }
 
@@ -83,11 +90,12 @@ public class UpdateService extends Service {
         return System.currentTimeMillis() >= nextAllowedCheckTime;
     }
 
-    private void checkForUpdate(boolean manualCheck) {
+    private void checkForUpdate(boolean manualCheck, boolean remoteSilent) {
         new Thread(() -> {
             try {
-                Log.i(TAG, "Checking OTA JSON | manual=" + manualCheck);
+                Log.i(TAG, "Checking OTA JSON | manual=" + manualCheck + " | remoteSilent=" + remoteSilent);
 
+                // 1️⃣ Internet
                 HttpURLConnection conn =
                         (HttpURLConnection) new URL(UPDATE_URL).openConnection();
                 conn.setConnectTimeout(8000);
@@ -112,18 +120,29 @@ public class UpdateService extends Service {
                                 .getPackageInfo(getPackageName(), 0)
                                 .versionName;
 
-                Log.i(TAG, "Current=" + currentVersion +
-                        " | Server=" + latestVersion);
+                Log.i(TAG, "Current=" + currentVersion + " | Server=" + latestVersion);
 
-                if (!latestVersion.equals(currentVersion)) {
+                // 2️⃣ Version decision
+                boolean updateAvailable = !latestVersion.equals(currentVersion);
+
+                if (updateAvailable) {
+
                     Log.i(TAG, "OTA update AVAILABLE");
 
-                    mainHandler.post(() -> showUpdatePopup(apkUrl));
+                    if (remoteSilent) {
+                        // 🤖 REMOTE MODE (MQTT)
+                        Log.i(TAG, "🔥 Remote silent OTA → auto start");
+                        launchProgressAndDownload(apkUrl);   // 🚀 NO POPUP
+
+                    } else {
+                        // 🧑 USER MODE (UI)
+                        mainHandler.post(() -> showUpdatePopup(apkUrl)); // popup only here
+                    }
 
                 } else {
                     Log.i(TAG, "No OTA update available");
 
-                    // ✅ SHOW TOAST ONLY FOR MANUAL CHECK
+                    // Only manual check shows toast
                     if (manualCheck) {
                         mainHandler.post(() ->
                                 showCustomToast("Your system is up to date")
@@ -136,12 +155,13 @@ public class UpdateService extends Service {
 
                 if (manualCheck) {
                     mainHandler.post(() ->
-                            showCustomToast("No update availabe")
+                            showCustomToast("Server error, failed to fetch rideOS version")
                     );
                 }
             }
         }).start();
     }
+
 
     private void showCustomToast(String message) {
         Handler handler = new Handler(Looper.getMainLooper());

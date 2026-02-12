@@ -46,7 +46,9 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -202,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private Handler mHandlerTime = new Handler();
     private Runnable mRunnableTime;  // 用于定时更新系统时间显示的任务
     ImageView keyImage;
-
+    QuickSettingsView qsView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //
@@ -249,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        inactivityManager = new InactivityManager(this);
 //        inactivityManager.stopTimer();
         // 初始化class
+
         instance = this;
         startService(new Intent(this, WatchdogService.class));//wacthdog service
 
@@ -341,14 +344,14 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         mapbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
-                    Intent intent = new Intent(MainActivity.this, Maps.class);
                     InactivityManager.getInstance().stopTimer();
+                    Intent intent = new Intent(MainActivity.this, Maps.class);
                     startActivity(intent);
                 }
             }
         });
-
 
         menubtn.setOnClickListener(v -> {
 //            Log.d("MainActivity", "Menu button clicked");
@@ -362,7 +365,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 startActivity(intent);
             }
 
-
         });
 
         lowtire_preesure_button.setOnClickListener(new View.OnClickListener() {
@@ -374,6 +376,31 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             }
         });
         gestureDetector = new GestureDetector(this, new GestureListener());
+
+        // 1️⃣ Create QuickSettingsView
+        qsView = new QuickSettingsView(this);
+
+        // 2️⃣ HIDE IT IMMEDIATELY (IMPORTANT)
+        qsView.setTranslationY(-10000f);   // push off-screen BEFORE draw
+
+        // 3️⃣ Add to root layout
+        FrameLayout root = findViewById(R.id.root);
+        root.addView(qsView);
+        qsView.bringToFront();
+
+        // 4️⃣ After layout, set correct hidden position
+        qsView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        qsView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                        qsHeight = qsView.getHeight();
+
+                        // Final hidden position (top, off-screen)
+                        qsView.setTranslationY(-qsHeight);
+                    }
+                });
 
         tripTextView = binding.tripTextView;
         tripResetBtn = binding.tripresetbtn;
@@ -451,6 +478,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
 
     }//END OF ONCREATE METHOD
+
+
     //private CommandHandler commandHandler;
     private void forceStopSelfAndLaunchOther() {
         String myPkg = getPackageName();
@@ -2184,46 +2213,137 @@ public void recoNavLeft(View view) {
         }
     };
 
+    private boolean isDraggingQS = false;
+    private float qsStartY = 0f;
+    private float lastY = 0f;
+    private int qsHeight;
 
     // gesture features =================================
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
         private static final int SWIPE_THRESHOLD = 100;
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-        private static final int EDGE_SWIPE_THRESHOLD = 50; // Edge area in pixels
+        private static final int EDGE_SWIPE_THRESHOLD = 50;
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        public boolean onDown(MotionEvent e) {
+            return true; // REQUIRED for onScroll to work
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                float distanceX, float distanceY) {
+
+            if (e1 == null || e2 == null) return false;
+
+            if (!isDraggingQS) {
+                if (e1.getY() > EDGE_SWIPE_THRESHOLD) return false;
+
+                if (Math.abs(e2.getY() - e1.getY()) < 15) return false;
+
+                isDraggingQS = true;
+                dragDistance = 0f;   // reset
+            }
+
+            float dy = e2.getY() - e1.getY();
+            dragDistance = dy;  // track drag
+
+            float newY = -qsHeight + dy;
+
+            newY = Math.max(-qsHeight, Math.min(0, newY));
+
+            float currentY = qsView.getTranslationY();
+            float smoothY = currentY + (newY - currentY) * 0.35f;
+
+            qsView.setTranslationY(smoothY);
+
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2,
+                               float velocityX, float velocityY) {
+
+            // 🔒 FIRST: if QS is being dragged → finish it
+            if (isDraggingQS) {
+                finishQuickSettings(velocityY);
+                isDraggingQS = false;
+                return true;
+            }
+
+
+            // 🔁 BELOW IS YOUR ORIGINAL CODE (UNCHANGED)
+
+            if (e1 == null || e2 == null) return false;
+
             float diffX = e2.getX() - e1.getX();
             float diffY = e2.getY() - e1.getY();
 
-            float startX = e1.getX(); // where swipe started
+            float startX = e1.getX();
+            float startY = e1.getY();
+
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
 
             if (Math.abs(diffX) > Math.abs(diffY)) {
-                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+
+                if (Math.abs(diffX) > SWIPE_THRESHOLD &&
+                        Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
 
                     if (diffX > 0 && startX < EDGE_SWIPE_THRESHOLD) {
-                        // Swipe from left edge → open menu
                         openMenu();
                         return true;
+                    }
 
-                    } else if (diffX < 0 && startX > (screenWidth - EDGE_SWIPE_THRESHOLD)) {
-                        // Swipe from right edge → open maps
+                    if (diffX < 0 &&
+                            startX > (screenWidth - EDGE_SWIPE_THRESHOLD)) {
                         openMaps();
                         return true;
                     }
                 }
+
             } else {
-                if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10 && Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffY > 0) {
-                        openQuickSettings(); // swipe top to bottom
+
+                if (diffY > SWIPE_THRESHOLD &&
+                        Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+
+                    if (startY < EDGE_SWIPE_THRESHOLD) {
+                        openQuickSettings();
                         return true;
                     }
                 }
             }
 
             return false;
+        }
+    }
+    private float dragDistance = 0f;   // add this as class variable
+
+    private void finishQuickSettings(float velocityY) {
+
+        isDraggingQS = false;
+
+        boolean open;
+
+        float currentY = qsView.getTranslationY();
+
+        // ✅ PRIMARY decision → position based (natural UX)
+        if (currentY > -qsHeight * 0.5f) {
+            open = true;
+        } else {
+            open = false;
+        }
+
+        // ✅ SECONDARY decision → velocity ONLY if real swipe happened
+        if (Math.abs(dragDistance) > 120) {   // intentional drag threshold
+            if (Math.abs(velocityY) > 1200) { // real fling threshold
+                open = velocityY > 0;         // down = open, up = close
+            }
+        }
+
+        if (open) {
+            qsView.open();          // smooth open animation
+        } else {
+            qsView.smoothClose();   // smooth close animation
         }
     }
 
@@ -2254,7 +2374,8 @@ public void recoNavLeft(View view) {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
+        return gestureDetector.onTouchEvent(event)
+                || super.onTouchEvent(event);
     }
 
     public static int extractBits(int value, int startBit, int endBit) {

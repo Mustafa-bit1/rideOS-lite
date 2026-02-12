@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="1280dp"
+    android:layout_height="480dp"
+    android:padding="10dp"
+    tools:context=".aosp_mainActivity"
+    android:background="@drawable/bg">
+
+<TextView
+        android:id="@+id/textNewVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/kanitlite"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/margin_large"
+        android:visibility="invisible"
+        android:text="@string/find_new_versions" />
+
+    <TextView
+        android:id="@+id/textModule_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/kanitlite"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textAlignment="center"
+        android:layout_below="@id/textNewVersion"
+        android:text="fanconn sc126" />
+
+    <TextView
+        android:id="@+id/textProduct_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/kanitlite"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:visibility="gone"
+
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_below="@id/textModule_main"
+        android:text="Face access control" />
+
+    <TextView
+        android:id="@+id/textVersions_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/kanitlite"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textAlignment="center"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_below="@id/textProduct_main"
+        android:text="A12_1.0" />
+
+
+    <TextView
+        android:id="@+id/progressBarState_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginTop="256dp"
+        android:text="@string/updating"
+        android:fontFamily="@font/kanitlite"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:translationY="80dp"
+        android:visibility="invisible" />
+
+    <ProgressBar
+        android:id="@+id/progressBar_round"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:translationY="50dp"
+        style="?android:attr/progressBarStyleLarge" />
+
+    <TextView
+        android:id="@+id/progressBar_round_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressBar_round"
+        android:layout_marginTop="@dimen/margin_small"
+        android:visibility="invisible"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:translationY="60dp"
+        android:text="@string/updating_parsing"
+        android:fontFamily="@font/kanitlite"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:textAlignment="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="230dp"
+        android:layout_marginBottom="8dp"
+        >
+
+        <ProgressBar
+            android:id="@+id/progressBar_main"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="600dp"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:min="0"
+            android:visibility="invisible"
+            android:progressDrawable="@drawable/progress_bar_custom"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"/>
+        <TextView
+            android:id="@+id/progressValue_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/progressBar_main"
+            android:layout_marginStart="@dimen/margin_small"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:fontFamily="@font/kanitlite"
+            android:text="0%"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/update_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_large"
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_centerVertical="true"
+        android:text="@string/updated_content"
+        android:visibility="invisible"
+        android:textColor="#858585"
+        android:textSize="@dimen/text_size_medium" />
+
+    <ScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/Check_update"
+        android:layout_below="@id/update_title">
+
+
+        <TextView
+            android:id="@+id/update_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/update_title"
+            android:layout_marginStart="@dimen/margin_medium"
+            android:layout_marginEnd="@dimen/margin_medium"
+            android:text="1.随便打打字，占据空间"
+            android:visibility="invisible"
+            android:fontFamily="@font/kanitlite"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            android:gravity="center"
+            android:textAlignment="center"/>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/Check_update"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_centerVertical="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="onCheckUpdateClick"
+        android:translationY="50dp"
+        android:text="@string/check_update"
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_medium"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/custom_button"
+        />
+    <ImageButton
+        android:id="@+id/aosp_OTA_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:adjustViewBounds="true"
+        android:background="@android:color/transparent"
+        android:padding="0dp"
+        android:visibility="gone"
+        android:src="@drawable/backbtn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinnerConfigs_main"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Check_update"
+        android:layout_marginTop="@dimen/margin_small"
+        android:visibility="invisible"/>
+
+</RelativeLayout>

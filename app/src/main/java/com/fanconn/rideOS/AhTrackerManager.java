@@ -67,9 +67,16 @@ public class AhTrackerManager {
     // Remaining Ah in battery
     public float getRemainingAh() {
         float rem = rideOSInAh - rideOSOutAh;
-        Log.d("AH_TRACKER", "RemainingAh = " + rem);
+        float capacity = getBatteryCapacity();
+
+        // Physical limits
+        if (rem < 0f) rem = 0f;
+        if (rem > capacity) rem = capacity;   //HARD LOCK
+
+        Log.d("AH_TRACKER", "RemainingAh(clamped) = " + rem);
         return rem;
     }
+
 
     // SOC (%) value
     public float getSOC() {

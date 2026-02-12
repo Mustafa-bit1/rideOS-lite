@@ -46,7 +46,8 @@ public class QuickSetting extends AppCompatActivity {
     private Button wifiToggle, autoBrightnessToggle,blue_tpmsbtn;
     //private Button Settingbtn;
     //private Button lteToggle;
-    private TextView wifiStatusText, autoBrightnessText, lteStatusText,autoBrightnessStatus;
+    //private TextView wifiStatusText, autoBrightnessText, lteStatusText,autoBrightnessStatus;
+    private TextView autoBrightnessText;
     private SeekBar brightnessSlider;
 
     /* ---------------- WIFI RECEIVER ---------------- */
@@ -115,7 +116,7 @@ public class QuickSetting extends AppCompatActivity {
         brightnessManager = new BrightnessManager(this);
         brightnessSlider = findViewById(R.id.brightnessSlider);
         autoBrightnessText = findViewById(R.id.autoBrightnessText);
-        autoBrightnessStatus = findViewById(R.id.autoBrightnessStatus);
+        //autoBrightnessStatus = findViewById(R.id.autoBrightnessStatus);
         autoBrightnessToggle = findViewById(R.id.autoBrightnessToggle);
 
         brightnessManager.applyToSeekBar(brightnessSlider, autoBrightnessText);
@@ -143,7 +144,7 @@ public class QuickSetting extends AppCompatActivity {
         /* ---------------- WIFI ---------------- */
 
         wifiToggle = findViewById(R.id.wifiToggle);
-        wifiStatusText = findViewById(R.id.wifiStatusText);
+       // wifiStatusText = findViewById(R.id.wifiStatusText);
 
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
         updateWifiUI(wifiManager);
@@ -203,7 +204,7 @@ public class QuickSetting extends AppCompatActivity {
                 ColorStateList.valueOf(auto ? on : off)
         );
         autoBrightnessToggle.setText(auto ? "Auto Brightness ON" : "Auto Brightness OFF");
-        autoBrightnessStatus.setText((auto ? "Auto Brightness ON" : "Auto Brightness OFF"));
+        //autoBrightnessStatus.setText((auto ? "Auto Brightness ON" : "Auto Brightness OFF"));
         if(auto){
             autoBrightnessText.setText("Auto brightness ON");
         }
@@ -219,15 +220,15 @@ public class QuickSetting extends AppCompatActivity {
 
         if (wm.isWifiEnabled()) {
             wifiToggle.setBackgroundTintList(ColorStateList.valueOf(on));
-            WifiInfo info = wm.getConnectionInfo();
-            wifiStatusText.setText(
-                    info != null && info.getNetworkId() != -1
-                            ? info.getSSID().replace("\"", "")
-                            : "Not connected"
-            );
+//            WifiInfo info = wm.getConnectionInfo();
+//            wifiStatusText.setText(
+//                    info != null && info.getNetworkId() != -1
+//                            ? info.getSSID().replace("\"", "")
+//                            : "Not connected"
+//            );
         } else {
             wifiToggle.setBackgroundTintList(ColorStateList.valueOf(off));
-            wifiStatusText.setText("");
+//            wifiStatusText.setText("");
         }
     }
 
@@ -334,10 +335,10 @@ public class QuickSetting extends AppCompatActivity {
 
         if (turningOn) {
             wifiToggle.setBackgroundTintList(ColorStateList.valueOf(on));
-            wifiStatusText.setText("Turning ON...");
+//            wifiStatusText.setText("Turning ON...");
         } else {
             wifiToggle.setBackgroundTintList(ColorStateList.valueOf(off));
-            wifiStatusText.setText("Turning OFF...");
+//            wifiStatusText.setText("Turning OFF...");
         }
     }
 

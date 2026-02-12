@@ -399,6 +399,35 @@ public class FrameUtils {
         Log.i("isNetworkAvailable", "No Internet");
         return false;
     }
+    public static boolean isNetworkAvailable(Context context) {
+
+        if (context instanceof Activity) {
+            // Reuse EXACT same logic
+            return isNetworkAvailable((Activity) context);
+        }
+
+        // Fallback for Application / Service / MQTT
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager == null) {
+            return false;
+        }
+
+        Network activeNetwork = connectivityManager.getActiveNetwork();
+        if (activeNetwork != null) {
+            NetworkCapabilities networkCapabilities =
+                    connectivityManager.getNetworkCapabilities(activeNetwork);
+
+            if (networkCapabilities != null) {
+                return networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                        || networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
+            }
+        }
+
+        Log.i("isNetworkAvailable", "No Internet (context)");
+        return false;
+    }
 
     /**
      * 获取方向档位对应的文本
