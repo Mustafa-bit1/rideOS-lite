@@ -14,9 +14,9 @@
         tools:context=".MainActivity">
 
 
-    <!--远光灯图像视图 -->
+        <!--远光灯图像视图 -->
 
-    <!--<TextView
+        <!--<TextView
         android:id="@+id/rectangleTV"
         android:layout_width="25dp"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         tools:layout_editor_absoluteX="81dp"
         tools:layout_editor_absoluteY="16dp" />-->
 
-    <!-- <ImageView
+        <!-- <ImageView
          android:id="@+id/rectangle_IV"
          android:layout_width="102dp"
          android:layout_height="65dp"
@@ -44,25 +44,24 @@
          tools:layout_editor_absoluteY="6dp" />-->
 
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/ready_IV"-->
-    <!--        android:layout_width="70dp"-->
-    <!--        android:layout_height="15dp"-->
-    <!--        android:layout_alignParentStart="true"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginStart="616dp"-->
-    <!--        android:layout_marginBottom="80dp"-->
-    <!--        android:translationY="5dp"-->
-    <!--        android:visibility="visible"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:srcCompat="@drawable/ready" />-->
+        <!--    <ImageView-->
+        <!--        android:id="@+id/ready_IV"-->
+        <!--        android:layout_width="70dp"-->
+        <!--        android:layout_height="15dp"-->
+        <!--        android:layout_alignParentStart="true"-->
+        <!--        android:layout_alignParentTop="true"-->
+        <!--        android:layout_alignParentEnd="true"-->
+        <!--        android:layout_alignParentBottom="true"-->
+        <!--        android:layout_marginStart="616dp"-->
+        <!--        android:layout_marginBottom="80dp"-->
+        <!--        android:translationY="5dp"-->
+        <!--        android:visibility="visible"-->
+        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:srcCompat="@drawable/ready" />-->
 
 
-
-    <!--<ImageView
+        <!--<ImageView
         android:id="@+id/battery_IV"
         android:layout_width="80dp"
         android:layout_height="80dp"
@@ -76,1125 +75,1131 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />-->
 
-    <!--    <TextView-->
-    <!--        android:id="@+id/temperatureTV"-->
-    <!--        android:layout_width="50dp"-->
-    <!--        android:layout_height="30dp"-->
-    <!--        android:layout_alignParentStart="true"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginStart="16dp"-->
-    <!--        android:layout_marginTop="48dp"-->
-    <!--        android:gravity="center"-->
-    <!--        android:text="26.4°"-->
-    <!--        android:textColor="#FFFFFFFF"-->
-    <!--        android:textSize="10dp"-->
-    <!--        android:translationY="-10dp"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+        <!--    <TextView-->
+        <!--        android:id="@+id/temperatureTV"-->
+        <!--        android:layout_width="50dp"-->
+        <!--        android:layout_height="30dp"-->
+        <!--        android:layout_alignParentStart="true"-->
+        <!--        android:layout_alignParentTop="true"-->
+        <!--        android:layout_alignParentEnd="true"-->
+        <!--        android:layout_alignParentBottom="true"-->
+        <!--        android:layout_marginStart="16dp"-->
+        <!--        android:layout_marginTop="48dp"-->
+        <!--        android:gravity="center"-->
+        <!--        android:text="26.4°"-->
+        <!--        android:textColor="#FFFFFFFF"-->
+        <!--        android:textSize="10dp"-->
+        <!--        android:translationY="-10dp"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+        <!--    <ImageView-->
+        <!--        android:id="@+id/Ota_IV"-->
+        <!--        android:layout_width="45dp"-->
+        <!--        android:layout_height="45dp"-->
+        <!--        android:layout_alignParentRight="true"-->
+        <!--        android:layout_marginStart="16dp"-->
+        <!--        android:layout_marginTop="4dp"-->
+        <!--        android:onClick="MCUOTA_onClick"-->
+        <!--        android:src="@drawable/ota"-->
+        <!--        android:translationY="0dp"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <FrameLayout
+            android:id="@+id/front_camera_container"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="1180dp"
+            android:layout_marginBottom="150dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextureView
+                android:id="@+id/front_camera_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/rear_camera_container"
+            android:layout_width="80dp"
+            android:layout_height="20dp"
+            android:layout_marginEnd="1180dp"
+
+            android:layout_marginBottom="120dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <TextureView
+                android:id="@+id/rear_camera_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </FrameLayout>
 
 
-    <!--    <ImageView-->
-    <!--        android:id="@+id/Ota_IV"-->
-    <!--        android:layout_width="45dp"-->
-    <!--        android:layout_height="45dp"-->
-    <!--        android:layout_alignParentRight="true"-->
-    <!--        android:layout_marginStart="16dp"-->
-    <!--        android:layout_marginTop="4dp"-->
-    <!--        android:onClick="MCUOTA_onClick"-->
-    <!--        android:src="@drawable/ota"-->
-    <!--        android:translationY="0dp"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <FrameLayout
-        android:id="@+id/front_camera_container"
-        android:layout_width="80dp"
-        android:layout_height="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="150dp"
-        android:layout_marginEnd="1180dp"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextureView
-            android:id="@+id/front_camera_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/rear_camera_container"
-        android:layout_width="80dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="1180dp"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="120dp"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextureView
-            android:id="@+id/rear_camera_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
-
-
-    <ImageView
-        android:id="@+id/Bluetooth_IV"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="282dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/blueth" />
-
-    <TextView
-        android:id="@+id/timeTextView"
-        android:layout_width="94dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="373dp"
-        android:fontFamily="@font/kanit"
-        android:text="-"
-        android:textAlignment="center"
-        android:textColor="#FFFFFFFF"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="RtlCompat" />
-
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/levelView"-->
-    <!--        android:layout_width="0dp"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_marginTop="190dp"-->
-    <!--        android:background="#2097F7"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <ImageView
-        android:id="@+id/enginestartIV"
-        android:layout_width="1002dp"
-        android:layout_height="291dp"
-        android:layout_marginStart="139dp"
-        android:layout_marginEnd="139dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-android:visibility="gone"
-        app:srcCompat="@drawable/a_enginestart" />
-
-    <TextView
-        android:id="@+id/speedNumberTV"
-        android:layout_width="307dp"
-        android:layout_height="90dp"
-        android:layout_marginStart="450dp"
-        android:layout_marginTop="111dp"
-        android:layout_marginBottom="100dp"
-        android:fontFamily="@font/opti"
-        android:text="0"
-        android:textAlignment="center"
-        android:textColor="#FFFFFFFF"
-        android:textSize="77dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/speedTV"
-        android:layout_width="64dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="765dp"
-        android:layout_marginBottom="100dp"
-        android:fontFamily="@font/kanit"
-        android:text="km/h"
-        android:textColor="#FFFFFF"
-        android:textSize="26dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/batterry_bar"
-        android:layout_width="835dp"
-        android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="222.5dp"
-        android:layout_marginEnd="222.5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/a_batbar" />
-
-
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="176dp"
-        android:layout_height="320dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="928dp"
-        android:layout_marginTop="6dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/a_frills" />
-
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="176dp"
-        android:layout_height="320dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="928dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/a_frillsss" />
-
-    <!--    android:text="Battery 92%  | ~ 280 km"-->
-
-
-
-    <ImageButton
-        android:id="@+id/menubtn"
-        android:layout_width="157dp"
-        android:layout_height="115dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/a_group" />
-
-    <ImageButton
-        android:id="@+id/mapbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/a_group109" />
-
-
-    <!-- 歌曲播放进度控制条 -->
-
-
-    <ImageView
-        android:id="@+id/network"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
-        android:layout_marginTop="29dp"
-        android:layout_marginEnd="331dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/network" />
-
-    <ImageView
-        android:id="@+id/wifi"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="235dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView4"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/wifioffimg" />
-
-    <!--    <Button-->
-    <!--        android:id="@+id/mosswitch"-->
-    <!--        android:layout_width="190dp"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_marginStart="216dp"-->
-    <!--        android:layout_marginTop="320dp"-->
-    <!--        android:backgroundTint="#B10505"-->
-    <!--        android:text="Swicth to APU"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <ImageView
-        android:id="@+id/rectangleGearsTV"
-        android:layout_width="132dp"
-        android:layout_height="26dp"
-        android:layout_marginTop="69dp"
-        android:layout_marginEnd="574dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/a_power_on_blue" />
-
-
-    <ImageView
-        android:id="@+id/boost"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="436dp"
-        android:layout_marginBottom="131dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/mapbtn"
-        app:srcCompat="@drawable/boost"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/actualboost"
-        android:layout_width="70dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="449dp"
-        android:layout_marginBottom="128dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/mapbtn"
-        android:visibility="gone"
-        app:srcCompat="@drawable/actualboost" />
-
-    <ImageView
-        android:id="@+id/sports"
-        android:layout_width="100dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="443dp"
-        android:layout_marginBottom="131dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/mapbtn"
-        app:srcCompat="@drawable/sports"
-        android:visibility="gone" />
-
-    <ImageView
-        android:id="@+id/ecoimage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="446dp"
-        android:layout_marginBottom="131dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ecoimage"
-        android:visibility="gone"
-        />
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/voltage"-->
-    <!--        android:layout_width="94dp"-->
-    <!--        android:layout_height="34dp"-->
-    <!--        android:layout_marginStart="24dp"-->
-    <!--        android:layout_marginTop="260dp"-->
-    <!--        android:text="0"-->
-    <!--        android:textColor="#FFFFFF"-->
-    <!--        android:textSize="20dp"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/current"-->
-    <!--        android:layout_width="94dp"-->
-    <!--        android:layout_height="34dp"-->
-    <!--        android:layout_marginStart="24dp"-->
-    <!--        android:layout_marginTop="290dp"-->
-    <!--        android:text="0"-->
-    <!--        android:textColor="#FFFFFF"-->
-    <!--        android:textSize="20dp"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-
-    <ImageView
-        android:id="@+id/chargingredtab"
-        android:layout_width="118dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="581dp"
-        android:layout_marginTop="70dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/chargingredtab" />
-
-    <ImageView
-        android:id="@+id/removestand"
-        android:layout_width="140dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="570dp"
-        android:layout_marginTop="65dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/removestand" />
-
-    <ImageView
-        android:id="@+id/neutralicon"
-        android:layout_width="118dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="581dp"
-        android:layout_marginTop="70dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/neutralicon" />
-
-    <ImageView
-        android:id="@+id/cruise"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="575dp"
-        android:layout_marginTop="239dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        app:srcCompat="@drawable/cruise" />
-
-    <ImageView
-        android:id="@+id/stand"
-        android:layout_width="750dp"
-        android:layout_height="365dp"
-        android:layout_marginStart="265dp"
-        android:layout_marginBottom="-46dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/stand1"
-        android:visibility="gone"/>
-
-    <ImageView
-        android:id="@+id/neutral"
-        android:layout_width="750dp"
-        android:layout_height="365dp"
-        android:layout_marginStart="264dp"
-        android:layout_marginBottom="-46dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/neutral1" />
-
-
-    <ImageButton
-        android:id="@+id/low_tire_warning"
-        android:layout_width="194dp"
-        android:layout_height="192dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="63dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        app:srcCompat="@drawable/lowtire_pressure_warning" />
-
-    <ImageView
-        android:id="@+id/speedImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="140dp"
-        android:layout_marginBottom="2dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/speed_0" />
-
-    <!--    <com.fanconn.feb4.SpeedometerView1-->
-    <!--        android:id="@+id/speedometer1"-->
-    <!--        android:layout_width="541dp"-->
-    <!--        android:layout_height="225dp"-->
-    <!--        android:layout_marginEnd="696dp"-->
-    <!--        app:backgroundColor1="#444444"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintVertical_bias="0.351"-->
-    <!--        app:maxSpeed1="100"-->
-    <!--        app:progressColor1="#4CAF50"-->
-    <!--        app:progressWidth1="40dp" />-->
-
-
-    <!--    <com.fanconn.feb4.SpeedometerView-->
-    <!--        android:id="@+id/speedometer"-->
-    <!--        android:layout_width="528dp"-->
-    <!--        android:layout_height="257dp"-->
-    <!--        android:layout_marginStart="156dp"-->
-    <!--        android:layout_marginTop="148dp"-->
-    <!--        app:backgroundColor="#444444"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:maxSpeed="100"-->
-    <!--        app:progressColor="#4CAF50"-->
-    <!--        app:progressWidth="40dp" />-->
-
-    <ImageView
-        android:id="@+id/batteryImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="222dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bat_0" />
-
-
-    <ImageView
-        android:id="@+id/APUbatteryImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="287dp"
-        android:layout_marginTop="1dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/apubat_0" />
-
-    <TextView
-        android:id="@+id/batteryTV"
-        android:layout_width="281dp"
-        android:layout_height="36dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="499dp"
-        android:layout_marginTop="119dp"
-        android:fontFamily="@font/kanit"
-        android:shadowColor="#80000000"
-        android:shadowDx="5"
-        android:shadowDy="3"
-        android:shadowRadius="5"
-        android:text="Calculating your Charge..."
-        android:textAlignment="center"
-        android:textColor="#FFFFFFFF"
-        android:textSize="20dp"
-        android:translationY="-10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageView
-        android:id="@+id/reverseui"
-        android:layout_width="1002dp"
-        android:layout_height="444dp"
-        android:layout_marginStart="136dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/reverseui"
-        android:visibility="gone"/>
-
-    <ImageView
-        android:id="@+id/highBeam_IVon"
-        android:layout_width="117dp"
-        android:layout_height="117dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="306dp"
-        android:layout_marginBottom="78dp"
-        android:layout_toRightOf="@id/timeTextView"
-        android:translationY="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/high_beam" />
-
-    <ImageView
-        android:id="@+id/highBeam_IVoff"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="345dp"
-        android:layout_marginBottom="120dp"
-        android:layout_toRightOf="@id/timeTextView"
-        android:translationY="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/headlamp" />
-
-    <ImageView
-        android:id="@+id/arrow_3"
-        android:layout_width="290dp"
-        android:layout_height="223dp"
-        android:layout_marginStart="490dp"
-        android:layout_marginTop="208dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/arrow_3"
-        android:visibility="gone"/>
-
-    <ImageView
-        android:id="@+id/turnLeft_IV"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="401dp"
-        android:layout_marginBottom="110dp"
-        android:src="@drawable/indicators"
-        android:translationY="-10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-    <ImageView
-        android:id="@+id/left_on"
-        android:layout_width="121dp"
-        android:layout_height="115dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="360dp"
-        android:layout_marginBottom="69dp"
-        android:src="@drawable/left_on"
-        android:translationY="-10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-
-    <ImageView
-        android:id="@+id/turnRight_IV"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="401dp"
-        android:layout_marginBottom="110dp"
-        android:src="@drawable/indicatorsr"
-        android:translationY="-10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        />
-
-    <!--    <EditText-->
-    <!--        android:id="@+id/inputSpeed"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="84dp"-->
-    <!--        android:layout_marginTop="288dp"-->
-    <!--        android:ems="10"-->
-    <!--        android:textColor="#FFFFFF"-->
-    <!--        android:textSize="30dp"-->
-    <!--        android:inputType="number"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <!--    <Button-->
-    <!--        android:id="@+id/convertButton"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="204dp"-->
-    <!--        android:layout_marginTop="360dp"-->
-    <!--        android:text="Button"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <ImageView
-        android:id="@+id/right_on"
-        android:layout_width="121dp"
-        android:layout_height="115dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="360dp"
-        android:layout_marginBottom="69dp"
-        android:src="@drawable/right_on"
-        android:translationY="-10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-
-
-    <ImageView
-        android:id="@+id/brk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="346dp"
-        android:layout_marginTop="323dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        app:srcCompat="@drawable/brk" />
-
-    <ImageView
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="787dp"
-        android:layout_marginTop="354dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"
-        app:srcCompat="@drawable/startbutton" />
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/avgSpeed"-->
-    <!--        android:layout_width="194dp"-->
-    <!--        android:layout_height="192dp"-->
-    <!--        android:layout_marginStart="28dp"-->
-    <!--        android:layout_marginTop="68dp"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:srcCompat="@drawable/avgspeed"-->
-    <!--        android:visibility="gone"/>-->
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/odometer"-->
-    <!--        android:layout_width="243dp"-->
-    <!--        android:layout_height="32dp"-->
-    <!--        android:layout_marginStart="486dp"-->
-    <!--        android:layout_marginTop="408dp"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:srcCompat="@drawable/tripkm" />-->
-
-    <TextView
-        android:id="@+id/tripTextView"
-        android:layout_width="220dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="407dp"
-        android:fontFamily="@font/kanit"
-        android:text="00.00 km"
-        android:textAlignment="center"
-        android:textColor="#868686"
-        android:textSize="24dp"
-        android:visibility="gone"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/tripreco"-->
-    <!--        android:layout_width="194dp"-->
-    <!--        android:layout_height="192dp"-->
-    <!--        android:layout_marginTop="72dp"-->
-    <!--        android:layout_marginEnd="30dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:srcCompat="@drawable/tripreco"-->
-    <!--        />-->
-
-    <ImageButton
-        android:id="@+id/navleft"
-        android:layout_width="82dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="472dp"
-        android:layout_marginBottom="30dp"
-        android:background="@android:color/transparent"
-        android:onClick="navLeft"
-        android:src="@drawable/navleft"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageButton
-        android:id="@+id/navright"
-        android:layout_width="82dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="440dp"
-        android:layout_marginBottom="30dp"
-        android:background="@android:color/transparent"
-        android:onClick="navRight"
-        android:visibility="gone"
-
-        android:src="@drawable/navright"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageButton
-        android:id="@+id/tripresetbtn"
-        android:layout_width="37dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="400dp"
-        android:layout_marginEnd="518dp"
-        android:background="@android:color/transparent"
-        android:onClick="Trip_Reset"
-        android:scaleType="fitXY"
-        android:visibility="gone"
-        android:src="@drawable/tripresetbtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/batterry_bar" />
-
-    <!-- ================= RECO CONTAINER ================= -->
-
-    <!-- ================= RECO LEFT BUTTON ================= -->
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/recoContainer"
-        android:layout_width="150dp"
-        android:layout_height="190dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.258">
-
-        <!-- Leaf Image -->
         <ImageView
-            android:id="@+id/recoLeaf"
+            android:id="@+id/Bluetooth_IV"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="27dp"
+            android:layout_marginEnd="282dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/blueth" />
+
+        <TextView
+            android:id="@+id/timeTextView"
+            android:layout_width="94dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="373dp"
+            android:fontFamily="@font/kanit"
+            android:text="-"
+            android:textAlignment="center"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlCompat" />
+
+
+        <!--    <ImageView-->
+        <!--        android:id="@+id/levelView"-->
+        <!--        android:layout_width="0dp"-->
+        <!--        android:layout_height="50dp"-->
+        <!--        android:layout_marginTop="190dp"-->
+        <!--        android:background="#2097F7"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <ImageView
+            android:id="@+id/enginestartIV"
+            android:layout_width="1002dp"
+            android:layout_height="291dp"
+            android:layout_marginStart="139dp"
+            android:layout_marginEnd="139dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/a_enginestart" />
+
+        <TextView
+            android:id="@+id/speedNumberTV"
+            android:layout_width="307dp"
+            android:layout_height="90dp"
+            android:layout_marginStart="450dp"
+            android:layout_marginTop="111dp"
+            android:layout_marginBottom="100dp"
+            android:fontFamily="@font/opti"
+            android:text="0"
+            android:textAlignment="center"
+            android:textColor="#FFFFFFFF"
+            android:textSize="77dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <TextView
+            android:id="@+id/speedTV"
+            android:layout_width="64dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="765dp"
+            android:layout_marginBottom="100dp"
+            android:fontFamily="@font/kanit"
+            android:text="km/h"
+            android:textColor="#FFFFFF"
+            android:textSize="26dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/batterry_bar"
+            android:layout_width="835dp"
+            android:layout_height="150dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="222.5dp"
+            android:layout_marginEnd="222.5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/a_batbar" />
+
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="176dp"
+            android:layout_height="320dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="928dp"
+            android:layout_marginTop="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            app:srcCompat="@drawable/a_frills" />
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="176dp"
+            android:layout_height="320dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="6dp"
+            android:layout_marginEnd="928dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/a_frillsss" />
+
+        <!--    android:text="Battery 92%  | ~ 280 km"-->
+
+
+        <ImageButton
+            android:id="@+id/menubtn"
+            android:layout_width="157dp"
+            android:layout_height="115dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/a_group" />
+
+        <ImageButton
+            android:id="@+id/mapbtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="0dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/a_group109" />
+
+
+        <!-- 歌曲播放进度控制条 -->
+
+
+        <ImageView
+            android:id="@+id/network"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginTop="29dp"
+            android:layout_marginEnd="331dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/network" />
+
+        <ImageView
+            android:id="@+id/wifi"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="27dp"
+            android:layout_marginEnd="235dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/wifioffimg" />
+
+        <!--    <Button-->
+        <!--        android:id="@+id/mosswitch"-->
+        <!--        android:layout_width="190dp"-->
+        <!--        android:layout_height="50dp"-->
+        <!--        android:layout_marginStart="216dp"-->
+        <!--        android:layout_marginTop="320dp"-->
+        <!--        android:backgroundTint="#B10505"-->
+        <!--        android:text="Swicth to APU"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <ImageView
+            android:id="@+id/rectangleGearsTV"
+            android:layout_width="132dp"
+            android:layout_height="26dp"
+            android:layout_marginTop="69dp"
+            android:layout_marginEnd="574dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/a_power_on_blue" />
+
+
+        <ImageView
+            android:id="@+id/boost"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="436dp"
+            android:layout_marginBottom="131dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/mapbtn"
+            app:srcCompat="@drawable/boost" />
+
+        <ImageView
+            android:id="@+id/actualboost"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="449dp"
+            android:layout_marginBottom="128dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/mapbtn"
+            app:srcCompat="@drawable/actualboost" />
+
+        <ImageView
+            android:id="@+id/sports"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_marginEnd="443dp"
+            android:layout_marginBottom="131dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/mapbtn"
+            app:srcCompat="@drawable/sports" />
+
+        <ImageView
+            android:id="@+id/ecoimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="446dp"
+            android:layout_marginBottom="131dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ecoimage" />
+
+        <!--    <TextView-->
+        <!--        android:id="@+id/voltage"-->
+        <!--        android:layout_width="94dp"-->
+        <!--        android:layout_height="34dp"-->
+        <!--        android:layout_marginStart="24dp"-->
+        <!--        android:layout_marginTop="260dp"-->
+        <!--        android:text="0"-->
+        <!--        android:textColor="#FFFFFF"-->
+        <!--        android:textSize="20dp"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--    <TextView-->
+        <!--        android:id="@+id/current"-->
+        <!--        android:layout_width="94dp"-->
+        <!--        android:layout_height="34dp"-->
+        <!--        android:layout_marginStart="24dp"-->
+        <!--        android:layout_marginTop="290dp"-->
+        <!--        android:text="0"-->
+        <!--        android:textColor="#FFFFFF"-->
+        <!--        android:textSize="20dp"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+
+        <ImageView
+            android:id="@+id/chargingredtab"
+            android:layout_width="118dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="581dp"
+            android:layout_marginTop="70dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/chargingredtab" />
+
+        <ImageView
+            android:id="@+id/removestand"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="570dp"
+            android:layout_marginTop="65dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/removestand" />
+
+        <ImageView
+            android:id="@+id/neutralicon"
+            android:layout_width="118dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="581dp"
+            android:layout_marginTop="70dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/neutralicon" />
+
+        <ImageView
+            android:id="@+id/cruise"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="575dp"
+            android:layout_marginTop="239dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/cruise" />
+
+        <ImageView
+            android:id="@+id/stand"
+            android:layout_width="750dp"
+            android:layout_height="365dp"
+            android:layout_marginStart="265dp"
+            android:layout_marginBottom="-46dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/stand1" />
+
+        <ImageView
+            android:id="@+id/neutral"
+            android:layout_width="750dp"
+            android:layout_height="365dp"
+            android:layout_marginStart="264dp"
+            android:layout_marginBottom="-46dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/neutral1" />
+
+
+        <ImageButton
+            android:id="@+id/low_tire_warning"
+            android:layout_width="194dp"
+            android:layout_height="192dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="63dp"
+            android:background="@android:color/transparent"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/lowtire_pressure_warning" />
+
+        <ImageView
+            android:id="@+id/speedImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="140dp"
+            android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/speed_0" />
+
+        <!--    <com.fanconn.feb4.SpeedometerView1-->
+        <!--        android:id="@+id/speedometer1"-->
+        <!--        android:layout_width="541dp"-->
+        <!--        android:layout_height="225dp"-->
+        <!--        android:layout_marginEnd="696dp"-->
+        <!--        app:backgroundColor1="#444444"-->
+        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:layout_constraintVertical_bias="0.351"-->
+        <!--        app:maxSpeed1="100"-->
+        <!--        app:progressColor1="#4CAF50"-->
+        <!--        app:progressWidth1="40dp" />-->
+
+
+        <!--    <com.fanconn.feb4.SpeedometerView-->
+        <!--        android:id="@+id/speedometer"-->
+        <!--        android:layout_width="528dp"-->
+        <!--        android:layout_height="257dp"-->
+        <!--        android:layout_marginStart="156dp"-->
+        <!--        android:layout_marginTop="148dp"-->
+        <!--        app:backgroundColor="#444444"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:maxSpeed="100"-->
+        <!--        app:progressColor="#4CAF50"-->
+        <!--        app:progressWidth="40dp" />-->
+
+        <ImageView
+            android:id="@+id/batteryImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="222dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bat_0" />
+
+
+        <ImageView
+            android:id="@+id/APUbatteryImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="287dp"
+            android:layout_marginTop="1dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/apubat_0" />
+
+        <TextView
+            android:id="@+id/batteryTV"
+            android:layout_width="281dp"
+            android:layout_height="36dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="499dp"
+            android:layout_marginTop="119dp"
+            android:fontFamily="@font/kanit"
+            android:shadowColor="#80000000"
+            android:shadowDx="5"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:text="Calculating your Charge..."
+            android:textAlignment="center"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20dp"
+            android:translationY="-10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/reverseui"
+            android:layout_width="1002dp"
+            android:layout_height="444dp"
+            android:layout_marginStart="136dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/reverseui" />
+
+        <ImageView
+            android:id="@+id/highBeam_IVon"
+            android:layout_width="117dp"
+            android:layout_height="117dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="306dp"
+            android:layout_marginBottom="78dp"
+            android:layout_toRightOf="@id/timeTextView"
+            android:translationY="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/high_beam" />
+
+        <ImageView
+            android:id="@+id/highBeam_IVoff"
             android:layout_width="40dp"
-            android:layout_height="60dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/recoleave"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="345dp"
+            android:layout_marginBottom="120dp"
+            android:layout_toRightOf="@id/timeTextView"
+            android:translationY="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/headlamp" />
+
+        <ImageView
+            android:id="@+id/arrow_3"
+            android:layout_width="290dp"
+            android:layout_height="223dp"
+            android:layout_marginStart="490dp"
+            android:layout_marginTop="208dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/arrow_3" />
+
+        <ImageView
+            android:id="@+id/turnLeft_IV"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="401dp"
+            android:layout_marginBottom="110dp"
+            android:src="@drawable/indicators"
+            android:translationY="-10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/left_on"
+            android:layout_width="121dp"
+            android:layout_height="115dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="360dp"
+            android:layout_marginBottom="69dp"
+            android:src="@drawable/left_on"
+            android:translationY="-10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/turnRight_IV"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="401dp"
+            android:layout_marginBottom="110dp"
+            android:src="@drawable/indicatorsr"
+            android:translationY="-10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!--    <EditText-->
+        <!--        android:id="@+id/inputSpeed"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_marginStart="84dp"-->
+        <!--        android:layout_marginTop="288dp"-->
+        <!--        android:ems="10"-->
+        <!--        android:textColor="#FFFFFF"-->
+        <!--        android:textSize="30dp"-->
+        <!--        android:inputType="number"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <!--    <Button-->
+        <!--        android:id="@+id/convertButton"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_marginStart="204dp"-->
+        <!--        android:layout_marginTop="360dp"-->
+        <!--        android:text="Button"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <ImageView
+            android:id="@+id/right_on"
+            android:layout_width="121dp"
+            android:layout_height="115dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="360dp"
+            android:layout_marginBottom="69dp"
+            android:src="@drawable/right_on"
+            android:translationY="-10dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+        <ImageView
+            android:id="@+id/brk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="346dp"
+            android:layout_marginTop="323dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/brk" />
+
+        <ImageView
+            android:id="@+id/startButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="787dp"
+            android:layout_marginTop="354dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/startbutton" />
+
+        <!--    <ImageView-->
+        <!--        android:id="@+id/avgSpeed"-->
+        <!--        android:layout_width="194dp"-->
+        <!--        android:layout_height="192dp"-->
+        <!--        android:layout_marginStart="28dp"-->
+        <!--        android:layout_marginTop="68dp"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:srcCompat="@drawable/avgspeed"-->
+        <!--        android:visibility="gone"/>-->
+
+        <!--    <ImageView-->
+        <!--        android:id="@+id/odometer"-->
+        <!--        android:layout_width="243dp"-->
+        <!--        android:layout_height="32dp"-->
+        <!--        android:layout_marginStart="486dp"-->
+        <!--        android:layout_marginTop="408dp"-->
+        <!--        app:layout_constraintStart_toStartOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:srcCompat="@drawable/tripkm" />-->
+
+        <TextView
+            android:id="@+id/tripTextView"
+            android:layout_width="220dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="407dp"
+            android:fontFamily="@font/kanit"
+            android:text="00.00 km"
+            android:textAlignment="center"
+            android:textColor="#868686"
+            android:textSize="24dp"
+            android:visibility="gone"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- +XX km -->
-        <TextView
-            android:id="@+id/recoKmText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:fontFamily="@font/kanit"
-            android:text="+0.0 km"
-            android:textColor="#00FF66"
-            android:textSize="35dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recoLeaf" />
 
-        <!-- Trip / Total Reco label -->
-        <TextView
-            android:id="@+id/recoLabelText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/kanit"
-            android:text="Trip Reco"
-            android:textColor="#8A8A8A"
-            android:textSize="18dp"
+        <!--    <ImageView-->
+        <!--        android:id="@+id/tripreco"-->
+        <!--        android:layout_width="194dp"-->
+        <!--        android:layout_height="192dp"-->
+        <!--        android:layout_marginTop="72dp"-->
+        <!--        android:layout_marginEnd="30dp"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:srcCompat="@drawable/tripreco"-->
+        <!--        />-->
+
+        <ImageButton
+            android:id="@+id/navleft"
+            android:layout_width="82dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="472dp"
+            android:layout_marginBottom="30dp"
+            android:background="@android:color/transparent"
+            android:onClick="navLeft"
+            android:src="@drawable/navleft"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageButton
+            android:id="@+id/navright"
+            android:layout_width="82dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="440dp"
+            android:layout_marginBottom="30dp"
+            android:background="@android:color/transparent"
+            android:onClick="navRight"
+            android:src="@drawable/navright"
+
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageButton
+            android:id="@+id/tripresetbtn"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_marginTop="400dp"
+            android:layout_marginEnd="518dp"
+            android:background="@android:color/transparent"
+            android:onClick="Trip_Reset"
+            android:scaleType="fitXY"
+            android:src="@drawable/tripresetbtn"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/batterry_bar" />
+
+        <!-- ================= RECO CONTAINER ================= -->
+
+        <!-- ================= RECO LEFT BUTTON ================= -->
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/recoContainer"
+            android:layout_width="150dp"
+            android:layout_height="190dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.945"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recoKmText" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.258">
+
+            <!-- Leaf Image -->
+            <ImageView
+                android:id="@+id/recoLeaf"
+                android:layout_width="40dp"
+                android:layout_height="60dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/recoleave"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- +XX km -->
+
+            <TextView
+                android:id="@+id/RegenCurrentValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:fontFamily="@font/kanit"
+                android:text=""
+                android:visibility="gone"
+                android:textColor="#00FF66"
+                android:textSize="20dp"
+                app:layout_constraintStart_toEndOf="@+id/recoLeaf"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/recoKmText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/kanit"
+                android:text="+0.0 km"
+                android:textColor="#00FF66"
+                android:textSize="35dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recoLeaf" />
+
+            <!-- Trip / Total Reco label -->
+
+
+            <TextView
+                android:id="@+id/recoLabelText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/kanit"
+                android:text="Trip Reco"
+                android:textColor="#8A8A8A"
+                android:textSize="18dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recoKmText" />
+
+            <ImageView
+                android:id="@+id/recoDotIV"
+                android:layout_width="25dp"
+                android:layout_height="10dp"
+                android:layout_marginTop="22dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/recodot1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recoLabelText" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageButton
+            android:id="@+id/recoNavLeft"
+            android:layout_width="56dp"
+            android:layout_height="186dp"
+            android:background="@android:color/transparent"
+            android:onClick="recoNavLeft"
+            android:src="@drawable/navleft"
+            app:layout_constraintBottom_toBottomOf="@id/recoContainer"
+            app:layout_constraintEnd_toStartOf="@id/recoContainer"
+            app:layout_constraintTop_toTopOf="@id/recoContainer" />
+
+        <!-- ================= RECO RIGHT BUTTON ================= -->
+        <ImageButton
+            android:id="@+id/recoNavRight"
+            android:layout_width="56dp"
+            android:layout_height="186dp"
+            android:background="@android:color/transparent"
+            android:onClick="recoNavRight"
+            android:src="@drawable/navright"
+            app:layout_constraintBottom_toBottomOf="@id/recoContainer"
+            app:layout_constraintStart_toEndOf="@id/recoContainer"
+            app:layout_constraintTop_toTopOf="@id/recoContainer" />
+
+        <!--        <ImageView-->
+        <!--        android:id="@+id/tripreco"-->
+        <!--        android:layout_width="194dp"-->
+        <!--        android:layout_height="192dp"-->
+        <!--        android:layout_marginTop="72dp"-->
+        <!--        android:layout_marginEnd="30dp"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        app:srcCompat="@drawable/tripreco"-->
+        <!--        />-->
 
         <ImageView
-            android:id="@+id/recoDotIV"
-            android:layout_width="25dp"
-            android:layout_height="10dp"
-            android:layout_marginTop="22dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/recodot1"
+            android:id="@+id/yellowalert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/yellowwarning"
+
+            />
+
+
+        <ImageView
+            android:id="@+id/redalert"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/redalert" />
+
+        <ImageView
+            android:id="@+id/chargingbike"
+            android:layout_width="1280dp"
+            android:layout_height="480dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="0dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/chargingbike"
+
+            />
+
+        <!--    <ImageView-->
+        <!--        android:id="@+id/percenticon"-->
+        <!--        android:layout_width="56dp"-->
+        <!--        android:layout_height="41dp"-->
+        <!--        android:layout_alignParentStart="true"-->
+        <!--        android:layout_alignParentTop="true"-->
+        <!--        android:layout_alignParentEnd="true"-->
+        <!--        android:layout_alignParentBottom="true"-->
+        <!--        android:layout_marginEnd="470dp"-->
+        <!--        android:layout_marginBottom="202dp"-->
+        <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:srcCompat="@drawable/percenticon"-->
+
+        <!--        />-->
+
+        <TextView
+            android:id="@+id/chargingSOC"
+            android:layout_width="460dp"
+            android:layout_height="125dp"
+            android:layout_marginStart="410dp"
+            android:layout_marginBottom="176dp"
+            android:fontFamily="@font/opti"
+            android:text="--"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="90dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/chargingicon"
+            android:layout_width="205dp"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="538dp"
+            android:layout_marginBottom="152dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/chargingicon" />
+
+        <ImageView
+            android:id="@+id/tempalerticon"
+            android:layout_width="32dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="412dp"
+            android:layout_marginTop="17dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recoLabelText" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tempicon" />
+
+        <ImageView
+            android:id="@+id/tpmsicon"
+            android:layout_width="32dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="765dp"
+            android:layout_marginTop="19dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tpmsicon" />
+
+        <ImageView
+            android:id="@+id/keyOutImage"
+            android:layout_width="40dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="714dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/keyout" />
+
+        <ImageView
+            android:id="@+id/battempmsg"
+            android:layout_width="163dp"
+            android:layout_height="29dp"
+            android:layout_marginStart="561dp"
+            android:layout_marginTop="-5dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/battemphigh" />
+
+        <ImageView
+            android:id="@+id/LowBatmsg"
+            android:layout_width="267dp"
+            android:layout_height="31dp"
+            android:layout_marginStart="509dp"
+            android:layout_marginTop="-4dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/lowbatmsg" />
+
+        <ImageView
+            android:id="@+id/apubaticon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="435dp"
+            android:visibility="gone"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/battery_level_1" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/APUbatteryTV"
+            android:layout_width="82dp"
+            android:layout_height="22dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="848dp"
+            android:layout_marginTop="44dp"
+            android:fontFamily="@font/kanit"
+            android:shadowColor="#80000000"
+            android:shadowDx="5"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:text="APU 100%"
+            android:textAlignment="textStart"
+            android:textColor="#FFFFFFFF"
+            android:textSize="17dp"
+            android:translationY="-10dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/recoNavLeft"
-        android:layout_width="56dp"
-        android:layout_height="186dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/navleft"
-        android:onClick="recoNavLeft"
-        app:layout_constraintEnd_toStartOf="@id/recoContainer"
-        app:layout_constraintTop_toTopOf="@id/recoContainer"
-        app:layout_constraintBottom_toBottomOf="@id/recoContainer" />
+        <!--    <ImageView-->
+        <!--        android:id="@+id/chargingicononmainactivty"-->
+        <!--        android:layout_width="wrap_content"-->
+        <!--        android:layout_height="wrap_content"-->
+        <!--        android:layout_marginTop="27dp"-->
+        <!--        android:layout_marginEnd="412dp"-->
+        <!--        app:layout_constraintEnd_toEndOf="parent"-->
+        <!--        app:layout_constraintTop_toTopOf="parent"-->
+        <!--        android:visibility="gone"-->
+        <!--        app:srcCompat="@drawable/chargingicononmainactivty" />-->
 
-    <!-- ================= RECO RIGHT BUTTON ================= -->
-    <ImageButton
-        android:id="@+id/recoNavRight"
-        android:layout_width="56dp"
-        android:layout_height="186dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/navright"
-        android:onClick="recoNavRight"
-        app:layout_constraintStart_toEndOf="@id/recoContainer"
-        app:layout_constraintTop_toTopOf="@id/recoContainer"
-        app:layout_constraintBottom_toBottomOf="@id/recoContainer" />
+        <TextView
+            android:id="@+id/textstatus"
+            android:layout_width="373dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="452dp"
+            android:layout_marginBottom="195dp"
+            android:fontFamily="@font/kanit"
+            android:text="Switching to APU, Please wait..."
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="26dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <!--        <ImageView-->
-    <!--        android:id="@+id/tripreco"-->
-    <!--        android:layout_width="194dp"-->
-    <!--        android:layout_height="192dp"-->
-    <!--        android:layout_marginTop="72dp"-->
-    <!--        android:layout_marginEnd="30dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:srcCompat="@drawable/tripreco"-->
-    <!--        />-->
+        <TextView
+            android:id="@+id/RunningOnAPU"
+            android:layout_width="420dp"
+            android:layout_height="33dp"
+            android:layout_marginStart="430dp"
+            android:layout_marginBottom="290dp"
+            android:fontFamily="@font/kanit"
+            android:text="Running on APU, charge your scooter soon"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="20dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
-        android:id="@+id/yellowalert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/yellowwarning"
-        android:visibility="gone"
+        <TextView
+            android:id="@+id/KeylostMessage"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="540dp"
+            android:layout_marginTop="155dp"
+            android:fontFamily="@font/kanit"
+            android:shadowColor="#80000000"
+            android:shadowDx="5"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:text="Key lost"
+            android:textAlignment="center"
+            android:textColor="#FF0000"
+            android:textSize="38dp"
+            android:translationY="-10dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        />
-
-
-    <ImageView
-        android:id="@+id/redalert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/redalert"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/chargingbike"
-        android:layout_width="1280dp"
-        android:layout_height="480dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/chargingbike"
-        android:visibility="gone"
-
-        />
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/percenticon"-->
-    <!--        android:layout_width="56dp"-->
-    <!--        android:layout_height="41dp"-->
-    <!--        android:layout_alignParentStart="true"-->
-    <!--        android:layout_alignParentTop="true"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginEnd="470dp"-->
-    <!--        android:layout_marginBottom="202dp"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:srcCompat="@drawable/percenticon"-->
-
-    <!--        />-->
-
-    <TextView
-        android:id="@+id/chargingSOC"
-        android:layout_width="460dp"
-        android:layout_height="125dp"
-        android:layout_marginStart="410dp"
-        android:layout_marginBottom="176dp"
-        android:fontFamily="@font/opti"
-        android:text="--"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="90dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/chargingicon"
-        android:layout_width="205dp"
-        android:layout_height="35dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="538dp"
-        android:layout_marginBottom="152dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/chargingicon"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/tempalerticon"
-        android:layout_width="32dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="412dp"
-        android:layout_marginTop="17dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/tempicon"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/tpmsicon"
-        android:layout_width="32dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="765dp"
-        android:layout_marginTop="19dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/tpmsicon"
-        android:visibility="gone"
-        />
-    <ImageView
-        android:id="@+id/keyOutImage"
-        android:layout_width="40dp"
-        android:layout_height="28dp"
-        android:layout_marginStart="714dp"
-        android:layout_marginTop="25dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/keyout"
-        />
-
-    <ImageView
-        android:id="@+id/battempmsg"
-        android:layout_width="163dp"
-        android:layout_height="29dp"
-        android:layout_marginStart="561dp"
-        android:layout_marginTop="-5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/battemphigh"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/LowBatmsg"
-        android:layout_width="267dp"
-        android:layout_height="31dp"
-        android:layout_marginStart="509dp"
-        android:layout_marginTop="-4dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/lowbatmsg"
-        android:visibility="gone"
-        />
-
-    <ImageView
-        android:id="@+id/apubaticon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="435dp"
-        android:visibility="gone"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/battery_level_1" />
-
-
-    <TextView
-        android:id="@+id/APUbatteryTV"
-        android:layout_width="82dp"
-        android:layout_height="22dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="848dp"
-        android:visibility="gone"
-        android:layout_marginTop="44dp"
-        android:fontFamily="@font/kanit"
-        android:shadowColor="#80000000"
-        android:shadowDx="5"
-        android:shadowDy="3"
-        android:shadowRadius="5"
-        android:text="APU 100%"
-        android:textAlignment="textStart"
-        android:textColor="#FFFFFFFF"
-        android:textSize="17dp"
-        android:translationY="-10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/chargingicononmainactivty"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="27dp"-->
-    <!--        android:layout_marginEnd="412dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:srcCompat="@drawable/chargingicononmainactivty" />-->
-
-    <TextView
-        android:id="@+id/textstatus"
-        android:layout_width="373dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="452dp"
-        android:layout_marginBottom="195dp"
-        android:fontFamily="@font/kanit"
-        android:text="Switching to APU, Please wait..."
-        android:textColor="#FFFFFF"
-        android:textSize="26dp"
-        android:visibility="gone"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/RunningOnAPU"
-        android:layout_width="420dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="430dp"
-        android:layout_marginBottom="290dp"
-        android:fontFamily="@font/kanit"
-        android:text="Running on APU, charge your scooter soon"
-        android:textColor="#FFFFFF"
-        android:textSize="20dp"
-        android:visibility="gone"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/KeylostMessage"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="540dp"
-        android:layout_marginTop="155dp"
-        android:fontFamily="@font/kanit"
-        android:shadowColor="#80000000"
-        android:shadowDx="5"
-        android:shadowDy="3"
-        android:shadowRadius="5"
-        android:text="Key lost"
-        android:textAlignment="center"
-        android:textColor="#FF0000"
-        android:textSize="38dp"
-        android:visibility="gone"
-        android:translationY="-10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/overlayContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:clickable="true"
-        android:focusable="true"/>
+        <FrameLayout
+            android:id="@+id/overlayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

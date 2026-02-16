@@ -33,10 +33,10 @@ public class GestureHelper {
 
                 boolean inBottomEdge = distanceFromBottom <= EDGE_SWIPE_THRESHOLD;
 
-                Log.e(TAG, "DOWN rawY=" + rawY +
-                        " screenH=" + screenHeight +
-                        " distFromBottom=" + distanceFromBottom +
-                        " inEdge=" + inBottomEdge);
+//               // Log.e(TAG, "DOWN rawY=" + rawY +
+//                        " screenH=" + screenHeight +
+//                        " distFromBottom=" + distanceFromBottom +
+//                        " inEdge=" + inBottomEdge);
 
                 // 🔒 HARD GATE
                 gestureEnabledForThisTouch = inBottomEdge;
@@ -58,14 +58,14 @@ public class GestureHelper {
                 float endRawY = event.getRawY();
                 float diffY = endRawY - startRawY;
 
-                Log.e(TAG, "UP rawY=" + endRawY +
-                        " diffY=" + diffY +
-                        " enabled=" + gestureEnabledForThisTouch);
+//                Log.e(TAG, "UP rawY=" + endRawY +
+//                        " diffY=" + diffY +
+//                        " enabled=" + gestureEnabledForThisTouch);
 
                 // ✅ Only bottom → top swipe
                 if (diffY < -MIN_SWIPE_DISTANCE) {
 
-                    Log.e(TAG, "🔥 EDGE HOME GESTURE");
+                    //Log.e(TAG, "🔥 EDGE HOME GESTURE");
 
                     Intent intent = new Intent(activity, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);

@@ -36,7 +36,7 @@ public class AhTrackerManager {
 
     // Update Charging Ah
     public void updateChargingAh(float bmsInAh) {
-        Log.d("AH_TRACKER", "ChargingAh input = " + bmsInAh);
+        //Log.d("AH_TRACKER", "ChargingAh input = " + bmsInAh);
 
         if (bmsInAh < prevBMSInAh) {
             // BMS counter reset happened
@@ -52,7 +52,7 @@ public class AhTrackerManager {
 
     //  Update Discharging Ah
     public void updateDischargingAh(float bmsOutAh) {
-        Log.d("AH_TRACKER", "DischargingAh input = " + bmsOutAh);
+        //Log.d("AH_TRACKER", "DischargingAh input = " + bmsOutAh);
 
         if (bmsOutAh < prevBMSOutAh) {
             rideOSOutAh += bmsOutAh;
@@ -73,7 +73,7 @@ public class AhTrackerManager {
         if (rem < 0f) rem = 0f;
         if (rem > capacity) rem = capacity;   //HARD LOCK
 
-        Log.d("AH_TRACKER", "RemainingAh(clamped) = " + rem);
+       //Log.d("AH_TRACKER", "RemainingAh(clamped) = " + rem);
         return rem;
     }
 
@@ -85,7 +85,7 @@ public class AhTrackerManager {
 
         // Safety checks
         if (capacity <= 0f) {
-            Log.e("AH_TRACKER", "Invalid battery capacity: " + capacity);
+            //Log.e("AH_TRACKER", "Invalid battery capacity: " + capacity);
             return 0f;
         }
 
@@ -146,6 +146,6 @@ public class AhTrackerManager {
         prefs.edit().clear().apply();   // clear all stored AH values
         save();                          // apply new cleared values
 
-        Log.d("AH_TRACKER", "RESET completed. All AH values cleared.");
+        //Log.d("AH_TRACKER", "RESET completed. All AH values cleared.");
     }
 }

@@ -2473,8 +2473,13 @@ public class UIUpdater  {
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
 //          Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
 //            tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/10);
-        float current = getFormattedBusCurrent(hb3.getBSG3_BYTE34());
+        float current = (float) roundTo1Decimal(getFormattedBusCurrent(hb3.getBSG3_BYTE34())*-1);
         tm.setTeleCurrentConsumption(current);
+        if(current<=0)binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
+        else{
+            binding.RegenCurrentValue.setVisibility(View.VISIBLE);
+            binding.RegenCurrentValue.setText(current+"A");
+        }
         Log.d("fdsadg", "THIS ISAFTE NEGATIVE CURRENT FROM CONTROLLER = " + current);
 
     }
@@ -2495,7 +2500,9 @@ public class UIUpdater  {
         return current;
     }
 
-
+    private double roundTo1Decimal(double value) {
+        return Math.round(value * 10.0) / 10.0;
+    }
 
     /**
      * 更新 CAN 数据 10FB07A8
