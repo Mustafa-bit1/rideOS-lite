@@ -1656,37 +1656,37 @@ public class UIUpdater  {
         }
     }
 
-    private void animateSpeedLevelOnce() {
-
-        final Handler handler = new Handler();
-        final int[] level = {0};
-        final boolean[] increasing = {true};
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int mappedSpeed = (level[0] / 10) * 10; // Use multiples of 10 (0,10,...100)
-
-                if (MainActivity.speedImageMap.containsKey(mappedSpeed)) {
-                    binding.speedImageView.setImageResource(MainActivity.speedImageMap.get(mappedSpeed));
-                }
-
-                if (increasing[0]) {
-                    level[0] += 10;
-                    if (level[0] >= 100) {
-                        increasing[0] = false;
-                    }
-                } else {
-                    level[0] -= 10;
-                    if (level[0] < 0) {
-                        return;
-                    }
-                }
-
-                handler.postDelayed(this, 50); // Control animation speed
-            }
-        }, 50);
-    }
+//    private void animateSpeedLevelOnce() {
+//
+//        final Handler handler = new Handler();
+//        final int[] level = {0};
+//        final boolean[] increasing = {true};
+//
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                int mappedSpeed = (level[0] / 10) * 10; // Use multiples of 10 (0,10,...100)
+//
+//                if (MainActivity.speedImageMap.containsKey(mappedSpeed)) {
+//                    binding.speedImageView.setImageResource(MainActivity.speedImageMap.get(mappedSpeed));
+//                }
+//
+//                if (increasing[0]) {
+//                    level[0] += 10;
+//                    if (level[0] >= 100) {
+//                        increasing[0] = false;
+//                    }
+//                } else {
+//                    level[0] -= 10;
+//                    if (level[0] < 0) {
+//                        return;
+//                    }
+//                }
+//
+//                handler.postDelayed(this, 50); // Control animation speed
+//            }
+//        }, 50);
+//    }
 
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
@@ -2386,17 +2386,7 @@ public class UIUpdater  {
         modeChangePlayer.start();
     }
 
-    public void updateSpeedAnimation(int speed) {
-        int mappedSpeed = (speed > 100) ? 101 : Math.max(0, speed); // If speed > 100, use 101 (speed_100)
 
-        if (mappedSpeed == lastSpeed) return; // Avoid redundant updates
-
-        if (MainActivity.speedImageMap.containsKey(mappedSpeed)) {
-            binding.speedImageView.setImageResource(MainActivity.speedImageMap.get(mappedSpeed));
-        }
-
-        lastSpeed = mappedSpeed;
-    }
 
 
     public void updateBatteryAnimation(int batteryLevel) {
@@ -2465,24 +2455,60 @@ public class UIUpdater  {
             return R.drawable.battery_level_3;
         }
     }
-
     /**
      * 更新 CAN 数据 10FA07A8
      * @param hb3 解析后的 Heartbeat3 对象
      */
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
-//          Log.d("fdsadg","THISISCURRENTFROMCONTROLER  "+hb3.getBSG3_BYTE34());
-//            tm.setTeleCurrentConsumption(hb3.getBSG3_BYTE34()/10);
-        float current = (float) roundTo1Decimal(getFormattedBusCurrent(hb3.getBSG3_BYTE34())*-1);
-        tm.setTeleCurrentConsumption(current);
-        if(current<=0)binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
-        else{
-            binding.RegenCurrentValue.setVisibility(View.VISIBLE);
-            binding.RegenCurrentValue.setText(current+"A");
-        }
-        Log.d("fdsadg", "THIS ISAFTE NEGATIVE CURRENT FROM CONTROLLER = " + current);
 
+        float current = (float) roundTo1Decimal(
+                getFormattedBusCurrent(hb3.getBSG3_BYTE34()) * -1
+        );
+
+        tm.setTeleCurrentConsumption(current);
+
+        if(current <= 0){
+            binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
+            updateRegenAnimation(0);   // reset animation
+        } else {
+            binding.RegenCurrentValue.setVisibility(View.VISIBLE);
+            binding.RegenCurrentValue.setText(current + "A");
+
+            updateRegenAnimation(current);  //  animation trigger
+        }
+
+        Log.d("fdsadg", "THIS IS REGEN CURRENT = " + current);
     }
+    public void updateSpeedAnimation(int speed) {
+        int mappedSpeed = (speed > 100) ? 101 : Math.max(0, speed); // If speed > 100, use 101 (speed_100)
+
+        if (mappedSpeed == lastSpeed) return; // Avoid redundant updates
+
+        if (MainActivity.speedImageMap.containsKey(mappedSpeed)) {
+            binding.speedImageView.setImageResource(MainActivity.speedImageMap.get(mappedSpeed));
+        }
+
+        lastSpeed = mappedSpeed;
+    }
+    private int lastRegen = -1;
+
+    public void updateRegenAnimation(float current) {
+
+        // Clamp current between 0 and 50
+        int regenLevel = (int) Math.round(current);
+        int mappedRegen = Math.min(50, Math.max(0, regenLevel));  // 0–50 only
+
+        if (mappedRegen == lastRegen) return; // avoid redundant redraw
+
+        if (MainActivity.regenImageMap.containsKey(mappedRegen)) {
+            binding.regenImageView.setImageResource(
+                    MainActivity.regenImageMap.get(mappedRegen)
+            );
+        }
+
+        lastRegen = mappedRegen;
+    }
+
     public static float getFormattedBusCurrent(String byte34Hex) {
 
         // Step 1: parse HEX string to int

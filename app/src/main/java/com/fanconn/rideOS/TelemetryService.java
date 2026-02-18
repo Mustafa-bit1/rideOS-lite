@@ -746,20 +746,25 @@ public class TelemetryService extends Service {
         if (hasActiveInternetConnection()) {
             // Send staged data first
             // NEW SAFE BATCH SENDING
+//            if (TelemetryStagingManager.getInstance().hasData()) {
+//                new Thread(() -> {
+//                    while (TelemetryStagingManager.getInstance().hasData() && hasActiveInternetConnection()) {
+//
+//                        List<RealTimeData> batch = TelemetryStagingManager.getInstance().pollBatch();  // Take 20 at once
+//                        for (RealTimeData r : batch) {
+//                            sendToServer(r);
+//                            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
+//                        }
+//
+//                        try { Thread.sleep(300); } catch (Exception ignored) {} // Small break between batches
+//                    }
+//                }).start();
+//            }
+
             if (TelemetryStagingManager.getInstance().hasData()) {
-                new Thread(() -> {
-                    while (TelemetryStagingManager.getInstance().hasData() && hasActiveInternetConnection()) {
-
-                        List<RealTimeData> batch = TelemetryStagingManager.getInstance().pollBatch();  // Take 20 at once
-                        for (RealTimeData r : batch) {
-                            sendToServer(r);
-                            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
-                        }
-
-                        try { Thread.sleep(300); } catch (Exception ignored) {} // Small break between batches
-                    }
-                }).start();
+                flushStagedData();
             }
+
 
 
             // Send current data
@@ -775,6 +780,29 @@ public class TelemetryService extends Service {
             //Log.e("Telemetry", "NOOINTENET VAIL SNEDNING ");
             TelemetryStagingManager.getInstance().addData(data);
         }
+    }
+    private boolean isFlushing = false;
+
+    private void flushStagedData() {
+        if (isFlushing) return;   // prevents duplicate workers
+
+        isFlushing = true;
+        telemetryHandler.post(() -> {   // SAME LOGIC, different execution model
+            while (TelemetryStagingManager.getInstance().hasData()
+                    && hasActiveInternetConnection()) {
+
+                List<RealTimeData> batch =
+                        TelemetryStagingManager.getInstance().pollBatch();
+
+                for (RealTimeData r : batch) {
+                    sendToServer(r);   // SAME sending logic
+                    try { Thread.sleep(50); } catch (Exception ignored) {}
+                }
+
+                try { Thread.sleep(300); } catch (Exception ignored) {}
+            }
+            isFlushing = false;
+        });
     }
 
     private RealTimeData collectTelemetryData(String vin) {

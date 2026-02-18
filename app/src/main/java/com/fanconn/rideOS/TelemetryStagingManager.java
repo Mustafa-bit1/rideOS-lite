@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class TelemetryStagingManager {
 
-    private static final int MAX_ENTRIES = 400;   // Reduced to avoid heavy memory usage
+    private static final int MAX_ENTRIES = 600;   // Reduced to avoid heavy memory usage
     private static final int BATCH_SIZE = 20;     // Send 20 at a time to prevent blocking
     private final LinkedList<RealTimeData> queue = new LinkedList<>();
     private static TelemetryStagingManager instance;

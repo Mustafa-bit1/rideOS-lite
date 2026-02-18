@@ -70,6 +70,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import com.fanconn.rideOS.authen.LoginActivity;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     public static TextView frontLockSWSTV, seatCushionLockSWSTV, neutralGear, driveGear, reverseGear, speedThreshold1, speedThreshold2, speedThreshold3;
     static HashMap<Integer, Integer> speedImageMap = new HashMap<>();
     static HashMap<Integer, Integer> batteryImageMap = new HashMap<>();
+    public static HashMap<Integer, Integer> regenImageMap = new HashMap<>();
+
     static HashMap<Integer, Integer> APUbatteryImageMap = new HashMap<>();
     private int lastBatteryLevel = -1; // Store last battery level to avoid redundant updates
     private int lastSpeed = -1;
@@ -476,9 +479,22 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                     }
                 }, false);
 
+        initRegenImages();
 
     }//END OF ONCREATE METHOD
 
+    private void initRegenImages() {
+        for (int i = 0; i <= 50; i++) {
+            int resId = getResources().getIdentifier(
+                    "regen" + i,
+                    "drawable",
+                    getPackageName()
+            );
+            if (resId != 0) {
+                MainActivity.regenImageMap.put(i, resId);
+            }
+        }
+    }
 
     //private CommandHandler commandHandler;
     private void forceStopSelfAndLaunchOther() {
@@ -712,39 +728,39 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     }
 
 
-    private void animateSpeedLevelOnce() {
-        final Handler handler = new Handler();
-        final int[] level = {0};
-        final boolean[] increasing = {true};
-
-        speedAnimationCompleted = false; // Optional flag if you want to track
-
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int mappedSpeed = (level[0] / 10) * 10; // Use multiples of 10 (0,10,...100)
-
-                if (MainActivity.speedImageMap.containsKey(mappedSpeed)) {
-                    binding.speedImageView.setImageResource(MainActivity.speedImageMap.get(mappedSpeed));
-                }
-
-                if (increasing[0]) {
-                    level[0] += 10;
-                    if (level[0] >= 100) {
-                        increasing[0] = false;
-                    }
-                } else {
-                    level[0] -= 10;
-                    if (level[0] < 0) {
-                        speedAnimationCompleted = true; // ✅ Animation done
-                        return;
-                    }
-                }
-
-                handler.postDelayed(this, 60); // Control animation speed
-            }
-        }, 50);
-    }
+//    private void animateSpeedLevelOnce() {
+//        final Handler handler = new Handler();
+//        final int[] level = {0};
+//        final boolean[] increasing = {true};
+//
+//        speedAnimationCompleted = false; // Optional flag if you want to track
+//
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                int mappedSpeed = (level[0] / 10) * 10; // Use multiples of 10 (0,10,...100)
+//
+//                if (MainActivity.speedImageMap.containsKey(mappedSpeed)) {
+//                    binding.speedImageView.setImageResource(MainActivity.speedImageMap.get(mappedSpeed));
+//                }
+//
+//                if (increasing[0]) {
+//                    level[0] += 10;
+//                    if (level[0] >= 100) {
+//                        increasing[0] = false;
+//                    }
+//                } else {
+//                    level[0] -= 10;
+//                    if (level[0] < 0) {
+//                        speedAnimationCompleted = true; // ✅ Animation done
+//                        return;
+//                    }
+//                }
+//
+//                handler.postDelayed(this, 60); // Control animation speed
+//            }
+//        }, 50);
+//    }
 
     public void SpeedAndSOCANimation() {
         for (int i = 0; i <= 100; i++) { // Load images for speeds 0 to 100
