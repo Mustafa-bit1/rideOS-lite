@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -37,6 +38,7 @@ import java.lang.reflect.Method;
 
 //=========================
 
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 //=========================
 
@@ -2470,15 +2472,48 @@ public class UIUpdater  {
         if(current <= 0){
             binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
             updateRegenAnimation(0);   // reset animation
+            setSpeedColor(false);
+
         } else {
             binding.RegenCurrentValue.setVisibility(View.VISIBLE);
             binding.RegenCurrentValue.setText(current + "A");
 
             updateRegenAnimation(current);  //  animation trigger
+            setSpeedColor(true);
+
+
         }
 
         Log.d("fdsadg", "THIS IS REGEN CURRENT = " + current);
     }
+
+    private void setSpeedColor(boolean isRegen) {
+        if (isRegen) {
+            // Green text
+            binding.speedNumberTV.setTextColor(
+                    ContextCompat.getColor(context, R.color.speed_regen)
+            );
+
+            // Glow effect
+            binding.speedNumberTV.setShadowLayer(
+                    12f,   // blur radius
+                    0f,    // x offset
+                    0f,    // y offset
+                    ContextCompat.getColor(context, R.color.speed_regen_glow)
+            );
+
+        } else {
+            // Normal text
+            binding.speedNumberTV.setTextColor(
+                    ContextCompat.getColor(context, R.color.speed_normal)
+            );
+
+            // Remove glow
+            binding.speedNumberTV.setShadowLayer(0f, 0f, 0f, Color.TRANSPARENT);
+        }
+    }
+
+
     public void updateSpeedAnimation(int speed) {
         int mappedSpeed = (speed > 100) ? 101 : Math.max(0, speed); // If speed > 100, use 101 (speed_100)
 

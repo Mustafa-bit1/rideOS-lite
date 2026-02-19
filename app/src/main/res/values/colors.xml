@@ -7,5 +7,8 @@
     <color name="toast_bg_success">#388E3C</color>   <!-- Green -->
     <color name="teal_200">#0682E4</color>
     <color name="teal_700">#0682E4</color>
+    <color name="speed_normal">#FFFFFF</color>
+    <color name="speed_regen">#01FF58</color>
+    <color name="speed_regen_glow">#6FFF00</color>  <!-- soft glow -->
 
 </resources>

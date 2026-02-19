@@ -208,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private Runnable mRunnableTime;  // 用于定时更新系统时间显示的任务
     ImageView keyImage;
     QuickSettingsView qsView;
+    public static String VIN_On_CAN;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //
@@ -359,6 +360,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         menubtn.setOnClickListener(v -> {
 //            Log.d("MainActivity", "Menu button clicked");
             Log.d("MainActivity", "Menu OTA MCUVERSION "+serialPortManager.mad.getMcuVersions());
+//            Log.d("MainActivity", "THIS IS VIN_ON_CAN "+VIN_On_CAN);
+//            serialPortManager.VCUSendToMCU("FFAA550103001518FF50A5"+VIN_On_CAN);
+//            serialPortManager.VCUSendToMCU("FFAA5501030015189501400001020304050607");//+VIN_On_CAN);
+
+
             if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
                 Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening menu");
 
@@ -481,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         initRegenImages();
 
+        setVinOnCanLast8Safe(VINNUMBER);
     }//END OF ONCREATE METHOD
 
     private void initRegenImages() {
@@ -496,6 +503,43 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
     }
 
+    public static void setVinOnCanLast8Safe(String vin) {
+
+        if (vin == null) {
+            vin = "";
+        }
+
+        String data;
+
+        if (vin.length() >= 8) {
+            // Normal case → last 8
+            data = vin.substring(vin.length() - 8);
+        } else {
+            // Test case → pad with '0'
+            StringBuilder sb = new StringBuilder();
+            int pad = 8 - vin.length();
+
+            for (int i = 0; i < pad; i++) {
+                sb.append('0');   // padding
+            }
+            sb.append(vin);
+            data = sb.toString();
+        }
+
+        // ASCII to bytes
+        byte[] payload = new byte[8];
+        for (int i = 0; i < 8; i++) {
+            payload[i] = (byte) data.charAt(i);
+        }
+
+        // Bytes → HEX (no spaces)
+        StringBuilder hex = new StringBuilder();
+        for (byte b : payload) {
+            hex.append(String.format("%02X", b));
+        }
+
+        VIN_On_CAN = hex.toString();
+    }
     //private CommandHandler commandHandler;
     private void forceStopSelfAndLaunchOther() {
         String myPkg = getPackageName();
@@ -2223,9 +2267,13 @@ public void recoNavLeft(View view) {
                 case 10:
                     serialPortManager.VCUSendToMCU("FFAA5501030015189501400001020304050607");
                     break;
+                case 11:
+                    serialPortManager.VCUSendToMCU("FFAA550103001518FF50A5"+VIN_On_CAN);
+                    break;
+
             }
-            requestIndex = (requestIndex + 1) % 11;
-            bmsHandler.postDelayed(this, 650); // 650ms interval
+            requestIndex = (requestIndex + 1) % 12;
+            bmsHandler.postDelayed(this, 2000); // 650ms interval
         }
     };
 
