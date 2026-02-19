@@ -55,6 +55,16 @@ public class serialApplication extends MyApp {
         serialPortManager = SerialPortManager.getInstance(sPort, iBaudRate, RX_type, mHandler);
         serialPortManager.initSerialConfig(this);
         Log.d("MyApplication", "SerialPortManager initialized globally and reading continuously");
+
+        String vin = MetadataManager.get().getVin();
+
+        if(!MetadataManager.get().getVin().startsWith("UNKNOWN_VIN"))
+        {
+            Log.d("MainActivity", "🚀 Starting Telemetry for VIN: " + vin);
+            Intent intent = new Intent(this, TelemetryService.class);
+            intent.putExtra("VIN_NUMBER", vin);
+            startService(intent);
+        }
         // ✅ Acquire partial wake lock to keep CPU alive
 //        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 //        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "rideOS::SerialLock");

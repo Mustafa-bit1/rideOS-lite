@@ -325,13 +325,13 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         OTAUpdateOFApp();               //Feature Startups
         //Telemetry();                    //Feature Startups
 //        uiUpdater.startTelemetry(VINNUMBER);///START TELEMETRY
-        if(!MetadataManager.get().getVin().startsWith("UNKNOWN_VIN"))
-        {
-            Log.d("MainActivity", "🚀 Starting Telemetry for VIN: " + VINNUMBER);
-            Intent intent = new Intent(this, TelemetryService.class);
-            intent.putExtra("VIN_NUMBER", VINNUMBER);
-            startService(intent);
-        }
+//        if(!MetadataManager.get().getVin().startsWith("UNKNOWN_VIN"))
+//        {
+//            Log.d("MainActivity", "🚀 Starting Telemetry for VIN: " + VINNUMBER);
+//            Intent intent = new Intent(this, TelemetryService.class);
+//            intent.putExtra("VIN_NUMBER", VINNUMBER);
+//            startService(intent);
+//        }
 
         Intent tpmsIntent = new Intent(this, TpmsScanService.class);
         startService(tpmsIntent);//TPMS SERVICE
