@@ -325,6 +325,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         OTAUpdateOFApp();               //Feature Startups
         //Telemetry();                    //Feature Startups
 //        uiUpdater.startTelemetry(VINNUMBER);///START TELEMETRY
+
+        //This is what start sending telemetry data
 //        if(!MetadataManager.get().getVin().startsWith("UNKNOWN_VIN"))
 //        {
 //            Log.d("MainActivity", "🚀 Starting Telemetry for VIN: " + VINNUMBER);

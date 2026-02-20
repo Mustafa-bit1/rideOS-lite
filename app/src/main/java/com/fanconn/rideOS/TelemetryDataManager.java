@@ -40,6 +40,8 @@ public class TelemetryDataManager {
     private float teleBMSMosTemp;
     private String teleNTC;
     private float teleSOC;
+    private float teleBMSSOC;
+
     private float teleAPUSOC;
 
     // ===== Singleton =====
@@ -297,6 +299,13 @@ public class TelemetryDataManager {
 
     public void setTeleSOC(float teleSOC) {
         this.teleSOC = teleSOC;
+    }
+    public float getBMSTeleSOC() {
+        return teleBMSSOC;
+    }
+
+    public void setBMSTeleSOC(float teleBMSSOC) {
+        this.teleBMSSOC = teleBMSSOC;
     }
 
     public float getTeleAPUSOC() {

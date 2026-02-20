@@ -238,6 +238,64 @@ public class ScooterMqttClient {
                     Log.d(TAG, "Unknown frame ignored: " + value);
                     ackStatus = "Invalid_cmd";
                     break;
+                case "HANDLELOCK":
+                    if ("1".equals(value)) {
+                        // UNLOCK HANDLE
+                        if(serialApplication.getSerialPortManager()!=null){
+                            serialApplication.getSerialPortManager().VCUSendToMCU("FFAA550101000A01");
+                            ackStatus = "success";
+                        }
+
+                    } else if ("0".equals(value)) {
+                        // LOCK HANDLE
+                        if (UIUpdater.getInstance() != null && serialApplication.getSerialPortManager().getHb3().getBSG2_BYTE78() == 0) {
+                            ackStatus = "success";
+                            serialApplication.getSerialPortManager().VCUSendToMCU("FFAA550101000A00");
+                        }
+                        else {
+                            ackStatus = "Scooter in motion";
+                        }
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
+                case "LED":
+                    if ("1".equals(value)) {
+                        // UNLOCK HANDLE
+                        if(serialApplication.getSerialPortManager()!=null){
+                            serialApplication.getSerialPortManager().VCUSendToMCU("FFAA550107000A01");
+                            ackStatus = "success";
+                        }
+
+                    } else if ("0".equals(value)) {
+                        // LOCK HANDLE
+                        if (UIUpdater.getInstance() != null && serialApplication.getSerialPortManager().getHb3().getBSG2_BYTE78() == 0) {
+                            ackStatus = "success";
+                            serialApplication.getSerialPortManager().VCUSendToMCU("FFAA550107000A00");
+                        }
+                        else {
+                            ackStatus = "Scooter in motion";
+                        }
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
+                case "SEATLOCK":
+                 if ("1".equals(value)) {
+                        // LOCK HANDLE
+                        if (UIUpdater.getInstance() != null && serialApplication.getSerialPortManager().getHb3().getBSG2_BYTE78() == 0) {
+                            ackStatus = "success";
+                            serialApplication.getSerialPortManager().VCUSendToMCU("FFAA550102000A01");
+                        }
+                        else {
+                            ackStatus = "Scooter in motion";
+                        }
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
 
                 case "BOARDRESTART":
                    // Log.d(TAG, "🔄 Restart command received");
@@ -295,7 +353,7 @@ public class ScooterMqttClient {
                 case "AIRPLANE":
                     if ("1".equals(value)) {
                         ackStatus = "success";
-                        Log.d("AIRPLANE", "✈ Airplane mode auto-disabled");
+                        Log.d("AIRPLANE", " Airplane mode auto-disabled");
                         DeviceNetworkController.enableAirplaneModeWithAutoOff(
                                 context,
                                 3000   // 3 seconds

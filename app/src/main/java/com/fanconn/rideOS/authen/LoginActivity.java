@@ -796,7 +796,7 @@ public class LoginActivity extends AppCompatActivity{
 
                 }
                 else{
-                    Log.d("asdfsgd","THE BATTERY IS "+serialPortManager.getHb3().getBatteryLevel()/10) ;
+                    //Log.d("asdfsgd","THE BATTERY IS "+serialPortManager.getHb3().getBatteryLevel()/10) ;
                 }
             }//END OF SAME USER
 

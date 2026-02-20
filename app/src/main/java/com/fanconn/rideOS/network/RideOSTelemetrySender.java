@@ -232,7 +232,6 @@ public class RideOSTelemetrySender {
 
         data.rideOsVersion = rideOsVersion;
 
-        Log.e("TELEMETRY_API_SEND", new Gson().toJson(data));
 
         // =============================
         // MOTION (always valid)
@@ -240,6 +239,8 @@ public class RideOSTelemetrySender {
         data.speedKmph = Math.round(t.getTeleSpeed());
         data.tripKm = t.getTeleTrip();
         data.odo = t.getTeleODO();
+
+        Log.e("ODOFORRO ","ODOFORRO "+data.odo);
 
 
         // =============================

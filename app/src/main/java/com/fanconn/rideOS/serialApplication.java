@@ -65,6 +65,7 @@ public class serialApplication extends MyApp {
             intent.putExtra("VIN_NUMBER", vin);
             startService(intent);
         }
+
         // ✅ Acquire partial wake lock to keep CPU alive
 //        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 //        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "rideOS::SerialLock");

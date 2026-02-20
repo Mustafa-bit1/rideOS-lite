@@ -589,6 +589,7 @@ public class UIUpdater  {
         int range= (int) Math.floor(batteryLevel * 2.0);  // Get the whole number part
         if(batteryLevel>=0 && batteryLevel<=100){
             tm.setTeleSOC(batteryLevel);
+            tm.setBMSTeleSOC((float) hb3.getBatteryLevel() /10);
             binding.batteryTV.setText("Battery "+sBatteryLevel + "%   |  ~ "+range+" km");
         }
 
@@ -2069,7 +2070,7 @@ public class UIUpdater  {
 
     public void initIndicatorLogic(Context context) {
         soundPool = new SoundPool.Builder().setMaxStreams(1).build();
-        soundId = soundPool.load(context, R.raw.turnspecial, 1);
+        soundId = soundPool.load(context, R.raw.vidturn, 1);
         soundPool.setOnLoadCompleteListener((sp, id, status) -> {
             soundLoaded = (status == 0);
         });

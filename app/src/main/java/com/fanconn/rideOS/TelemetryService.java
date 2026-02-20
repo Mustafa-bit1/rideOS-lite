@@ -837,7 +837,7 @@ public class TelemetryService extends Service {
         }
         data.time = java.time.OffsetDateTime.now().toString();
         //int mcuVersion = getEffectiveMcuVersion();
-        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage();
+        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC();
 
         return data;
     }
