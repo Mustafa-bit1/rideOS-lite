@@ -824,7 +824,7 @@ public class TelemetryService extends Service {
         data.inAH_by_charger = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleChargerAH());
         data.inAH_by_regen = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRegenAH());
         data.outAH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleDischargeAH());
-        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + "," + UptimeManager.getUptime();
+        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ",uptime=" + UptimeManager.getUptime()+",CurrentGear="+MainActivity.currentgear;
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
         Log.d("sdafd","TELETIREPRESUURE2222 IS "+data.tirepressure);
@@ -837,7 +837,7 @@ public class TelemetryService extends Service {
         }
         data.time = java.time.OffsetDateTime.now().toString();
         //int mcuVersion = getEffectiveMcuVersion();
-        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC();
+        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH();
 
         return data;
     }

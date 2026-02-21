@@ -31,6 +31,7 @@ public class TelemetryDataManager {
     private float teleAPUBatVoltage;
     private String teleIndividualCellVoltages;
     private float teleRemainingCapacityAH;
+    private float teleBMSRemainingCapacityAH;
     private float teleODO;
     private float teleSpeed;
     private int teleControllerOffabrupt;
@@ -228,6 +229,13 @@ public class TelemetryDataManager {
 
     public void setTeleRemainingCapacityAH(float teleRemainingCapacityAH) {
         this.teleRemainingCapacityAH = teleRemainingCapacityAH;
+    }
+    public float getBMSTeleRemainingCapacityAH() {
+        return teleBMSRemainingCapacityAH;
+    }
+
+    public void setBMSTeleRemainingCapacityAH(float teleBMSRemainingCapacityAH) {
+        this.teleBMSRemainingCapacityAH = teleBMSRemainingCapacityAH;
     }
 
     public float getTeleODO() {

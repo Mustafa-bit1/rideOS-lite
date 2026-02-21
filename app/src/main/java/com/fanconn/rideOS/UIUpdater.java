@@ -567,6 +567,8 @@ public class UIUpdater  {
         int batteryLevel= (int)ahTrackerManager.getSOC();
         tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
 
+        tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
+
 //        int batteryLevel = Math.max(0, Math.min(100, (int) ahTrackerManager.getSOC()));
 
         String sBatteryLevel = String.valueOf(batteryLevel);
@@ -1429,6 +1431,23 @@ public class UIUpdater  {
 //        }
 
 // Priority 3: Gear-based UI (only if not charging and stand is closed)
+        switch (directionalGears) {
+            case 0: // Neutral
+                MainActivity.currentgear='N';
+                break;
+            case 1: // Neutral
+                MainActivity.currentgear='F';
+                break;
+
+            case 2: // Neutral
+                MainActivity.currentgear='R';
+                break;
+            default:
+                MainActivity.currentgear='O';
+                break;
+
+
+        }
 
         if (directionalGears != lastGear || standChanged) {
             lastGear = directionalGears;
@@ -2246,6 +2265,7 @@ public class UIUpdater  {
                         binding.speedNumberTV.setText("0");
                         tm.setTeleSpeed(0);
                         tm.setTeleControllerAbruptOff(1);
+                        MainActivity.currentgear='O';
                         rpm = 0;
                         ReadystopBeeping();
                         startReasySound = false;
@@ -2277,9 +2297,14 @@ public class UIUpdater  {
 //                                })
 //                                .setCancelable(false)
 //                                .show();
-                    }
-                }
+                                Log.d("saghfkjaf","THIS IS CONTOL OFF ON NOTLOCK");
 
+                    }
+                } else if ((now - lastCanUpdateTime) > CAN_TIMEOUT_MS && !canPopupShown) {
+                    Log.d("saghfkjaf","THIS IS CONTOL OFF ON LOCK");
+                    canPopupShown = true;
+                    MainActivity.currentgear='O';
+                }
                 // Keep checking
                 canTimeoutHandler.postDelayed(this, 1000);
             }

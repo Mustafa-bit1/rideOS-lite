@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     ImageView keyImage;
     QuickSettingsView qsView;
     public static String VIN_On_CAN;
+    public static char currentgear;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //
@@ -2157,6 +2158,7 @@ public void recoNavLeft(View view) {
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
 //        Log.d("MainActivity", "Running unlock sequence from post-login...");
         //animateBatteryLevelOnce();
+        currentgear='O';
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
         //TelemetryService.shdtelemetrywhenunlocked=true;
 
