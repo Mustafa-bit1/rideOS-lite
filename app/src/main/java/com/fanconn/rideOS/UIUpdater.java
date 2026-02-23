@@ -293,7 +293,7 @@ public class UIUpdater  {
         else if (hb1.getHeadlights() == 0)
         {
             binding.highBeamIVon.setVisibility(View.INVISIBLE);
-            binding.highBeamIVoff.setVisibility(View.VISIBLE);
+            //binding.highBeamIVoff.setVisibility(View.VISIBLE);
 
 //                if (isDriveMode && !isStand) {
 //                    binding.highBeamIVoff.setVisibility(View.VISIBLE);
@@ -1344,6 +1344,11 @@ public class UIUpdater  {
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
             }
+            if (activity != null && directionalGears==1 && !MainActivity.isrideOSOTA) {
+                (activity).closeRecoIfOpen();
+                (activity).closeQuickSettingsIfOpen();
+            }
+
         }
 
         int STAND =FrameUtils.extractBits(hb3.getBSG1_BYTE2(),0,1);
@@ -1477,8 +1482,13 @@ public class UIUpdater  {
 
                             activity.startActivity(intent);
                             activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
+
                         }
 
+                        if (activity != null) {
+                            (activity).closeRecoIfOpen();
+                            (activity).closeQuickSettingsIfOpen();
+                        }
 
                         //     cameraHandler.startRearRecording(rearPath);
 

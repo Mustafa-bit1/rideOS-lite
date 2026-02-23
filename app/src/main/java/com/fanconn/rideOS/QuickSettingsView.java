@@ -29,20 +29,16 @@ import com.fanconn.rideOS.menu.settings;
 public class QuickSettingsView extends FrameLayout {
     private static final int TOUCH_SLOP = 20; // px (small movement threshold)
     private float totalDrag = 0f;
-
     private BrightnessManager brightnessManager;
     private AudioManager audioManager;
     private final Handler handler = new Handler(Looper.getMainLooper());
-
     private ImageButton allSetbtn;
     private Button wifiToggle, autoBrightnessToggle, blue_tpmsbtn,new_feature_btn;
     private TextView autoBrightnessText;
     private SeekBar brightnessSlider, volumeSlider;
     private ImageButton muteButton;
-
     private float startY;
     private boolean dragging;
-
     private SharedPreferences prefs;
     private ContentObserver brightnessObserver;
 

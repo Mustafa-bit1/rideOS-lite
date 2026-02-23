@@ -2384,6 +2384,47 @@ public void recoNavLeft(View view) {
             return false;
         }
     }
+
+    public void closeRecoIfOpen() {
+
+        Fragment f = getSupportFragmentManager()
+                .findFragmentById(R.id.overlayContainer);
+
+        // Only close if RecoInfoFragment is actually open
+        if (f instanceof RecoInfoFragment) {
+
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(f)
+                    .commitAllowingStateLoss();
+
+            // Hide overlay container
+            View overlay = findViewById(R.id.overlayContainer);
+            if (overlay != null) {
+                overlay.setVisibility(View.GONE);
+            }
+
+            // Optional: restart inactivity timer if needed
+            if (UIUpdater.directionalGears == 0) {
+                InactivityManager.getInstance().startTimer(1);
+            }
+        }
+    }
+    public void closeQuickSettingsIfOpen() {
+
+        if (qsView == null) return;
+
+        // Check if QS is visible/open
+        if (qsView.getTranslationY() > -qsHeight + 5f) {   // tolerance
+
+            // Hard close (safe, no animation)
+            qsView.setTranslationY(-qsHeight);
+
+            // Reset drag state
+            isDraggingQS = false;
+            dragDistance = 0f;
+        }
+    }
     private float dragDistance = 0f;   // add this as class variable
 
     private void finishQuickSettings(float velocityY) {
