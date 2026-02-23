@@ -739,7 +739,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private void animateBatteryLevelOnce() {
 
         runOnUiThread(() -> {
-
+        //Log.d("dasfdsgf","ENTERoCNEANIMA");
             final Handler handler = new Handler(Looper.getMainLooper());
             final int[] level = {0};
             final boolean[] increasing = {true};
@@ -2156,8 +2156,8 @@ public void recoNavLeft(View view) {
 
     public void runPostLoginInit() {
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
-//        Log.d("MainActivity", "Running unlock sequence from post-login...");
-        //animateBatteryLevelOnce();
+       // Log.d("MainActivity", "Running unlock sequence from post-login...");
+        animateBatteryLevelOnce();
         currentgear='O';
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
         //TelemetryService.shdtelemetrywhenunlocked=true;
