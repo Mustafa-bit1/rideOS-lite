@@ -565,6 +565,7 @@ public class UIUpdater  {
         // 更新电池电量
 //        int batteryLevel= hb3.getBatteryLevel() / 10;
         int batteryLevel= (int)ahTrackerManager.getSOC();
+        Log.d("adsfg","THISISAHSOC="+batteryLevel);
         tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
 
         tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
@@ -705,7 +706,7 @@ public class UIUpdater  {
         //BatPackSwitcher.startSwitchingToAPU();
 //
         try {
-            if (batteryLevel>=0 && batteryLevel<=100) { // ✅ Only update if animation is done
+            if (batteryLevel>=0 && batteryLevel<=100 && MainActivity.batteryAnimationCompleted && MainActivity.MainisActive) { // ✅ Only update if animation is done
                 updateBatteryAnimation(batteryLevel);
             }
         } catch (NumberFormatException e) {
@@ -1867,9 +1868,11 @@ public class UIUpdater  {
         binding.speedImageView.setVisibility(View.INVISIBLE);
         binding.speedNumberTV.setVisibility(View.INVISIBLE);
         binding.speedTV.setVisibility(View.INVISIBLE);
-        binding.turnLeftIV.setVisibility(View.VISIBLE);
+        binding.turnLeftIV.setVisibility(View.INVISIBLE);
 //        binding.highBeamIVoff.setVisibility(View.VISIBLE);
-        binding.turnRightIV.setVisibility(View.VISIBLE);
+        binding.turnRightIV.setVisibility(View.INVISIBLE);
+        binding.highBeamIVoff.setVisibility(View.INVISIBLE);
+
         // binding.leftOn.setVisibility(View.INVISIBLE);
         //  binding.rightOn.setVisibility(View.INVISIBLE);
         //binding.readyIV.setVisibility(View.INVISIBLE);
@@ -1945,6 +1948,8 @@ public class UIUpdater  {
         }
         binding.turnLeftIV.setVisibility(View.VISIBLE);
         binding.turnRightIV.setVisibility(View.VISIBLE);
+        binding.highBeamIVoff.setVisibility(View.VISIBLE);
+
 //        binding.highBeamIVoff.setVisibility(View.VISIBLE);
         binding.removestand.setVisibility(View.INVISIBLE);
 //        binding.chargingicononmainactivty.setVisibility(View.VISIBLE);
@@ -2007,6 +2012,8 @@ public class UIUpdater  {
         binding.APUbatteryTV.setVisibility(View.INVISIBLE);
         binding.turnLeftIV.setVisibility(View.VISIBLE);
         binding.turnRightIV.setVisibility(View.VISIBLE);
+        binding.highBeamIVoff.setVisibility(View.VISIBLE);
+
 //        binding.highBeamIVoff.setVisibility(View.VISIBLE);
 //        binding.chargingicononmainactivty.setVisibility(View.INVISIBLE);
     }
@@ -2428,9 +2435,10 @@ public class UIUpdater  {
 
 
     public void updateBatteryAnimation(int batteryLevel) {
+        Log.d("BAT", "CAlledanimation");
 
         if (binding == null || binding.batteryImageView == null) {
-           // Log.d("BAT", "UI not ready yet — skipping");
+            Log.d("BAT", "UI not ready yet — skipping");
             return;
         }
 
@@ -2439,25 +2447,25 @@ public class UIUpdater  {
                 ? 100
                 : Math.max(0, (batteryLevel / 2) * 2);
 
-//        Log.d("BAT", "---- updateBatteryAnimation ----");
-//        Log.d("BAT", "RAW Level = " + batteryLevel);
-//        Log.d("BAT", "Mapped Level = " + mappedBattery);
-//        Log.d("BAT", "Last Level = " + lastBatteryLevel);
+        Log.d("BAT", "---- updateBatteryAnimation ----");
+        Log.d("BAT", "RAW Level = " + batteryLevel);
+        Log.d("BAT", "Mapped Level = " + mappedBattery);
+        Log.d("BAT", "Last Level = " + lastBatteryLevel);
 
         // Skip duplicate values
-        if (mappedBattery == lastBatteryLevel) {
-            //Log.d("BAT", "SKIPPED (no change)");
+        if (mappedBattery == lastBatteryLevel && !MainActivity.ReloggedIn) {
+            Log.d("BAT", "SKIPPED (no change)");
             return;
         }
 
         // Check map
         if (MainActivity.batteryImageMap == null) {
-           // Log.e("BAT", "batteryImageMap is NULL");
+            Log.e("BAT", "batteryImageMap is NULL");
             return;
         }
 
         if (!MainActivity.batteryImageMap.containsKey(mappedBattery)) {
-           // Log.e("BAT", "Map missing key = " + mappedBattery);
+           Log.e("BAT", "Map missing key = " + mappedBattery);
             return;
         }
 
@@ -2465,11 +2473,15 @@ public class UIUpdater  {
         int imageRes = MainActivity.batteryImageMap.get(mappedBattery);
         binding.batteryImageView.setImageResource(imageRes);
 
-        //Log.d("BAT", "IMAGE UPDATED to key " + mappedBattery);
+        Log.d("BAT", "IMAGE UPDATED to key " + mappedBattery);
 
         lastBatteryLevel = mappedBattery;
+        MainActivity.ReloggedIn=false;
     }
 
+    public void setzerobatImage(){
+        binding.batteryImageView.setImageResource(R.drawable.bat_0);
+    }
 
     public void APUupdateBatteryAnimation(int batteryLevel) {
         // Clamp battery level between 0-100 and round to the nearest even number

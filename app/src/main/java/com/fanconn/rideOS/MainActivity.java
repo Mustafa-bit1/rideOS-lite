@@ -119,6 +119,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     public static TextView frontLockSWSTV, seatCushionLockSWSTV, neutralGear, driveGear, reverseGear, speedThreshold1, speedThreshold2, speedThreshold3;
     static HashMap<Integer, Integer> speedImageMap = new HashMap<>();
     static HashMap<Integer, Integer> batteryImageMap = new HashMap<>();
+    static HashMap<Integer, Integer> introbatteryImageMap = new HashMap<>();
+
     public static HashMap<Integer, Integer> regenImageMap = new HashMap<>();
 
     static HashMap<Integer, Integer> APUbatteryImageMap = new HashMap<>();
@@ -323,6 +325,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        InactivityManager.getInstance().setCallback(this);
 
         SpeedAndSOCANimation();         //Feature Startups
+        IntroBatteryAnimation();
         OTAUpdateOFApp();               //Feature Startups
         //Telemetry();                    //Feature Startups
 //        uiUpdater.startTelemetry(VINNUMBER);///START TELEMETRY
@@ -749,10 +752,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
+                    //Log.d("dasfdsgf","ENTERoCNEANIMA111");
 
                     int mappedBattery = (level[0] / 10) * 10;
-                    if (MainActivity.batteryImageMap.containsKey(mappedBattery)) {
-                        binding.batteryImageView.setImageResource(MainActivity.batteryImageMap.get(mappedBattery));
+                    if (MainActivity.introbatteryImageMap.containsKey(mappedBattery)) {
+                        binding.introbatteryImageView.setImageResource(MainActivity.introbatteryImageMap.get(mappedBattery));
                     }
 
                     if (increasing[0]) {
@@ -763,7 +767,13 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                     } else {
                         level[0] -= 10;
                         if (level[0] < 0) {
-                            batteryAnimationCompleted = true;
+                            handler.postDelayed(() -> {
+                                ReloggedIn=true;
+                                uiUpdater.updateBatteryAnimation((int)AhTrackerManager.getInstance(instance).getSOC());   // <-- your method
+                            }, 1000);
+                            handler.postDelayed(() -> {
+                                batteryAnimationCompleted = true;
+                            }, 1100);
                             return;
                         }
                     }
@@ -841,6 +851,18 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         // Ensure bat_100 is always available for levels >100
         APUbatteryImageMap.put(101, getResources().getIdentifier("apubat_100", "drawable", getPackageName()));
+    }
+
+    public void IntroBatteryAnimation() {
+
+        for (int i = 0; i <= 100; i += 2) { // Load images for battery levels (0, 2, 4, ..., 100)
+            int resId = getResources().getIdentifier("bati_" + i, "drawable", getPackageName());
+            if (resId != 0) {
+                introbatteryImageMap.put(i, resId);
+            }
+        }
+        introbatteryImageMap.put(101, getResources().getIdentifier("bati_100", "drawable", getPackageName()));
+
     }
 
     public void OTAUpdateOFApp() {
@@ -2153,7 +2175,7 @@ public void recoNavLeft(View view) {
             binding.textstatus.setText(message);
         }
     }
-
+    public static boolean ReloggedIn;
     public void runPostLoginInit() {
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
        // Log.d("MainActivity", "Running unlock sequence from post-login...");

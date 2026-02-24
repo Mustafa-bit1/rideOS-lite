@@ -479,7 +479,7 @@
             android:id="@+id/neutral"
             android:layout_width="700dp"
             android:layout_height="315dp"
-            android:layout_marginStart="300dp"
+            android:layout_marginStart="289dp"
             android:layout_marginBottom="-6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -554,6 +554,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/bat_0" />
+        <ImageView
+
+            android:id="@+id/introbatteryImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="222dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bati_0" />
 
 
         <ImageView
@@ -651,10 +660,10 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="401dp"
+            android:visibility="gone"
             android:layout_marginBottom="110dp"
             android:src="@drawable/indicators"
             android:translationY="-10dp"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -682,10 +691,10 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="401dp"
+            android:visibility="gone"
             android:layout_marginBottom="110dp"
             android:src="@drawable/indicatorsr"
             android:translationY="-10dp"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

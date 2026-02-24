@@ -683,32 +683,36 @@ public class LoginActivity extends AppCompatActivity{
     int Level4_Line_Current = 110;
 
     public void loginSuccess(String username) {
-//        Log.d("sdafsgd","LOGIWELCOMEHERE");
+
         showCustomToast("Welcome " + username + " !");
+
         if(serialPortManager!=null){
             serialPortManager.VCUSendToMCU("FFAA550101000A01");
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 100);
         }
-        TelemetryService.shdtelemetrywhenunlocked=true;
 
-//        UIUpdater.telecurrentrider=username;
+        TelemetryService.shdtelemetrywhenunlocked = true;
         TelemetryDataManager.getInstance().setTeleCurrentRider(username);
+
         actualPin.setLength(0);
         etCredential.setText("");
         ChargingUiClosedByUserFlag = false;
+        UIUpdater.isAPUPresent = false;
 
-        //InactivityManager.getInstance().stopTimer();
-
-        UIUpdater.isAPUPresent=false;
-
-        // Launch MainActivity first (so UI doesn't freeze)
+        // Launch MainActivity
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         overridePendingTransition(0, 0);
         finish();
 
+        // ✅ UI updates → Main thread → delayed until UI is ready
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if(UIUpdater.getInstance() != null){
+                UIUpdater.getInstance().setzerobatImage();
+            }
+        }, 30); // small delay = UI safety
         // Run heavy logic and sound AFTER activity transition
         new Thread(() -> {
 

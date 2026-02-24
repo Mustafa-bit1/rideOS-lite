@@ -104,10 +104,13 @@ public class QuickSettingsView extends FrameLayout {
 
         setupUI(context);
         registerObservers(context);
-        new_feature_btn=findViewById(R.id.new_feature_btn);
+
+        if(new_feature_btn!=null)
         new_feature_btn.setBackgroundTintList(
-                ColorStateList.valueOf(Color.parseColor("#555555"))
+                ColorStateList.valueOf(Color.parseColor("#1C78BE"))
         );
+
+
         if(blue_tpmsbtn!=null){
             blue_tpmsbtn.setBackgroundTintList(
                     ColorStateList.valueOf(Color.parseColor("#1C78BE"))
@@ -167,9 +170,42 @@ public class QuickSettingsView extends FrameLayout {
         /* ---------- TPMS ---------- */
 
         blue_tpmsbtn = findViewById(R.id.blue_tpmsbtn);
-        blue_tpmsbtn.setOnClickListener(v ->
-            context.startActivity(new Intent(context, TPMS_activity.class))
-        );
+        blue_tpmsbtn.setOnClickListener(v ->{
+
+//                v.animate()
+//                        .scaleX(0.92f)
+//                        .scaleY(0.92f)
+//                        .setDuration(70)
+//                        .withEndAction(() -> v.animate()
+//                                .scaleX(1f)
+//                                .scaleY(1f)
+//                                .setDuration(1))
+//                        .start();
+
+            context.startActivity(new Intent(context, TPMS_activity.class));
+    } );
+
+        new_feature_btn = findViewById(R.id.new_feature_btn);
+
+        new_feature_btn.setOnClickListener(v -> {
+
+            // Click animation
+            v.animate()
+                    .scaleX(0.92f)
+                    .scaleY(0.92f)
+                    .setDuration(70)
+                    .withEndAction(() -> v.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(20))
+                    .start();
+
+            // MCU send
+            SerialPortManager spm = SerialPortManager.getInstance();
+            if (spm != null) {
+                spm.VCUSendToMCU("FFAA550102000A01");
+            }
+        });
 
     }
 
