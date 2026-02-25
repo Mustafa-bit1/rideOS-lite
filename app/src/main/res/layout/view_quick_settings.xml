@@ -160,16 +160,49 @@
             android:orientation="vertical"
             android:gravity="center">
 
+<!--            <Button-->
+<!--                android:id="@+id/wifiToggle"-->
+<!--                style="@style/QuickButtonStyle"-->
+<!--                android:text="Wi-Fi"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:layout_marginBottom="10dp"-->
+<!--                android:backgroundTint="#555555"-->
+<!--                android:textColor="#FFFFFF"/>-->
+
+<!--                        <Button-->
+<!--                            android:id="@+id/wifiToggle"-->
+<!--                            style="@style/QuickButtonStyle"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="0dp"-->
+<!--                            android:layout_marginBottom="10dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:backgroundTint="#1C78BE"-->
+<!--                            android:text=""-->
+<!--                            android:drawableTop="@drawable/wifi_ic"-->
+<!--                            android:gravity="center"-->
+<!--                            android:drawablePadding="0dp"-->
+<!--                            android:padding="25dp"/>-->
+
             <Button
                 android:id="@+id/wifiToggle"
                 style="@style/QuickButtonStyle"
-                android:text="Wi-Fi"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="#555555"
-                android:textColor="#FFFFFF"/>
+                android:layout_weight="1"
+                android:backgroundTint="#1C78BE"
+
+                android:text="WI-FI"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+
+                android:drawableTop="@drawable/wifi_ic"
+                android:gravity="center"
+                android:drawablePadding="8dp"
+                android:padding="15dp"/>
+
 
             <!--            <TextView-->
             <!--                android:id="@+id/wifiStatusText"-->
@@ -221,17 +254,36 @@
             android:orientation="vertical"
             android:gravity="center">
 
+
+<!--                        <Button-->
+<!--                            android:id="@+id/autoBrightnessToggle"-->
+<!--                            style="@style/QuickButtonStyle"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="0dp"-->
+<!--                            android:layout_marginBottom="10dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:backgroundTint="#1C78BE"-->
+<!--                            android:text=""-->
+<!--                            android:drawableTop="@drawable/autobrigtness_ic"-->
+<!--                            android:gravity="center"-->
+<!--                            android:drawablePadding="0dp"-->
+<!--                            android:padding="25dp"/>-->
+
             <Button
                 android:id="@+id/autoBrightnessToggle"
                 style="@style/QuickButtonStyle"
-                android:text="Brightness"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="#555555"
-                android:textColor="#FFFFFF"/>
-
+                android:layout_weight="1"
+                android:backgroundTint="#1C78BE"
+                android:text="AutoBrightness"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:drawableTop="@drawable/autobrigtness_ic"
+                android:gravity="center"
+                android:drawablePadding="8dp"
+                android:padding="12dp"/>
             <!--            <TextView-->
             <!--                android:id="@+id/autoBrightnessStatus"-->
             <!--                android:layout_width="wrap_content"-->
@@ -254,16 +306,37 @@
             android:orientation="vertical"
             android:gravity="center">
 
+<!--            <Button-->
+<!--                android:id="@+id/blue_tpmsbtn"-->
+<!--                style="@style/QuickButtonStyle"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="0dp"-->
+<!--                android:layout_marginBottom="10dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:backgroundTint="#1C78BE"-->
+<!--                android:text=""-->
+<!--                android:drawableTop="@drawable/tpms_ic"-->
+<!--                android:gravity="center"-->
+<!--                android:drawablePadding="0dp"-->
+<!--                android:padding="25dp"/>-->
+
             <Button
                 android:id="@+id/blue_tpmsbtn"
                 style="@style/QuickButtonStyle"
-                android:text="Tire Pressure"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:backgroundTint="#1C78BE"
-                android:textColor="#FFFFFF"/>
+
+                android:text="TPMS"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+
+                android:drawableTop="@drawable/tpms_ic"
+                android:gravity="center"
+                android:drawablePadding="8dp"
+                android:padding="15dp"/>
             <!--            <TextView-->
             <!--                android:id="@+id/soundstoggleStatusText"-->
             <!--                android:layout_width="wrap_content"-->
@@ -281,17 +354,37 @@
             android:orientation="vertical"
             android:gravity="center">
 
+<!--                        <Button-->
+<!--                            android:id="@+id/new_feature_btn"-->
+<!--                            style="@style/QuickButtonStyle"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="0dp"-->
+<!--                            android:layout_marginBottom="10dp"-->
+<!--                            android:layout_weight="1"-->
+<!--                            android:backgroundTint="#1C78BE"-->
+<!--                            android:text=""-->
+<!--                            android:drawableTop="@drawable/seat_ic"-->
+<!--                            android:gravity="center"-->
+<!--                            android:drawablePadding="0dp"-->
+<!--                            android:padding="25dp"/>-->
+
             <Button
                 android:id="@+id/new_feature_btn"
                 style="@style/QuickButtonStyle"
-                android:text="Open Seat"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="#555555"
-                android:stateListAnimator="@null"
-                android:textColor="#FFFFFF"/>
+                android:layout_weight="1"
+                android:backgroundTint="#1C78BE"
+
+                android:text="Open Seat"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+
+                android:drawableTop="@drawable/seat_ic"
+                android:gravity="center"
+                android:drawablePadding="8dp"
+                android:padding="15dp"/>
 
             <!-- Optional: Add status TextView for Bluetooth too -->
             <!--            <TextView-->

@@ -258,14 +258,16 @@
             <Button
                 android:id="@+id/blue_tpmsbtn"
                 style="@style/QuickButtonStyle"
-                android:text="TPMS"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginBottom="10dp"
-
                 android:layout_weight="1"
                 android:backgroundTint="#1C78BE"
-                android:textColor="#FFFFFF"/>
+                android:text=""
+                android:drawableTop="@drawable/tpms_ic"
+                android:gravity="center"
+                android:drawablePadding="0dp"
+                android:padding="25dp"/>
 <!--            <TextView-->
 <!--                android:id="@+id/soundstoggleStatusText"-->
 <!--                android:layout_width="wrap_content"-->

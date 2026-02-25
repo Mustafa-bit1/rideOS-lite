@@ -777,7 +777,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                             return;
                         }
                     }
-
                     handler.postDelayed(this, 60);
                 }
             }, 50);

@@ -52,6 +52,10 @@ public class EVLockService {
     private MediaPlayer lockPlayer;
 
     public void startLockSequence() {
+        if (MainActivity.instance != null) {
+            MainActivity.instance.closeRecoIfOpen();
+            MainActivity.instance.closeQuickSettingsIfOpen();
+        }
         playLockSound();
         //Log.d("dasfsgd","STARTED LOCKING");
         stopSequence();  // Stop any existing sequence

@@ -1868,10 +1868,10 @@ public class UIUpdater  {
         binding.speedImageView.setVisibility(View.INVISIBLE);
         binding.speedNumberTV.setVisibility(View.INVISIBLE);
         binding.speedTV.setVisibility(View.INVISIBLE);
-        binding.turnLeftIV.setVisibility(View.INVISIBLE);
+//        binding.turnLeftIV.setVisibility(View.INVISIBLE);
 //        binding.highBeamIVoff.setVisibility(View.VISIBLE);
-        binding.turnRightIV.setVisibility(View.INVISIBLE);
-        binding.highBeamIVoff.setVisibility(View.INVISIBLE);
+//        binding.turnRightIV.setVisibility(View.INVISIBLE);
+//        binding.highBeamIVoff.setVisibility(View.INVISIBLE);
 
         // binding.leftOn.setVisibility(View.INVISIBLE);
         //  binding.rightOn.setVisibility(View.INVISIBLE);
@@ -1946,9 +1946,9 @@ public class UIUpdater  {
             binding.APUbatteryTV.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         }
-        binding.turnLeftIV.setVisibility(View.VISIBLE);
-        binding.turnRightIV.setVisibility(View.VISIBLE);
-        binding.highBeamIVoff.setVisibility(View.VISIBLE);
+//        binding.turnLeftIV.setVisibility(View.VISIBLE);
+//        binding.turnRightIV.setVisibility(View.VISIBLE);
+       // binding.highBeamIVoff.setVisibility(View.VISIBLE);
 
 //        binding.highBeamIVoff.setVisibility(View.VISIBLE);
         binding.removestand.setVisibility(View.INVISIBLE);
@@ -2010,9 +2010,9 @@ public class UIUpdater  {
         binding.chargingicon.setVisibility(View.INVISIBLE);
         binding.apubaticon.setVisibility(View.INVISIBLE);
         binding.APUbatteryTV.setVisibility(View.INVISIBLE);
-        binding.turnLeftIV.setVisibility(View.VISIBLE);
-        binding.turnRightIV.setVisibility(View.VISIBLE);
-        binding.highBeamIVoff.setVisibility(View.VISIBLE);
+//        binding.turnLeftIV.setVisibility(View.VISIBLE);
+//        binding.turnRightIV.setVisibility(View.VISIBLE);
+        //binding.highBeamIVoff.setVisibility(View.VISIBLE);
 
 //        binding.highBeamIVoff.setVisibility(View.VISIBLE);
 //        binding.chargingicononmainactivty.setVisibility(View.INVISIBLE);
@@ -2821,6 +2821,10 @@ public class UIUpdater  {
     public void onDoubleTapAction() {
         // Your logic when user double-taps screen
         if(rpm==0){
+            if (activity != null) {
+                (activity).closeRecoIfOpen();
+                (activity).closeQuickSettingsIfOpen();
+            }
             stopReverseBeep();
             stopBlinking();
             //stopSideStandSound();
