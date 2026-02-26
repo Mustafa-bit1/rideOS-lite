@@ -147,24 +147,12 @@
             android:layout_height="28dp"
             android:layout_marginTop="27dp"
             android:layout_marginEnd="282dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/blueth" />
 
-        <TextView
-            android:id="@+id/timeTextView"
-            android:layout_width="94dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="373dp"
-            android:fontFamily="@font/kanit"
-            android:text="-"
-            android:textAlignment="center"
-            android:textColor="#FFFFFFFF"
-            android:textSize="20dp"
-            app:layout_constraintEnd_toStartOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="RtlCompat" />
+
 
 
         <!--    <ImageView-->
@@ -184,11 +172,11 @@
             android:layout_marginEnd="139dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:visibility="gone"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
+            android:visibility="gone"
             app:srcCompat="@drawable/a_enginestart" />
 
         <TextView
@@ -308,25 +296,7 @@
         <!-- 歌曲播放进度控制条 -->
 
 
-        <ImageView
-            android:id="@+id/network"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_marginTop="29dp"
-            android:layout_marginEnd="331dp"
-            app:layout_constraintEnd_toStartOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/network" />
 
-        <ImageView
-            android:id="@+id/wifi"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginTop="27dp"
-            android:layout_marginEnd="235dp"
-            app:layout_constraintEnd_toStartOf="@+id/imageView4"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/wifioffimg" />
 
         <!--    <Button-->
         <!--        android:id="@+id/mosswitch"-->
@@ -473,7 +443,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/stand1" />
+            app:srcCompat="@drawable/stand2" />
 
         <ImageView
             android:id="@+id/neutral"
@@ -611,38 +581,6 @@
             app:srcCompat="@drawable/reverseui" />
 
         <ImageView
-            android:id="@+id/highBeam_IVon"
-            android:layout_width="117dp"
-            android:layout_height="117dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="306dp"
-            android:layout_marginBottom="78dp"
-            android:layout_toRightOf="@id/timeTextView"
-            android:translationY="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/high_beam" />
-
-        <ImageView
-            android:id="@+id/highBeam_IVoff"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="345dp"
-            android:layout_marginBottom="120dp"
-            android:layout_toRightOf="@id/timeTextView"
-            android:translationY="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/headlamp" />
-
-        <ImageView
             android:id="@+id/arrow_3"
             android:layout_width="290dp"
             android:layout_height="223dp"
@@ -653,50 +591,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/arrow_3" />
 
-        <ImageView
-            android:id="@+id/turnLeft_IV"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="401dp"
-            android:visibility="gone"
-            android:layout_marginBottom="110dp"
-            android:src="@drawable/indicators"
-            android:translationY="-10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
-            android:id="@+id/left_on"
-            android:layout_width="121dp"
-            android:layout_height="115dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="360dp"
-            android:layout_marginBottom="69dp"
-            android:src="@drawable/left_on"
-            android:translationY="-10dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-
-        <ImageView
-            android:id="@+id/turnRight_IV"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="401dp"
-            android:visibility="gone"
-            android:layout_marginBottom="110dp"
-            android:src="@drawable/indicatorsr"
-            android:translationY="-10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
 
         <!--    <EditText-->
         <!--        android:id="@+id/inputSpeed"-->
@@ -721,21 +616,7 @@
         <!--        app:layout_constraintStart_toStartOf="parent"-->
         <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-        <ImageView
-            android:id="@+id/right_on"
-            android:layout_width="121dp"
-            android:layout_height="115dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="360dp"
-            android:layout_marginBottom="69dp"
-            android:src="@drawable/right_on"
-            android:translationY="-10dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+
 
 
         <ImageView
@@ -1056,37 +937,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/chargingicon" />
 
-        <ImageView
-            android:id="@+id/tempalerticon"
-            android:layout_width="32dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="412dp"
-            android:layout_marginTop="17dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/tempicon" />
 
-        <ImageView
-            android:id="@+id/tpmsicon"
-            android:layout_width="32dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="765dp"
-            android:layout_marginTop="19dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/tpmsicon" />
 
-        <ImageView
-            android:id="@+id/keyOutImage"
-            android:layout_width="40dp"
-            android:layout_height="28dp"
-            android:layout_marginStart="714dp"
-            android:layout_marginTop="25dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/keyout" />
 
         <ImageView
             android:id="@+id/battempmsg"
@@ -1110,42 +962,175 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/lowbatmsg" />
 
-        <ImageView
-            android:id="@+id/apubaticon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="435dp"
-            android:visibility="gone"
 
+        <LinearLayout
+            android:id="@+id/topBarRow"
+            android:layout_width="match_parent"
+            android:layout_height="110dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/battery_level_1" />
+            app:layout_constraintVertical_bias="0.0">
+
+            <ImageView
+                android:id="@+id/left_on"
+                android:layout_width="121dp"
+                android:layout_height="115dp"
+                android:layout_marginEnd="-40dp"
+                android:visibility="gone"
+
+                android:src="@drawable/left_on" />
+
+            <ImageView
+                android:id="@+id/tempalerticon"
+                android:layout_width="32dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="12dp"
+                android:visibility="gone"
+
+                android:src="@drawable/tempicon"
+                />
 
 
-        <TextView
-            android:id="@+id/APUbatteryTV"
-            android:layout_width="82dp"
-            android:layout_height="22dp"
+            <ImageView
+                android:id="@+id/network"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/network" />
+
+            <ImageView
+                android:id="@+id/wifi"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/wifioffimg" />
+
+            <TextView
+                android:id="@+id/timeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/kanit"
+                android:text="02:59 PM"
+                android:textColor="#FFFFFF"
+                android:textSize="19sp" />
+
+
+            <ImageView
+                android:id="@+id/keyOutImage"
+                android:layout_width="40dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="11dp"
+                android:src="@drawable/keyout" />
+
+            <ImageView
+                android:id="@+id/tpmsicon"
+                android:layout_width="32dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="2dp"
+                android:visibility="gone"
+
+                android:src="@drawable/tpmsicon"
+              />
+
+
+            <ImageView
+                android:id="@+id/apubaticon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:src="@drawable/battery_level_1"
+                android:visibility="gone"
+
+                />
+
+            <TextView
+                android:id="@+id/APUbatteryTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:fontFamily="@font/kanit"
+                android:text="APU 100%"
+                android:textColor="#FFFFFF"
+                android:visibility="gone"
+                android:textSize="18sp"
+                 />
+
+            <ImageView
+                android:id="@+id/highBeam_IVon"
+                android:layout_width="117dp"
+                android:layout_height="117dp"
+                android:layout_marginStart="-32dp"
+                android:src="@drawable/high_beam2" />
+
+            <ImageView
+                android:id="@+id/highBeam_IVoff"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginStart="-77dp"
+                android:src="@drawable/headlamp" />
+
+            <ImageView
+                android:id="@+id/right_on"
+                android:layout_width="121dp"
+                android:layout_height="115dp"
+                android:visibility="gone"
+                android:layout_marginStart="-30dp"
+                android:src="@drawable/right_on" />
+
+        </LinearLayout>
+
+
+<!--        <ImageView-->
+<!--            android:id="@+id/highBeam_IVoff"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginStart="718dp"-->
+<!--            android:layout_marginBottom="408dp"-->
+<!--            android:translationY="0dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:srcCompat="@drawable/headlamp" />-->
+
+        <ImageView
+            android:id="@+id/turnLeft_IV"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="401dp"
+            android:visibility="gone"
+            android:layout_marginBottom="110dp"
+            android:src="@drawable/indicators"
+            android:translationY="-10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/turnRight_IV"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="848dp"
-            android:layout_marginTop="44dp"
-            android:fontFamily="@font/kanit"
-            android:shadowColor="#80000000"
-            android:shadowDx="5"
-            android:shadowDy="3"
-            android:shadowRadius="5"
-            android:text="APU 100%"
-            android:textAlignment="textStart"
-            android:textColor="#FFFFFFFF"
-            android:textSize="17dp"
-            android:translationY="-10dp"
+            android:layout_marginEnd="401dp"
             android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginBottom="110dp"
+            android:src="@drawable/indicatorsr"
+            android:translationY="-10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
         <!--    <ImageView-->
         <!--        android:id="@+id/chargingicononmainactivty"-->

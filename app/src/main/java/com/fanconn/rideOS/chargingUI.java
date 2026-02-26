@@ -235,7 +235,7 @@ public class chargingUI extends AppCompatActivity {
                     if (UIUpdater.isAPUPresent){
 
                         int batteryImageResId = getBatteryImageResource(APUsoc);
-                        binding.apubaticon.setVisibility(View.VISIBLE);
+                        //binding.apubaticon.setVisibility(View.VISIBLE);
                         binding.APUbatteryImageView.setVisibility(View.VISIBLE);
                         binding.apubaticon.setImageResource(batteryImageResId);
                         try {

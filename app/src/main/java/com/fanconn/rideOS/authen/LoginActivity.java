@@ -685,6 +685,7 @@ public class LoginActivity extends AppCompatActivity{
     public void loginSuccess(String username) {
 
         showCustomToast("Welcome " + username + " !");
+        Log.d("adfsd","WELCOMETOAST "+username);
 
         if(serialPortManager!=null){
             serialPortManager.VCUSendToMCU("FFAA550101000A01");

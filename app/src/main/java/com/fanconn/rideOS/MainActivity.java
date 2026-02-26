@@ -2182,6 +2182,11 @@ public void recoNavLeft(View view) {
         currentgear='O';
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
         //TelemetryService.shdtelemetrywhenunlocked=true;
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if(uiUpdater != null && uiUpdater.Play_tpmsSound_on_loggin){
+                uiUpdater.playLowTireSound();
+            }
+        }, 2100);
 
         uiUpdater.resetTripAhByRegen();
 

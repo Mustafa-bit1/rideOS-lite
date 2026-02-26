@@ -293,7 +293,7 @@ public class UIUpdater  {
         else if (hb1.getHeadlights() == 0)
         {
             binding.highBeamIVon.setVisibility(View.INVISIBLE);
-            //binding.highBeamIVoff.setVisibility(View.VISIBLE);
+            binding.highBeamIVoff.setVisibility(View.VISIBLE);
 
 //                if (isDriveMode && !isStand) {
 //                    binding.highBeamIVoff.setVisibility(View.VISIBLE);
@@ -755,7 +755,7 @@ public class UIUpdater  {
         if(APUbatteryLevel>=0 && APUbatteryLevel<=100){
             tm.setTeleAPUSOC(APUbatteryLevel);
             binding.APUbatteryTV.setVisibility(View.VISIBLE);
-            binding.apubaticon.setVisibility(View.VISIBLE);
+           //binding.apubaticon.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
             binding.APUbatteryTV.setText("APU "+sAPUBatteryLevel + "% ");
         }//  |  ~ "+range+" km");}
@@ -799,8 +799,8 @@ public class UIUpdater  {
                     isApuConnected = false;
                     Log.d("APU", "APU Disconnected");
 
-                    binding.APUbatteryTV.setVisibility(View.INVISIBLE);
-                    binding.apubaticon.setVisibility(View.INVISIBLE);
+                    binding.APUbatteryTV.setVisibility(View.GONE);
+                    binding.apubaticon.setVisibility(View.GONE);
                     binding.APUbatteryImageView.setVisibility(View.INVISIBLE);
                     isAPUPresent = false;
 
@@ -941,7 +941,7 @@ public class UIUpdater  {
                 continue;
             }
 
-            if (temp >= 54 && temp < 58)anyIs45 = true;
+            if (temp >= 34 && temp < 58)anyIs45 = true;
             if (temp >= 58) anyIs50OrAbove = true;
             if (temp >= 54) allBelow45 = false;
         }
@@ -1088,7 +1088,7 @@ public class UIUpdater  {
         binding.battempmsg.clearAnimation();
 
         binding.redalert.setVisibility(View.INVISIBLE);
-        binding.tempalerticon.setVisibility(View.INVISIBLE);
+        binding.tempalerticon.setVisibility(View.GONE);
         binding.battempmsg.setVisibility(View.INVISIBLE);
     }
 
@@ -1890,7 +1890,7 @@ public class UIUpdater  {
 //        binding.brk.setVisibility(View.INVISIBLE);
 //        binding.startButton.setVisibility(View.INVISIBLE);
         if(isAPUPresent){
-            binding.apubaticon.setVisibility(View.VISIBLE);
+           //binding.apubaticon.setVisibility(View.VISIBLE);
             binding.APUbatteryTV.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         }
@@ -1942,7 +1942,7 @@ public class UIUpdater  {
         binding.menubtn.setVisibility(View.VISIBLE);
         binding.chargingicon.setVisibility(View.INVISIBLE);
         if(isAPUPresent){
-            binding.apubaticon.setVisibility(View.VISIBLE);
+            //binding.apubaticon.setVisibility(View.VISIBLE);
             binding.APUbatteryTV.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         }
@@ -2008,8 +2008,8 @@ public class UIUpdater  {
         binding.mapbtn.setVisibility(View.VISIBLE);
         binding.menubtn.setVisibility(View.VISIBLE);
         binding.chargingicon.setVisibility(View.INVISIBLE);
-        binding.apubaticon.setVisibility(View.INVISIBLE);
-        binding.APUbatteryTV.setVisibility(View.INVISIBLE);
+        binding.apubaticon.setVisibility(View.GONE);
+        binding.APUbatteryTV.setVisibility(View.GONE);
 //        binding.turnLeftIV.setVisibility(View.VISIBLE);
 //        binding.turnRightIV.setVisibility(View.VISIBLE);
         //binding.highBeamIVoff.setVisibility(View.VISIBLE);
@@ -2073,7 +2073,7 @@ public class UIUpdater  {
 //        binding.turnRightIV.setVisibility(View.INVISIBLE);
         binding.rectangleGearsTV.setVisibility(View.INVISIBLE);
         if(isAPUPresent){
-            binding.apubaticon.setVisibility(View.VISIBLE);
+            //binding.apubaticon.setVisibility(View.VISIBLE);
             binding.APUbatteryTV.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         }
@@ -3358,7 +3358,7 @@ public class UIUpdater  {
     private boolean istireSoundPlaying = false;
 
     /* ================== TPMS RECEIVER ================== */
-
+    public boolean Play_tpmsSound_on_loggin;
     private void registerTpmsReceiver(Context ctx) {
 
         tpmsReceiver = new BroadcastReceiver() {
@@ -3429,9 +3429,12 @@ public class UIUpdater  {
                 if (frontWarning || rearWarning) {
                     binding.tpmsicon.setVisibility(View.VISIBLE);
                     binding.lowTireWarning.setVisibility(View.VISIBLE);
+                    Play_tpmsSound_on_loggin=true;
                 } else {
-                    binding.tpmsicon.setVisibility(View.INVISIBLE);
+                    binding.tpmsicon.setVisibility(View.GONE);
                     binding.lowTireWarning.setVisibility(View.INVISIBLE);
+                    Play_tpmsSound_on_loggin=false;
+
                 }
             }
         };
@@ -3448,7 +3451,7 @@ public class UIUpdater  {
 
     /* ================== SOUND PLAYER ================== */
 
-    private void playLowTireSound() {
+    public void playLowTireSound() {
 
         // 🚫 Ignore if already playing
         if (istireSoundPlaying) return;
