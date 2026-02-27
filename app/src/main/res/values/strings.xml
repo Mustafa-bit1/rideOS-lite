@@ -122,4 +122,8 @@
     <string name="tips_rear_camera_preview">R-camera preview</string>
     <string name="tips_no_find_front_camera">No find f-camera</string>
     <string name="tips_no_find_rear_camera">No find r-camera</string>
+
+    <string name="forward_instruction">
+    Apply <b><font color="#06FFD1">brake</font></b> and press <b><font color="#06FFD1">F</font></b> to start the ride
+</string>
 </resources>

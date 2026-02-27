@@ -122,4 +122,8 @@
     <string name="no_network">no network!</string>
     <string name="find_new_versions">New version avaliable, Update!</string>
 
+    <string name="forward_instruction">
+    Apply <b><font color="#06FFD1">brake</font></b> and press <b><font color="#06FFD1">F</font></b> to start the ride
+</string>
+
 </resources>

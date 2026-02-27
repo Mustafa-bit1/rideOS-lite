@@ -24,6 +24,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -41,6 +42,11 @@ import android.telephony.SubscriptionInfo;
 import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.MetricAffectingSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -284,6 +290,42 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         if (delayedUnlockRunnable != null) {
             delayedUnlockHandler.removeCallbacks(delayedUnlockRunnable);
         }
+
+        TextView tv = findViewById(R.id.Forward_instruction);
+
+        SpannableString s = new SpannableString("Apply brake & press F to start the ride");
+
+        int b1 = s.toString().indexOf("brake");
+        s.setSpan(new StyleSpan(Typeface.BOLD), b1, b1+5, 0);
+        s.setSpan(new ForegroundColorSpan(Color.parseColor("#06FFD1")), b1, b1+5, 0);
+        s.setSpan(new MetricAffectingSpan() {
+            @Override
+            public void updateDrawState(TextPaint tp) {
+                tp.setFakeBoldText(true);   // EXTRA THICK
+            }
+
+            @Override
+            public void updateMeasureState(TextPaint tp) {
+                tp.setFakeBoldText(true);
+            }
+        }, b1, b1+5, 0);
+
+        int f1 = s.toString().indexOf("F");
+        s.setSpan(new StyleSpan(Typeface.BOLD), f1, f1+1, 0);
+        s.setSpan(new ForegroundColorSpan(Color.parseColor("#06FFD1")), f1, f1+1, 0);
+        s.setSpan(new MetricAffectingSpan() {
+            @Override
+            public void updateDrawState(TextPaint tp) {
+                tp.setFakeBoldText(true);
+            }
+
+            @Override
+            public void updateMeasureState(TextPaint tp) {
+                tp.setFakeBoldText(true);
+            }
+        }, f1, f1+1, 0);
+
+        tv.setText(s);
 
         //EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
 

@@ -5,6 +5,7 @@ package com.fanconn.rideOS;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +23,11 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -563,8 +567,8 @@ public class UIUpdater  {
 //    public static boolean resetParamtersAfterLowbat=false;
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
-//        int batteryLevel= hb3.getBatteryLevel() / 10;
-        int batteryLevel= (int)ahTrackerManager.getSOC();
+        int batteryLevel= hb3.getBatteryLevel() / 10;
+//        int batteryLevel= (int)ahTrackerManager.getSOC();
         Log.d("adsfg","THISISAHSOC="+batteryLevel);
         tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
 
@@ -672,12 +676,12 @@ public class UIUpdater  {
             } else if  (!isAPUPresent) {
                 Log.d("asdfdg","ENTER 10");
                 StopInactivtyTimerDuringPopUp=false;
-                showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
+                showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728008C00B004B400");//line current 10A(2800), phase current max, regen currents as 35A(8C00) to make 6 (1800) and 45A(B400) to make 8 (2000)
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
-                showCustomPopupatSOC7("Alert","Battery low, deep discharge may damage your scooter battery, Please charge your scooter");
+                showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             }
@@ -729,6 +733,8 @@ public class UIUpdater  {
     // Use a single Handler for UI thread safe timing
     private final Handler apuHandler = new Handler(Looper.getMainLooper());
     private boolean apuWatcherRunning = false;
+
+
     public void updateCanData18904002(Heartbeat3 hb3) {
 
         lastApuFrameTime = System.currentTimeMillis();
@@ -754,7 +760,7 @@ public class UIUpdater  {
 //        int range= (int) Math.floor(APUbatteryLevel * 2.8);  // Get the whole number part
         if(APUbatteryLevel>=0 && APUbatteryLevel<=100){
             tm.setTeleAPUSOC(APUbatteryLevel);
-            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            //binding.APUbatteryTV.setVisibility(View.VISIBLE);
            //binding.apubaticon.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
             binding.APUbatteryTV.setText("APU "+sAPUBatteryLevel + "% ");
@@ -941,7 +947,7 @@ public class UIUpdater  {
                 continue;
             }
 
-            if (temp >= 34 && temp < 58)anyIs45 = true;
+            if (temp >= 54 && temp < 58)anyIs45 = true;
             if (temp >= 58) anyIs50OrAbove = true;
             if (temp >= 54) allBelow45 = false;
         }
@@ -1076,7 +1082,7 @@ public class UIUpdater  {
         Animation tempalert = AnimationUtils.loadAnimation(context, R.anim.alpha);
 
         binding.redalert.setVisibility(View.VISIBLE);
-        binding.tempalerticon.setVisibility(View.VISIBLE);
+        //binding.tempalerticon.setVisibility(View.VISIBLE);
         binding.battempmsg.setVisibility(View.VISIBLE);
 
         binding.redalert.startAnimation(tempalert);
@@ -1088,7 +1094,7 @@ public class UIUpdater  {
         binding.battempmsg.clearAnimation();
 
         binding.redalert.setVisibility(View.INVISIBLE);
-        binding.tempalerticon.setVisibility(View.GONE);
+       // binding.tempalerticon.setVisibility(View.GONE);
         binding.battempmsg.setVisibility(View.INVISIBLE);
     }
 
@@ -1891,7 +1897,7 @@ public class UIUpdater  {
 //        binding.startButton.setVisibility(View.INVISIBLE);
         if(isAPUPresent){
            //binding.apubaticon.setVisibility(View.VISIBLE);
-            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            //binding.APUbatteryTV.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         }
         binding.removestand.setVisibility(View.INVISIBLE);
@@ -1943,7 +1949,7 @@ public class UIUpdater  {
         binding.chargingicon.setVisibility(View.INVISIBLE);
         if(isAPUPresent){
             //binding.apubaticon.setVisibility(View.VISIBLE);
-            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            //binding.APUbatteryTV.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         }
 //        binding.turnLeftIV.setVisibility(View.VISIBLE);
@@ -2074,7 +2080,7 @@ public class UIUpdater  {
         binding.rectangleGearsTV.setVisibility(View.INVISIBLE);
         if(isAPUPresent){
             //binding.apubaticon.setVisibility(View.VISIBLE);
-            binding.APUbatteryTV.setVisibility(View.VISIBLE);
+            //binding.APUbatteryTV.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
         }
     }
@@ -2696,17 +2702,159 @@ public class UIUpdater  {
         Log.d("UIUpdater", "updateMacVersions getMcuVersions: " + mad.getMcuVersions());
     }
 
+//    public void showCustomPopup(String title, String message) {
+//        // Inflate the custom layout
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        View dialogView = inflater.inflate(R.layout.popupdialog, null);
+//
+//        // Create the dialog with the custom view
+//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+//        builder.setView(dialogView);
+//
+//        AlertDialog alertDialog = builder.create();
+//        alertDialog.setCancelable(false); // User can't dismiss with back button or outside touch
+//
+//        // Set dynamic content
+//        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+//        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
+//        dialogTitle.setText(title);
+//        dialogMessage.setText(message);
+//
+//        // Handle button actions
+//        Button btnYes = dialogView.findViewById(R.id.btnYes);
+//        Button btnNo = dialogView.findViewById(R.id.btnNo);
+//
+//        btnYes.setOnClickListener(v -> {
+//            StopInactivtyTimerDuringPopUp=true;
+//            batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
+//            switcher.startSwitchingToAPU();
+////            apuflag=true;
+////            BatPackSwitcher.startSwitchingToAPU();
+//            alertDialog.dismiss();
+//        });
+//
+//        btnNo.setOnClickListener(v -> {
+//            StopInactivtyTimerDuringPopUp=true;
+//            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
+//            alertDialog.dismiss();
+//            serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
+//            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
+//        });
+//
+//        alertDialog.show();
+//    }
+//
+//    private Dialog apuPopupDialog = null;
+//    public void showCustomPopupAPUdetected(String title, String message) {
+//        // Prevent multiple popups if one is already visible
+//        if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+//            return;
+//        }
+//
+//
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        View dialogView = inflater.inflate(R.layout.popupdialog, null);
+//
+//        apuPopupDialog = new Dialog(activity);
+//        apuPopupDialog.setContentView(dialogView);
+//        apuPopupDialog.setCancelable(false);
+//
+//        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+//        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
+//        dialogTitle.setText(title);
+//        dialogMessage.setText(message);
+//
+//        Button btnYes = dialogView.findViewById(R.id.btnYes);
+//        Button btnNo = dialogView.findViewById(R.id.btnNo);
+//
+//        btnYes.setOnClickListener(v -> {
+//            StopInactivtyTimerDuringPopUp = true;
+//            batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
+//            switcher.startSwitchingToAPU();
+////            apuflag = true;
+//
+//
+//
+//            if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+//                apuPopupDialog.dismiss();
+//                apuPopupDialog = null;
+//            }
+//        });
+//
+//        btnNo.setOnClickListener(v -> {
+//            StopInactivtyTimerDuringPopUp = true;
+//            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
+//
+//            if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+//                apuPopupDialog.dismiss();
+//                apuPopupDialog = null;
+//            }
+//        });
+//        Window window = apuPopupDialog.getWindow();
+//        if (window != null) {
+//            window.setBackgroundDrawableResource(android.R.color.transparent);
+//
+//            WindowManager.LayoutParams params = window.getAttributes();
+//            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+//            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+//            params.gravity = Gravity.CENTER;
+//            window.setAttributes(params);
+//        }
+//
+//        apuPopupDialog.show();
+//    }
+//
+//
+//    public void showCustomPopupatSOC7(String title, String message) {
+//        // Inflate the custom layout
+//        LayoutInflater inflater = LayoutInflater.from(context);
+//        View dialogView = inflater.inflate(R.layout.stopopup, null);
+//
+//        // Create the dialog with the custom view
+//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+//        builder.setView(dialogView);
+//
+//        AlertDialog alertDialog = builder.create();
+//        alertDialog.setCancelable(false); // User can't dismiss with back button or outside touch
+//
+//        // Set dynamic content
+//        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
+//        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
+//        dialogTitle.setText(title);
+//        dialogMessage.setText(message);
+//
+//        // Handle button actions
+//        Button btnYes = dialogView.findViewById(R.id.btnOK);
+//
+//        btnYes.setOnClickListener(v -> {
+//            StopInactivtyTimerDuringPopUp=true;
+//            alertDialog.dismiss();
+//        });
+//
+//        alertDialog.show();
+//    }
+
     public void showCustomPopup(String title, String message) {
-        // Inflate the custom layout
+
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.popupdialog, null);
 
-        // Create the dialog with the custom view
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setView(dialogView);
+        Dialog dialog = new Dialog(activity);
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setCancelable(false); // User can't dismiss with back button or outside touch
+        // Window styling (rounded + center)
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
 
         // Set dynamic content
         TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
@@ -2714,34 +2862,37 @@ public class UIUpdater  {
         dialogTitle.setText(title);
         dialogMessage.setText(message);
 
-        // Handle button actions
         Button btnYes = dialogView.findViewById(R.id.btnYes);
         Button btnNo = dialogView.findViewById(R.id.btnNo);
 
         btnYes.setOnClickListener(v -> {
-            StopInactivtyTimerDuringPopUp=true;
+            StopInactivtyTimerDuringPopUp = true;
             batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
             switcher.startSwitchingToAPU();
 //            apuflag=true;
 //            BatPackSwitcher.startSwitchingToAPU();
-            alertDialog.dismiss();
+            dialog.dismiss();
         });
 
         btnNo.setOnClickListener(v -> {
-            StopInactivtyTimerDuringPopUp=true;
+            StopInactivtyTimerDuringPopUp = true;
             Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
-            alertDialog.dismiss();
+            dialog.dismiss();
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
-            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"),
+                    1200
+            );
         });
 
-        alertDialog.show();
+        dialog.show();
     }
 
-    private AlertDialog apuPopupDialog = null; // Keep track of popup
+    private Dialog apuPopupDialog = null;
 
     public void showCustomPopupAPUdetected(String title, String message) {
-        // Prevent multiple popups if one is already visible
+
+        // Prevent multiple popups
         if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
             return;
         }
@@ -2749,10 +2900,22 @@ public class UIUpdater  {
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.popupdialog, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setView(dialogView);
-        apuPopupDialog = builder.create();
+        apuPopupDialog = new Dialog(activity);
+        apuPopupDialog.setContentView(dialogView);
         apuPopupDialog.setCancelable(false);
+        apuPopupDialog.setCanceledOnTouchOutside(false);
+
+        // Window styling (rounded + center)
+        Window window = apuPopupDialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
 
         TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
         TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
@@ -2768,8 +2931,6 @@ public class UIUpdater  {
             switcher.startSwitchingToAPU();
 //            apuflag = true;
 
-
-
             if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
                 apuPopupDialog.dismiss();
                 apuPopupDialog = null;
@@ -2785,37 +2946,71 @@ public class UIUpdater  {
                 apuPopupDialog = null;
             }
         });
+
         apuPopupDialog.show();
     }
 
-
     public void showCustomPopupatSOC7(String title, String message) {
-        // Inflate the custom layout
+
         LayoutInflater inflater = LayoutInflater.from(context);
-        View dialogView = inflater.inflate(R.layout.stopopup, null);
+        View dialogView = inflater.inflate(R.layout.popupdialog, null); // ✅ same layout
 
-        // Create the dialog with the custom view
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setView(dialogView);
+        Dialog dialog = new Dialog(activity);
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
 
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setCancelable(false); // User can't dismiss with back button or outside touch
+        // Window styling (rounded + center)
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
 
-        // Set dynamic content
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+
+        // Texts
         TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
         TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
         dialogTitle.setText(title);
         dialogMessage.setText(message);
 
-        // Handle button actions
-        Button btnYes = dialogView.findViewById(R.id.btnOK);
+        // Buttons (using same popupdialog buttons)
+        Button btnYes = dialogView.findViewById(R.id.btnYes);
+        Button btnNo  = dialogView.findViewById(R.id.btnNo);
+
+        // SOC7 only needs one button → hide No
+        btnNo.setVisibility(View.GONE);
+        btnYes.setText("OK"); // optional label clarity
 
         btnYes.setOnClickListener(v -> {
-            StopInactivtyTimerDuringPopUp=true;
-            alertDialog.dismiss();
+            StopInactivtyTimerDuringPopUp = true;
+            dialog.dismiss();
         });
 
-        alertDialog.show();
+        dialog.show();
+    }
+
+    private Dialog createBasePopup(View dialogView) {
+        Dialog dialog = new Dialog(activity);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setContentView(dialogView);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+        return dialog;
     }
 
     public void onDoubleTapAction() {
@@ -3427,14 +3622,15 @@ public class UIUpdater  {
                 /* ================= UI ================= */
 
                 if (frontWarning || rearWarning) {
-                    binding.tpmsicon.setVisibility(View.VISIBLE);
+//                    binding.tpmsicon.setVisibility(View.VISIBLE);
+                    binding.tpmsicon.setImageResource(R.drawable.tpmsicon);
                     binding.lowTireWarning.setVisibility(View.VISIBLE);
                     Play_tpmsSound_on_loggin=true;
                 } else {
-                    binding.tpmsicon.setVisibility(View.GONE);
+//                    binding.tpmsicon.setVisibility(View.GONE);
+                    binding.tpmsicon.setImageResource(R.drawable.tpmsicon_greyout);
                     binding.lowTireWarning.setVisibility(View.INVISIBLE);
                     Play_tpmsSound_on_loggin=false;
-
                 }
             }
         };
@@ -3460,7 +3656,7 @@ public class UIUpdater  {
         if (tirePlayer == null) {
             tirePlayer = MediaPlayer.create(
                     getInstance().context,
-                    R.raw.low_tire_speech
+                    R.raw.low_tire_alert_indian_v1
             );
 
             if (tirePlayer == null) return;

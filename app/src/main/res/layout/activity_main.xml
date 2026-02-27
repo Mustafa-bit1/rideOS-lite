@@ -450,10 +450,10 @@
             android:layout_width="700dp"
             android:layout_height="315dp"
             android:layout_marginStart="289dp"
-            android:layout_marginBottom="-6dp"
+            android:layout_marginBottom="-28dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/neutral_latest_bg" />
+            app:srcCompat="@drawable/neutral_latest_bg2" />
 
 
         <ImageButton
@@ -568,6 +568,25 @@
             android:translationY="-10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
+        <TextView
+            android:id="@+id/Forward_instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="173dp"
+            android:fontFamily="@font/kanitlite"
+            android:shadowColor="#000000"
+            android:shadowDx="5"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:textColor="#C4C4C4"
+            android:textSize="23dp"
+            android:letterSpacing="0.03"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
 
         <ImageView
@@ -963,143 +982,273 @@
             app:srcCompat="@drawable/lowbatmsg" />
 
 
-        <LinearLayout
-            android:id="@+id/topBarRow"
-            android:layout_width="match_parent"
-            android:layout_height="110dp"
-            android:gravity="center"
-            android:orientation="horizontal"
+<!--        <LinearLayout-->
+<!--            android:id="@+id/topBarRow"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="110dp"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="horizontal"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0.0">-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/left_on"-->
+<!--                android:layout_width="121dp"-->
+<!--                android:layout_height="115dp"-->
+<!--                android:layout_marginEnd="-40dp"-->
+<!--                android:visibility="gone"-->
+
+<!--                android:src="@drawable/left_on" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/tempalerticon"-->
+<!--                android:layout_width="32dp"-->
+<!--                android:layout_height="44dp"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:visibility="gone"-->
+
+<!--                android:src="@drawable/tempicon"-->
+<!--                />-->
+
+
+<!--            <ImageView-->
+<!--                android:id="@+id/network"-->
+<!--                android:layout_width="22dp"-->
+<!--                android:layout_height="22dp"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:src="@drawable/network" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/wifi"-->
+<!--                android:layout_width="28dp"-->
+<!--                android:layout_height="28dp"-->
+<!--                android:layout_marginStart="16dp"-->
+<!--                android:src="@drawable/wifioffimg" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/timeTextView"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="16dp"-->
+<!--                android:fontFamily="@font/kanit"-->
+<!--                android:text="02:59 PM"-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:textSize="19sp" />-->
+
+
+<!--            <ImageView-->
+<!--                android:id="@+id/keyOutImage"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="28dp"-->
+<!--                android:layout_marginStart="11dp"-->
+<!--                android:src="@drawable/keyout" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/tpmsicon"-->
+<!--                android:layout_width="32dp"-->
+<!--                android:layout_height="44dp"-->
+<!--                android:layout_marginStart="2dp"-->
+<!--                android:visibility="gone"-->
+
+<!--                android:src="@drawable/tpmsicon"-->
+<!--              />-->
+
+
+<!--            <ImageView-->
+<!--                android:id="@+id/apubaticon"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="12dp"-->
+<!--                android:src="@drawable/battery_level_1"-->
+<!--                android:visibility="gone"-->
+
+<!--                />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/APUbatteryTV"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:fontFamily="@font/kanit"-->
+<!--                android:text="APU 100%"-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:visibility="gone"-->
+<!--                android:textSize="18sp"-->
+<!--                 />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/highBeam_IVon"-->
+<!--                android:layout_width="117dp"-->
+<!--                android:layout_height="117dp"-->
+<!--                android:layout_marginStart="-32dp"-->
+<!--                android:src="@drawable/high_beam2" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/highBeam_IVoff"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:layout_marginBottom="2dp"-->
+<!--                android:layout_marginStart="-77dp"-->
+<!--                android:src="@drawable/headlamp" />-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/right_on"-->
+<!--                android:layout_width="121dp"-->
+<!--                android:layout_height="115dp"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_marginStart="-30dp"-->
+<!--                android:src="@drawable/right_on" />-->
+
+<!--        </LinearLayout>-->
+
+        <ImageView android:id="@+id/left_on"
+            android:layout_width="121dp"
+            android:layout_height="115dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="380dp"
+            android:layout_marginBottom="366dp"
+            android:src="@drawable/left_on"
+            android:translationY="-10dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+<!--        <ImageView android:id="@+id/tempalerticon"-->
+<!--            android:layout_width="32dp"-->
+<!--            android:layout_height="44dp"-->
+<!--            android:layout_marginStart="398dp" -->
+<!--            android:layout_marginTop="17dp" -->
+<!--            app:layout_constraintStart_toStartOf="parent" -->
+<!--            app:layout_constraintTop_toTopOf="parent" -->
+<!--            app:srcCompat="@drawable/tempicon" /> -->
+
+        <TextView android:id="@+id/timeTextView"
+            android:layout_width="94dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="33dp"
+            android:layout_marginEnd="358dp"
+            android:fontFamily="@font/kanit"
+            android:text="02:22 PM"
+            android:textAlignment="center"
+            android:textColor="#FFFFFFFF"
+            android:textSize="22dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlCompat" />
+
+        <ImageView android:id="@+id/network"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginTop="33dp"
+            android:layout_marginEnd="323dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/network" />
+
+        <ImageView android:id="@+id/wifi"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="31dp"
+            android:layout_marginEnd="275dp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView4"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/wifioffimg" />
+        <ImageView android:id="@+id/keyOutImage"
+            android:layout_width="40dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="664dp"
+            android:layout_marginTop="29dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
+            app:srcCompat="@drawable/keyout" />
 
-            <ImageView
-                android:id="@+id/left_on"
-                android:layout_width="121dp"
-                android:layout_height="115dp"
-                android:layout_marginEnd="-40dp"
-                android:visibility="gone"
+        <ImageView android:id="@+id/tpmsicon"
+            android:layout_width="32dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="710dp"
+            android:layout_marginTop="23dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/tpmsicon_greyout" />
 
-                android:src="@drawable/left_on" />
+        <ImageView android:id="@+id/apubaticon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:layout_marginEnd="555dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/battery_level_1" />
 
-            <ImageView
-                android:id="@+id/tempalerticon"
-                android:layout_width="32dp"
-                android:layout_height="44dp"
-                android:layout_marginStart="12dp"
-                android:visibility="gone"
+        <TextView android:id="@+id/APUbatteryTV"
+            android:layout_width="82dp"
+            android:layout_height="22dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="728dp"
+            android:layout_marginTop="44dp"
+            android:fontFamily="@font/kanit"
+            android:shadowColor="#80000000"
+            android:shadowDx="5"
+            android:visibility="gone"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:text="APU 100%"
+            android:textAlignment="textStart"
+            android:textColor="#FFFFFFFF"
+            android:textSize="17dp"
+            android:translationY="-10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-                android:src="@drawable/tempicon"
-                />
+        <ImageView android:id="@+id/highBeam_IVon"
+            android:layout_width="117dp"
+            android:layout_height="117dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="722dp"
+            android:layout_marginBottom="375dp"
+            android:layout_toRightOf="@id/timeTextView"
+            android:translationY="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/high_beam" />
 
+        <ImageView android:id="@+id/right_on"
+            android:layout_width="121dp"
+            android:layout_height="115dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="380dp"
+            android:layout_marginBottom="366dp"
+            android:src="@drawable/right_on"
+            android:translationY="-10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            <ImageView
-                android:id="@+id/network"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/network" />
-
-            <ImageView
-                android:id="@+id/wifi"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="16dp"
-                android:src="@drawable/wifioffimg" />
-
-            <TextView
-                android:id="@+id/timeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:fontFamily="@font/kanit"
-                android:text="02:59 PM"
-                android:textColor="#FFFFFF"
-                android:textSize="19sp" />
-
-
-            <ImageView
-                android:id="@+id/keyOutImage"
-                android:layout_width="40dp"
-                android:layout_height="28dp"
-                android:layout_marginStart="11dp"
-                android:src="@drawable/keyout" />
-
-            <ImageView
-                android:id="@+id/tpmsicon"
-                android:layout_width="32dp"
-                android:layout_height="44dp"
-                android:layout_marginStart="2dp"
-                android:visibility="gone"
-
-                android:src="@drawable/tpmsicon"
-              />
-
-
-            <ImageView
-                android:id="@+id/apubaticon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/battery_level_1"
-                android:visibility="gone"
-
-                />
-
-            <TextView
-                android:id="@+id/APUbatteryTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="@font/kanit"
-                android:text="APU 100%"
-                android:textColor="#FFFFFF"
-                android:visibility="gone"
-                android:textSize="18sp"
-                 />
-
-            <ImageView
-                android:id="@+id/highBeam_IVon"
-                android:layout_width="117dp"
-                android:layout_height="117dp"
-                android:layout_marginStart="-32dp"
-                android:src="@drawable/high_beam2" />
-
-            <ImageView
-                android:id="@+id/highBeam_IVoff"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginBottom="2dp"
-                android:layout_marginStart="-77dp"
-                android:src="@drawable/headlamp" />
-
-            <ImageView
-                android:id="@+id/right_on"
-                android:layout_width="121dp"
-                android:layout_height="115dp"
-                android:visibility="gone"
-                android:layout_marginStart="-30dp"
-                android:src="@drawable/right_on" />
-
-        </LinearLayout>
-
-
-<!--        <ImageView-->
-<!--            android:id="@+id/highBeam_IVoff"-->
-<!--            android:layout_width="40dp"-->
-<!--            android:layout_height="40dp"-->
-<!--            android:layout_alignParentStart="true"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginStart="718dp"-->
-<!--            android:layout_marginBottom="408dp"-->
-<!--            android:translationY="0dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:srcCompat="@drawable/headlamp" />-->
+        <ImageView
+            android:id="@+id/highBeam_IVoff"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="762dp"
+            android:layout_marginBottom="416dp"
+            android:translationY="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/headlamp" />
 
         <ImageView
             android:id="@+id/turnLeft_IV"

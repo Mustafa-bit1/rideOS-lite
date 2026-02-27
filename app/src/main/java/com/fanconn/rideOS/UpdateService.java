@@ -122,7 +122,7 @@ public class UpdateService extends Service {
 
                 Log.i(TAG, "Current=" + currentVersion + " | Server=" + latestVersion);
 
-                // 2️⃣ Version decision
+                // 2️ Version decision
                 boolean updateAvailable = !latestVersion.equals(currentVersion);
 
                 if (updateAvailable) {
@@ -131,11 +131,11 @@ public class UpdateService extends Service {
 
                     if (remoteSilent) {
                         // 🤖 REMOTE MODE (MQTT)
-                        Log.i(TAG, "🔥 Remote silent OTA → auto start");
-                        launchProgressAndDownload(apkUrl);   // 🚀 NO POPUP
+                        Log.i(TAG, " Remote silent OTA → auto start");
+                        launchProgressAndDownload(apkUrl);   //  NO POPUP
 
                     } else {
-                        // 🧑 USER MODE (UI)
+                        //  USER MODE (UI)
                         mainHandler.post(() -> showUpdatePopup(apkUrl)); // popup only here
                     }
 
