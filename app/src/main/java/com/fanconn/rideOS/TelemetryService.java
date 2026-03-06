@@ -527,6 +527,9 @@ import com.fanconn.rideOS.network.ApiService;
 
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
@@ -583,7 +586,7 @@ public class TelemetryService extends Service {
     private void startTelemetry(String VINNUMBER) {
         evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://sb.rivotmotors.com:8081/ws/ev"));
 //        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.174.148.224:8081/ws/ev"));
-//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.106.224:8081/ws/ev"));
+//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.101:8081/ws/ev"));
 
         evClient.connect();
 
@@ -837,8 +840,10 @@ public class TelemetryService extends Service {
         }
         data.time = java.time.OffsetDateTime.now().toString();
         //int mcuVersion = getEffectiveMcuVersion();
-        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH();
+        String temps = getCriticalTemps();
 
+        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps;
+        //Log.d("QUALCOMTHERMAL  ", temps);
         return data;
     }
 
@@ -1108,6 +1113,64 @@ public class TelemetryService extends Service {
         }
     }
 
+    public String getCriticalTemps() {
 
+        String cpu0 = "NA";
+        String cpu1 = "NA";
+        String pmic = "NA";
+        String skin = "NA";
+
+        try {
+            File thermalDir = new File("/sys/class/thermal/");
+            File[] zones = thermalDir.listFiles();
+
+            if (zones != null) {
+                for (File zone : zones) {
+
+                    if (zone.getName().startsWith("thermal_zone")) {
+
+                        File typeFile = new File(zone, "type");
+                        File tempFile = new File(zone, "temp");
+
+                        if (typeFile.exists() && tempFile.exists()) {
+
+                            String type = readLine(typeFile);
+                            String tempRaw = readLine(tempFile);
+
+                            if (type == null || tempRaw == null) continue;
+
+                            float tempC = Float.parseFloat(tempRaw) / 1000f;
+
+                            if (type.equals("cpuss-0-usr")) {
+                                cpu0 = String.format("%.1f", tempC);
+                            } else if (type.equals("cpuss-1-usr")) {
+                                cpu1 = String.format("%.1f", tempC);
+                            } else if (type.equals("pm2250-tz")) {
+                                pmic = String.format("%.1f", tempC);
+                            } else if (type.equals("chg-skin-therm-usr")) {
+                                skin = String.format("%.1f", tempC);
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "cpu0=" + cpu0 +
+                ",cpu1=" + cpu1 +
+                ",pmic=" + pmic +
+                ",skin=" + skin;
+    }
+
+    private String readLine(File file) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            return br.readLine();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }

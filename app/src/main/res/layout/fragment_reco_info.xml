@@ -47,7 +47,19 @@
             android:id="@+id/tripRecoKm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="147dp"
+            android:layout_marginTop="93dp"
+            android:layout_marginEnd="2dp"
+            android:fontFamily="@font/kanit"
+            android:text="+0.0 km"
+            android:textColor="#6CFF9E"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/lasttripRecoKm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="122dp"
             android:fontFamily="@font/kanit"
             android:text="+0.0 km"
             android:layout_marginEnd="2dp"
@@ -56,28 +68,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-<!--        <TextView-->
-<!--            android:id="@+id/LasttripRecoKm"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="105dp"-->
-<!--            android:fontFamily="@font/kanit"-->
-<!--            android:layout_marginEnd="2dp"-->
-
-<!--            android:text="+0.0 km"-->
-<!--            android:textColor="#6CFF9E"-->
-<!--            android:textSize="20dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-
         <TextView
             android:id="@+id/totalRecoKm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="118dp"
-            android:layout_marginEnd="2dp"
+            android:layout_marginTop="151dp"
             android:fontFamily="@font/kanit"
             android:text="+0.0 km"
+            android:layout_marginEnd="2dp"
             android:textColor="#6CFF9E"
             android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -127,12 +125,12 @@
             android:id="@+id/heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
+            android:layout_marginTop="59dp"
             android:fontFamily="@font/kanitlite"
             android:text="Extra km added by regeneration"
             android:textColor="#FFFFFF"
             android:layout_marginEnd="2dp"
-            android:textSize="17dp"
+            android:textSize="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

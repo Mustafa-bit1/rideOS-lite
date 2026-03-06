@@ -157,28 +157,58 @@ public class UIUpdater  {
         return instance;
     }
 
-    private boolean showingRecoTrip = true; // independent of ODO/TRIP
+    private int recoMode = 0;
+    // 0 = Trip, 1 = Total, 2 = Last Trip
     private static final float RECO_KM_PER_AH = 2.5f;
 
     public void toggleRecoMode() {
-        showingRecoTrip = !showingRecoTrip;
+        recoMode++;
+        if (recoMode > 2) recoMode = 0;
         updateRecoKm();
     }
     public void updateRecoKm() {
 
-        float regenAh = showingRecoTrip
-                ? getTripAhByRegen()
-                : getTotalAhByRegen();
+        float regenAh = 0f;
+        String label = "";
+
+        if (recoMode == 0) {
+            // Trip
+            regenAh = getTripAhByRegen();
+            label = "Trip reco";
+
+        } else if (recoMode == 1) {
+            // Total
+            regenAh = getLastTripAh();
+            label = "Last trip reco";
+
+        } else if (recoMode == 2) {
+            // Last Trip
+            regenAh = getTotalAhByRegen();
+            label = "Total trip";
+        }
 
         float km = regenAh * RECO_KM_PER_AH;
 
+        // Lambda-safe finals
+        final float finalKm = km;
+        final String finalLabel = label;
+
         runOnUiThreadSafe(() -> {
-            setRecoKmText(km);
-            binding.recoLabelText.setText(showingRecoTrip ? "Trip reco" : "Total reco");
+            setRecoKmText(finalKm);
+            binding.recoLabelText.setText(finalLabel);
             updateRecoDotImage();
         });
     }
+    private static final String PREF_RECO = "reco_data";
+    private static final String KEY_LAST_TRIP_AH = "last_trip_ah";
+    public void onTripReset() {
+        float currentTripAh = getTripAhByRegen();   // current trip regen
 
+        SharedPreferences prefs = context.getSharedPreferences(PREF_RECO, Context.MODE_PRIVATE);
+        prefs.edit().putFloat(KEY_LAST_TRIP_AH, currentTripAh).apply();
+
+        resetTripAhByRegen(); // your existing reset logic
+    }
     private void setRecoKmText(float km) {
 
         String valueText = String.format("+%.1f km", km);
@@ -197,13 +227,21 @@ public class UIUpdater  {
     }
 
     private void updateRecoDotImage() {
-        binding.recoDotIV.setImageResource(
-                showingRecoTrip
-                        ? R.drawable.recodot_trip
-                        : R.drawable.recodot_total
-        );
+        if (recoMode == 0) {
+            binding.recoDotIV.setImageResource(R.drawable.recodot_trip);
+        }
+        else if (recoMode == 1) {
+            binding.recoDotIV.setImageResource(R.drawable.recodot_total);
+        }
+        else {
+            binding.recoDotIV.setImageResource(R.drawable.recodot_last);
+        }
     }
 
+    private float getLastTripAh() {
+        SharedPreferences prefs = context.getSharedPreferences(PREF_RECO, Context.MODE_PRIVATE);
+        return prefs.getFloat(KEY_LAST_TRIP_AH, 0f);
+    }
     private void runOnUiThreadSafe(Runnable action) {
         if (activity == null || activity.isFinishing()) return;
 
@@ -216,6 +254,10 @@ public class UIUpdater  {
 
     public float getTripRecoKm() {
         return getTripAhByRegen() * RECO_KM_PER_AH;
+    }
+
+    public float getLastTripRecoKm() {
+        return getLastTripAh() * RECO_KM_PER_AH;
     }
 
     public float getTotalRecoKm() {
@@ -567,8 +609,8 @@ public class UIUpdater  {
 //    public static boolean resetParamtersAfterLowbat=false;
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
-        int batteryLevel= hb3.getBatteryLevel() / 10;
-//        int batteryLevel= (int)ahTrackerManager.getSOC();
+//        int batteryLevel= hb3.getBatteryLevel() / 10;
+        int batteryLevel= (int)ahTrackerManager.getSOC();
         Log.d("adsfg","THISISAHSOC="+batteryLevel);
         tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
 
@@ -1850,6 +1892,9 @@ public class UIUpdater  {
 //        binding.brk.clearAnimation();
 //        binding.startButton.clearAnimation();
         stopReverseBeep();
+        binding.ForwardInstruction.setVisibility(View.VISIBLE);
+        binding.tpmsicon.setVisibility(View.VISIBLE);
+
         binding.neutralicon.setVisibility(View.VISIBLE);
 //        binding.brk.setVisibility(View.VISIBLE);
 //        binding.startButton.setVisibility(View.VISIBLE);
@@ -1869,7 +1914,7 @@ public class UIUpdater  {
         binding.network.setVisibility(View.VISIBLE);
         binding.wifi.setVisibility(View.VISIBLE);
         binding.timeTextView.setVisibility(View.VISIBLE);
-        binding.BluetoothIV.setVisibility(View.VISIBLE);
+//        binding.BluetoothIV.setVisibility(View.VISIBLE);
         binding.batteryImageView.setVisibility(View.VISIBLE);
         binding.speedImageView.setVisibility(View.INVISIBLE);
         binding.speedNumberTV.setVisibility(View.INVISIBLE);
@@ -1911,6 +1956,8 @@ public class UIUpdater  {
 //        binding.brk.clearAnimation();
 
         stopReverseBeep();
+        binding.tpmsicon.setVisibility(View.VISIBLE);
+        binding.ForwardInstruction.setVisibility(View.GONE);
 //        binding.avgSpeed.setVisibility(View.VISIBLE);
         binding.tripTextView.setVisibility(View.VISIBLE);
         binding.navleft.setVisibility(View.VISIBLE);
@@ -1928,7 +1975,7 @@ public class UIUpdater  {
         binding.network.setVisibility(View.VISIBLE);
         binding.wifi.setVisibility(View.VISIBLE);
         binding.timeTextView.setVisibility(View.VISIBLE);
-        binding. BluetoothIV.setVisibility(View.VISIBLE);
+//        binding. BluetoothIV.setVisibility(View.VISIBLE);
         binding.batteryImageView.setVisibility(View.VISIBLE);
         if(!shouldshowchargingicononmainonot){
             binding.rectangleGearsTV.setVisibility((View.VISIBLE));
@@ -1969,6 +2016,8 @@ public class UIUpdater  {
 //        binding.brk.clearAnimation();
 //        binding.startButton.clearAnimation();
         startReverseBeep();
+        binding.tpmsicon.setVisibility(View.INVISIBLE);
+        binding.ForwardInstruction.setVisibility(View.GONE);
         binding.startButton.setVisibility(View.INVISIBLE);
 //        binding.avgSpeed.setVisibility(View.VISIBLE);
         binding.tripTextView.setVisibility(View.INVISIBLE);
@@ -1991,7 +2040,7 @@ public class UIUpdater  {
         binding.network.setVisibility(View.INVISIBLE);
         binding.wifi.setVisibility(View.INVISIBLE);
         binding.timeTextView.setVisibility(View.INVISIBLE);
-        binding.BluetoothIV.setVisibility(View.INVISIBLE);
+//        binding.BluetoothIV.setVisibility(View.INVISIBLE);
         binding.batteryImageView.setVisibility(View.INVISIBLE);
         binding.APUbatteryImageView.setVisibility(View.INVISIBLE);
 
@@ -2032,6 +2081,9 @@ public class UIUpdater  {
 //            binding.startButton.clearAnimation();
             binding.startButton.setVisibility(View.INVISIBLE);}
         stopReverseBeep();
+        binding.ForwardInstruction.setVisibility(View.GONE);
+        binding.tpmsicon.setVisibility(View.VISIBLE);
+
         binding.batterryBar.setVisibility(View.VISIBLE);
 //        binding.avgSpeed.setVisibility(View.INVISIBLE);
         binding.tripTextView.setVisibility(View.INVISIBLE);
@@ -2043,7 +2095,7 @@ public class UIUpdater  {
         binding.network.setVisibility(View.VISIBLE);
         binding. wifi.setVisibility(View.VISIBLE);
         binding.timeTextView.setVisibility(View.VISIBLE);
-        binding.BluetoothIV.setVisibility(View.VISIBLE);
+//        binding.BluetoothIV.setVisibility(View.VISIBLE);
         binding.batteryImageView.setVisibility(View.VISIBLE);
         binding.brk.setVisibility(View.INVISIBLE);
 

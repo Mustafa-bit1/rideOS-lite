@@ -459,7 +459,7 @@ public class chargingUI extends AppCompatActivity {
         acquisitionTime();   // start / resume updates
 
         //InactivityManager.getInstance().startTimer(4);
-        InactivityManager.getInstance().startTimer(4);
+        InactivityManager.getInstance().startTimer(4,10000);
 //        Log.d("sdfgdfh","RESUMED CHARGINGUI");
     }
     @Override

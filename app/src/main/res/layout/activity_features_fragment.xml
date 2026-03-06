@@ -361,11 +361,12 @@
                     android:id="@+id/seek_inactivity"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
-                    android:paddingStart="40dp"
                     android:layout_marginTop="14dp"
+                    android:paddingStart="40dp"
                     android:paddingEnd="30dp"
+                    android:max="9"
                     android:thumb="@drawable/reverse_speed_seekbarthumb"
-                    android:max="4" />
+                   />
                 <TextView
                     android:id="@+id/tv_inactivity_time"
                     android:layout_width="wrap_content"

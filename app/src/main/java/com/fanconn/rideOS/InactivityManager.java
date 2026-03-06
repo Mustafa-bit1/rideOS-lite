@@ -12,7 +12,7 @@ public class InactivityManager {
     private final Handler countdownHandler = new Handler(Looper.getMainLooper());
     private Runnable timeoutRunnable;
     private Runnable countdownRunnable;
-    private long timeoutMillis = 20000; // 40 seconds
+    private long timeoutMillis = 30000; // 40 seconds
     private int currentCode = -1;
     private InactivityCallback callback;
     private int secondsRemaining = 0;
@@ -35,7 +35,7 @@ public class InactivityManager {
         SharedPreferences prefs =
                 context.getSharedPreferences("rideos_settings", Context.MODE_PRIVATE);
 
-        int timeoutSec = prefs.getInt("inactivity_timeout_sec", 20); // default 20s
+        int timeoutSec = prefs.getInt("inactivity_timeout_sec", 30); // default 20s
         timeoutMillis = timeoutSec * 1000L;
 
         Log.d("InactivityManager",
@@ -83,7 +83,23 @@ public class InactivityManager {
         // Start countdown logger
         startCountdown((int) (timeoutMillis / 1000));
     }
+    public void startTimer(int code, long customTimeoutMillis) {
+        stopTimer();
 
+        currentCode = code;
+        isRunning = true;
+
+        timeoutRunnable = () -> {
+            isRunning = false;
+            if (callback != null) {
+                callback.onInactivityTimeout(currentCode);
+            }
+        };
+
+        handler.postDelayed(timeoutRunnable, customTimeoutMillis);
+
+        startCountdown((int)(customTimeoutMillis / 1000));
+    }
     private void startCountdown(int seconds) {
         secondsRemaining = seconds;
         countdownHandler.removeCallbacksAndMessages(null);

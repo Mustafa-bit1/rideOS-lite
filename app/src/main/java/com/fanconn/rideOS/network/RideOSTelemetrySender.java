@@ -339,7 +339,7 @@ public class RideOSTelemetrySender {
         // =============================
         // LOG
         // =============================
-        Log.e("TELEMETRY_API_SEND", new Gson().toJson(data));
+       // Log.e("TELEMETRY_API_SEND", new Gson().toJson(data));
 
         // =============================
         // SEND
@@ -357,12 +357,12 @@ public class RideOSTelemetrySender {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(TAG, "❌ Telemetry API send failed", e);
+             //   Log.e(TAG, "❌ Telemetry API send failed", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) {
-                Log.e(TAG, "✅ Telemetry API sent | code=" + response.code());
+               // Log.e(TAG, "✅ Telemetry API sent | code=" + response.code());
                 response.close();
             }
         });

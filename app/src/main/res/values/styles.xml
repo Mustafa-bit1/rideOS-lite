@@ -19,8 +19,8 @@
         <item name="android:background">@drawable/bg_toggle_selector</item>
         <item name="android:button">@null</item> <!-- Removes default radio icon -->
         <item name="android:textColor">@color/text_toggle_selector</item>
-        <item name="android:paddingHorizontal">19dp</item>
-        <item name="android:paddingTop">18dp</item> <!-- Increase this to move text down -->
+        <item name="android:textAlignment">center</item>
+
         <item name="android:textSize">20sp</item>
         <item name="android:fontFamily">@font/kanit</item>
     </style>

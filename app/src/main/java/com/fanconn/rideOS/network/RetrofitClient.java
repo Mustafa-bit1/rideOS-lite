@@ -14,7 +14,7 @@ public class RetrofitClient {
 //                    .baseUrl("http://103.174.148.224:8081/")//original
                     .baseUrl("http://sb.rivotmotors.com:8081/")
 
-//                    .baseUrl("http://192.168.1.106:8081/")
+//                    .baseUrl("http://192.168.1.101:8081/")
 //                    .baseUrl("http://103.104.231.197:9090/api/vehicle/")//server
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();

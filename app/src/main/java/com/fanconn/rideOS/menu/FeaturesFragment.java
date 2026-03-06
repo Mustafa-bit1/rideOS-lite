@@ -44,8 +44,8 @@ public class FeaturesFragment extends Fragment {
     private AudioManager audioManager;
     private SharedPreferences prefs;
     private boolean isMuted;
-    private static final int MIN_SEC = 20;
-    private static final int MAX_SEC = 60;
+    private static final int MIN_SEC = 30;
+    private static final int MAX_SEC = 120;
     private static final int STEP_SEC = 10;
 
     @Nullable

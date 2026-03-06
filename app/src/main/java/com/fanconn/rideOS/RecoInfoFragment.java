@@ -19,6 +19,8 @@ public class RecoInfoFragment extends Fragment {
 
     private TextView tripRecoKmTv;
     private TextView totalRecoKmTv;
+    private TextView lastRecokmTv;
+
 
     @Nullable
     @Override
@@ -31,6 +33,7 @@ public class RecoInfoFragment extends Fragment {
 
         tripRecoKmTv = view.findViewById(R.id.tripRecoKm);
         totalRecoKmTv = view.findViewById(R.id.totalRecoKm);
+        lastRecokmTv = view.findViewById(R.id.lasttripRecoKm);
 
         View blurBg = view.findViewById(R.id.blurBg);
         View rightPanel = view.findViewById(R.id.rightPanel);
@@ -56,8 +59,9 @@ public class RecoInfoFragment extends Fragment {
 
         float tripKm = uiUpdater.getTripRecoKm();
         float totalKm = uiUpdater.getTotalRecoKm();
-
-        tripRecoKmTv.setText(String.format("+%.1f km (Trip)", tripKm));
+        float lastKm =uiUpdater.getLastTripRecoKm();
+        tripRecoKmTv.setText(String.format("+%.1f km (Current Trip)", tripKm));
+        lastRecokmTv.setText(String.format("+%.1f km (Last trip)",lastKm));
         totalRecoKmTv.setText(String.format("+%.1f km (Total)", totalKm));
     }
 

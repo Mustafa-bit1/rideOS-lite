@@ -27,7 +27,7 @@ public class MyApp extends Application {
         registerActivityLifecycleCallbacks(new TouchTracker());
 
         String vin = MetadataManager.get().getVin();
-//        String brokerUrl = "tcp://192.168.1.106:1883";
+//        String brokerUrl = "tcp://192.168.1.101:1883";
         String brokerUrl = "tcp://sb.rivotmotors.com:1883";
 
 

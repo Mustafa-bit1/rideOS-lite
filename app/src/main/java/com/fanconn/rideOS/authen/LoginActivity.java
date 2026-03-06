@@ -360,7 +360,7 @@ public class LoginActivity extends AppCompatActivity{
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
-        InactivityManager.getInstance().startTimer(3);
+        InactivityManager.getInstance().startTimer(3,10000);
 
 
         etCredential = findViewById(R.id.etCredential);
@@ -1138,7 +1138,7 @@ public class LoginActivity extends AppCompatActivity{
 //        mHandlerTime.postDelayed(mRunnableTime, 0);
         // Re-assign the callback and restart the timer when coming back to LoginActivity
 
-        InactivityManager.getInstance().startTimer(3);
+        InactivityManager.getInstance().startTimer(3,10000);
         // Cancel any previous delayed task to avoid overlap
 
 

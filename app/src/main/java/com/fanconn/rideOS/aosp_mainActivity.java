@@ -52,7 +52,7 @@ import com.alibaba.fastjson.JSONObject;
 
 public class aosp_mainActivity extends AppCompatActivity {
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "AOSPActivity";
     private String mPrivatePath;
     private ProgressBar mProgressBar_main;
     private ProgressBar mprogressBar_round;

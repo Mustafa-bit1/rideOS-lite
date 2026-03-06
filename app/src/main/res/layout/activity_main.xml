@@ -436,11 +436,11 @@
 
         <ImageView
             android:id="@+id/stand"
-            android:layout_width="750dp"
-            android:layout_height="365dp"
-            android:layout_marginStart="265dp"
-            android:layout_marginBottom="-46dp"
+            android:layout_width="700dp"
+            android:layout_height="315dp"
             android:visibility="gone"
+            android:layout_marginStart="300dp"
+            android:layout_marginBottom="-6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/stand2" />
@@ -822,8 +822,8 @@
 
             <ImageView
                 android:id="@+id/recoDotIV"
-                android:layout_width="25dp"
-                android:layout_height="10dp"
+                android:layout_width="30dp"
+                android:layout_height="15dp"
                 android:layout_marginTop="22dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/recodot1"
@@ -1102,7 +1102,6 @@
 <!--                android:visibility="gone"-->
 <!--                android:layout_marginStart="-30dp"-->
 <!--                android:src="@drawable/right_on" />-->
-
 <!--        </LinearLayout>-->
 
         <ImageView android:id="@+id/left_on"
@@ -1110,10 +1109,12 @@
             android:layout_height="115dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="380dp"
-            android:layout_marginBottom="366dp"
+            android:layout_marginStart="375dp"
+            android:layout_marginBottom="364dp"
             android:src="@drawable/left_on"
             android:translationY="-10dp"
+            android:visibility="gone"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -1157,6 +1158,7 @@
             app:layout_constraintEnd_toStartOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/wifioffimg" />
+
         <ImageView android:id="@+id/keyOutImage"
             android:layout_width="40dp"
             android:layout_height="28dp"
@@ -1218,6 +1220,8 @@
             android:layout_marginBottom="375dp"
             android:layout_toRightOf="@id/timeTextView"
             android:translationY="0dp"
+            android:visibility="gone"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/high_beam" />
@@ -1229,10 +1233,11 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginEnd="380dp"
-            android:layout_marginBottom="366dp"
+            android:layout_marginEnd="375dp"
+            android:layout_marginBottom="364dp"
             android:src="@drawable/right_on"
             android:translationY="-10dp"
+android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

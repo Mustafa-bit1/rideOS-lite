@@ -137,6 +137,7 @@ public class ScooterMqttClient {
             String commandType = json.optString("commandType", "UNKNOWN");
             String value = json.optString("value", "UNKNOWN");
             String clientId = json.optString("clientId", "UNKNOWN");
+            long commandId = json.optLong("commandId", -1);   // ⬅ ADD
 
 //            Log.d(TAG, "➡ CommandType : " + commandType);
 //            Log.d(TAG, "➡ Value       : [" + value + "]");
@@ -147,7 +148,7 @@ public class ScooterMqttClient {
             // ❌ STRICT VALIDATION — reject ANY whitespace in value
             if (value.matches(".*\\s+.*")) {
                // Log.e(TAG, "❌ Invalid command value (contains spaces): [" + value + "]");
-                sendAck(clientId, "invalidcommand");
+                sendAck(vin, clientId, commandType, value, commandId, ackStatus);
                 return;
             }
 
@@ -203,7 +204,7 @@ public class ScooterMqttClient {
                     if (value.startsWith(CAN_HEADER)) {
 
                         if (value.length() != CAN_FRAME_LEN) {
-                            ackStatus = "invalidCommand";
+                            ackStatus = "invalidcommand";
                             Log.e(TAG, "CANWRONG Invalid CAN frame length: "
                                     + value.length() + " data=" + value);
                             break;
@@ -236,7 +237,7 @@ public class ScooterMqttClient {
 
                     // ---- UNKNOWN FRAME ----
                     Log.d(TAG, "Unknown frame ignored: " + value);
-                    ackStatus = "Invalid_cmd";
+                    ackStatus = "invalidcommand";
                     break;
                 case "HANDLELOCK":
                     if ("1".equals(value)) {
@@ -330,8 +331,15 @@ public class ScooterMqttClient {
                     break;
 
                 case "MCUOTA":
-                    handleMcuOtaCommandAsync(context, clientId);
-                    return; //
+                    handleMcuOtaCommandAsync(
+                            context,
+                            vin,
+                            clientId,
+                            commandType,
+                            value,
+                            commandId
+                    );
+                    return;
 
                 case "rideOSOTA":
                     ackStatus = "success";
@@ -370,8 +378,7 @@ public class ScooterMqttClient {
             }
 
             // ✅ Send ACK only once
-            sendAck(clientId, ackStatus);
-
+            sendAck(vin, clientId, commandType, value, commandId, ackStatus);
         } catch (Exception e) {
             //Log.e(TAG, "❌ Command parse failed", e);
         }
@@ -405,16 +412,27 @@ public class ScooterMqttClient {
     // ACK BACK TO SPRING BOOT
     // ----------------------------------------------------
 
-    private void sendAck(String clientId, String status) {
+    private void sendAck(
+            String vin,
+            String clientId,
+            String commandType,
+            String value,
+            long commandId,
+            String status
+    ) {
 
         if (client == null || !client.isConnected()) {
-            //Log.e(TAG, "❌ Cannot send ACK, MQTT not connected");
+            Log.e(TAG, "❌ Cannot send ACK, MQTT not connected");
             return;
         }
 
         try {
             JSONObject ack = new JSONObject();
+            ack.put("vin", vin);
             ack.put("clientId", clientId);
+            ack.put("commandType", commandType);
+            ack.put("value", value);
+            ack.put("commandId", commandId);
             ack.put("status", status);
 
             String topic = STATUS_PREFIX + vin;
@@ -426,15 +444,12 @@ public class ScooterMqttClient {
                     false
             );
 
-//            Log.d(TAG, "📤 ACK sent");
-//            Log.d(TAG, "   Topic   : " + topic);
-//            Log.d(TAG, "   Payload : " + ack);
+            Log.d(TAG, "📤 ACK sent → " + ack.toString());
 
         } catch (Exception e) {
-            //Log.e(TAG, "❌ ACK publish failed", e);
+            Log.e(TAG, "❌ ACK publish failed", e);
         }
     }
-
     // ----------------------------------------------------
     // OPTIONAL CLEANUP (NOT REQUIRED NOW)
     // ----------------------------------------------------
@@ -489,7 +504,14 @@ public class ScooterMqttClient {
 
     private String MCU_VERSION_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
 
-    private void handleMcuOtaCommandAsync(Context context, String clientId) {
+    private void handleMcuOtaCommandAsync(
+            Context context,
+            String vin,
+            String clientId,
+            String commandType,
+            String value,
+            long commandId
+    ) {
 
         new Thread(() -> {
 
@@ -499,7 +521,7 @@ public class ScooterMqttClient {
 
             if (!FrameUtils.isNetworkAvailable(context)) {
                 ackStatus = "no-network";
-                sendAck(clientId, ackStatus);
+                sendAck(vin, clientId, commandType, value, commandId, ackStatus);
                 return;
             }
 
@@ -514,19 +536,15 @@ public class ScooterMqttClient {
 
             if (serverVersion <= 0) {
                 ackStatus = "version-fetch-failed";
-                Log.i("MQTT", "Failed to fetch No json on server");
 
             } else if (serverVersion <= localVersion) {
-                Log.i("MQTT", "MCU up to date");
                 ackStatus = "up-to-date";
             } else {
                 ackStatus = "success";
-                Log.i("MQTT", "MCU update REQUIRED → launching OTA");
                 McuOtaExecutor.startMcuOta(context);
             }
 
-            sendAck(clientId, ackStatus);
-
+            sendAck(vin, clientId, commandType, value, commandId, ackStatus);
         }).start();
     }
 }

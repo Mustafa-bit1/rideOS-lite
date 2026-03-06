@@ -398,7 +398,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             public void onClick(View v) {
 
                 if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
-                    InactivityManager.getInstance().stopTimer();
                     Intent intent = new Intent(MainActivity.this, Maps.class);
                     startActivity(intent);
                 }
@@ -2216,6 +2215,7 @@ public void recoNavLeft(View view) {
             binding.textstatus.setText(message);
         }
     }
+
     public static boolean ReloggedIn;
     public void runPostLoginInit() {
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
@@ -2230,7 +2230,7 @@ public void recoNavLeft(View view) {
             }
         }, 2100);
 
-        uiUpdater.resetTripAhByRegen();
+        uiUpdater.onTripReset();
 
         //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            long minRequired = 50 * 1024 * 1024; // 50 MB minimum free space
