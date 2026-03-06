@@ -27,6 +27,8 @@ public class TelemetryDataManager {
     private float teleDischargeAH;
     private int teleEvPowerState;
     private float teleCurrentConsumption;
+    private float teleChargingCurrentValue;
+
     private float teleBatVoltage;
     private float teleAPUBatVoltage;
     private String teleIndividualCellVoltages;
@@ -158,6 +160,14 @@ public class TelemetryDataManager {
 
     public void setTeleTotalAH(float teleTotalAH) {
         this.teleTotalAH = teleTotalAH;
+    }
+
+    public float getTeleChargingCurrentValue() {
+        return teleChargingCurrentValue;
+    }
+
+    public void setTeleChargingCurrentValue(float teleChargingCurrentValue) {
+        this.teleChargingCurrentValue = teleChargingCurrentValue;
     }
 
     public float getTeleChargerAH() {

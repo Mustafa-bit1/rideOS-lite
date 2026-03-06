@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         menubtn.setOnClickListener(v -> {
 //            Log.d("MainActivity", "Menu button clicked");
-            Log.d("MainActivity", "Menu OTA MCUVERSION "+serialPortManager.mad.getMcuVersions());
+//            Log.d("MainActivity", "Menu OTA MCUVERSION "+serialPortManager.mad.getMcuVersions());
 //            Log.d("MainActivity", "THIS IS VIN_ON_CAN "+VIN_On_CAN);
 //            serialPortManager.VCUSendToMCU("FFAA550103001518FF50A5"+VIN_On_CAN);
 //            serialPortManager.VCUSendToMCU("FFAA5501030015189501400001020304050607");//+VIN_On_CAN);

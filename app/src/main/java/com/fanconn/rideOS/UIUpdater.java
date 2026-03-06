@@ -621,8 +621,8 @@ public class UIUpdater  {
         String sBatteryLevel = String.valueOf(batteryLevel);
 
 //        if(((hb3.getrealCurrent()-30000)/10)<500 && ((hb3.getrealCurrent()-30000)/10)>-500){
-//            tm.setTeleCurrentConsumption((hb3.getrealCurrent()-30000)/10);
-//            Log.d("sadfsgg","CURRWNTCSMALL VALUES IS "+(hb3.getrealCurrent()-30000)/10);
+//            tm.setTeleBMSCurrentValue((hb3.getrealCurrent()-30000)/10);
+//            //Log.d("sadfsgg","CURRWNTCSMALL VALUES IS "+(hb3.getrealCurrent()-30000)/10);
 //        }
 
         float current = (hb3.getrealCurrent() - 30000) / 10;
@@ -888,7 +888,6 @@ public class UIUpdater  {
     }
 
 
-    private boolean AlreadyInChargingUI = false;
 
     public void updateCanData18FF50E5(Heartbeat3 hb3) {
        //Log.d("ChargingDebug", "RESETING FROM UIUPDATORrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
@@ -902,6 +901,7 @@ public class UIUpdater  {
         binding.LowBatmsg.setVisibility(View.INVISIBLE);
         //----------------------------
         float chargingbit = hb3.getChargingbit();
+        tm.setTeleChargingCurrentValue(chargingbit);
 //        Log.d("ChargingDebug", "Charging bitKKK: " + chargingbit);
         if (chargingUI == null) {
             //Log.d("UIUpdater", "chargingUI is null — cannot reset timeout");
@@ -965,7 +965,6 @@ public class UIUpdater  {
     private Handler warningHandler = new Handler();
 
     public void updateCanData18964001(Heartbeat3 hb3) {
-        float chargingbit = hb3.getChargingbit();
 
         // Apply offset
         NTC1 = hb3.getNTC1() - 40;

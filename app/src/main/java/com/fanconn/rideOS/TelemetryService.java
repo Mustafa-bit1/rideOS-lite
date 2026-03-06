@@ -816,10 +816,12 @@ public class TelemetryService extends Service {
         data.controllerMosTemp = TelemetryDataManager.getInstance().getTeleControllerMosTemp();
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
-        if(serialPortManager!=null){
-            data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+" ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff()+
-                    " AllCells 1to3="+serialPortManager.getHb3().getcell1TO3()+",cell4to6="+serialPortManager.getHb3().getcell4TO6()+",cell7to9="+serialPortManager.getHb3().getcell7TO9()+",cell10to12="+serialPortManager.getHb3().getcell10TO12()+",cell13to15="+serialPortManager.getHb3().getcell13TO15()+",cell16to18="+serialPortManager.getHb3().getcell16TO18()+",cell19to21="+serialPortManager.getHb3().getcell19TO21()+",cell22to23="+serialPortManager.getHb3().getcell22TO23();
-        }
+        if(SerialPortManager.getInstance().getHb3()!=null){
+            data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+", ChargingCurrent="+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+", ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff()+
+                    " AllCells 1to3="+SerialPortManager.getInstance().getHb3().getcell1TO3()+",cell4to6="+SerialPortManager.getInstance().getHb3().getcell4TO6()+",cell7to9="+SerialPortManager.getInstance().getHb3().getcell7TO9()+",cell10to12="+SerialPortManager.getInstance().getHb3().getcell10TO12()+",cell13to15="+SerialPortManager.getInstance().getHb3().getcell13TO15()+",cell16to18="+SerialPortManager.getInstance().getHb3().getcell16TO18()+",cell19to21="+SerialPortManager.getInstance().getHb3().getcell19TO21()+",cell22to23="+SerialPortManager.getInstance().getHb3().getcell22TO23();
+        Log.d("dsafgs","ddddddddddddddd "+data.ntc);
+        }else Log.d("dsafgs","ddddddddddddddddeeeeeeeeeeeeeeeeeeeeeedddddddd "+data.ntc);
+
         data.currentconsumption = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleCurrentConsumption());
         data.batvoltage = roundTo1Decimal(TelemetryDataManager.getInstance().getTeleBatVoltage());
         data.remainingCapacity_AH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRemainingCapacityAH());
@@ -997,11 +999,15 @@ public class TelemetryService extends Service {
 
     private int getEffectiveMcuVersion() {
         int liveVersion = 0;
+        serialPortManager = serialApplication.getSerialPortManager();
 
         try {
             if (serialPortManager != null && serialPortManager.mad != null) {
                 liveVersion = serialPortManager.mad.getMcuVersions();
+                //Log.d("asfdg","IFOFNULLSEERIAL ");
+
             }
+            //else //Log.d("asfdg","ELSEOFNULLSEERIAL ");
         } catch (Exception e) {
             Log.e("OTA", "MCU version read failed", e);
         }

@@ -436,11 +436,11 @@
 
         <ImageView
             android:id="@+id/stand"
-            android:layout_width="700dp"
-            android:layout_height="315dp"
+            android:layout_width="694dp"
+            android:layout_height="313dp"
+            android:layout_marginStart="303dp"
+            android:layout_marginBottom="-5dp"
             android:visibility="gone"
-            android:layout_marginStart="300dp"
-            android:layout_marginBottom="-6dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/stand2" />
