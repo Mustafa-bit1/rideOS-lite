@@ -106,16 +106,16 @@ public class BatteryFragment extends Fragment {
 
                         mainRemainingAh.setText(String.format("%.1f Ah", truncated));
                         int ntc1 = hb3.getNTC1();
-                        NTC1.setText(ntc1 == 0 ? "0°C" : (ntc1 - 40) + "°C");
+                        NTC1.setText(ntc1 < 40 ? "--" : (ntc1 - 40) + "°C");
 
                         int ntc2 = hb3.getNTC2();
-                        NTC2.setText(ntc2 == 0 ? "0°C" : (ntc2 - 40) + "°C");
+                        NTC2.setText(ntc2 < 40 ? "--" : (ntc2 - 40) + "°C");
 
                         int ntc3 = hb3.getNTC3();
-                        NTC3.setText(ntc3 == 0 ? "0°C" : (ntc3 - 40) + "°C");
+                        NTC3.setText(ntc3 < 40 ? "--" : (ntc3 - 40) + "°C");
 
                         int ntc4 = hb3.getNTC4();
-                        NTC4.setText(ntc4 == 0 ? "0°C" : (ntc4 - 40) + "°C");
+                        NTC4.setText(ntc4 < 40 ? "--" : (ntc4 - 40) + "°C");
 
 
                         String chargeState = (hb3.getMainChargeMosState() == 1) ? "ON" : "OFF";

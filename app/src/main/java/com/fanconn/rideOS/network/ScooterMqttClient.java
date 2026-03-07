@@ -386,16 +386,32 @@ public class ScooterMqttClient {
 
 
     private void showLoginAndUnlock(Context context) {
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        if (powerManager != null && !powerManager.isInteractive()) {
-            PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
-                    PowerManager.FULL_WAKE_LOCK |
-                            PowerManager.ACQUIRE_CAUSES_WAKEUP |
-                            PowerManager.ON_AFTER_RELEASE,
-                    "MyApp:WakeLockTag"
-            );
-            wakeLock.acquire(3000); // Wake screen for 3 seconds
-        }
+//        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+//        if (powerManager != null && !powerManager.isInteractive()) {
+//            PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
+//                    PowerManager.FULL_WAKE_LOCK |
+//                            PowerManager.ACQUIRE_CAUSES_WAKEUP |
+//                            PowerManager.ON_AFTER_RELEASE,
+//                    "MyApp:WakeLockTag"
+//            );
+//            wakeLock.acquire(3000); // Wake screen for 3 seconds
+//        }
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//
+//            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+//
+//            if (powerManager != null && !powerManager.isInteractive()) {
+//
+//                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
+//                        PowerManager.FULL_WAKE_LOCK |
+//                                PowerManager.ACQUIRE_CAUSES_WAKEUP |
+//                                PowerManager.ON_AFTER_RELEASE,
+//                        "MyApp:WakeLockTag"
+//                );
+//
+//                wakeLock.acquire(1000); // screen stays awake 3 seconds
+//            }
+//        }, 2000); // wait 2 seconds before executing
 
         // Delay slightly to ensure Activity is visible
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -405,6 +421,21 @@ public class ScooterMqttClient {
             } else {
                 //Log.e(TAG, "❌ LoginActivity instance still null");
             }
+
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+            if (powerManager != null && !powerManager.isInteractive()) {
+
+                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
+                        PowerManager.FULL_WAKE_LOCK |
+                                PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                                PowerManager.ON_AFTER_RELEASE,
+                        "MyApp:WakeLockTag"
+                );
+
+                wakeLock.acquire(1000); // screen stays awake 3 seconds
+            }
+
         }, 500); // 300–500 ms is enough
     }
 

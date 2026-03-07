@@ -3118,6 +3118,9 @@ public class UIUpdater  {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 context.startActivity(intent);
             }
+            else {
+                Log.d("asfg","CONTEXTNULLWHILEDOUBLETAP SO NOW LOGIN");
+            }
 
         }
         //Log.d("UIUpdater", "Double-tap triggered inUIUPDSTOR");
