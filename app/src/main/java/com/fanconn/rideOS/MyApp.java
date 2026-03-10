@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.fanconn.rideOS.menu.SecurePrefs;
 import com.fanconn.rideOS.network.ScooterMqttClient;
 
 public class MyApp extends Application {
@@ -22,7 +23,7 @@ public class MyApp extends Application {
         appStartTime = System.currentTimeMillis();
         UptimeManager.start();
         InactivityManager.getInstance().init(this);
-
+        SecurePrefs.init(this);
         new InactivityHandler(this);
         registerActivityLifecycleCallbacks(new TouchTracker());
 

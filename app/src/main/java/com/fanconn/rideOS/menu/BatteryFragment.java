@@ -1,5 +1,6 @@
 package com.fanconn.rideOS.menu;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -56,12 +57,15 @@ public class BatteryFragment extends Fragment {
     private BatteryType currentBattery = BatteryType.MAIN;
     AhTrackerManager ahTrackerManager;
     private Runnable updateRunnable = new Runnable() {
+        @SuppressLint("DefaultLocale")
         @Override
         public void run() {
             if (serialPortManager != null && serialPortManager.getHb3() != null) {
                 Heartbeat3 hb3 = serialPortManager.getHb3();
 
-                getActivity().runOnUiThread(() -> {
+                if (!isAdded()) return;
+
+                requireActivity().runOnUiThread(() -> {
                     if (currentBattery == BatteryType.MAIN) {
                         // ----------------- MAIN BATTERY -----------------
 //                        int battery = hb3.getBatteryLevel() / 10;
@@ -91,14 +95,22 @@ public class BatteryFragment extends Fragment {
                         Rangetext.setText("range");
 
                         mainBatteryVoltage.setText(String.format("%.1f V", hb3.getbatvoltage() / 10.0));
-                        float rawCurrent = hb3.getrealCurrent();
+//                        float rawCurrent = hb3.getrealCurrent();
+//
+//                        if (rawCurrent == 0) {
+//                            maincurrentcon.setText("0.0 A");
+//                        } else {
+//                            double current = (rawCurrent - 30000) / 10.0; // correct calculation
+//                            maincurrentcon.setText(String.format("%.1f A", current));
+//                        }
+                        float rawCurrent = hb3.getChargingbit();
 
                         if (rawCurrent == 0) {
                             maincurrentcon.setText("0.0 A");
                         } else {
-                            double current = (rawCurrent - 30000) / 10.0; // correct calculation
-                            maincurrentcon.setText(String.format("%.1f A", current));
+                            maincurrentcon.setText(String.format("%.1f A", rawCurrent));
                         }
+
                         float remAh = ahTrackerManager.getRemainingAh();
 
                         // truncate to 1 decimal place (no rounding)
@@ -257,14 +269,13 @@ public class BatteryFragment extends Fragment {
             }
         });
 
-        uiHandler.post(updateRunnable);
-
+        uiHandler.postDelayed(updateRunnable, 1000);
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        uiHandler.removeCallbacks(updateRunnable);
+        uiHandler.removeCallbacksAndMessages(null);
     }
 }

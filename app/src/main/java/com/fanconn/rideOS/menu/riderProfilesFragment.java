@@ -27,6 +27,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.security.crypto.EncryptedSharedPreferences;
@@ -156,21 +157,38 @@ public class riderProfilesFragment extends Fragment {
         securityContainer.setVisibility(View.GONE);
 
         // --- SECURE STORAGE ---
-        try {
-            sharedPreferences = EncryptedSharedPreferences.create(
-                    "user_data",
-                    MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
-                    ctx,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-            );
-            SecureStorageUtil.init(ctx);
-            loadUsers();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showCustomToasterror("Error initializing secure storage");
-        }
+        new Thread(() -> {
 
+            List<String> riders = new ArrayList<>();
+
+            if (sharedPreferences == null) return;
+
+            Map<String, ?> all = sharedPreferences.getAll();
+            for (Map.Entry<String, ?> e : all.entrySet()) {
+
+                if (e.getKey().startsWith("user_") && e.getKey().endsWith("_age")) {
+
+                    riders.add(
+                            e.getKey()
+                                    .replace("user_", "")
+                                    .replace("_age", "")
+                    );
+                }
+            }
+
+            if (isAdded()) {
+                requireActivity().runOnUiThread(() -> {
+
+                    ridersContainer.removeAllViews();
+
+                    for (String r : riders) {
+                        addRiderCard(r);
+                    }
+
+                });
+            }
+
+        }).start();
         // ----- SEEKBARS -----
         seekBarMaxSpeed.setMax(80);
         seekBarMaxSpeed.setProgress(40);
@@ -552,8 +570,8 @@ public class riderProfilesFragment extends Fragment {
         String pin = etPin.getText().toString().trim();
         String pinConfirm = etPinConfirm.getText().toString().trim();
 
-        btnNext.setVisibility(View.GONE);
-        currentStep = 0;
+//        btnNext.setVisibility(View.GONE);
+//        currentStep = 0;
 
         // -------- BASIC VALIDATION --------
         if (TextUtils.isEmpty(username) || TextUtils.isEmpty(age)) {
@@ -613,6 +631,9 @@ public class riderProfilesFragment extends Fragment {
 
             SoundPlayer.playOnce(ctx, R.raw.locksound2);
             showCustomToast("Registered Successfully");
+
+            currentStep = 0;
+            btnNext.setVisibility(View.GONE);
 
             // Go back to initial list
             btnRegister.setVisibility(View.GONE);
@@ -885,8 +906,13 @@ public class riderProfilesFragment extends Fragment {
         } catch (Exception ignored) {}
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sharedPreferences = SecurePrefs.get();
 
-
+        SecureStorageUtil.init(requireContext());
+    }
     private class AppCompatRadioGroup {
 
     }

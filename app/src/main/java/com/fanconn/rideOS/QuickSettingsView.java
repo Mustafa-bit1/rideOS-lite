@@ -125,8 +125,14 @@ public class QuickSettingsView extends FrameLayout {
     private void setupUI(Context context) {
 
         allSetbtn = findViewById(R.id.allSetbtn);
-        allSetbtn.setOnClickListener(v ->
-                context.startActivity(new Intent(context, settings.class)));
+        allSetbtn.setOnClickListener(v -> {
+            Intent intent = new Intent(context, settings.class);
+            context.startActivity(intent);
+
+            if (context instanceof android.app.Activity) {
+                ((android.app.Activity) context).overridePendingTransition(0,0);
+            }
+        });
 
         /* ---------- BRIGHTNESS ---------- */
 

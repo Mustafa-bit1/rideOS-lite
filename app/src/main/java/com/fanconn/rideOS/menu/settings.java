@@ -1,7 +1,6 @@
 package com.fanconn.rideOS.menu;
 
 import android.os.Bundle;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,17 +10,28 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.fanconn.rideOS.menu.BatteryFragment;
 import com.fanconn.rideOS.GestureHelper;
 import com.fanconn.rideOS.R;
 
 public class settings extends AppCompatActivity {
+
     public static settings instance;
 
-    // ✅ settings section items
-    String[] titles = {"Battery", "rideCam", "Documents", "Support", "Information", "Diagnostic"};
-    int[] icons = {
-            R.drawable.batteryicononmenu,//ridecamicon
+    // Cached fragments (avoid recreation)
+    private final BatteryFragment batteryFragment = new BatteryFragment();
+    private final RideCamFragment rideCamFragment = new RideCamFragment();
+    private final DocsFragment docsFragment = new DocsFragment();
+    private final supportFragment supportFragment = new supportFragment();
+    private final informationFragment informationFragment = new informationFragment();
+    private final DiagnosticsFragment diagnosticsFragment = new DiagnosticsFragment();
+
+    // Settings items
+    private final String[] titles = {
+            "Battery", "rideCam", "Documents", "Support", "Information", "Diagnostic"
+    };
+
+    private final int[] icons = {
+            R.drawable.batteryicononmenu,
             R.drawable.ridecamicon,
             R.drawable.docicon,
             R.drawable.supporticon,
@@ -32,12 +42,14 @@ public class settings extends AppCompatActivity {
     private ListView settingsList;
     private ImageButton settingsBackBtn;
     private MenuAdapter adapter;
-    private GestureDetector gestureDetector;
+
+    private final float[] startY = new float[1];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings);
+
         instance = this;
         setFullScreen();
 
@@ -54,25 +66,47 @@ public class settings extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
 
-        // ✅ Setup adapter
+        // Adapter
         adapter = new MenuAdapter(this, titles, icons);
         settingsList.setAdapter(adapter);
 
-        // ✅ Default fragment
-        loadFragment(new BatteryFragment());
+        // Load first fragment instantly
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.settingsContentFrame, batteryFragment)
+                .commitNow();
+
         adapter.setSelectedPosition(0);
 
-        // ✅ Handle item clicks
+        // Handle menu click
         settingsList.setOnItemClickListener((parent, view, position, id) -> {
-            Fragment fragment;
+
+            Fragment fragment = batteryFragment;
+
             switch (position) {
-                case 0: fragment = new BatteryFragment(); break;//RideCamFragment
-                case 1: fragment = new RideCamFragment(); break;
-                case 2: fragment = new DocsFragment(); break;
-                case 3: fragment = new supportFragment(); break;
-                case 4: fragment = new informationFragment(); break;
-                case 5: fragment = new DiagnosticsFragment(); break;
-                default: return;
+                case 0:
+                    fragment = batteryFragment;
+                    break;
+
+                case 1:
+                    fragment = rideCamFragment;
+                    break;
+
+                case 2:
+                    fragment = docsFragment;
+                    break;
+
+                case 3:
+                    fragment = supportFragment;
+                    break;
+
+                case 4:
+                    fragment = informationFragment;
+                    break;
+
+                case 5:
+                    fragment = diagnosticsFragment;
+                    break;
             }
 
             loadFragment(fragment);
@@ -82,8 +116,6 @@ public class settings extends AppCompatActivity {
         settingsBackBtn.setOnClickListener(v -> finish());
     }
 
-    float[] startY = new float[1];
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (GestureHelper.handleGesture(this, ev, startY)) {
@@ -92,6 +124,7 @@ public class settings extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+    // Fragment loader
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
@@ -100,11 +133,19 @@ public class settings extends AppCompatActivity {
     }
 
     private void setFullScreen() {
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
+
         View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
+        int uiOptions =
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
+                        View.SYSTEM_UI_FLAG_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+
         decorView.setSystemUiVisibility(uiOptions);
     }
 
