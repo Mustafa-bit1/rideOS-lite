@@ -107,7 +107,7 @@
         android:layout_centerVertical="true"
         android:translationY="60dp"
         android:text="@string/updating_parsing"
-        android:fontFamily="@font/kanitlite"
+        android:fontFamily="@font/kanit"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:gravity="center"

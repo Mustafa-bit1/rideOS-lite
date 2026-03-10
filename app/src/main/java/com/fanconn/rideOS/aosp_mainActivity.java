@@ -100,7 +100,7 @@ public class aosp_mainActivity extends AppCompatActivity {
             "android.permission.WRITE_EXTERNAL_STORAGE" };
     private ImageButton aosp_OTA_back_btn;
     // ===== WATCHDOG =====
-    private static final long OTA_WATCHDOG_TIMEOUT = 20 * 60 * 1000; // 20 minutes
+    private static final long OTA_WATCHDOG_TIMEOUT = 40 * 60 * 1000; // 20 minutes
     private Handler otaWatchdogHandler = new Handler();
     private Runnable otaWatchdogRunnable;
     private int lastProgressPercent = -1;

@@ -78,35 +78,84 @@ public class AhTrackerManager {
     }
 
 
-    // SOC (%) value
+    // SOC (%) value ACTUAL ADN REAL METHDOS BEFORE 10 LESS
+//    public float getSOC() {
+//        float rem = getRemainingAh();
+//        float capacity = getBatteryCapacity();
+//
+//        // Safety checks
+//        if (capacity <= 0f) {
+//            //Log.e("AH_TRACKER", "Invalid battery capacity: " + capacity);
+//            return 0f;
+//        }
+//
+//        if (rem < 0f) {
+//            //Log.w("AH_TRACKER", "Remaining Ah is negative: " + rem);
+//            rem = 0f;
+//        }
+//
+//        float soc = (rem / capacity) * 100f;
+//
+//        // Clamp SOC between 0–100
+//        if (soc < 0f) soc = 0f;
+//        else if (soc > 100f) soc = 100f;
+////
+////        Log.d("AH_TRACKER",
+////                "Model=" + MetadataManager.get().getModel()
+////                        + " RemAh=" + rem
+////                        + " Capacity=" + capacity
+////                        + " SOC=" + soc);
+//
+//        return soc;
+//    }
+
+    //GIVE PLAIN SOC
+//    public float getSOC() {
+//        float rem = getRemainingAh();
+//        float capacity = getBatteryCapacity();
+//
+//        if (capacity <= 0f) {
+//            return 0f;
+//        }
+//
+//        if (rem < 0f) {
+//            rem = 0f;
+//        }
+//
+//        float soc = (rem / capacity) * 100f;
+//
+//        if (soc < 0f) soc = 0f;
+//        else if (soc > 100f) soc = 100f;
+//
+//        return soc;
+//    }
+
+    //GIVES 10LESS SOC
     public float getSOC() {
         float rem = getRemainingAh();
         float capacity = getBatteryCapacity();
 
-        // Safety checks
         if (capacity <= 0f) {
-            //Log.e("AH_TRACKER", "Invalid battery capacity: " + capacity);
             return 0f;
         }
 
         if (rem < 0f) {
-            //Log.w("AH_TRACKER", "Remaining Ah is negative: " + rem);
             rem = 0f;
         }
 
         float soc = (rem / capacity) * 100f;
 
-        // Clamp SOC between 0–100
         if (soc < 0f) soc = 0f;
         else if (soc > 100f) soc = 100f;
-//
-//        Log.d("AH_TRACKER",
-//                "Model=" + MetadataManager.get().getModel()
-//                        + " RemAh=" + rem
-//                        + " Capacity=" + capacity
-//                        + " SOC=" + soc);
 
-        return soc;
+        // Map 10–100 → 0–100
+        if (soc <= 10f) return 0f;
+
+        float displaySOC = ((soc - 10f) / 90f) * 100f;
+
+        if (displaySOC > 100f) displaySOC = 100f;
+
+        return displaySOC;
     }
 
     private float getBatteryCapacity() {

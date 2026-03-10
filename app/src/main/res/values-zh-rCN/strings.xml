@@ -100,8 +100,7 @@
     <string name="start_updating">Start</string>
     <string name="updating">Be updating(1/2)...</string>
     <string name="local_update_mode">LocalUpdateMode</string>
-    <string name="updating_parsing">preparing system for update, please do not off your scooter...</string>
-    <string name="updated_content">Updated content:</string>
+    <string name="updating_parsing">Preparing the system for update. This may take a few minutes. Please wait...</string>    <string name="updated_content">Updated content:</string>
     <string name="really_update">Do you really want to apply this update?</string>
     <string name="no_file">The configs directory without the config.json file!</string>
     <string name="not_detected">Not detected</string>
@@ -118,7 +117,7 @@
     <string name="update_completed">Software updated successfully</string>
     <string name="estimated_time">Downloading, estimated time 12 minutes</string>
     <string name="ota_switch">Installing your update , please do not exit the current interface (2/2)...</string>
-    <string name="ota_update">Please do not exit the current screen during upgrade (1/2)...</string>
+    <string name="ota_update">Please do not exit the current screen during upgrade (1/2)</string>
     <string name="no_network">no network!</string>
     <string name="find_new_versions">New version avaliable, Update!</string>
 

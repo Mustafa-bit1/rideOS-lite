@@ -25,10 +25,10 @@ public class BLEScanService extends Service {
     private static final String TAG = "BLEKeyService";
     private static final String TARGET_MAC = MetadataManager.get().getSmartKeyId();
     private static final String TARGET_NAME = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
-    private static final long SCAN_INTERVAL_MS = 3000;
+    private static final long SCAN_INTERVAL_MS = 1000;
     private long lastTimeoutIncrementTime = 0;
     private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;
-    private static final int RSSI_IN_RANGE_THRESHOLD = -70;
+    private static final int RSSI_IN_RANGE_THRESHOLD = -82;
     private static final int RSSI_OUT_RANGE_THRESHOLD = -100;
     private BluetoothLeScanner scanner;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -39,10 +39,16 @@ public class BLEScanService extends Service {
     private boolean keyLostWhileMoving = false;
     private boolean isScanning = false;
 
+    private int weakSignalCount = 0;
+    private int missedScanCount = 0;
+    private boolean signalSeenThisScan = false;
+
     // ---------------- BLE Scan Callback ----------------
     private final ScanCallback scanCallback = new ScanCallback() {
+
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
+
             if (result == null || result.getDevice() == null) return;
 
             String deviceName =
@@ -55,18 +61,28 @@ public class BLEScanService extends Service {
             boolean isSmartKey = TARGET_MAC.equals(mac);
             boolean isAndroidKey = TARGET_NAME.equals(deviceName);
 
+            // Ignore all other BLE devices
+            if (!isSmartKey && !isAndroidKey) return;
+
+            // Mark that the correct key was seen in this scan window
+            signalSeenThisScan = true;
+
             // ---------- UNLOCK ----------
             if (!keyInRange) {
 
                 if (isSmartKey && rssi >= RSSI_IN_RANGE_THRESHOLD) {
                     unlock("SMARTKEY", mac, rssi);
-                } else if (isAndroidKey && rssi >= RSSI_IN_RANGE_THRESHOLD) {
-                    unlock(TARGET_NAME, deviceName, rssi);
-                } else {
-                    //Log.d(TAG, "❌ Weak RSSI ignored (" + rssi + ")");
                 }
+                else if (isAndroidKey && rssi >= RSSI_IN_RANGE_THRESHOLD) {
+                    unlock(TARGET_NAME, deviceName, rssi);
+                }
+                else {
+                    Log.d(TAG, "❌ Weak RSSI ignored (" + rssi + ")");
+                }
+
                 return;
             }
+
             // ---------- MONITOR ----------
             boolean correctKey =
                     ("SMARTKEY".equals(unlockedBy) && isSmartKey) ||
@@ -74,24 +90,32 @@ public class BLEScanService extends Service {
 
             if (!correctKey) return;
 
+            // ---------- STRONG SIGNAL ----------
             if (rssi >= RSSI_IN_RANGE_THRESHOLD) {
+
+                weakSignalCount = 0;
+                missedScanCount = 0;
                 lastSeenTime = now;
-                consecutiveOutOfRangeCount = 0;
-                Log.d(TAG, "✅ " + unlockedBy + " IN RANGE (RSSI " + rssi + ")");
+
+                Log.d(TAG, "✅ " + unlockedBy +
+                        " STRONG SIGNAL (" + rssi + " dBm) → counters reset");
+
                 return;
             }
 
-            if (rssi > RSSI_OUT_RANGE_THRESHOLD) {
-                lastSeenTime = now;
-                Log.d(TAG, "➖ " + unlockedBy + " MID RSSI ignored (" + rssi + ")");
-                return;
-            }
+            // ---------- WEAK SIGNAL ----------
+            weakSignalCount++;
+            missedScanCount = 0;
 
-            consecutiveOutOfRangeCount++;
-            Log.w(TAG, "⚠️ " + unlockedBy + " possible out of range (RSSI " + rssi + ") (" +
-                    consecutiveOutOfRangeCount + "/" + OUT_OF_RANGE_THRESHOLD_COUNT + ")");
+            Log.w(TAG, "⚠️ " + unlockedBy +
+                    " WEAK RSSI (" + rssi + " dBm) (" +
+                    weakSignalCount + "/3)");
 
-            if (consecutiveOutOfRangeCount >= OUT_OF_RANGE_THRESHOLD_COUNT) {
+            if (weakSignalCount >= 3) {
+
+                Log.e(TAG, "🔴 " + unlockedBy +
+                        " 3 consecutive WEAK RSSI → OUT OF RANGE");
+
                 handleOutOfRange();
             }
         }
@@ -104,25 +128,33 @@ public class BLEScanService extends Service {
         consecutiveOutOfRangeCount = 0;
         lastSeenTime = System.currentTimeMillis();
         keyLostWhileMoving = false;
-
+        weakSignalCount = 0;
+        missedScanCount = 0;
+        signalSeenThisScan = false;
         Log.i(TAG, "🟢 " + keyType + " detected → UNLOCK (RSSI " + rssi + ")");
 
         if (MainActivity.instance != null)
             MainActivity.instance.updateKeyImage(true);
+        else Log.d("BLEKeyService","DETCETDBUTELSE OF111");
 
         if (UIUpdater.getInstance() != null) {
             UIUpdater.getInstance().stopKeylostRedAlertAnimation();
             UIUpdater.getInstance().stopBeeping();
         }
+        else Log.d("BLEKeyService","DETCETDBUTELSE OF222");
 
         if (LoginActivity.instance != null)
             LoginActivity.instance.loginSuccess("Key Rider");
+        else Log.d("BLEKeyService","DETCETDBUTELSE OF333");
 
         if (MainActivity.MainisActive && "SMARTKEY".equals(keyType)) {
             SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A01");
             handler.postDelayed(() ->
                     SerialPortManager.getInstance().VCUSendToMCU("FFAA550101000A01"), 500);
+            Log.d("BLEKeyService","DETCETDBUTIFFF OF444");
+
         }
+        else Log.d("BLEKeyService","DETCETDBUTELSE OF444");
     }
 
     // ---------------- Out-of-range ----------------
@@ -154,6 +186,9 @@ public class BLEScanService extends Service {
 
         if (MainActivity.instance != null)
             MainActivity.instance.updateKeyImage(false);
+        weakSignalCount = 0;
+        missedScanCount = 0;
+        signalSeenThisScan = false;
     }
 
     // ---------------- RPM Watcher ----------------
@@ -242,38 +277,30 @@ public class BLEScanService extends Service {
 
 
     private void checkTimeout() {
+
         if (!keyInRange) return;
 
-        if ((System.currentTimeMillis() - lastSeenTime) > 15000) {
-            Log.w(TAG, "🔄 No BLE results for long time, restarting scanner");
-            if (scanner != null) {
-                safeStopScan();
+        if (!signalSeenThisScan) {
+
+            missedScanCount++;
+
+            Log.w(TAG, "⚠️ " + unlockedBy +
+                    " NO SIGNAL this scan (" +
+                    missedScanCount + "/3)");
+
+            if (missedScanCount >= 3) {
+
+                Log.e(TAG, "🔴 " + unlockedBy +
+                        " 3 consecutive MISSED SCANS → OUT OF RANGE");
+
+                handleOutOfRange();
             }
 
-            // ✅ Force scan loop restart (critical fix)
-            handler.removeCallbacks(scanRunnable);
-            handler.post(scanRunnable);
+        } else {
+            missedScanCount = 0;
         }
 
-        long now = System.currentTimeMillis();
-
-        if ((now - lastSeenTime) > SCAN_INTERVAL_MS) {
-
-            // ✅ Prevent double increment in same window
-            if ((now - lastTimeoutIncrementTime) >= SCAN_INTERVAL_MS) {
-
-                consecutiveOutOfRangeCount++;
-                lastTimeoutIncrementTime = now;
-
-                Log.w(TAG, "⚠️ " + unlockedBy + " timeout (" +
-                        consecutiveOutOfRangeCount + "/" + OUT_OF_RANGE_THRESHOLD_COUNT + ")");
-
-                if (consecutiveOutOfRangeCount >= OUT_OF_RANGE_THRESHOLD_COUNT) {
-                    handleOutOfRange();
-                }
-            }
-        }
-
+        signalSeenThisScan = false;
     }
 
 

@@ -31,8 +31,7 @@
     <string name="yes">YES</string>
     <string name="Restart_after_upgrade">Restart</string>
 
-    <string name="updating_parsing">preparing system for update, please do not turn off your scooter...</string>
-    <string name="updated_content">Updated content:</string>
+    <string name="updating_parsing">Preparing the system for update. This may take a few minutes. Please wait...</string>    <string name="updated_content">Updated content:</string>
     <string name="really_update">Do you really want to apply this update?</string>
     <string name="no_file">The configs directory without the config.json file!</string>
     <string name="not_detected">Not detected</string>

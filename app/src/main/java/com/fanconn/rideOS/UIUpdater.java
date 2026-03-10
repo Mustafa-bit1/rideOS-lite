@@ -609,11 +609,18 @@ public class UIUpdater  {
 //    public static boolean resetParamtersAfterLowbat=false;
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
-//        int batteryLevel= hb3.getBatteryLevel() / 10;
-        int batteryLevel= (int)ahTrackerManager.getSOC();
-        Log.d("adsfg","THISISAHSOC="+batteryLevel);
-        tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
+//        int batteryLevel1= hb3.getBatteryLevel() / 10;
+        int batteryLevel = (int) ahTrackerManager.getSOC();
 
+//        int batteryLevel = get10LessSOC(batteryLevel1);
+////        int batteryLevel= hb3.getBatteryLevel() / 10;
+////        int batteryLevel = (int) ahTrackerManager.getSOC();
+
+//        Log.d("SOC10LESS", "Actual SOC = " + batteryLevel1);
+//        Log.d("SOC10LESS", "Display SOC = " + batteryLevel);
+        Log.d("adsfg","THISISAHSOC="+batteryLevel);
+
+        tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
         tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
 
 //        int batteryLevel = Math.max(0, Math.min(100, (int) ahTrackerManager.getSOC()));
@@ -761,6 +768,21 @@ public class UIUpdater  {
         //根据电池电量获取对应的图片资源
         //int batteryImageResId = getBatteryImageResource(batteryLevel);
         //binding.batteryIV.setImageResource(batteryImageResId);
+    }
+    private int get10LessSOC(int actualSOC) {
+
+        int minActual = 10;
+        int maxActual = 100;
+
+        if (actualSOC <= minActual) {
+            return 0;
+        }
+
+        if (actualSOC >= maxActual) {
+            return 100;
+        }
+
+        return (actualSOC - minActual) * 100 / (maxActual - minActual);
     }
     public void updateCanData18914001(Heartbeat3 hb3) {
         tm.setteleIndividualCellVoltages(hb3.getIndiCellVol());
@@ -3107,7 +3129,7 @@ public class UIUpdater  {
                 PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
                 goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-//                InactivityManager.getInstance().startTimer(2);
+               // InactivityManager.getInstance().startTimer(2);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -7,7 +7,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class KeyPresenceManager {
-    private static final String TAG = "KeyPresenceManager";
+    private static final String TAG = "BLEKeyService";
     private static final int MAX_SAMPLES = 12;
     private static final double EMA_ALPHA = 0.3;
     private static final int OUT_OF_RANGE_MISSES = 1;
