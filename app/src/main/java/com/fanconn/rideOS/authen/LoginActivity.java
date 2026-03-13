@@ -710,11 +710,11 @@ public class LoginActivity extends AppCompatActivity{
         finish();
 
         // ✅ UI updates → Main thread → delayed until UI is ready
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if(UIUpdater.getInstance() != null){
-                UIUpdater.getInstance().setzerobatImage();
-            }
-        }, 30); // small delay = UI safety
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//            if(UIUpdater.getInstance() != null){
+//                UIUpdater.getInstance().setzerobatImage();
+//            }
+//        }, 30); // small delay = UI safety
         // Run heavy logic and sound AFTER activity transition
         new Thread(() -> {
 

@@ -15,7 +15,7 @@ import tp.xmaihh.serialport.bean.ComBean;
 public class serialApplication extends MyApp {
     public static SerialPortManager serialPortManager;
 
-    private final String sPort = "/dev/ttyHS1";
+    private final String sPort = "/dev/ttyHS2";
     private final int iBaudRate = 115200;
     private final int RX_type = 0; // 0 = Hex
     private String rxText = "";

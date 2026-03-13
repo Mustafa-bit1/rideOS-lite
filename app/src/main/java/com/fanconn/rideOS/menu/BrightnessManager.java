@@ -36,12 +36,22 @@ public class BrightnessManager {
     // ------------------- BRIGHTNESS ------------------------
 
     public boolean isAutoBrightnessEnabled() {
-        return prefs.getBoolean("auto_brightness_enabled", false);
+        try {
+            int mode = Settings.System.getInt(
+                    context.getContentResolver(),
+                    Settings.System.SCREEN_BRIGHTNESS_MODE
+            );
+
+            return mode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC;
+
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void setAutoBrightnessEnabled(boolean enabled) {
 
-        // 1️⃣ Update SYSTEM brightness mode
         Settings.System.putInt(
                 context.getContentResolver(),
                 Settings.System.SCREEN_BRIGHTNESS_MODE,
@@ -49,11 +59,6 @@ public class BrightnessManager {
                         ? Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC
                         : Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL
         );
-
-        // 2️⃣ Persist for UI sync
-        prefs.edit()
-                .putBoolean("auto_brightness_enabled", enabled)
-                .apply();
     }
 
 

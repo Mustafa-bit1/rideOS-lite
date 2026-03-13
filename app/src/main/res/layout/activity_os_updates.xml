@@ -328,40 +328,40 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingVertical="20dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:paddingVertical="20dp">-->
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:fontFamily="@font/kanitlite"
-                    android:paddingStart="1dp"
-                    android:text="Device Bluetooth"
-                    android:textColor="#FFFFFF"
-                    android:textSize="23sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:fontFamily="@font/kanitlite"-->
+<!--                    android:paddingStart="1dp"-->
+<!--                    android:text="Device Bluetooth"-->
+<!--                    android:textColor="#FFFFFF"-->
+<!--                    android:textSize="23sp" />-->
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+<!--                <LinearLayout-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
 
-                    <TextView
-                        android:id="@+id/bluetoothTV"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/kanitlite"
-                        android:paddingEnd="1dp"
-                        android:text=""
-                        android:textColor="#FFFFFF"
-                        android:textSize="25sp" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/bluetoothTV"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/kanitlite"-->
+<!--                        android:paddingEnd="1dp"-->
+<!--                        android:text=""-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textSize="25sp" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:layout_width="match_parent"

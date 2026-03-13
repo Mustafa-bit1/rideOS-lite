@@ -444,7 +444,7 @@ public class OS_UpdatesFragment extends Fragment {
         TextView installedDateTV = view.findViewById(R.id.installeddate);
         TextView buildNumTV = view.findViewById(R.id.buildnum);
         TextView deviceNameTV = view.findViewById(R.id.devicenameTV);
-        TextView bluetoothTV = view.findViewById(R.id.bluetoothTV);
+        //TextView bluetoothTV = view.findViewById(R.id.bluetoothTV);
         TextView firmwareV = view.findViewById(R.id.firmwareV);
         int localVersion =
                 McuOtaExecutor.getEffectiveLocalMcuVersion(ctx);
@@ -496,26 +496,26 @@ public class OS_UpdatesFragment extends Fragment {
         deviceNameTV.setText(deviceName);
         Log.d(TAG, "Device name=" + deviceName);
 
-        String bluetoothName = "Unavailable";
-        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
-
-        if (adapter != null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
-                    ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.BLUETOOTH_CONNECT
-                    ) == PackageManager.PERMISSION_GRANTED) {
-
-                bluetoothName = adapter.getName();
-                Log.d(TAG, "Bluetooth name=" + bluetoothName);
-            } else {
-                Log.w(TAG, "Bluetooth permission not granted");
-            }
-        } else {
-            Log.w(TAG, "Bluetooth adapter is null");
-        }
-
-        bluetoothTV.setText(bluetoothName);
+        //String bluetoothName = "Unavailable";
+//        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+//
+//        if (adapter != null) {
+//            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S ||
+//                    ContextCompat.checkSelfPermission(
+//                            requireContext(),
+//                            Manifest.permission.BLUETOOTH_CONNECT
+//                    ) == PackageManager.PERMISSION_GRANTED) {
+//
+//                bluetoothName = adapter.getName();
+//                Log.d(TAG, "Bluetooth name=" + bluetoothName);
+//            } else {
+//                Log.w(TAG, "Bluetooth permission not granted");
+//            }
+//        } else {
+//            Log.w(TAG, "Bluetooth adapter is null");
+//        }
+//
+//        bluetoothTV.setText(bluetoothName);
     }
 
     private void triggerHiddenMcuOta() {

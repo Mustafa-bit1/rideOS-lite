@@ -41,7 +41,7 @@
     <string name="stop_updating">StopUpdating</string>
     <string name="really_stop_update">Are you sure to stop updating?</string>
     <string name="wait">OTA is switching partitions, please wait!</string>
-
+    <string name="powered_message">Powered by aler&lt;font color="#FF7A00"&gt;T&lt;/font&gt;ire</string>
     <string name="cancel">cancel</string>
     <string name="restart_confirmation">Restart System</string>
     <string name="really_reboot">The system has been upgraded, Restart system</string>

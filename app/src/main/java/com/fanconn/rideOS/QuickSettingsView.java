@@ -27,7 +27,7 @@ import com.fanconn.rideOS.menu.BrightnessManager;
 import com.fanconn.rideOS.menu.settings;
 
 public class QuickSettingsView extends FrameLayout {
-    private static final int TOUCH_SLOP = 20; // px (small movement threshold)
+    private static final int TOUCH_SLOP = 8; // px (small movement threshold)
     private float totalDrag = 0f;
     private BrightnessManager brightnessManager;
     private AudioManager audioManager;
@@ -239,7 +239,7 @@ public class QuickSettingsView extends FrameLayout {
                 }
 
                 if (dragging) {
-                    float moveY = Math.max(0, dy);
+                    float moveY = Math.max(0, dy * 1.2f);
                     setTranslationY(-getHeight() + moveY);
                 }
                 return true;
@@ -266,7 +266,7 @@ public class QuickSettingsView extends FrameLayout {
     public void smoothClose() {
         animate()
                 .translationY(-getHeight())
-                .setDuration(320)   // slow & smooth
+                .setDuration(180)
                 .setInterpolator(new android.view.animation.DecelerateInterpolator())
                 .start();
     }
@@ -279,8 +279,11 @@ public class QuickSettingsView extends FrameLayout {
     public void open() {
         syncBrightnessUI();
         syncVolumeUI();
-        animate().translationY(0).setDuration(180).start();
-    }
+        animate()
+                .translationY(0)
+                .setDuration(120)
+                .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                .start();    }
     public void close() {
         smoothClose();
     }
@@ -314,7 +317,7 @@ public class QuickSettingsView extends FrameLayout {
 
         // 🔹 Slider state
         brightnessSlider.setEnabled(!auto);
-        brightnessSlider.setAlpha(auto ? 0.4f : 1.0f);
+        brightnessSlider.setAlpha(auto ? 0.2f : 1.0f);
 
         // 🔹 Sync slider value when manual
         if (!auto) {

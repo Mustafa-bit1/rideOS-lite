@@ -514,6 +514,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -684,11 +685,21 @@ public class TelemetryService extends Service {
         String smartKeyID = metadata.getSmartKeyId();
         String model = metadata.getModel();
 
+        String simInfo;
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager != null) {
+            simInfo = telephonyManager.getSimOperatorName()+"-"+telephonyManager.getSimSerialNumber();
+            Log.d("SIM_INFO", "SIM Information: " + simInfo);
+        }
+        else {
+            simInfo=null;
+        }
+
         String rideOSversion;
         try {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             int mcuVersion = getEffectiveMcuVersion();
-            rideOSversion = "rideOS " + pInfo.versionName+"_GA"+",AOSPv="+Build.DISPLAY+"_GA"+",MCUv="+mcuVersion;
+            rideOSversion = "rideOS " + pInfo.versionName+"_GA"+",AOSPv="+Build.DISPLAY+"_GA"+",MCUv="+mcuVersion+", simInfo="+simInfo;
         } catch (PackageManager.NameNotFoundException e) {
             rideOSversion = "rideOS N/A";
         }

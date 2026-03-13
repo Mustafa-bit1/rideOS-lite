@@ -51,6 +51,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
@@ -218,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     QuickSettingsView qsView;
     public static String VIN_On_CAN;
     public static char currentgear;
+    private VelocityTracker velocityTracker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //
@@ -1065,7 +1067,7 @@ public void recoNavLeft(View view) {
         //Log.d("MainActivity", "Heartbeat2 parsed: " + hb2.toString());
 
         // 更新解析出来的 Heartbeat2 串口数据到UI组件中
-        //uiUpdater.updateHeartbeat2UI(hb2);
+        uiUpdater.updateHeartbeat2UI(hb2);
     }
 
     @Override
@@ -2220,7 +2222,7 @@ public void recoNavLeft(View view) {
     public void runPostLoginInit() {
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
        // Log.d("MainActivity", "Running unlock sequence from post-login...");
-        animateBatteryLevelOnce();
+        //animateBatteryLevelOnce();
         currentgear='O';
         EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
         //TelemetryService.shdtelemetrywhenunlocked=true;
@@ -2357,9 +2359,9 @@ public void recoNavLeft(View view) {
     // gesture features =================================
     private class GestureListener extends GestureDetector.SimpleOnGestureListener {
 
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-        private static final int EDGE_SWIPE_THRESHOLD = 50;
+        private static final int SWIPE_THRESHOLD = 35;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 40;
+        private static final int EDGE_SWIPE_THRESHOLD = 20;
 
         @Override
         public boolean onDown(MotionEvent e) {
@@ -2375,7 +2377,7 @@ public void recoNavLeft(View view) {
             if (!isDraggingQS) {
                 if (e1.getY() > EDGE_SWIPE_THRESHOLD) return false;
 
-                if (Math.abs(e2.getY() - e1.getY()) < 15) return false;
+                if (Math.abs(e2.getY() - e1.getY()) < 6) return false;
 
                 isDraggingQS = true;
                 dragDistance = 0f;   // reset
@@ -2389,8 +2391,7 @@ public void recoNavLeft(View view) {
             newY = Math.max(-qsHeight, Math.min(0, newY));
 
             float currentY = qsView.getTranslationY();
-            float smoothY = currentY + (newY - currentY) * 0.35f;
-
+            float smoothY = currentY + (newY - currentY) * 0.65f;
             qsView.setTranslationY(smoothY);
 
             return true;
@@ -2439,11 +2440,11 @@ public void recoNavLeft(View view) {
 
             } else {
 
-                if (diffY > SWIPE_THRESHOLD &&
-                        Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffY > 15 && velocityY > 300) {
 
                     if (startY < EDGE_SWIPE_THRESHOLD) {
-                        openQuickSettings();
+
+                        qsView.open();   // direct open
                         return true;
                     }
                 }
@@ -2511,8 +2512,8 @@ public void recoNavLeft(View view) {
         }
 
         // ✅ SECONDARY decision → velocity ONLY if real swipe happened
-        if (Math.abs(dragDistance) > 120) {   // intentional drag threshold
-            if (Math.abs(velocityY) > 1200) { // real fling threshold
+        if (Math.abs(dragDistance) > 50) {   // intentional drag threshold
+            if (Math.abs(velocityY) > 600) { // real fling threshold
                 open = velocityY > 0;         // down = open, up = close
             }
         }
@@ -2543,16 +2544,53 @@ public void recoNavLeft(View view) {
     }
 
     private void openQuickSettings() {
-        Intent intent = new Intent(MainActivity.this, QuickSetting.class);
+        Intent intent = new Intent(MainActivity.this, QuickSettingsView.class);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+
+        if (velocityTracker == null) {
+            velocityTracker = VelocityTracker.obtain();
+        }
+
+        velocityTracker.addMovement(event);
+
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_UP:
+
+                velocityTracker.computeCurrentVelocity(1000);
+
+                float velocityY = velocityTracker.getYVelocity();
+
+                // FAST swipe detection
+                if (velocityY > 1800) {
+
+                    float startY = event.getY();
+
+                    if (startY < 150) { // top area
+                        qsView.open();
+                        resetVelocity();
+                        return true;
+                    }
+                }
+
+                resetVelocity();
+                break;
+        }
+
         return gestureDetector.onTouchEvent(event)
                 || super.onTouchEvent(event);
+    }
+
+    private void resetVelocity() {
+        if (velocityTracker != null) {
+            velocityTracker.recycle();
+            velocityTracker = null;
+        }
     }
 
     public static int extractBits(int value, int startBit, int endBit) {

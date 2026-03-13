@@ -9,7 +9,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -117,6 +120,20 @@ public class TPMS_activity extends AppCompatActivity {
             v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
             return insets;
         });
+
+        TextView powered = findViewById(R.id.powered_message);
+        String text = "Powered by alerTire";
+        SpannableString spannable = new SpannableString(text);
+// index of 'T'
+        int start = text.indexOf("T");
+        int end = start + 1;
+        spannable.setSpan(
+                new ForegroundColorSpan(Color.parseColor("#FF7A00")),
+                start,
+                end,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+        powered.setText(spannable);
 
         bindViews();
         setupBluetoothUI();

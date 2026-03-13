@@ -35,6 +35,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.L;
 import com.fanconn.rideOS.authen.LoginActivity;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
 
@@ -508,27 +509,27 @@ public class UIUpdater  {
      * 更新 UI 组件
      * @param hb2 解析后的 Heartbeat2 对象
      */
-//    public void updateHeartbeat2UI(Heartbeat2 hb2) {
-//        // 更新六轴数据
-//        updateSixAxisData(hb2);
-//    }
+    public void updateHeartbeat2UI(Heartbeat2 hb2) {
+        // 更新六轴数据
+        updateSixAxisData(hb2);
+    }
 
     /**
      * 更新六轴数据
      * @param hb2 解析后的 Heartbeat2 对象
      */
-//    private void updateSixAxisData(Heartbeat2 hb2) {
-//        double xuAcc = hb2.getXuAcc() / 1000000.0;
-//        double yuAcc = hb2.getYuAcc() / 1000000.0;
-//        double zuAcc = hb2.getZuAcc() / 1000000.0;
-//        double xGyro = hb2.getXGyro() / 1000000.0;
-//        double yGyro = hb2.getYGyro() / 1000000.0;
-//        double zGyro = hb2.getZGyro() / 1000000.0;
-//
-//        String sixAxisData = String.format("uAcc  ：%.6f  %.6f  %.6f\nuGyro：%.6f  %.6f  %.6f", xuAcc, yuAcc, zuAcc, xGyro, yGyro, zGyro);
-//
+    private void updateSixAxisData(Heartbeat2 hb2) {
+        double xuAcc = hb2.getXuAcc() / 1000000.0;
+        double yuAcc = hb2.getYuAcc() / 1000000.0;
+        double zuAcc = hb2.getZuAcc() / 1000000.0;
+        double xGyro = hb2.getXGyro() / 1000000.0;
+        double yGyro = hb2.getYGyro() / 1000000.0;
+        double zGyro = hb2.getZGyro() / 1000000.0;
+
+        String sixAxisData = String.format("uAcc  ：%.6f  %.6f  %.6f\n\n\n\nuGyro：%.6f  %.6f  %.6f", xuAcc, yuAcc, zuAcc, xGyro, yGyro, zGyro);
+        Log.d("asdfg","THISISAXISDATA \n\n"+sixAxisData);
 //        binding.sixAxisDateTV.setText(sixAxisData);
-//    }
+    }
 
     /**
      * 更新 UI 组件
@@ -759,12 +760,19 @@ public class UIUpdater  {
         //BatPackSwitcher.startSwitchingToAPU();
 //
         try {
-            if (batteryLevel>=0 && batteryLevel<=100 && MainActivity.batteryAnimationCompleted && MainActivity.MainisActive) { // ✅ Only update if animation is done
+            if (batteryLevel>=0 && batteryLevel<=100  && MainActivity.MainisActive) { // ✅ Only update if animation is done
                 updateBatteryAnimation(batteryLevel);
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
+//        try {
+//            if (batteryLevel>=0 && batteryLevel<=100 && MainActivity.batteryAnimationCompleted && MainActivity.MainisActive) { // ✅ Only update if animation is done
+//                updateBatteryAnimation(batteryLevel);
+//            }
+//        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+//        }
         //根据电池电量获取对应的图片资源
         //int batteryImageResId = getBatteryImageResource(batteryLevel);
         //binding.batteryIV.setImageResource(batteryImageResId);
@@ -2511,13 +2519,11 @@ public class UIUpdater  {
     }
 
 
-
-
     public void updateBatteryAnimation(int batteryLevel) {
-        Log.d("BAT", "CAlledanimation");
+       // Log.d("BAT", "CAlledanimation");
 
         if (binding == null || binding.batteryImageView == null) {
-            Log.d("BAT", "UI not ready yet — skipping");
+          // Log.d("BAT", "UI not ready yet — skipping");
             return;
         }
 
@@ -2526,25 +2532,24 @@ public class UIUpdater  {
                 ? 100
                 : Math.max(0, (batteryLevel / 2) * 2);
 
-        Log.d("BAT", "---- updateBatteryAnimation ----");
-        Log.d("BAT", "RAW Level = " + batteryLevel);
-        Log.d("BAT", "Mapped Level = " + mappedBattery);
-        Log.d("BAT", "Last Level = " + lastBatteryLevel);
+//        Log.d("BAT", "RAW Level = " + batteryLevel);
+//        Log.d("BAT", "Mapped Level = " + mappedBattery);
+//        Log.d("BAT", "Last Level = " + lastBatteryLevel);
 
         // Skip duplicate values
-        if (mappedBattery == lastBatteryLevel && !MainActivity.ReloggedIn) {
-            Log.d("BAT", "SKIPPED (no change)");
+        if (mappedBattery == lastBatteryLevel) {
+            //Log.d("BAT", "SKIPPED (no change)");
             return;
         }
 
         // Check map
         if (MainActivity.batteryImageMap == null) {
-            Log.e("BAT", "batteryImageMap is NULL");
+         //   Log.e("BAT", "batteryImageMap is NULL");
             return;
         }
 
         if (!MainActivity.batteryImageMap.containsKey(mappedBattery)) {
-           Log.e("BAT", "Map missing key = " + mappedBattery);
+          //  Log.e("BAT", "Map missing key = " + mappedBattery);
             return;
         }
 
@@ -2552,11 +2557,56 @@ public class UIUpdater  {
         int imageRes = MainActivity.batteryImageMap.get(mappedBattery);
         binding.batteryImageView.setImageResource(imageRes);
 
-        Log.d("BAT", "IMAGE UPDATED to key " + mappedBattery);
+       // Log.d("BAT", "IMAGE UPDATED to key " + mappedBattery);
 
         lastBatteryLevel = mappedBattery;
-        MainActivity.ReloggedIn=false;
+//        MainActivity.ReloggedIn=false;
     }
+
+//    public void updateBatteryAnimation(int batteryLevel) {
+//        Log.d("BAT", "CAlledanimation");
+//
+//        if (binding == null || binding.batteryImageView == null) {
+//            Log.d("BAT", "UI not ready yet — skipping");
+//            return;
+//        }
+//
+//        // Clamp + map to even number
+//        int mappedBattery = (batteryLevel > 100)
+//                ? 100
+//                : Math.max(0, (batteryLevel / 2) * 2);
+//
+//        Log.d("BAT", "---- updateBatteryAnimation ----");
+//        Log.d("BAT", "RAW Level = " + batteryLevel);
+//        Log.d("BAT", "Mapped Level = " + mappedBattery);
+//        Log.d("BAT", "Last Level = " + lastBatteryLevel);
+//
+//        // Skip duplicate values
+//        if (mappedBattery == lastBatteryLevel && !MainActivity.ReloggedIn) {
+//            Log.d("BAT", "SKIPPED (no change)");
+//            return;
+//        }
+//
+//        // Check map
+//        if (MainActivity.batteryImageMap == null) {
+//            Log.e("BAT", "batteryImageMap is NULL");
+//            return;
+//        }
+//
+//        if (!MainActivity.batteryImageMap.containsKey(mappedBattery)) {
+//           Log.e("BAT", "Map missing key = " + mappedBattery);
+//            return;
+//        }
+//
+//        // Apply image
+//        int imageRes = MainActivity.batteryImageMap.get(mappedBattery);
+//        binding.batteryImageView.setImageResource(imageRes);
+//
+//        Log.d("BAT", "IMAGE UPDATED to key " + mappedBattery);
+//
+//        lastBatteryLevel = mappedBattery;
+//        MainActivity.ReloggedIn=false;
+//    }
 
     public void setzerobatImage(){
         binding.batteryImageView.setImageResource(R.drawable.bat_0);
@@ -3125,14 +3175,14 @@ public class UIUpdater  {
 
             LoginActivity.markScreenJustOff();
             //Log.d("InactivityHandler", "LoginActivity launched over MainActivity.");
-            try {
-                PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
-                goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-               // InactivityManager.getInstance().startTimer(2);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+//                Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
+//                goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
+//               // InactivityManager.getInstance().startTimer(2);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
             Context context = MainActivity.instance;
             if (context != null) {

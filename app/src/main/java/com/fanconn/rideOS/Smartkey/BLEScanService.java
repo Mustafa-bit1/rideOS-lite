@@ -25,10 +25,11 @@ public class BLEScanService extends Service {
     private static final String TAG = "BLEKeyService";
     private static final String TARGET_MAC = MetadataManager.get().getSmartKeyId();
     private static final String TARGET_NAME = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
-    private static final long SCAN_INTERVAL_MS = 1000;
+    private static final long SCAN_INTERVAL_MS = 1100;
     private long lastTimeoutIncrementTime = 0;
     private static final int OUT_OF_RANGE_THRESHOLD_COUNT = 3;
     private static final int RSSI_IN_RANGE_THRESHOLD = -82;
+    private static final int NUMBER_OF_MISSED_SCANS=4;
     private static final int RSSI_OUT_RANGE_THRESHOLD = -100;
     private BluetoothLeScanner scanner;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -69,7 +70,7 @@ public class BLEScanService extends Service {
 
             // ---------- UNLOCK ----------
             if (!keyInRange) {
-
+                Log.d("afsad","SMARTKEYBLACK "+isSmartKey);
                 if (isSmartKey && rssi >= RSSI_IN_RANGE_THRESHOLD) {
                     unlock("SMARTKEY", mac, rssi);
                 }
@@ -109,12 +110,12 @@ public class BLEScanService extends Service {
 
             Log.w(TAG, "⚠️ " + unlockedBy +
                     " WEAK RSSI (" + rssi + " dBm) (" +
-                    weakSignalCount + "/3)");
+                    weakSignalCount + "/"+NUMBER_OF_MISSED_SCANS+")");
 
-            if (weakSignalCount >= 3) {
+            if (weakSignalCount >= NUMBER_OF_MISSED_SCANS) {
 
                 Log.e(TAG, "🔴 " + unlockedBy +
-                        " 3 consecutive WEAK RSSI → OUT OF RANGE");
+                                NUMBER_OF_MISSED_SCANS+" consecutive WEAK RSSI → OUT OF RANGE");
 
                 handleOutOfRange();
             }
@@ -233,7 +234,7 @@ public class BLEScanService extends Service {
                 if (!isScanning) {
                     scanner.startScan(null, buildScanSettings(), scanCallback);
                     isScanning = true;
-                    Log.d(TAG, "▶️ BLE scan started");
+                    //Log.d(TAG, "▶️ BLE scan started");
                 }
             } catch (IllegalStateException e) {
                 Log.w(TAG, "⚠️ startScan failed (BT state change)");
@@ -275,7 +276,6 @@ public class BLEScanService extends Service {
         }
     };
 
-
     private void checkTimeout() {
 
         if (!keyInRange) return;
@@ -286,12 +286,12 @@ public class BLEScanService extends Service {
 
             Log.w(TAG, "⚠️ " + unlockedBy +
                     " NO SIGNAL this scan (" +
-                    missedScanCount + "/3)");
+                    missedScanCount + "/"+NUMBER_OF_MISSED_SCANS+")");
 
-            if (missedScanCount >= 3) {
+            if (missedScanCount >= NUMBER_OF_MISSED_SCANS) {
 
                 Log.e(TAG, "🔴 " + unlockedBy +
-                        " 3 consecutive MISSED SCANS → OUT OF RANGE");
+                        NUMBER_OF_MISSED_SCANS+" consecutive MISSED SCANS → OUT OF RANGE");
 
                 handleOutOfRange();
             }
@@ -382,7 +382,7 @@ public class BLEScanService extends Service {
             if (adapter != null && adapter.isEnabled() && scanner != null && isScanning) {
                 scanner.stopScan(scanCallback);
                 isScanning = false;
-                Log.d(TAG, "⏹️ BLE scan stopped");
+                //Log.d(TAG, "⏹️ BLE scan stopped");
             }
         } catch (IllegalStateException e) {
             Log.w(TAG, "⚠️ stopScan ignored (Bluetooth OFF)");
