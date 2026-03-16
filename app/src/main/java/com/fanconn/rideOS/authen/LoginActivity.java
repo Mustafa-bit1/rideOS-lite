@@ -327,6 +327,9 @@ public class LoginActivity extends AppCompatActivity{
     private boolean isRunning = false;
     private Runnable screenToggleRunnable;
     private boolean isScreenOn = true;
+    public static LoginActivity getInstance() {
+        return instance;
+    }
     //private Button btnRegister;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -357,12 +360,12 @@ public class LoginActivity extends AppCompatActivity{
         tapSoundPlayer = MediaPlayer.create(this, R.raw.dottap33);
         TelemetryService.shdtelemetrywhenunlocked=false;
         instance = this;
+
         Log.d("BLEKeyService","THIUSLOGGEDTHELOGINONCRETE");
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
         InactivityManager.getInstance().startTimer(3,10000);
-
 
         etCredential = findViewById(R.id.etCredential);
         patternView = findViewById(R.id.patternView);
@@ -502,6 +505,24 @@ public class LoginActivity extends AppCompatActivity{
 //
         setupToggleRunnable();
         ahTrackerManager=AhTrackerManager.getInstance(this);
+        boolean autoUnlock = getIntent().getBooleanExtra("AUTO_UNLOCK", false);
+
+        if (autoUnlock) {
+            loginSuccess("Key Rider");
+            PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            if (powerManager != null && !powerManager.isInteractive()) {
+
+                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
+                        PowerManager.FULL_WAKE_LOCK |
+                                PowerManager.ACQUIRE_CAUSES_WAKEUP |
+                                PowerManager.ON_AFTER_RELEASE,
+                        "MyApp:WakeLockTag"
+                );
+
+                wakeLock.acquire(1000); // screen stays awake 1 second
+            }
+
+        }
     }// END OF ONCREATE METHOD
 
     private void playErrorSound() {
@@ -1050,7 +1071,9 @@ public class LoginActivity extends AppCompatActivity{
     protected void onDestroy() {
         super.onDestroy();
         //InactivityManager.getInstance().stopTimer();
-        instance = null; // clean up
+        if (instance == this) {
+            instance = null;
+        }
         TelemetryService.shdtelemetrywhenunlocked=true;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(tempWarningReceiver);
 

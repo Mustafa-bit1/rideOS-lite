@@ -47,6 +47,8 @@ public class FeaturesFragment extends Fragment {
     private static final int MIN_SEC = 30;
     private static final int MAX_SEC = 120;
     private static final int STEP_SEC = 10;
+    private SeekBar rssiSeekBar;
+    private TextView rssiValueText;
 
     @Nullable
     @Override
@@ -75,6 +77,27 @@ public class FeaturesFragment extends Fragment {
         Drawable trackDrawable2 = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_track).mutate();
         Drawable thumbDrawable3 = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_thumb).mutate();
         Drawable trackDrawable3 = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_track).mutate();
+
+        rssiSeekBar = view.findViewById(R.id.seek_rssi_threshold);
+        rssiValueText = view.findViewById(R.id.tv_rssi_value);
+        rssiSeekBar.setMax(2); // 4 steps (0–3)
+        SharedPreferences blePrefs =
+                requireContext().getSharedPreferences("ble_settings", Context.MODE_PRIVATE);
+        int savedRSSI = blePrefs.getInt("rssi_unlock_threshold", -70);
+
+        int keyprogress;
+
+        switch (savedRSSI) {
+            case -70: keyprogress = 0; break; // Close
+            case -80: keyprogress = 1; break; // Comfort
+            case -95: keyprogress = 2; break; // Fun
+//            case -85: keyprogress = 3; break; // Welcome
+            default:  keyprogress = 1; // default comfort
+        }
+
+        rssiSeekBar.setProgress(keyprogress);
+
+        updateRSSILabel(keyprogress);
 
 //        cruiseControlSwitch.setThumbDrawable(thumbDrawable1);
 //        cruiseControlSwitch.setTrackDrawable(trackDrawable1);
@@ -193,9 +216,9 @@ public class FeaturesFragment extends Fragment {
         final int min = 5;
 
 // SharedPreferences for persistent storage
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("seekbar_prefs", Context.MODE_PRIVATE);
-        int savedProgress = sharedPreferences.getInt("seekbar_progress", 0); // default to 0
-
+        SharedPreferences seekbarPrefs =
+                requireContext().getSharedPreferences("seekbar_prefs", Context.MODE_PRIVATE);
+        int savedProgress = seekbarPrefs.getInt("seekbar_progress", 0);
         Runnable stableRunnable = new Runnable() {
             @Override
             public void run() {
@@ -245,7 +268,7 @@ public class FeaturesFragment extends Fragment {
                 valueText.setText(String.valueOf(value));
 
                 // Save to SharedPreferences
-                sharedPreferences.edit().putInt("seekbar_progress", progress).apply();
+                seekbarPrefs.edit().putInt("seekbar_progress", progress).apply();
 
                 handler.removeCallbacks(stableRunnable);
                 handler.postDelayed(stableRunnable, 2000); // wait 4 seconds
@@ -261,6 +284,37 @@ public class FeaturesFragment extends Fragment {
                 // Optional: save again or run logic
                 // handler.postDelayed(stableRunnable, 4000);
             }
+        });
+
+        rssiSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                if (!fromUser) return;
+
+                int rssiValue;
+
+                switch (progress) {
+                    case 0: rssiValue = -70; break; // Close
+                    case 1: rssiValue = -82; break; // Comfort
+                    case 2: rssiValue = -95; break; // Fun
+//                    case 3: rssiValue = -95; break; // Welcome
+                    default: rssiValue = -82;
+                }
+
+                updateRSSILabel(progress);
+
+                blePrefs.edit()
+                        .putInt("rssi_unlock_threshold", rssiValue)
+                        .apply();
+
+                Log.d("FeaturesFragment",
+                        "RSSI Mode changed → " + rssiValue + " dBm (step " + progress + ")");
+            }
+
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 //--------------------------------boostsetting ----------------------------------------------------------------------
         SharedPreferences BoostsettingsharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
@@ -335,6 +389,21 @@ public class FeaturesFragment extends Fragment {
     private String toTwoDigitHex(int value) {
         String hex = Integer.toHexString(value).toUpperCase();
         return hex.length() == 1 ? "0" + hex : hex;
+    }
+
+    private void updateRSSILabel(int progress) {
+
+        switch (progress) {
+            case 0:
+                rssiValueText.setText("Near");
+                break;
+            case 1:
+                rssiValueText.setText("Close by");
+                break;
+            case 2:
+                rssiValueText.setText("Far");
+                break;
+        }
     }
     private void updateAndSendFrame(SharedPreferences sharedPreferences) {
         // 1. Get boost duration and interval from regular shared prefs

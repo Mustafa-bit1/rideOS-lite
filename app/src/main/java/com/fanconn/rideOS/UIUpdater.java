@@ -3175,14 +3175,14 @@ public class UIUpdater  {
 
             LoginActivity.markScreenJustOff();
             //Log.d("InactivityHandler", "LoginActivity launched over MainActivity.");
-//            try {
-//                PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-//                Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
-//                goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-//               // InactivityManager.getInstance().startTimer(2);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
+            try {
+                PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
+                goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
+               // InactivityManager.getInstance().startTimer(2);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             Context context = MainActivity.instance;
             if (context != null) {

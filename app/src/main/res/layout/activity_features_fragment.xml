@@ -189,6 +189,128 @@
 
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"
+                android:paddingVertical="8dp">
+
+                <!-- Text Column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Auto lock timer"
+                        android:textColor="#FFFFFF"
+                        android:fontFamily="@font/kanitlite"
+                        android:textSize="32sp"
+                        android:paddingEnd="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:text="Set auto scooter lock time"
+                        android:textColor="#7D7D7D"
+                        android:fontFamily="@font/kanit"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <!-- Switch aligned right -->
+                <SeekBar
+                    android:id="@+id/seek_inactivity"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="30dp"
+                    android:layout_marginEnd="10dp"
+                    android:max="9"
+                    android:progressTint="#0283FF"
+                    android:progressBackgroundTint="#FFFFFF"
+                    android:thumb="@drawable/reverse_speed_seekbarthumb"
+                   />
+
+                <TextView
+                    android:id="@+id/tv_inactivity_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="21dp"
+                    android:fontFamily="@font/kanit"
+                    android:textAlignment="textEnd"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="27sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"
+                android:paddingVertical="8dp">
+
+                <!-- Text Column -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="comfortKey"
+                        android:textColor="#FFFFFF"
+                        android:fontFamily="@font/kanitlite"
+                        android:textSize="32sp"
+                        android:paddingEnd="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:text="choose comforKey mode"
+                        android:textColor="#7D7D7D"
+                        android:fontFamily="@font/kanit"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <!-- Switch aligned right -->
+                <SeekBar
+                    android:id="@+id/seek_rssi_threshold"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="30dp"
+                    android:thumb="@drawable/reverse_speed_seekbarthumb"
+                    android:progressTint="#0283FF"
+                    android:progressBackgroundTint="#FFFFFF"
+                    />
+
+                <TextView
+                    android:id="@+id/tv_rssi_value"
+                    android:layout_width="112dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="21dp"
+                    android:fontFamily="@font/kanit"
+                    android:textAlignment="center"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="27sp" />
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -322,65 +444,6 @@
                         android:text="1.5 min" />
                 </RadioGroup>
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp"
-                android:paddingVertical="8dp">
-
-                <!-- Text Column -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Auto lock timer"
-                        android:textColor="#FFFFFF"
-                        android:fontFamily="@font/kanitlite"
-                        android:textSize="32sp"
-                        android:paddingEnd="15dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:text="Set auto scooter lock time"
-                        android:textColor="#7D7D7D"
-                        android:fontFamily="@font/kanit"
-                        android:textSize="17sp" />
-                </LinearLayout>
-
-                <!-- Switch aligned right -->
-                <SeekBar
-                    android:id="@+id/seek_inactivity"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:paddingStart="40dp"
-                    android:paddingEnd="30dp"
-                    android:max="9"
-                    android:thumb="@drawable/reverse_speed_seekbarthumb"
-                   />
-                <TextView
-                    android:id="@+id/tv_inactivity_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="21dp"
-                    android:fontFamily="@font/kanit"
-                    android:textAlignment="textEnd"
-                    android:text=""
-                    android:textColor="@color/white"
-                    android:textSize="27sp" />
-
-            </LinearLayout>
-
             <!-- ROLL PROTECT Row -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -485,6 +548,8 @@
                     android:paddingStart="30dp"
                     android:layout_marginTop="14dp"
                     android:paddingEnd="30dp"
+                    android:progressTint="#0283FF"
+                    android:progressBackgroundTint="#FFFFFF"
                     android:thumb="@drawable/reverse_speed_seekbarthumb"
                     android:max="5" />
                 <TextView

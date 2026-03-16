@@ -243,8 +243,6 @@
                     android:paddingStart="30dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-
-
             </LinearLayout>
 
         </LinearLayout>
@@ -438,7 +436,9 @@
                         android:paddingStart="25dp"
                         android:paddingEnd="25dp"
                         android:thumb="@drawable/reverse_speed_seekbarthumb"
-                        android:progressTint="#FFEE00" />
+                        android:progressTint="#FFEE00"
+                        android:progressBackgroundTint="#FFFFFF"
+                        />
                 </FrameLayout>
 
                 <!-- RIGHT VALUE TEXT -->
@@ -493,7 +493,9 @@
                         android:paddingStart="25dp"
                         android:paddingEnd="25dp"
                         android:thumb="@drawable/reverse_speed_seekbarthumb"
-                        android:progressTint="#F88213" />
+                        android:progressTint="#F88213"
+                        android:progressBackgroundTint="#FFFFFF"
+                        />
 
                     <!-- LABELS -->
                     <LinearLayout
