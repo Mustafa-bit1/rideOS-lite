@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.View;
 
@@ -34,7 +37,15 @@ public class chargingUI extends AppCompatActivity {
 
     private Handler socUpdateHandler = new Handler(Looper.getMainLooper());
     private Runnable socUpdateRunnable;
+    // Battery constants
+    private static final float BATTERY_CAPACITY_AH = 60f;
 
+    private static final float RANGE_km_PER_SOC = 1.5f;
+    private static final float KM_PER_AH = RANGE_km_PER_SOC * 1.666f;
+
+    // Runtime variables
+    private float currentRangeKm = 0f;
+    private long lastUpdateTime = 0;
     private final BroadcastReceiver frameReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -171,20 +182,33 @@ public class chargingUI extends AppCompatActivity {
         socUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-//                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
-                actualSOC = (int)ahTrackerManager.getSOC();
+                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
+//                actualSOC = (int)ahTrackerManager.getSOC();
 
 //                Log.d("SOC", "Battery SOC: " + actualSOC);
                 APUsoc = serialPortManager.hb3.getAPUBatteryLevel() / 10;
 
 
                 runOnUiThread(() -> {
+
+                    if (lastUpdateTime == 0) {
+                        initializeRangeFromSOC(actualSOC);
+                        lastUpdateTime = System.currentTimeMillis();
+                    }
                     Heartbeat3 hb3 = serialPortManager.getHb3();
                     float chargingbit = hb3.getChargingbit();
+
+                    float socRange = ((actualSOC / 100f) * BATTERY_CAPACITY_AH) * KM_PER_AH;
+                    if (socRange > currentRangeKm) {
+                        currentRangeKm = socRange;
+                    }
+
                     if (chargingbit == 0) {
 
                         chargingUiBatteryAnimation(actualSOC);
                         binding.socText.setVisibility(View.INVISIBLE);
+                        binding.rangeAddedText.setVisibility(View.INVISIBLE);
+                        binding.etaText.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.INVISIBLE);
                         binding.plugged.setVisibility(View.VISIBLE);
                         stopBatteryPulseAnimation();
@@ -193,15 +217,25 @@ public class chargingUI extends AppCompatActivity {
                     } else if (chargingbit > 0) {
 
                         binding.socText.setVisibility(View.VISIBLE);
+                        binding.rangeAddedText.setVisibility(View.VISIBLE);
+                        binding.etaText.setVisibility(View.VISIBLE);
                         binding.plugged.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.VISIBLE);
-
+                        updateChargingRange(chargingbit);
+                        updateChargingETA(actualSOC, chargingbit);
                         // Update SOC text
                         if (actualSOC >= 0 && actualSOC <= 100) {
-                            binding.socText.setText(actualSOC + "%");
+                            String socValue = actualSOC + "%";
+
+                            SpannableString spannable = new SpannableString(socValue);
+                            spannable.setSpan(new RelativeSizeSpan(0.45f),
+                                    socValue.length() - 1,
+                                    socValue.length(),
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            binding.socText.setText(spannable);
                         }
 
-                        // 👉 Dynamically set correct charging icon
+                        //  Dynamically set correct charging icon
                         int icon = getChargingIcon(chargingbit);
                         if (icon != 0) {
                             binding.chagingstartedicon.setImageResource(icon);
@@ -255,7 +289,7 @@ public class chargingUI extends AppCompatActivity {
                     // Start animation loop only once
 
                 });
-                socUpdateHandler.postDelayed(this, 500); // update actual SOC
+                socUpdateHandler.postDelayed(this, 50); // update actual SOC
             }
         };
 
@@ -263,11 +297,11 @@ public class chargingUI extends AppCompatActivity {
     }
 
     private int getChargingIcon(float chargingbit) {
-        if (chargingbit > 0 && chargingbit < 5) {
+        if (chargingbit > 0 && chargingbit < 25) {
             return R.drawable.normal_charging;
-        } else if (chargingbit >= 5 && chargingbit < 10) {
+        } else if (chargingbit >= 25 && chargingbit < 40) {
             return R.drawable.fast_charging;
-        } else if (chargingbit >= 10) {
+        } else if (chargingbit >= 40) {
             return R.drawable.flash_charging;
         } else {
             return 0; // no icon
@@ -553,5 +587,74 @@ public class chargingUI extends AppCompatActivity {
 //            Log.e("PowerAction", "Exception during screen off attempt: ", e);
 //        }
 //    }
+    private static final float MAX_RANGE_KM = 200f;
+    private void initializeRangeFromSOC(int soc) {
+
+        float presentAh = (soc / 100f) * BATTERY_CAPACITY_AH;
+
+        currentRangeKm = presentAh * KM_PER_AH;
+
+        // ✅ Clamp to max range
+        if (currentRangeKm > MAX_RANGE_KM) {
+            currentRangeKm = MAX_RANGE_KM;
+        }
+
+        binding.rangeAddedText.setText(
+                String.format(Locale.US, "Range %.2f km", currentRangeKm)
+        );
+    }
+
+    private void updateChargingRange(float chargingCurrent) {
+
+        long now = System.currentTimeMillis();
+        float deltaSeconds = (now - lastUpdateTime) / 1000f;
+        lastUpdateTime = now;
+
+        float ahAdded = (chargingCurrent / 3600f) * deltaSeconds;
+        float kmAdded = ahAdded * KM_PER_AH;
+
+        currentRangeKm += kmAdded;
+
+        // ✅ Clamp to max range
+        if (currentRangeKm >= MAX_RANGE_KM) {
+            currentRangeKm = MAX_RANGE_KM;
+
+            // Optional: stop further updates
+            binding.rangeAddedText.setText(
+                    String.format(Locale.US, "|   range %.2f km", currentRangeKm)
+            );
+            return;
+        }
+
+        binding.rangeAddedText.setText(
+                String.format(Locale.US, "|   range %.2f km", currentRangeKm)
+        );
+    }
+    private void updateChargingETA(int soc, float chargingCurrent) {
+
+        if (soc >= 99) {
+            binding.etaText.setText("Full Soon");
+            return;
+        }
+        if (chargingCurrent <= 0) {
+            binding.etaText.setText("Estimated charging time : --");
+            return;
+        }
+
+        float remainingAh = BATTERY_CAPACITY_AH - (soc * BATTERY_CAPACITY_AH/100f);
+
+
+        float timeHours = remainingAh / chargingCurrent;
+        Log.d("asdfsdgfd","THISISESTIMATED "+remainingAh+"  cc "+chargingCurrent);
+        // Add 20% buffer (real-world charging slowdown)
+        timeHours *= 1.2f;
+
+        int hours = (int) timeHours;
+        int minutes = (int) ((timeHours - hours) * 60);
+
+        binding.etaText.setText(
+                String.format(Locale.US, "%d hr %02d min remaining to full", hours, minutes)
+        );
+    }
 
 }

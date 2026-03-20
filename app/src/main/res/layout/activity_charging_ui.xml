@@ -7,9 +7,7 @@
     tools:context=".chargingUI"
     android:background="@drawable/bgsquare">
 
-
-
-        <!--    <ImageView-->
+    <!--    <ImageView-->
         <!--        android:id="@+id/imageView10"-->
         <!--        android:layout_width="170dp"-->
         <!--        android:layout_height="42dp"-->
@@ -20,7 +18,9 @@
         <!--        app:srcCompat="@drawable/slowcharge" />-->
 
 
-        <TextView
+
+
+    <TextView
             android:id="@+id/timeTextView"
             android:layout_width="120dp"
             android:layout_height="32dp"
@@ -68,7 +68,6 @@
         android:id="@+id/socText"
         android:layout_width="460dp"
         android:layout_height="125dp"
-        android:layout_marginStart="464dp"
         android:layout_marginBottom="178dp"
         android:fontFamily="@font/opti"
         android:text="100%"
@@ -77,6 +76,7 @@
         android:textSize="90dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -94,16 +94,55 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="292dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+
+        <TextView
+            android:id="@+id/etaText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/kanit"
+            android:text="-"
+            android:visibility="gone"
+
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/rangeAddedText"
+            android:layout_width="210dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="20dp"
+            android:fontFamily="@font/kanit"
+            android:text=""
+            android:visibility="gone"
+
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/chagingstartedicon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="548dp"
-        android:layout_marginTop="292dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="100dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/normal_charging" />
-
     <TextView
         android:id="@+id/APUbatTV"
         android:layout_width="110dp"

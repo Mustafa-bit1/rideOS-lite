@@ -46,12 +46,10 @@ public class BatteryFragment extends Fragment {
 
     // Scroll Containers
     private ScrollView mainScroll, auxScroll;
-
     // Radio buttons
     private RadioButton btnBattery, btnAuxillary;
-
     private Handler uiHandler = new Handler(Looper.getMainLooper());
-
+    private double RANGE_km_PER_SOC =1.5;
     // Enum to track selected battery
     private enum BatteryType { MAIN, AUX }
     private BatteryType currentBattery = BatteryType.MAIN;
@@ -71,7 +69,7 @@ public class BatteryFragment extends Fragment {
 //                        int battery = hb3.getBatteryLevel() / 10;
                         double battery = roundTo2Decimal(ahTrackerManager.getSOC());
 
-                        double range = battery * 2;
+                        double range = battery * RANGE_km_PER_SOC;
 
                         SpannableString batteryText = new SpannableString(battery + "%");
                         batteryText.setSpan(new RelativeSizeSpan(0.7f),

@@ -1,3 +1,4 @@
+
 package com.fanconn.rideOS.authen;
 
 import android.app.ProgressDialog;
@@ -34,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.fanconn.rideOS.InactivityManager;
+import com.airbnb.lottie.L;
 import com.fanconn.rideOS.AhTrackerManager;
 import com.fanconn.rideOS.CanDataParser;
 import com.fanconn.rideOS.EVLockService;
@@ -196,7 +198,7 @@ public class LoginActivity extends AppCompatActivity{
                 long currentTime = System.currentTimeMillis();
                 boolean canLaunchUI = !isChargingUIActive && !ChargingUiClosedByUserFlag;
 //                    Log.d("sdfdgfh","flague  "+isChargingUIActive);
-//                    Log.d("sdfdgfh","flague2  "+ChargingUiClosedByUserFlag);
+                    //Log.d("sdfdgfh","bugsofcharging  "+(currentTime - lastChargingUILaunchTime));
 
                 if (canLaunchUI && (currentTime - lastChargingUILaunchTime > 1000)) {
                     isChargingUIActive = true;
@@ -1181,7 +1183,7 @@ public class LoginActivity extends AppCompatActivity{
         chargingUIFlagRunnable = () -> {
             ChargingUiClosedByUserFlag = false;
             isChargingUIActive = false;
-            //Log.d("LoginActivity", "Charging UI flags reset after delay");
+           // Log.d("bugsofcharging", "bugsofcharging Charging UI flags reset after delay");
         };
 
         //this was bcz when user comes back from chargingUI on login then wait on login for 15 seconds then start again chargingUI

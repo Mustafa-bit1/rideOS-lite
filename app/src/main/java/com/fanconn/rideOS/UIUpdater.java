@@ -1,5 +1,3 @@
-// Refactored version with leak fixes by ChatGPT
-// Original logic preserved
 
 package com.fanconn.rideOS;
 
@@ -212,7 +210,8 @@ public class UIUpdater  {
     }
     private void setRecoKmText(float km) {
 
-        String valueText = String.format("+%.1f km", km);
+        String valueText =
+                String.format("+%.1f km", km);
         SpannableString spannable = new SpannableString(valueText);
 
         int kmStart = valueText.indexOf("km");
@@ -608,13 +607,15 @@ public class UIUpdater  {
 
     private static int UniversalAPUbatteryLevel;
 //    public static boolean resetParamtersAfterLowbat=false;
+    private double RANGE_km_PER_SOC =1.5;
+
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
 //        int batteryLevel1= hb3.getBatteryLevel() / 10;
-        int batteryLevel = (int) ahTrackerManager.getSOC();
+//        int batteryLevel = (int) ahTrackerManager.getSOC();
 
 //        int batteryLevel = get10LessSOC(batteryLevel1);
-////        int batteryLevel= hb3.getBatteryLevel() / 10;
+        int batteryLevel= hb3.getBatteryLevel() / 10;
 ////        int batteryLevel = (int) ahTrackerManager.getSOC();
 
 //        Log.d("SOC10LESS", "Actual SOC = " + batteryLevel1);
@@ -643,7 +644,7 @@ public class UIUpdater  {
         }
 
         tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
-        int range= (int) Math.floor(batteryLevel * 2.0);  // Get the whole number part
+        int range= (int) Math.floor(batteryLevel * RANGE_km_PER_SOC);
         if(batteryLevel>=0 && batteryLevel<=100){
             tm.setTeleSOC(batteryLevel);
             tm.setBMSTeleSOC((float) hb3.getBatteryLevel() /10);
