@@ -70,13 +70,13 @@
         android:layout_height="125dp"
         android:layout_marginBottom="178dp"
         android:fontFamily="@font/opti"
-        android:text="100%"
+        android:text="999%"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="90dp"
-        android:visibility="gone"
+        android:layout_marginStart="433dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -96,9 +96,10 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="292dp"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,37 +111,49 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="20dp"
             android:fontFamily="@font/kanit"
-            android:text="-"
-            android:visibility="gone"
-
+            android:text="0Hr 20Min to Full"
             android:textColor="@android:color/white"
             android:textSize="22sp" />
-
         <TextView
-            android:id="@+id/rangeAddedText"
-            android:layout_width="210dp"
+            android:id="@+id/seprator"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginStart="20dp"
             android:fontFamily="@font/kanit"
-            android:text=""
-            android:visibility="gone"
+            android:text="   |   "
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+        <TextView
+            android:id="@+id/rangeAddedText"
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kanit"
+            android:text="Range 200.22"
+            android:gravity="start"
+            android:textColor="@android:color/white"
+            android:textSize="22sp" />
+        <TextView
+            android:id="@+id/rangeAddedKMText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/kanit"
+            android:text="km"
 
             android:textColor="@android:color/white"
             android:textSize="22sp" />
-
     </LinearLayout>
 
     <ImageView
         android:id="@+id/chagingstartedicon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="100dp"
-        android:visibility="gone"
+        android:layout_marginBottom="90dp"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/normal_charging" />
     <TextView
@@ -229,6 +242,7 @@
         android:layout_height="93dp"
         android:layout_marginTop="172dp"
         android:layout_marginEnd="608dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/pluggedicon" />

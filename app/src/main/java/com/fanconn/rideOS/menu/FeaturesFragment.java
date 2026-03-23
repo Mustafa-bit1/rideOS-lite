@@ -12,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,6 +51,7 @@ public class FeaturesFragment extends Fragment {
     private static final int STEP_SEC = 10;
     private SeekBar rssiSeekBar;
     private TextView rssiValueText;
+    private Context ctx;
 
     @Nullable
     @Override
@@ -58,6 +61,8 @@ public class FeaturesFragment extends Fragment {
 
 
         View view = inflater.inflate(R.layout.activity_features_fragment, container, false);
+        ctx = requireContext();
+
         serialPortManager= serialApplication.getSerialPortManager();
         // Initialize switches
 //        cruiseControlSwitch = view.findViewById(R.id.cruisecontrolSwitch);
@@ -149,7 +154,7 @@ public class FeaturesFragment extends Fragment {
 
                     @Override public void onStartTrackingTouch(SeekBar seekBar) {}
 
-                    @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+                    @Override public void onStopTrackingTouch(SeekBar seekBar) {showSavedToast();}
                 });
 
         rollProtectSwitch.setThumbDrawable(thumbDrawable3);
@@ -201,7 +206,7 @@ public class FeaturesFragment extends Fragment {
         rollProtectSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean("roll_enabled", isChecked).apply();
             rollProtectSwitch.setText(isChecked ? "Enabled" : "Disabled");
-
+            showSavedToast();
             if (isChecked) {
                 // TODO: Add logic to enable roll protection
             } else {
@@ -247,6 +252,7 @@ public class FeaturesFragment extends Fragment {
                 if (serialPortManager != null) {
                     serialPortManager.VCUSendToMCU(finalFrame);
                 }
+                showSavedToast();
 //                new android.os.Handler().postDelayed(() -> {
 //                    if (serialPortManager != null) {
 //                        serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387");
@@ -314,7 +320,7 @@ public class FeaturesFragment extends Fragment {
             }
 
             @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {showSavedToast();}
         });
 //--------------------------------boostsetting ----------------------------------------------------------------------
         SharedPreferences BoostsettingsharedPreferences = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
@@ -348,6 +354,7 @@ public class FeaturesFragment extends Fragment {
                 editor.apply();
 
                 updateAndSendFrame(BoostsettingsharedPreferences);
+                showSavedToast();
             }
         });
 
@@ -363,6 +370,7 @@ public class FeaturesFragment extends Fragment {
                 editor.apply();
 
                 updateAndSendFrame(BoostsettingsharedPreferences);
+                showSavedToast();
             }
         });
 
@@ -455,5 +463,30 @@ public class FeaturesFragment extends Fragment {
 //                serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387");
 //            }
 //        }, 1000);
+    }
+    private void showSavedToast() {
+        showCustomToast("Saved");
+    }
+    private Toast currentToast;
+    private void showCustomToast(String message) {
+
+        // Cancel previous toast if showing
+        if (currentToast != null) {
+            currentToast.cancel();
+        }
+
+        View layout = LayoutInflater.from(requireContext())
+                .inflate(R.layout.toast_custom, null);
+
+        ((ImageView) layout.findViewById(R.id.toast_icon))
+                .setImageResource(R.drawable.toastlogo);
+
+        ((TextView) layout.findViewById(R.id.toast_text))
+                .setText(message);
+
+        currentToast = new Toast(requireContext());
+        currentToast.setDuration(Toast.LENGTH_SHORT);
+        currentToast.setView(layout);
+        currentToast.show();
     }
 }

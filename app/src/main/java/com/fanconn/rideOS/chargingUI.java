@@ -38,8 +38,7 @@ public class chargingUI extends AppCompatActivity {
     private Handler socUpdateHandler = new Handler(Looper.getMainLooper());
     private Runnable socUpdateRunnable;
     // Battery constants
-    private static final float BATTERY_CAPACITY_AH = 60f;
-
+    private static  float BATTERY_CAPACITY_AH;
     private static final float RANGE_km_PER_SOC = 1.5f;
     private static final float KM_PER_AH = RANGE_km_PER_SOC * 1.666f;
 
@@ -53,7 +52,6 @@ public class chargingUI extends AppCompatActivity {
             String frame = intent.getStringExtra("frame_data");
             if (frame.startsWith("FFAA770303001518FF50E5")) {
                 resetChargingTimeout();
-
             }
             if (frame == null || frame.length() < 12) {
                 Log.w("chargingUI", "Invalid or null frame received");
@@ -68,17 +66,16 @@ public class chargingUI extends AppCompatActivity {
             // SOC frame — optional logging
 //            if (frame.startsWith("FFAA770303001518904001")) {
 //                Log.d("chargingUI", "SOC frame: " + frame);
-////                String Candata=FrameUtils.getByteSubstring(frame,11,18);
+///                String Candata=FrameUtils.getByteSubstring(frame,11,18);
 ////                int soc=FrameUtils.getByteSubstringAsInt(Candata,6,7);
 ////                Log.d("chargingUI", "CSOCCCCCCCCCCCCCCCCCCCC"+soc);
 ////
-////                if (soc < 100 && soc >= 0) {
-////                    binding.socText.setText(soc + "%");
-////                }
+//// /               if (soc < 100 && soc >= 0) {
+/////                    binding.socText.setText(soc + "%");
+///                }
 //            }
-
-            // ⚠️ Reset timeout ONLY if this frame is received
-
+//
+            //Reset timeout ONLY if this frame is received
         }
     };
     private MediaPlayer mediaPlayer;
@@ -197,7 +194,7 @@ public class chargingUI extends AppCompatActivity {
                     }
                     Heartbeat3 hb3 = serialPortManager.getHb3();
                     float chargingbit = hb3.getChargingbit();
-
+                    BATTERY_CAPACITY_AH=getBatteryCapacity();
                     float socRange = ((actualSOC / 100f) * BATTERY_CAPACITY_AH) * KM_PER_AH;
                     if (socRange > currentRangeKm) {
                         currentRangeKm = socRange;
@@ -208,6 +205,7 @@ public class chargingUI extends AppCompatActivity {
                         chargingUiBatteryAnimation(actualSOC);
                         binding.socText.setVisibility(View.INVISIBLE);
                         binding.rangeAddedText.setVisibility(View.INVISIBLE);
+                        binding.linearLayout2.setVisibility(View.INVISIBLE);
                         binding.etaText.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.INVISIBLE);
                         binding.plugged.setVisibility(View.VISIBLE);
@@ -219,6 +217,7 @@ public class chargingUI extends AppCompatActivity {
                         binding.socText.setVisibility(View.VISIBLE);
                         binding.rangeAddedText.setVisibility(View.VISIBLE);
                         binding.etaText.setVisibility(View.VISIBLE);
+                        binding.linearLayout2.setVisibility(View.VISIBLE);
                         binding.plugged.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.VISIBLE);
                         updateChargingRange(chargingbit);
@@ -385,16 +384,12 @@ public class chargingUI extends AppCompatActivity {
 
         pulseHandler.post(pulseRunnable);
     }
-
     private void stopBatteryPulseAnimation() {
         if (pulseRunnable != null) {
             pulseHandler.removeCallbacksAndMessages(null);
             pulseRunnable = null;
         }
     }
-
-
-
     private int chargingUiLastlevel = -1; // Store last battery level to avoid redundant updates
 
     public void chargingUiBatteryAnimation(int batteryLevel) {
@@ -590,6 +585,7 @@ public class chargingUI extends AppCompatActivity {
     private static final float MAX_RANGE_KM = 200f;
     private void initializeRangeFromSOC(int soc) {
 
+        BATTERY_CAPACITY_AH=getBatteryCapacity();
         float presentAh = (soc / 100f) * BATTERY_CAPACITY_AH;
 
         currentRangeKm = presentAh * KM_PER_AH;
@@ -604,6 +600,23 @@ public class chargingUI extends AppCompatActivity {
         );
     }
 
+    private void updateChargingETA(int soc, float chargingCurrent) {
+
+        BATTERY_CAPACITY_AH=getBatteryCapacity();
+        float remainingAh = BATTERY_CAPACITY_AH - (soc * BATTERY_CAPACITY_AH/100f);
+
+        float timeHours = remainingAh / chargingCurrent;
+        Log.d("asdfsdgfd","THISISESTIMATED "+remainingAh+"  cc "+chargingCurrent);
+        // Add 20% buffer (real-world charging slowdown)
+        timeHours *= 1.2f;
+
+        int hours = (int) timeHours;
+        int minutes = (int) ((timeHours - hours) * 60);
+
+        binding.etaText.setText(
+                String.format(Locale.US, "%dHr %02dMin to Full", hours, minutes)
+        );
+    }
     private void updateChargingRange(float chargingCurrent) {
 
         long now = System.currentTimeMillis();
@@ -621,40 +634,30 @@ public class chargingUI extends AppCompatActivity {
 
             // Optional: stop further updates
             binding.rangeAddedText.setText(
-                    String.format(Locale.US, "|   range %.2f km", currentRangeKm)
+                    String.format(Locale.US, "Range %6.2f", currentRangeKm)
             );
             return;
         }
 
         binding.rangeAddedText.setText(
-                String.format(Locale.US, "|   range %.2f km", currentRangeKm)
+                String.format(Locale.US, "Range %6.2f", currentRangeKm)
         );
     }
-    private void updateChargingETA(int soc, float chargingCurrent) {
+    private float getBatteryCapacity() {
+        String model = MetadataManager.get().getModel();
 
-        if (soc >= 99) {
-            binding.etaText.setText("Full Soon");
-            return;
+        if (model == null) return 60f; // default safety
+
+        switch (model) {
+            case "nx100 Pro":
+                return 60f;
+
+            case "nx100 Max":
+                return 90f;
+
+            default:
+                return 60f; // fallback
         }
-        if (chargingCurrent <= 0) {
-            binding.etaText.setText("Estimated charging time : --");
-            return;
-        }
-
-        float remainingAh = BATTERY_CAPACITY_AH - (soc * BATTERY_CAPACITY_AH/100f);
-
-
-        float timeHours = remainingAh / chargingCurrent;
-        Log.d("asdfsdgfd","THISISESTIMATED "+remainingAh+"  cc "+chargingCurrent);
-        // Add 20% buffer (real-world charging slowdown)
-        timeHours *= 1.2f;
-
-        int hours = (int) timeHours;
-        int minutes = (int) ((timeHours - hours) * 60);
-
-        binding.etaText.setText(
-                String.format(Locale.US, "%d hr %02d min remaining to full", hours, minutes)
-        );
     }
 
 }
