@@ -107,6 +107,42 @@
         <!--        app:layout_constraintStart_toStartOf="parent"-->
         <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
+        <ImageView
+            android:id="@+id/enginestartIV"
+            android:layout_width="1002dp"
+            android:layout_height="291dp"
+            android:layout_marginStart="139dp"
+            android:layout_marginEnd="139dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
+            app:srcCompat="@drawable/a_enginestart1" />
+
+        <com.fanconn.rideOS.SpeedArcView
+            android:id="@+id/speedArc"
+            android:layout_width="1000dp"
+            android:layout_height="295dp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            app:layout_constraintBottom_toBottomOf="@+id/enginestartIV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.fanconn.rideOS.BatteryArcView
+            android:id="@+id/batteryArc"
+            android:layout_width="853dp"
+            android:layout_height="290dp"
+            android:layout_marginTop="1dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
         <FrameLayout
             android:id="@+id/front_camera_container"
             android:layout_width="80dp"
@@ -164,20 +200,6 @@
         <!--        app:layout_constraintStart_toStartOf="parent"-->
         <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
-        <ImageView
-            android:id="@+id/enginestartIV"
-            android:layout_width="1002dp"
-            android:layout_height="291dp"
-            android:layout_marginStart="139dp"
-            android:layout_marginEnd="139dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            android:visibility="gone"
-            app:srcCompat="@drawable/a_enginestart" />
 
         <TextView
             android:id="@+id/speedNumberTV"
@@ -211,21 +233,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <ImageView
-            android:id="@+id/batterry_bar"
-            android:layout_width="835dp"
-            android:layout_height="150dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="222.5dp"
-            android:layout_marginEnd="222.5dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/a_batbar" />
+<!--        <ImageView-->
+<!--            android:id="@+id/batterry_bar"-->
+<!--            android:layout_width="835dp"-->
+<!--            android:layout_height="150dp"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginStart="222.5dp"-->
+<!--            android:layout_marginEnd="222.5dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.0"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:srcCompat="@drawable/a_batbar" />-->
 
 
         <ImageView
@@ -427,7 +449,7 @@
             android:id="@+id/cruise"
             android:layout_width="130dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="575dp"
+            android:layout_marginStart="578dp"
             android:layout_marginTop="239dp"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
@@ -515,59 +537,6 @@
         <!--        app:maxSpeed="100"-->
         <!--        app:progressColor="#4CAF50"-->
         <!--        app:progressWidth="40dp" />-->
-
-        <ImageView
-            android:id="@+id/batteryImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="222dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/bat_0" />
-        <ImageView
-
-            android:id="@+id/introbatteryImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="222dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/bati_0" />
-
-
-        <ImageView
-            android:id="@+id/APUbatteryImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="287dp"
-            android:layout_marginTop="1dp"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/apubat_0" />
-
-        <TextView
-            android:id="@+id/batteryTV"
-            android:layout_width="281dp"
-            android:layout_height="36dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="499dp"
-            android:layout_marginTop="119dp"
-            android:fontFamily="@font/kanit"
-            android:shadowColor="#80000000"
-            android:shadowDx="5"
-            android:shadowDy="3"
-            android:shadowRadius="5"
-            android:text="Calculating your Charge..."
-            android:textAlignment="center"
-            android:textColor="#FFFFFFFF"
-            android:textSize="20dp"
-            android:translationY="-10dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
@@ -717,8 +686,8 @@
             android:layout_marginBottom="30dp"
             android:background="@android:color/transparent"
             android:onClick="navLeft"
-            android:src="@drawable/navleft"
             android:visibility="gone"
+            android:src="@drawable/navleft"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -731,28 +700,28 @@
             android:background="@android:color/transparent"
             android:onClick="navRight"
             android:src="@drawable/navright"
-
             android:visibility="gone"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- ================= RECO CONTAINER ================= -->
+
+        <!-- ================= RECO LEFT BUTTON ================= -->
 
         <ImageButton
             android:id="@+id/tripresetbtn"
             android:layout_width="37dp"
             android:layout_height="37dp"
-            android:layout_marginTop="400dp"
             android:layout_marginEnd="518dp"
+            android:layout_marginBottom="42dp"
             android:background="@android:color/transparent"
             android:onClick="Trip_Reset"
             android:scaleType="fitXY"
-            android:src="@drawable/tripresetbtn"
             android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/batterry_bar" />
-
-        <!-- ================= RECO CONTAINER ================= -->
-
-        <!-- ================= RECO LEFT BUTTON ================= -->
+            android:src="@drawable/tripresetbtn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/recoContainer"
@@ -981,8 +950,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/lowbatmsg" />
 
-
-<!--        <LinearLayout-->
+        <!--        <LinearLayout-->
 <!--            android:id="@+id/topBarRow"-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="110dp"-->
@@ -1103,6 +1071,62 @@
 <!--                android:layout_marginStart="-30dp"-->
 <!--                android:src="@drawable/right_on" />-->
 <!--        </LinearLayout>-->
+
+        <ImageView
+            android:id="@+id/batteryImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="222dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bat_0" />
+        <ImageView
+
+            android:id="@+id/introbatteryImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="222dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/bati_0" />
+
+
+        <ImageView
+            android:id="@+id/APUbatteryImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="287dp"
+            android:layout_marginTop="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/apubat_0" />
+
+        <TextView
+            android:id="@+id/batteryTV"
+            android:layout_width="281dp"
+            android:layout_height="36dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="499dp"
+            android:layout_marginTop="119dp"
+            android:fontFamily="@font/kanit"
+            android:shadowColor="#80000000"
+            android:shadowDx="5"
+            android:shadowDy="3"
+            android:shadowRadius="5"
+            android:text="Calculating your Charge..."
+            android:textAlignment="center"
+            android:textColor="#FFFFFFFF"
+            android:textSize="20dp"
+            android:translationY="-10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
 
         <ImageView android:id="@+id/left_on"
             android:layout_width="121dp"

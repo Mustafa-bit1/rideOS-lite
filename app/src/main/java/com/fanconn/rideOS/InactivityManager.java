@@ -90,6 +90,7 @@ public class InactivityManager {
         isRunning = true;
 
         timeoutRunnable = () -> {
+            Log.d("InactivityManager", " Timeout TOUCHTIMER triggered for code: " + currentCode);
             isRunning = false;
             if (callback != null) {
                 callback.onInactivityTimeout(currentCode);
@@ -131,6 +132,13 @@ public class InactivityManager {
         }
         else Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF RESTTIMER");
     }
+    public void ShortresetTimer(int code) {
+        if (code != -1) {
+            Log.d("InactivityManager", " TOUCHTIMER Short timer reset");
+            startTimer(code,10000);
+        }
+        else Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF SHort RESTTIMER");
+    }
 
     public void stopTimer() {
         Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER STOOPEDTIMER");
@@ -145,12 +153,16 @@ public class InactivityManager {
     public void onUserInteraction() {
         resetTimer();
     }
+    public void ShortonUserInteraction(int code) {
+        ShortresetTimer(code);
+    }
 
     public void updateSpeed(double speed) {
         if (speed != 0) {
             resetTimer();
         }
     }
+
 
     public interface InactivityCallback {
         void onInactivityTimeout(int code);

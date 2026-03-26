@@ -1,6 +1,7 @@
 
 package com.fanconn.rideOS;
 
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -285,7 +286,7 @@ public class UIUpdater  {
      * @param hb1 解析后的 Heartbeat1 对象
      */
     private int lastTurnSignalState = -1;
-
+    private boolean reset_Auto_lock_inHighbeam_flag;
     public void updateHeartbeat1UI(Heartbeat1 hb1) {
 
         int currentSignal = hb1.getTurnSignal();
@@ -335,9 +336,14 @@ public class UIUpdater  {
         {
             binding.highBeamIVon.setVisibility(View.VISIBLE);
             binding.highBeamIVoff.setVisibility(View.INVISIBLE);
+            if(reset_Auto_lock_inHighbeam_flag){
+                reset_Auto_lock_inHighbeam_flag=false;
+                InactivityManager.getInstance().onUserInteraction();
+            }
         }
         else if (hb1.getHeadlights() == 0)
         {
+            reset_Auto_lock_inHighbeam_flag=true;
             binding.highBeamIVon.setVisibility(View.INVISIBLE);
             binding.highBeamIVoff.setVisibility(View.VISIBLE);
 
@@ -608,6 +614,8 @@ public class UIUpdater  {
     private static int UniversalAPUbatteryLevel;
 //    public static boolean resetParamtersAfterLowbat=false;
     private double RANGE_km_PER_SOC =1.5;
+    private float lastKnownBattery = 0;
+    private boolean isBatteryIntroRunning = false;
 
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
@@ -760,12 +768,21 @@ public class UIUpdater  {
 
         //BatPackSwitcher.startSwitchingToAPU();
 //
-        try {
-            if (batteryLevel>=0 && batteryLevel<=100  && MainActivity.MainisActive) { // ✅ Only update if animation is done
-                updateBatteryAnimation(batteryLevel);
-            }
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
+//        try {
+//            if (batteryLevel>=0 && batteryLevel<=100  && MainActivity.MainisActive) { // ✅ Only update if animation is done
+//                updateBatteryAnimation(batteryLevel);
+//            }
+//        } catch (NumberFormatException e) {
+//            e.printStackTrace();
+//        }
+        lastKnownBattery = batteryLevel; // ✅ store latest
+
+        if (!isBatteryIntroRunning) {
+            activity.runOnUiThread(() -> {
+                if (!isBatteryIntroRunning) {
+                    binding.batteryArc.setBatteryLevel(batteryLevel);
+                }
+            });
         }
 //        try {
 //            if (batteryLevel>=0 && batteryLevel<=100 && MainActivity.batteryAnimationCompleted && MainActivity.MainisActive) { // ✅ Only update if animation is done
@@ -777,6 +794,17 @@ public class UIUpdater  {
         //根据电池电量获取对应的图片资源
         //int batteryImageResId = getBatteryImageResource(batteryLevel);
         //binding.batteryIV.setImageResource(batteryImageResId);
+    }
+    public float getLastKnownBattery() {
+        return lastKnownBattery;
+    }
+
+    public void setBatteryIntroRunning(boolean value) {
+        isBatteryIntroRunning = value;
+    }
+
+    public boolean isBatteryIntroRunning() {
+        return isBatteryIntroRunning;
     }
     private int get10LessSOC(int actualSOC) {
 
@@ -1546,6 +1574,7 @@ public class UIUpdater  {
 
                     case 1: // Forward
                         powerOnUi();
+                        activity.startSpeedIntroFromUpdater();
                         //if(StopInactivtyTimerDuringPopUp){Log.d("sadfgg","********1");InactivityManager.getInstance().startTimer(1);}
                         InactivityManager.getInstance().stopTimer();
 
@@ -1939,7 +1968,8 @@ public class UIUpdater  {
 
         binding.neutralicon.setImageResource(R.drawable.neutralicon); // Replace with your drawable
         binding.neutral.setVisibility(View.VISIBLE);
-        binding.batterryBar.setVisibility(View.VISIBLE);
+//        binding.batterryBar.setVisibility(View.VISIBLE);
+        binding.batteryArc.setVisibility(View.VISIBLE);
         binding.batteryTV.setVisibility(View.VISIBLE);
         binding.network.setVisibility(View.VISIBLE);
         binding.wifi.setVisibility(View.VISIBLE);
@@ -1959,6 +1989,7 @@ public class UIUpdater  {
         //binding.readyIV.setVisibility(View.INVISIBLE);
         // binding.highBeamIVon.setVisibility(View.INVISIBLE);
         binding.enginestartIV.setVisibility(View.INVISIBLE);
+        binding.speedArc.setVisibility(View.INVISIBLE);
         binding.rectangleGearsTV.setVisibility((View.INVISIBLE));
         binding.sports.setVisibility((View.INVISIBLE));
         binding.stand.setVisibility((View.INVISIBLE));
@@ -1998,9 +2029,12 @@ public class UIUpdater  {
         binding.startButton.setVisibility(View.INVISIBLE);
         binding.removestand.setVisibility(View.INVISIBLE);
         binding.enginestartIV.setVisibility(View.VISIBLE);
+        binding.speedArc.setVisibility(View.VISIBLE);
         binding.speedNumberTV.setVisibility(View.VISIBLE);
         binding.speedTV.setVisibility(View.VISIBLE);
-        binding.batterryBar.setVisibility(View.VISIBLE);
+//        binding.batterryBar.setVisibility(View.VISIBLE);
+        binding.batteryArc.setVisibility(View.VISIBLE);
+
         binding.batteryTV.setVisibility(View.VISIBLE);
         binding.network.setVisibility(View.VISIBLE);
         binding.wifi.setVisibility(View.VISIBLE);
@@ -2064,14 +2098,17 @@ public class UIUpdater  {
         // binding.rightOn.setVisibility(View.INVISIBLE);
 //        binding.highBeamIVon.setVisibility(View.INVISIBLE);
         binding.enginestartIV.setVisibility(View.INVISIBLE);
+        binding.speedArc.setVisibility(View.INVISIBLE);
+
         //  binding.highBeamIVoff.setVisibility(View.INVISIBLE);
-        binding.batterryBar.setVisibility(View.INVISIBLE);
+//        binding.batterryBar.setVisibility(View.INVISIBLE);
         binding.batteryTV.setVisibility(View.INVISIBLE);
         binding.network.setVisibility(View.INVISIBLE);
         binding.wifi.setVisibility(View.INVISIBLE);
         binding.timeTextView.setVisibility(View.INVISIBLE);
 //        binding.BluetoothIV.setVisibility(View.INVISIBLE);
         binding.batteryImageView.setVisibility(View.INVISIBLE);
+        binding.batteryArc.setVisibility(View.INVISIBLE);
         binding.APUbatteryImageView.setVisibility(View.INVISIBLE);
 
         binding.neutralicon.setVisibility((View.INVISIBLE));
@@ -2114,7 +2151,9 @@ public class UIUpdater  {
         binding.ForwardInstruction.setVisibility(View.GONE);
         binding.tpmsicon.setVisibility(View.VISIBLE);
 
-        binding.batterryBar.setVisibility(View.VISIBLE);
+//        binding.batterryBar.setVisibility(View.VISIBLE);
+        binding.batteryArc.setVisibility(View.VISIBLE);
+
 //        binding.avgSpeed.setVisibility(View.INVISIBLE);
         binding.tripTextView.setVisibility(View.INVISIBLE);
 //        binding.tripreco.setVisibility(View.INVISIBLE);
@@ -2146,6 +2185,7 @@ public class UIUpdater  {
         binding.boost.setVisibility(View.GONE);
         //  binding.highBeamIVon.setVisibility((isStand ? View.INVISIBLE : View.VISIBLE));
         binding.enginestartIV.setVisibility((isStand ? View.INVISIBLE : View.VISIBLE));
+        binding.speedArc.setVisibility((isStand ? View.INVISIBLE : View.VISIBLE));
         //  binding.highBeamIVoff.setVisibility((isStand ? View.INVISIBLE : View.VISIBLE));
         binding.neutralicon.setVisibility((View.INVISIBLE));
         binding.neutral.setVisibility(View.INVISIBLE);
@@ -2448,7 +2488,7 @@ public class UIUpdater  {
             try {
                 tm.setTeleSpeed((int)speed);
                 binding.speedNumberTV.setText(String.valueOf((int) speed));
-                updateSpeedAnimation((int)speed); // animate smoothly to new value
+                updateSpeedTrueAnimation((int)speed);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -2702,6 +2742,10 @@ public class UIUpdater  {
         }
 
         lastSpeed = mappedSpeed;
+    }
+    private ValueAnimator speedAnimator;
+    private void updateSpeedTrueAnimation(int newSpeed) {
+        binding.speedArc.setSpeed(newSpeed);
     }
     private int lastRegen = -1;
 
@@ -3173,7 +3217,7 @@ public class UIUpdater  {
                     else     Log.d("TAG", "LOCK6ECONDELYCODERAN ELSE delayed command: FFAA550107000A00");
                 }, 6000);
             }
-
+            binding.batteryArc.setBatteryLevel(0);
             LoginActivity.markScreenJustOff();
             //Log.d("InactivityHandler", "LoginActivity launched over MainActivity.");
             try {

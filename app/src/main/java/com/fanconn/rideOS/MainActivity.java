@@ -10,6 +10,9 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 import android.Manifest;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -28,6 +31,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.MediaPlayer;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
@@ -220,6 +224,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     public static String VIN_On_CAN;
     public static char currentgear;
     private VelocityTracker velocityTracker;
+    private SpeedArcView speedArc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //
@@ -537,8 +543,26 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         initRegenImages();
 
         setVinOnCanLast8Safe(VINNUMBER);
-    }//END OF ONCREATE METHOD
 
+        speedArc = findViewById(R.id.speedArc);
+
+        //startTestAnimation();
+    }//END OF ONCREATE METHOD
+    private void startTestAnimation() {
+
+        ValueAnimator animator = ValueAnimator.ofFloat(0, 100);
+        animator.setDuration(3000); // 3 seconds
+
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+
+        animator.addUpdateListener(animation -> {
+            float value = (float) animation.getAnimatedValue();
+            speedArc.setSpeed(value);
+        });
+
+        animator.start();
+    }
     private void initRegenImages() {
         for (int i = 0; i <= 50; i++) {
             int resId = getResources().getIdentifier(
@@ -2076,7 +2100,7 @@ public void recoNavLeft(View view) {
     public static boolean MainisActive = false;
     public static boolean isVisible = false;
     public static boolean isrideOSOTA = false;
-
+    public static boolean justLoggedIn = false;
     @Override
     protected void onResume() {
         super.onResume();
@@ -2085,6 +2109,28 @@ public void recoNavLeft(View view) {
         UIUpdater.islock=true;
         isVisible = true;
         MainActivity.isrideOSOTA = false;
+        MainisActive = true;
+
+        if (justLoggedIn) {
+            justLoggedIn = false;
+            binding.getRoot().post(() -> {
+
+                BatteryArcView batteryView = binding.batteryArc;
+
+                // 🚫 STOP ANY OLD DRAW
+                batteryView.blockInitialDraw(true);
+
+                // ✅ Reset BEFORE showing
+                batteryView.setBatteryLevel(0);
+
+                // ✅ Now allow drawing again
+                batteryView.blockInitialDraw(false);
+
+                // 🚀 continue flow
+                runPostLoginInit();
+            });
+        }
+
 //        if (!isReceiverRegistered) {
 //            IntentFilter filter = new IntentFilter("FRAME_RECEIVED");
 //            LocalBroadcastManager.getInstance(this).registerReceiver(frameReceiver, filter);
@@ -2102,7 +2148,6 @@ public void recoNavLeft(View view) {
 //         If you need to restart anything like timers here, do so
 //         mHandlerTime.postDelayed(mRunnableTime, 0);
 
-        MainisActive = true;
 
         // If deferred update exists, show it
 //        if (UpdateService.pendingUpdateApkUrl != null) {
@@ -2219,20 +2264,24 @@ public void recoNavLeft(View view) {
     }
 
     public static boolean ReloggedIn;
-    public void runPostLoginInit() {
-        uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
-       // Log.d("MainActivity", "Running unlock sequence from post-login...");
-        //animateBatteryLevelOnce();
-        currentgear='O';
-        EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
-        //TelemetryService.shdtelemetrywhenunlocked=true;
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if(uiUpdater != null && uiUpdater.Play_tpmsSound_on_loggin){
-                uiUpdater.playLowTireSound();
-            }
-        }, 2100);
-
-        uiUpdater.onTripReset();
+//    public void runPostLoginInit() {
+//        uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
+//       // Log.d("MainActivity", "Running unlock sequence from post-login...");
+//        //animateBatteryLevelOnce();
+//        currentgear='O';
+//        EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
+//        //TelemetryService.shdtelemetrywhenunlocked=true;
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//            if(uiUpdater != null && uiUpdater.Play_tpmsSound_on_loggin){
+//                uiUpdater.playLowTireSound();
+//            }
+//        }, 2100);
+//        binding.batteryArc.setBatteryLevel(0);
+//        binding.getRoot().postDelayed(() -> {
+//            binding.batteryArc.setIntroMode(true);
+//            runBatteryIntroAnimation();
+//        }, 1000); // 1000ms = 1 second
+//        uiUpdater.onTripReset();
 
         //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            long minRequired = 50 * 1024 * 1024; // 50 MB minimum free space
@@ -2264,6 +2313,163 @@ public void recoNavLeft(View view) {
 //            }
 //        };
 //        delayedUnlockHandler.postDelayed(delayedUnlockRunnable, 8000);
+//    }
+public void runPostLoginInit() {
+
+    // ✅ ALWAYS run UI work on UI thread
+    runOnUiThread(() -> {
+
+        uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
+
+        currentgear = 'O';
+
+        // 🔓 Start unlock (no change)
+        EVLockService.getInstance().startUnlockSequence();
+
+        // ✅ Slight delay for UI stability (IMPORTANT)
+        binding.getRoot().post(() -> {
+
+            // 🔋 Reset battery instantly
+
+            // 🔥 Start intro AFTER UI is ready (smooth now)
+            binding.batteryArc.setBatteryLevel(0);
+            binding.batteryArc.setIntroMode(true);
+            runBatteryIntroAnimation();
+
+//            binding.speedArc.setSpeed(0);
+//            binding.speedArc.setIntroMode(true);
+//            runSpeedIntroAnimation();
+        });
+
+        // 🔊 TPMS sound (unchanged)
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            if (uiUpdater != null && uiUpdater.Play_tpmsSound_on_loggin) {
+                uiUpdater.playLowTireSound();
+            }
+        }, 2100);
+
+        // 🚗 Trip reset (unchanged)
+        uiUpdater.onTripReset();
+
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+            MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.unlocked);
+            if (mp != null) {
+                mp.setOnCompletionListener(MediaPlayer::release);
+                mp.start();
+            }
+
+        }, 300);
+    });
+}
+    public void startSpeedIntroFromUpdater() {
+        runOnUiThread(() -> {
+            binding.speedArc.setSpeed(0);
+            binding.speedArc.setIntroMode(true);
+            runSpeedIntroAnimation();
+        });
+    }
+    private void runBatteryIntroAnimation() {
+
+        runOnUiThread(() -> {   // FIX HERE
+
+            UIUpdater.getInstance().setBatteryIntroRunning(true);
+
+            BatteryArcView batteryView = binding.batteryArc;
+
+            //  Step 1: 0 → 100
+            ValueAnimator up = ValueAnimator.ofFloat(0, 100);
+            up.setDuration(900);
+
+            //  Step 2: 100 → 0
+            ValueAnimator down = ValueAnimator.ofFloat(100, 0);
+            down.setDuration(900);
+
+            up.addUpdateListener(a ->
+                    batteryView.setBatteryLevel((float) a.getAnimatedValue())
+            );
+
+            down.addUpdateListener(a ->
+                    batteryView.setBatteryLevel((float) a.getAnimatedValue())
+            );
+
+            // 🔥 Chain animations
+            up.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    down.start();
+                }
+            });
+
+            down.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+
+                    batteryView.postDelayed(() -> {
+
+                        float lastBattery = UIUpdater.getInstance().getLastKnownBattery();
+
+                        batteryView.setIntroMode(false); // ✅ back to real color logic
+                        batteryView.setBatteryLevel(lastBattery);
+
+                        UIUpdater.getInstance().setBatteryIntroRunning(false);
+
+                    }, 1000);
+                }
+            });
+
+            up.start();
+
+        }); // ✅ END UI THREAD
+    }
+    private void runSpeedIntroAnimation() {
+
+        runOnUiThread(() -> {
+
+            SpeedArcView speedView = binding.speedArc;
+
+            speedView.setIntroMode(true); // 🔥 FORCE BLUE
+
+            // 🔥 0 → 150 (or your max speed)
+            ValueAnimator up = ValueAnimator.ofFloat(0, 100);
+            up.setDuration(870);
+
+            // 🔥 150 → 0
+            ValueAnimator down = ValueAnimator.ofFloat(100, 0);
+            down.setDuration(930);
+
+            up.addUpdateListener(a ->
+                    speedView.setSpeed((float) a.getAnimatedValue())
+            );
+
+            down.addUpdateListener(a ->
+                    speedView.setSpeed((float) a.getAnimatedValue())
+            );
+
+            up.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    down.start();
+                }
+            });
+
+            down.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+
+                    speedView.postDelayed(() -> {
+
+                        speedView.setIntroMode(false); // ✅ BACK TO NORMAL
+
+                        // optionally reset to 0
+                        speedView.setSpeed(0);
+
+                    }, 500);
+                }
+            });
+
+            up.start();
+        });
     }
     @Override
     public void onBackPressed() {

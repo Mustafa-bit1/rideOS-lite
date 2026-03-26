@@ -292,8 +292,8 @@ public class FeaturesFragment extends Fragment {
             }
         });
 
-        rssiSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
+        rssiSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -465,7 +465,7 @@ public class FeaturesFragment extends Fragment {
 //        }, 1000);
     }
     private void showSavedToast() {
-        showCustomToast("Saved");
+        showCustomToast("Saved    ");
     }
     private Toast currentToast;
     private void showCustomToast(String message) {

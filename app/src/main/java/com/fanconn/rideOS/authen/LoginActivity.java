@@ -726,6 +726,7 @@ public class LoginActivity extends AppCompatActivity{
         UIUpdater.isAPUPresent = false;
 
         // Launch MainActivity
+        MainActivity.justLoggedIn = true;
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
@@ -741,9 +742,9 @@ public class LoginActivity extends AppCompatActivity{
         // Run heavy logic and sound AFTER activity transition
         new Thread(() -> {
 
-            if (MainActivity.instance != null) {
-                MainActivity.instance.runPostLoginInit();
-            }
+//            if (MainActivity.instance != null) {
+//                MainActivity.instance.runPostLoginInit();
+//            }
 
             SharedPreferences.Editor editor = prefs.edit();
 
@@ -911,14 +912,14 @@ public class LoginActivity extends AppCompatActivity{
             }, 4200); // 4200 milliseconds = 4.2 seconds
 
             // 🎵 Play unlock sound on UI thread after delay
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                MediaPlayer mp = MediaPlayer.create(LoginActivity.this, R.raw.unlocked);
-                if (mp != null) {
-                    mp.setOnCompletionListener(MediaPlayer::release);
-                    mp.start();
-                }
-
-            }, 200);
+//            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//                MediaPlayer mp = MediaPlayer.create(LoginActivity.this, R.raw.unlocked);
+//                if (mp != null) {
+//                    mp.setOnCompletionListener(MediaPlayer::release);
+//                    mp.start();
+//                }
+//
+//            }, 200);
 
         }).start();
     }
@@ -1065,7 +1066,7 @@ public class LoginActivity extends AppCompatActivity{
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        InactivityManager.getInstance().onUserInteraction();
+        InactivityManager.getInstance().ShortonUserInteraction(3);
         return super.dispatchTouchEvent(ev);
     }
 

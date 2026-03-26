@@ -172,6 +172,22 @@ public class QuickSettingsView extends FrameLayout {
             wifiManager.setWifiEnabled(!enabled);
             setWifiUiImmediate(!enabled);
         });
+        wifiToggle.setOnLongClickListener(v -> {
+
+            v.performHapticFeedback(android.view.HapticFeedbackConstants.LONG_PRESS);
+
+            Context ctx = getContext();
+
+            Intent intent = new Intent(ctx, com.fanconn.rideOS.menu.menu.class);
+            intent.putExtra("openFragment", "wireless");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            ctx.startActivity(intent);
+
+            smoothClose();
+
+            return true;
+        });
 
         /* ---------- TPMS ---------- */
 
