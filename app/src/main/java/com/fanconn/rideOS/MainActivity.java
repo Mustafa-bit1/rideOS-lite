@@ -2414,7 +2414,7 @@ public void runPostLoginInit() {
 
                         UIUpdater.getInstance().setBatteryIntroRunning(false);
 
-                    }, 1000);
+                    }, 300);
                 }
             });
 
@@ -2459,7 +2459,7 @@ public void runPostLoginInit() {
 
                     speedView.postDelayed(() -> {
 
-                        speedView.setIntroMode(false); // ✅ BACK TO NORMAL
+                        speedView.setIntroMode(false); //  BACK TO NORMAL
 
                         // optionally reset to 0
                         speedView.setSpeed(0);

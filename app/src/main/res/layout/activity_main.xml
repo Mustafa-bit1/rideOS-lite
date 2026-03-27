@@ -862,22 +862,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/redalert" />
 
-        <ImageView
-            android:id="@+id/chargingbike"
-            android:layout_width="1280dp"
-            android:layout_height="480dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="0dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/chargingbike"
 
-            />
 
         <!--    <ImageView-->
         <!--        android:id="@+id/percenticon"-->

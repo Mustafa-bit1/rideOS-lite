@@ -18,14 +18,22 @@
         <!--        app:srcCompat="@drawable/slowcharge" />-->
 
 
-
+    <com.fanconn.rideOS.ChargingArcView
+        android:id="@+id/chargingBatteryArc"
+        android:layout_width="853dp"
+        android:layout_height="290dp"
+        android:layout_marginTop="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
             android:id="@+id/timeTextView"
             android:layout_width="120dp"
             android:layout_height="32dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="368dp"
+            android:layout_marginEnd="580dp"
             android:fontFamily="@font/kanit"
             android:text="00:00"
             android:textAlignment="center"
@@ -40,6 +48,7 @@
         android:layout_height="150dp"
         android:layout_marginTop="0dp"
         android:layout_marginEnd="204dp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/chargingbar" />
@@ -70,7 +79,8 @@
         android:layout_height="125dp"
         android:layout_marginBottom="178dp"
         android:fontFamily="@font/opti"
-        android:text="999%"
+        android:text="0%"
+        android:visibility="gone"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="90dp"
@@ -83,7 +93,7 @@
         android:id="@+id/batfullmsg"
         android:layout_width="360dp"
         android:layout_height="25dp"
-        android:layout_marginStart="474dp"
+        android:layout_marginStart="460dp"
         android:layout_marginBottom="176dp"
         android:fontFamily="@font/kanit"
         android:text="Plugged In"
@@ -100,6 +110,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="292dp"
         android:gravity="center"
+        android:visibility="gone"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -184,7 +195,7 @@
         android:id="@+id/APUbatteryImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="305dp"
+        android:layout_marginStart="287dp"
         android:layout_marginTop="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -200,6 +211,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/apubaticon" />
+
     <ImageButton
         android:id="@+id/chargingtologinbtn"
         android:layout_width="157dp"
@@ -209,7 +221,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/chargingtologinbtn" />
-
 
     <ImageView
         android:id="@+id/chargingbike"
@@ -241,20 +252,20 @@
         android:layout_width="61dp"
         android:layout_height="93dp"
         android:layout_marginTop="172dp"
-        android:layout_marginEnd="608dp"
+        android:layout_marginEnd="609dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/pluggedicon" />
 
-    <ImageView
-        android:id="@+id/chargingUiBatterybar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="241dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/bat_0" />
+<!--    <ImageView-->
+<!--        android:id="@+id/chargingUiBatterybar"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="241dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:srcCompat="@drawable/bat_0" />-->
 
 
 

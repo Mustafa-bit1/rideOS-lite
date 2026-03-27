@@ -13,10 +13,8 @@ public class BatteryArcView extends View {
     private Path fullPath;
     private Path segmentPath;
     private PathMeasure pathMeasure;
-
     private float batteryLevel = 0;
     private float maxBattery = 100;
-
     private int currentColor = Color.parseColor("#4AD560"); // default green
 
     public BatteryArcView(Context context, AttributeSet attrs) {
@@ -28,13 +26,13 @@ public class BatteryArcView extends View {
 
         // 🔹 Background arc
         bgPaint.setStyle(Paint.Style.STROKE);
-        bgPaint.setStrokeWidth(55); // thinner than speed
+        bgPaint.setStrokeWidth(55);
         bgPaint.setColor(Color.parseColor("#373737"));
         bgPaint.setStrokeCap(Paint.Cap.SQUARE);
 
         //  Battery progress arc
         progressPaint.setStyle(Paint.Style.STROKE);
-        progressPaint.setStrokeWidth(57);
+        progressPaint.setStrokeWidth(58);
         progressPaint.setColor(currentColor);
         progressPaint.setStrokeCap(Paint.Cap.SQUARE);
 
@@ -48,12 +46,12 @@ public class BatteryArcView extends View {
         fullPath = new Path();
 
         float startX = 40;
-        float startY = 5;   // 🔥 start from TOP now
+        float startY = 0;   //  start from TOP now
 
         float endX = w - 40;
-        float endY = 5;     // 🔥 end at TOP
+        float endY = 0;     //  end at TOP
 
-        // 🔥 Inverted curve (goes downward)
+        //  Inverted curve (goes downward)
 //        float midY = (h / 9f);
         float midY = h - (h / 1.73f);
 
@@ -124,7 +122,7 @@ public class BatteryArcView extends View {
             float ratio;
 
             if (battery <= 25) {
-                // 🔴 Deep red → bright red
+                //  Deep red → bright red
                 ratio = battery / 25f;
                 newColor = interpolateColor(
                         Color.parseColor("#8D1A09"),
@@ -133,7 +131,7 @@ public class BatteryArcView extends View {
                 );
 
             } else if (battery <= 60) {
-                // 🟠 red → mid green
+                //  red → mid green
                 ratio = (battery - 25f) / (60f - 25f);
                 newColor = interpolateColor(
                         Color.parseColor("#E0290E"),
@@ -142,7 +140,7 @@ public class BatteryArcView extends View {
                 );
 
             } else {
-                // 🟢 mid green → full green
+                //  mid green → full green
                 ratio = (battery - 60f) / (100f - 60f);
                 newColor = interpolateColor(
                         Color.parseColor("#8BD54A"),
@@ -163,7 +161,7 @@ public class BatteryArcView extends View {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        batteryLevel = 0;   // ✅ HARD RESET BEFORE FIRST DRAW
+        batteryLevel = 0;   //  HARD RESET BEFORE FIRST DRAW
     }
     public void setIntroMode(boolean intro) {
         isIntroMode = intro;

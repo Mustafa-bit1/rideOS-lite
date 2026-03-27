@@ -13,6 +13,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
@@ -187,7 +188,6 @@ public class chargingUI extends AppCompatActivity {
 
 
                 runOnUiThread(() -> {
-
                     if (lastUpdateTime == 0) {
                         initializeRangeFromSOC(actualSOC);
                         lastUpdateTime = System.currentTimeMillis();
@@ -201,8 +201,7 @@ public class chargingUI extends AppCompatActivity {
                     }
 
                     if (chargingbit == 0) {
-
-                        chargingUiBatteryAnimation(actualSOC);
+                        binding.chargingBatteryArc.setPulseMode(false);
                         binding.socText.setVisibility(View.INVISIBLE);
                         binding.rangeAddedText.setVisibility(View.INVISIBLE);
                         binding.linearLayout2.setVisibility(View.INVISIBLE);
@@ -211,9 +210,9 @@ public class chargingUI extends AppCompatActivity {
                         binding.plugged.setVisibility(View.VISIBLE);
                         stopBatteryPulseAnimation();
                         isChargingAnimationRunning = false;
+                        binding.chargingBatteryArc.setBatteryLevel(actualSOC);
 
                     } else if (chargingbit > 0) {
-
                         binding.socText.setVisibility(View.VISIBLE);
                         binding.rangeAddedText.setVisibility(View.VISIBLE);
                         binding.etaText.setVisibility(View.VISIBLE);
@@ -240,13 +239,12 @@ public class chargingUI extends AppCompatActivity {
                             binding.chagingstartedicon.setImageResource(icon);
                         }
 
-                        // Start charging animation if not running
+
                         if (!isChargingAnimationRunning) {
                             isChargingAnimationRunning = true;
                             startBatteryPulseAnimation();
                         }
                     }
-
 
                     if(actualSOC==100 && chargingbit==0){
                         binding.batfullmsg.setText("Battery Full, Disconnect the charger"); //
@@ -337,74 +335,49 @@ public class chargingUI extends AppCompatActivity {
     private void startBatteryPulseAnimation() {
 
         pulseRunnable = new Runnable() {
-            boolean goingUp = true;
+
             int displaySOC = actualSOC;
-            boolean pausedAtActualSOC = false;
+            boolean goingUp = true;
 
             @Override
             public void run() {
 
-                // 🛑 SAFETY CHECK
                 if (pulseHandler == null || isFinishing() || isDestroyed()) {
                     return;
                 }
 
                 if (goingUp) {
-                    displaySOC += 2;
+                    displaySOC += 1;
                     if (displaySOC >= 100) {
+                        displaySOC = 100;
                         goingUp = false;
                     }
                 } else {
-                    displaySOC -= 2;
+                    displaySOC -= 1;
                     if (displaySOC <= actualSOC) {
                         displaySOC = actualSOC;
-                        chargingUiBatteryAnimation(displaySOC);
-
-                        if (!pausedAtActualSOC) {
-                            pausedAtActualSOC = true;
-                            pulseHandler.postDelayed(this, 1000);
-                            return;
-                        } else {
-                            pausedAtActualSOC = false;
-                            goingUp = true;
-                            displaySOC = actualSOC;
-                        }
+                        goingUp = true;
                     }
                 }
 
-                chargingUiBatteryAnimation(displaySOC);
+                // ✅ THIS is the key change
+                binding.chargingBatteryArc.setBatteryLevel(displaySOC);
 
-                // 🛑 DOUBLE SAFETY
-                if (pulseHandler != null) {
-                    pulseHandler.postDelayed(this, 20);
-                }
+                pulseHandler.postDelayed(this, 10); // smooth speed
             }
-
         };
 
         pulseHandler.post(pulseRunnable);
     }
     private void stopBatteryPulseAnimation() {
         if (pulseRunnable != null) {
-            pulseHandler.removeCallbacksAndMessages(null);
+            pulseHandler.removeCallbacks(pulseRunnable); // ✅ instead of removeCallbacksAndMessages
             pulseRunnable = null;
         }
+
+        binding.chargingBatteryArc.setPulseMode(false);
+        binding.chargingBatteryArc.setPulseValue(0);
     }
-    private int chargingUiLastlevel = -1; // Store last battery level to avoid redundant updates
-
-    public void chargingUiBatteryAnimation(int batteryLevel) {
-        // Clamp battery level between 0-100 and round to the nearest even number
-        int mappedChargingUiBattery = (batteryLevel > 100) ? 100 : Math.max(0, (batteryLevel / 2) * 2);
-
-        if (mappedChargingUiBattery == chargingUiLastlevel) return; // Skip if battery level hasn't changed
-
-        if (MainActivity.APUbatteryImageMap.containsKey(mappedChargingUiBattery)) {
-            binding.chargingUiBatterybar.setImageResource(MainActivity.batteryImageMap.get(mappedChargingUiBattery)); // Update ImageView
-        }
-
-        chargingUiLastlevel = mappedChargingUiBattery;
-    }
-
 
     public void resetChargingTimeout() {
         timeoutHandler.removeCallbacks(timeoutRunnable);
@@ -659,5 +632,9 @@ public class chargingUI extends AppCompatActivity {
                 return 60f; // fallback
         }
     }
-
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        InactivityManager.getInstance().ShortonUserInteraction(4);
+        return super.dispatchTouchEvent(ev);
+    }
 }

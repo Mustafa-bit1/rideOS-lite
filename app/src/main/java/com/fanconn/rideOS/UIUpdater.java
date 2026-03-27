@@ -1975,7 +1975,7 @@ public class UIUpdater  {
         binding.wifi.setVisibility(View.VISIBLE);
         binding.timeTextView.setVisibility(View.VISIBLE);
 //        binding.BluetoothIV.setVisibility(View.VISIBLE);
-        binding.batteryImageView.setVisibility(View.VISIBLE);
+       // binding.batteryImageView.setVisibility(View.VISIBLE);
         binding.speedImageView.setVisibility(View.INVISIBLE);
         binding.speedNumberTV.setVisibility(View.INVISIBLE);
         binding.speedTV.setVisibility(View.INVISIBLE);
@@ -1995,7 +1995,7 @@ public class UIUpdater  {
         binding.stand.setVisibility((View.INVISIBLE));
         binding.chargingSOC.setVisibility(View.INVISIBLE);
         //binding.percenticon.setVisibility(View.INVISIBLE);
-        binding.chargingbike.setVisibility(View.INVISIBLE);
+       // binding.chargingbike.setVisibility(View.INVISIBLE);
         binding.mapbtn.setVisibility(View.VISIBLE);
         binding.menubtn.setVisibility(View.VISIBLE);
         binding.chargingicon.setVisibility(View.INVISIBLE);
@@ -2040,7 +2040,7 @@ public class UIUpdater  {
         binding.wifi.setVisibility(View.VISIBLE);
         binding.timeTextView.setVisibility(View.VISIBLE);
 //        binding. BluetoothIV.setVisibility(View.VISIBLE);
-        binding.batteryImageView.setVisibility(View.VISIBLE);
+        //binding.batteryImageView.setVisibility(View.VISIBLE);
         if(!shouldshowchargingicononmainonot){
             binding.rectangleGearsTV.setVisibility((View.VISIBLE));
         }
@@ -2054,7 +2054,7 @@ public class UIUpdater  {
         binding.stand.setVisibility((View.INVISIBLE));
         binding.chargingSOC.setVisibility(View.INVISIBLE);
         // binding.percenticon.setVisibility(View.INVISIBLE);
-        binding.chargingbike.setVisibility(View.INVISIBLE);
+       // binding.chargingbike.setVisibility(View.INVISIBLE);
         binding.mapbtn.setVisibility(View.VISIBLE);
         binding.menubtn.setVisibility(View.VISIBLE);
         binding.chargingicon.setVisibility(View.INVISIBLE);
@@ -2126,7 +2126,7 @@ public class UIUpdater  {
         binding.stand.setVisibility((View.INVISIBLE));
         binding.chargingSOC.setVisibility(View.INVISIBLE);
         // binding.percenticon.setVisibility(View.INVISIBLE);
-        binding.chargingbike.setVisibility(View.INVISIBLE);
+      //  binding.chargingbike.setVisibility(View.INVISIBLE);
         binding.mapbtn.setVisibility(View.VISIBLE);
         binding.menubtn.setVisibility(View.VISIBLE);
         binding.chargingicon.setVisibility(View.INVISIBLE);
@@ -2189,13 +2189,13 @@ public class UIUpdater  {
         //  binding.highBeamIVoff.setVisibility((isStand ? View.INVISIBLE : View.VISIBLE));
         binding.neutralicon.setVisibility((View.INVISIBLE));
         binding.neutral.setVisibility(View.INVISIBLE);
-        binding.chargingbike.setVisibility(View.INVISIBLE);
+       // binding.chargingbike.setVisibility(View.INVISIBLE);
         binding.mapbtn.setVisibility(View.VISIBLE);
         binding.menubtn.setVisibility(View.VISIBLE);
         binding.chargingicon.setVisibility(View.INVISIBLE);
         binding.chargingSOC.setVisibility(View.INVISIBLE);
         // binding.percenticon.setVisibility(View.INVISIBLE);
-        binding.chargingbike.setVisibility(View.INVISIBLE);
+      //  binding.chargingbike.setVisibility(View.INVISIBLE);
 //        binding.highBeamIVoff.setVisibility(View.INVISIBLE);
 //        binding.turnLeftIV.setVisibility(View.INVISIBLE);
 //        binding.turnRightIV.setVisibility(View.INVISIBLE);
