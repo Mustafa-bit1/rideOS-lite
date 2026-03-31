@@ -32,7 +32,7 @@ public class BatteryArcView extends View {
 
         //  Battery progress arc
         progressPaint.setStyle(Paint.Style.STROKE);
-        progressPaint.setStrokeWidth(58);
+        progressPaint.setStrokeWidth(56);
         progressPaint.setColor(currentColor);
         progressPaint.setStrokeCap(Paint.Cap.SQUARE);
 

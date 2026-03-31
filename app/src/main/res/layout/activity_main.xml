@@ -935,6 +935,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/lowbatmsg" />
 
+        <ImageView
+            android:id="@+id/transportMode_yellow_warning"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/transportmodewarning" />
+
         <!--        <LinearLayout-->
 <!--            android:id="@+id/topBarRow"-->
 <!--            android:layout_width="match_parent"-->

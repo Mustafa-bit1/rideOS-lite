@@ -101,6 +101,7 @@ public class UIUpdater  {
     private final MainActivity activity; // Actual activity for dialogs, UI
 //    private CameraHandler cameraHandler;
     TelemetryDataManager tm;
+
     public static UIUpdater instance;
     private BroadcastReceiver tpmsReceiver;
     AhTrackerManager ahTrackerManager;
@@ -132,8 +133,6 @@ public class UIUpdater  {
 //                ctx
 //        );
 
-
-
         this.tm = TelemetryDataManager.getInstance();
         long now = System.currentTimeMillis();
         lastCanUpdateTime = now;
@@ -150,7 +149,7 @@ public class UIUpdater  {
 
 // Initial render
         updateRecoKm();
-
+        updateTransportModeWarning();
     }
 
     public static UIUpdater getInstance() {
@@ -623,8 +622,8 @@ public class UIUpdater  {
 //        int batteryLevel = (int) ahTrackerManager.getSOC();
 
 //        int batteryLevel = get10LessSOC(batteryLevel1);
-        int batteryLevel= hb3.getBatteryLevel() / 10;
-////        int batteryLevel = (int) ahTrackerManager.getSOC();
+//        int batteryLevel= hb3.getBatteryLevel() / 10;
+        int batteryLevel = (int) ahTrackerManager.getSOC();
 
 //        Log.d("SOC10LESS", "Actual SOC = " + batteryLevel1);
 //        Log.d("SOC10LESS", "Display SOC = " + batteryLevel);
@@ -679,7 +678,7 @@ public class UIUpdater  {
             startBeeping(2);
 
             Lowbatflag = true;
-
+            binding.transportModeYellowWarning.setVisibility(View.GONE);
             // Stop alert visuals after 10 seconds, but DO NOT reset flag yet
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
                 stopBeeping();
@@ -689,6 +688,7 @@ public class UIUpdater  {
         if (batteryLevel >= 21 && batteryLevel<90 && Lowbatflag) {
 //            resetParamtersAfterLowbat=true;
             Lowbatflag = false;
+            updateTransportModeWarning();
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400"); //max all phase 300, line 100 , regen 35-45
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
@@ -1047,9 +1047,9 @@ public class UIUpdater  {
                 continue;
             }
 
-            if (temp >= 54 && temp < 58)anyIs45 = true;
-            if (temp >= 58) anyIs50OrAbove = true;
-            if (temp >= 54) allBelow45 = false;
+            if (temp >= 60 && temp < 66)anyIs45 = true;
+            if (temp >= 66) anyIs50OrAbove = true;
+            if (temp >= 60) allBelow45 = false;
         }
 
         // ✅ Reset 45-warning ONLY when all temps are below 45
@@ -1178,24 +1178,29 @@ public class UIUpdater  {
             mediaPlayer = null;
         }
     }
+    private boolean isTempWarningActive = false;
     private void startTempWarningAnimation() {
         Animation tempalert = AnimationUtils.loadAnimation(context, R.anim.alpha);
-
+        isTempWarningActive = true;
         binding.redalert.setVisibility(View.VISIBLE);
         //binding.tempalerticon.setVisibility(View.VISIBLE);
         binding.battempmsg.setVisibility(View.VISIBLE);
 
         binding.redalert.startAnimation(tempalert);
         binding.battempmsg.startAnimation(tempalert);
+        binding.transportModeYellowWarning.setVisibility(View.GONE);
+
     }
 
     private void stopTempWarningAnimation() {
+        isTempWarningActive = false;
         binding.redalert.clearAnimation();
         binding.battempmsg.clearAnimation();
 
         binding.redalert.setVisibility(View.INVISIBLE);
        // binding.tempalerticon.setVisibility(View.GONE);
         binding.battempmsg.setVisibility(View.INVISIBLE);
+        updateTransportModeWarning();
     }
 
     public void startKeylostRedAlertAnimation() {
@@ -2234,7 +2239,7 @@ public class UIUpdater  {
 
     public void initIndicatorLogic(Context context) {
         soundPool = new SoundPool.Builder().setMaxStreams(1).build();
-        soundId = soundPool.load(context, R.raw.vidturn, 1);
+        soundId = soundPool.load(context, R.raw.turn22loud, 1);
         soundPool.setOnLoadCompleteListener((sp, id, status) -> {
             soundLoaded = (status == 0);
         });
@@ -3057,7 +3062,6 @@ public class UIUpdater  {
     }
 
     private Dialog apuPopupDialog = null;
-
     public void showCustomPopupAPUdetected(String title, String message) {
 
         // Prevent multiple popups
@@ -3199,11 +3203,9 @@ public class UIUpdater  {
 
                 new Handler().postDelayed(() -> {
                     serialPortManager.VCUSendToMCU("FFAA550101000A00");
-
 //                    Intent i = new Intent(context, CameraService.class);//off rec
 //                    i.setAction("STOP_REC");
 //                    context.startService(i);
-
                 }, 300);
 
 //                new Handler().postDelayed(() -> {
@@ -3236,7 +3238,7 @@ public class UIUpdater  {
                 context.startActivity(intent);
             }
             else {
-                Log.d("asfg","CONTEXTNULLWHILEDOUBLETAP SO NOW LOGIN");
+                Log.d("asfg","CONTEXTNULLWHILEDOUBLETAP SO NO LOGIN");
             }
 
         }
@@ -3778,7 +3780,6 @@ public class UIUpdater  {
                             playLowTireSound();
                         }
                     }
-
                     lastRearPsi = psi;
                 }
 
@@ -3884,6 +3885,29 @@ public class UIUpdater  {
         }
     }
 
+    public void updateTransportModeWarning() {
 
+        SharedPreferences prefs = context.getSharedPreferences("feature_prefs", Context.MODE_PRIVATE);
+        boolean isTransportModeOn = !prefs.getBoolean("handle_lock_enabled", true);
+
+        //  PRIORITY 1 → TEMP (highest)
+        if (isTempWarningActive) {
+            binding.transportModeYellowWarning.setVisibility(View.GONE);
+            return;
+        }
+
+        //  PRIORITY 2 → LOW BATTERY
+        if (Lowbatflag) {
+            binding.transportModeYellowWarning.setVisibility(View.GONE);
+            return;
+        }
+
+        // Normal logic
+        if (!isTransportModeOn) {
+            binding.transportModeYellowWarning.setVisibility(View.VISIBLE);
+        } else {
+            binding.transportModeYellowWarning.setVisibility(View.GONE);
+        }
+    }
 
 }

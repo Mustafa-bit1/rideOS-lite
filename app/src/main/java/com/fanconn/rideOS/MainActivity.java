@@ -2115,6 +2115,16 @@ public void recoNavLeft(View view) {
             justLoggedIn = false;
             binding.getRoot().post(() -> {
 
+                serialPortManager = serialApplication.getSerialPortManager();
+                if(serialPortManager!=null){
+                    serialPortManager.VCUSendToMCU("FFAA550101000A01");
+
+                    new Handler().postDelayed(() -> {
+                        serialPortManager.VCUSendToMCU("FFAA550107000A01");
+                        }, 300);
+                }
+
+
                 BatteryArcView batteryView = binding.batteryArc;
 
                 // 🚫 STOP ANY OLD DRAW

@@ -1,6 +1,7 @@
 package com.fanconn.rideOS;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -116,7 +117,10 @@ public class SerialPortManager {
      * 初始化串口配置
      * @param context 上下文
      */
+    private Context context;
     public void initSerialConfig(Context context) {
+        this.context = context.getApplicationContext(); // ✅ store once
+
         serialHelper = new MySerialHelper(sPort, iBaudRate) {
             @Override
             protected void onDataReceived(ComBean paramComBean) {
@@ -230,7 +234,37 @@ public class SerialPortManager {
      * VCU下发数据给MCU
      */
 
+//    public void VCUSendToMCU(String data) {
+//        mcuData = data;
+//        currentAttempt = 0;
+//        handlerVcuToMcu.post(VcuToMcTask);
+//
+//        handlerVcuToMcu.postDelayed(() -> {
+//            mcuData = data;
+//            currentAttempt = 0;
+//            //Log.d("sdfs","VCUSENDTOMCUMETHODS "+data);
+//            handlerVcuToMcu.post(VcuToMcTask);
+//        }, 200);
+//    }
+
     public void VCUSendToMCU(String data) {
+
+        //  CHECK HANDLE LOCK CONDITION HERE
+        if ("FFAA550101000A00".equalsIgnoreCase(data)) {
+            if (context == null) {
+                //Log.e("MCU", "Context not initialized! Sending anyway as fallback");
+            } else {
+                SharedPreferences prefs = context.getSharedPreferences("feature_prefs", Context.MODE_PRIVATE);
+                boolean isHandleEnabled = prefs.getBoolean("handle_lock_enabled", true);
+
+                if (isHandleEnabled) {
+                    //Log.d("MCU", "Handle Lock command BLOCKED");
+                    return;
+                }
+            }
+        }
+
+        // Normal flow
         mcuData = data;
         currentAttempt = 0;
         handlerVcuToMcu.post(VcuToMcTask);
@@ -238,7 +272,6 @@ public class SerialPortManager {
         handlerVcuToMcu.postDelayed(() -> {
             mcuData = data;
             currentAttempt = 0;
-            //Log.d("sdfs","VCUSENDTOMCUMETHODS "+data);
             handlerVcuToMcu.post(VcuToMcTask);
         }, 200);
     }
@@ -246,6 +279,7 @@ public class SerialPortManager {
     /**
      * 停止VCU下发数据给MCU
      */
+
     public void stopVCUSendToMCU() {
         handlerVcuToMcu.removeCallbacks(VcuToMcTask);
     }

@@ -30,6 +30,7 @@ import androidx.security.crypto.MasterKeys;
 import com.fanconn.rideOS.InactivityManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
+import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.serialApplication;
 
 import java.util.Locale;
@@ -52,7 +53,7 @@ public class FeaturesFragment extends Fragment {
     private SeekBar rssiSeekBar;
     private TextView rssiValueText;
     private Context ctx;
-
+    SwitchCompat handleLockSwitch;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -383,6 +384,31 @@ public class FeaturesFragment extends Fragment {
         BrightnessManager manager = new BrightnessManager(requireContext());
         manager.applyToVolumeSlider(volumeSlider, muteButton);
 
+//=============================================================================
+        handleLockSwitch = view.findViewById(R.id.transportMode_Switch);
+
+// Load saved state
+        boolean isHandleEnabled = sharedPreferences.getBoolean("handle_lock_enabled", true);
+        handleLockSwitch.setChecked(isHandleEnabled);
+        handleLockSwitch.setText(isHandleEnabled ? "Enabled" : "Disabled");
+
+// Apply styling
+        Drawable thumb = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_thumb).mutate();
+        Drawable track = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_track).mutate();
+
+        handleLockSwitch.setThumbDrawable(thumb);
+        handleLockSwitch.setTrackDrawable(track);
+
+// Listener
+        handleLockSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            sharedPreferences.edit().putBoolean("handle_lock_enabled", isChecked).apply();
+            handleLockSwitch.setText(isChecked ? "Enabled" : "Disabled");
+            showSavedToast();
+            if (UIUpdater.getInstance() != null) {
+                UIUpdater.getInstance().updateTransportModeWarning();
+            }
+        });
+//=============================================================================
         return view;
     }
 
