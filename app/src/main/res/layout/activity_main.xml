@@ -754,10 +754,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:fontFamily="@font/kanit"
-                android:text=""
+                android:text="0.0"
                 android:visibility="gone"
                 android:textColor="#00FF66"
-                android:textSize="20dp"
+                android:textSize="24dp"
                 app:layout_constraintStart_toEndOf="@+id/recoLeaf"
                 app:layout_constraintTop_toTopOf="parent" />
 

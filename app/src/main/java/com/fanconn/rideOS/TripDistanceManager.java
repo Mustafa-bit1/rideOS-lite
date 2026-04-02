@@ -46,10 +46,13 @@ public class TripDistanceManager {
         odoDistance += deltaDistance;
 
         lastUpdateTime = currentTime;
-
         saveTripData();
     }
-
+    public void resetOdo() {
+        odoDistance = 0.0;
+        lastUpdateTime = System.currentTimeMillis();
+        saveTripData();
+    }
     private void saveTripData() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putLong(KEY_TRIP_DISTANCE, Double.doubleToLongBits(tripDistance));

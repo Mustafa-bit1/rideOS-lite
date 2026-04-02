@@ -49,7 +49,8 @@ import java.util.Locale;
 public class DiagnosticsFragment extends Fragment {
     private AhTrackerManager ahTrackerManager;
     private TextView ipTV;
-
+    private Button resetRecoBtn, resetChargerRegenBtn;
+    private Button resetOdoBtn;
     private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON,In60,In90,out0, LEDOFF, debugbtn,highTorque;
     private ImageButton  rebootbtn, shutdownbtn;
     private Button wifiBtn, wifiOffBtn, Devicesettings;
@@ -109,11 +110,12 @@ public class DiagnosticsFragment extends Fragment {
         debugbtn = view.findViewById(R.id.debug);
         tireDimensionDisplay = view.findViewById(R.id.tireDimensionDisplay);
         ipTV = view.findViewById(R.id.ipTV);
-
+        resetRecoBtn = view.findViewById(R.id.resetRecoBtn);
+        resetChargerRegenBtn = view.findViewById(R.id.resetChargerRegenBtn);
+        resetOdoBtn = view.findViewById(R.id.resetOdoBtn);
     }
     private void initListeners(View view) {
         WifiManager wifiManager = (WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-
 
         view.findViewById(R.id.mcuotaupdatebtn).setOnClickListener(v -> MCUOTA_Onclick(v));
 
@@ -137,6 +139,71 @@ public class DiagnosticsFragment extends Fragment {
                     () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
                     1200
             );
+        });
+
+        resetRecoBtn.setOnClickListener(v -> {
+            View dialogView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.popupdialog, null);
+
+            AlertDialog dialog = createDialog(
+                    dialogView,
+                    "Reset recoEngine",
+                    "Are you sure you want to reset all recoEngine parameters?",
+                    "Reset",
+                    () -> {
+                        if (UIUpdater.getInstance() != null) {
+                            UIUpdater.getInstance().resetAllRecoEngineParameters();
+                            showCustomToast("All recoEngine params reset");
+                        }
+                    }
+            );
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+        });
+
+        resetChargerRegenBtn.setOnClickListener(v -> {
+            View dialogView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.popupdialog, null);
+
+            AlertDialog dialog = createDialog(
+                    dialogView,
+                    "Reset AH Stats",
+                    "Are you sure you want to reset charger and total regen Ah?",
+                    "Reset",
+                    () -> {
+                        if (UIUpdater.getInstance() != null) {
+                            UIUpdater.getInstance().resetChargerAndTotalRegenAh();
+                            showCustomToast("AH reset");
+                        }
+                    }
+            );
+
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+        });
+
+        resetOdoBtn.setOnClickListener(v -> {
+            View dialogView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.popupdialog, null);
+
+            AlertDialog dialog = createDialog(
+                    dialogView,
+                    "Reset ODO Meter",
+                    "Are you sure you want to reset the ODO meter?",
+                    "Reset",
+                    () -> {
+                        if (UIUpdater.getInstance() != null &&
+                                UIUpdater.getInstance().tripManager != null) {
+
+                            UIUpdater.getInstance().tripManager.resetOdo();
+
+                            showCustomToast("ODO meter reset");
+                        }
+                    }
+            );
+
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
         });
 //        highTorque.setOnClickListener(v -> {
 //            serialPortManager.VCUSendToMCU("FFAA5501030015189040010000000000000064");//FFAA550103001510FBA807B8018C000000B400 35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,

@@ -198,6 +198,58 @@ public class UIUpdater  {
             updateRecoDotImage();
         });
     }
+    public void resetAllRecoEngineParameters() {
+
+        // RAM values
+        tripAhByRegen = 0f;
+        ahByRegen = 0f;
+        ahByCharger = 0f;
+        previousAh = 0f;
+
+        // SharedPreferences values
+        SharedPreferences prefs =
+                context.getSharedPreferences("ah_data", Context.MODE_PRIVATE);
+
+        prefs.edit()
+                .putFloat("totalAh", 0f)
+                .putFloat("chargerAh", 0f)
+                .putFloat("regenAh", 0f)
+                .putFloat("lastTripAh", 0f)
+                .apply();
+
+        // Telemetry reset
+        tm.setTeleTotalAH(0f);
+        tm.setTeleChargerAH(0f);
+        tm.setTeleRegenAH(0f);
+
+        Log.d("RECO_RESET", "✅ All reco engine params reset");
+
+        updateRecoKm();
+    }
+    public void resetChargerAndTotalRegenAh() {
+
+        // Reset only totals
+        ahByCharger = 0f;
+        ahByRegen = 0f;
+
+        // Update stored values only for these keys
+        SharedPreferences prefs =
+                context.getSharedPreferences("ah_data", Context.MODE_PRIVATE);
+
+        prefs.edit()
+                .putFloat("chargerAh", 0f)
+                .putFloat("regenAh", 0f)
+                .apply();
+
+        // Update telemetry
+        tm.setTeleChargerAH(0f);
+        tm.setTeleRegenAH(0f);
+
+        Log.d("AH_RESET", "✅ Charger Ah + Total Regen Ah reset");
+
+        // Refresh reco because Total mode depends on ahByRegen
+        updateRecoKm();
+    }
     private static final String PREF_RECO = "reco_data";
     private static final String KEY_LAST_TRIP_AH = "last_trip_ah";
     public void onTripReset() {
@@ -1574,11 +1626,10 @@ public class UIUpdater  {
             case 0: // Neutral
                 MainActivity.currentgear='N';
                 break;
-            case 1: // Neutral
+            case 1:
                 MainActivity.currentgear='F';
                 break;
-
-            case 2: // Neutral
+            case 2:
                 MainActivity.currentgear='R';
                 break;
             default:
@@ -2396,7 +2447,7 @@ public class UIUpdater  {
     private int lastAPUBatteryLevel = -1; // Store last battery level to avoid redundant updates
 
     private int lastSpeed = -1; // To avoid redundant updates
-    TripDistanceManager tripManager;
+    public  TripDistanceManager tripManager;
     TextView tripTextView;
 
 
