@@ -263,6 +263,10 @@ public class UIUpdater  {
     public float getTotalRecoKm() {
         return getTotalAhByRegen() * RECO_KM_PER_AH;
     }
+    public String getrecoEngineParams() {
+        return "LT-"+getLastTripRecoKm()+",CT-"+getTripRecoKm()+"TT-"+getTotalRecoKm();
+    }
+
 
 
 //    @Override
@@ -612,7 +616,7 @@ public class UIUpdater  {
 
     private static int UniversalAPUbatteryLevel;
 //    public static boolean resetParamtersAfterLowbat=false;
-    private double RANGE_km_PER_SOC =1.5;
+    private double RANGE_km_PER_SOC =1.5;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
     private float lastKnownBattery = 0;
     private boolean isBatteryIntroRunning = false;
 
@@ -655,6 +659,7 @@ public class UIUpdater  {
         if(batteryLevel>=0 && batteryLevel<=100){
             tm.setTeleSOC(batteryLevel);
             tm.setBMSTeleSOC((float) hb3.getBatteryLevel() /10);
+            tm.setTeleRange(range);
             binding.batteryTV.setText("Battery "+sBatteryLevel + "%   |  ~ "+range+" km");
         }
 

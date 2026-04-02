@@ -43,6 +43,7 @@ public class TelemetryDataManager {
     private float teleBMSMosTemp;
     private String teleNTC;
     private float teleSOC;
+    private float teleRange;
     private float teleBMSSOC;
 
     private float teleAPUSOC;
@@ -317,6 +318,13 @@ public class TelemetryDataManager {
 
     public void setTeleSOC(float teleSOC) {
         this.teleSOC = teleSOC;
+    }
+    public float getTeleRange() {
+        return teleRange;
+    }
+
+    public void setTeleRange(float teleRange) {
+        this.teleRange = teleRange;
     }
     public float getBMSTeleSOC() {
         return teleBMSSOC;

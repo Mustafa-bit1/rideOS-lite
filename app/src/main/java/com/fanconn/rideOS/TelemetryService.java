@@ -854,8 +854,15 @@ public class TelemetryService extends Service {
         data.time = java.time.OffsetDateTime.now().toString();
         //int mcuVersion = getEffectiveMcuVersion();
         String temps = getCriticalTemps();
+        UIUpdater uiUpdater = UIUpdater.getInstance();
+        if (uiUpdater!=null) {
+            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+                    +", recoEngine="+uiUpdater.getrecoEngineParams();
+        }else{
+            data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+                    +", recoEngine=N/A";
+        }
 
-        data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps;
         //Log.d("QUALCOMTHERMAL  ", temps);
         return data;
     }
