@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.Button;
@@ -90,7 +91,6 @@ public class QuickSettingsView extends FrameLayout {
 
         setClickable(true);
         setFocusable(true);
-
         prefs = context.getSharedPreferences("menu", Context.MODE_PRIVATE);
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         brightnessManager = new BrightnessManager(context);
@@ -293,13 +293,16 @@ public class QuickSettingsView extends FrameLayout {
     }
 
     public void open() {
+        MainActivity.isVisible = false;
         syncBrightnessUI();
         syncVolumeUI();
         animate()
                 .translationY(0)
                 .setDuration(120)
                 .setInterpolator(new android.view.animation.DecelerateInterpolator())
-                .start();    }
+                .start();
+    }
+
     public void close() {
         smoothClose();
     }

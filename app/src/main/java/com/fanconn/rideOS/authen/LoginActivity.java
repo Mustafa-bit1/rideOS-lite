@@ -363,7 +363,7 @@ public class LoginActivity extends AppCompatActivity{
         TelemetryService.shdtelemetrywhenunlocked=false;
         instance = this;
 
-        Log.d("BLEKeyService","THIUSLOGGEDTHELOGINONCRETE");
+        Log.d("nolockbug","THIUSLOGGEDTHELOGINONCRETE");
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)

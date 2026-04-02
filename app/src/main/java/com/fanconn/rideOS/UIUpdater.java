@@ -622,8 +622,8 @@ public class UIUpdater  {
 //        int batteryLevel = (int) ahTrackerManager.getSOC();
 
 //        int batteryLevel = get10LessSOC(batteryLevel1);
-//        int batteryLevel= hb3.getBatteryLevel() / 10;
-        int batteryLevel = (int) ahTrackerManager.getSOC();
+        int batteryLevel= hb3.getBatteryLevel() / 10;
+//        int batteryLevel = (int) ahTrackerManager.getSOC();
 
 //        Log.d("SOC10LESS", "Actual SOC = " + batteryLevel1);
 //        Log.d("SOC10LESS", "Display SOC = " + batteryLevel);
@@ -661,7 +661,7 @@ public class UIUpdater  {
         if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18)  && tm.getTeleChargingState()==0) {
 
             if(serialPortManager!=null){
-                Log.d("asdfdg","ENTER 20");
+                Log.d("SOCWHATACTOION","ENTER 20");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000");//line current 15A, max phase current 300A ,regen 30-40
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000"), 800);
 //                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
@@ -730,16 +730,19 @@ public class UIUpdater  {
 
             if(isAPUPresent && !apuflag){
                 StopInactivtyTimerDuringPopUp=false;
+                Log.d("SOCWHATACTOION","ENTER 10 an ask for APU");
                 InactivityManager.getInstance().stopTimer();
                 showCustomPopup("Alert","Your Battery is Low, Switch to APU for Extra Range");
             } else if  (!isAPUPresent) {
-                Log.d("asdfdg","ENTER 10");
+                Log.d("SOCWHATACTOION","ENTER 10 AND DO 10AMPS");
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728008C00B004B400");//line current 10A(2800), phase current max, regen currents as 35A(8C00) to make 6 (1800) and 45A(B400) to make 8 (2000)
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
+                Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
+
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
@@ -765,7 +768,20 @@ public class UIUpdater  {
 //            InactivityManager.getInstance().stopTimer();
 //            showCustomPopup("Alert","Your Battery is Low, Switch to APU for Extra Range");
 //        }
+        if(!atSOC7Lowbatflag && (batteryLevel==5 || batteryLevel==4) && !apuflag  && tm.getTeleChargingState()==0){
+            atSOC7Lowbatflag=true;
+            if(serialPortManager!=null){
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8070000000088040000");
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+            }
+            InactivityManager.getInstance().stopTimer();
 
+            //------------
+            StopInactivtyTimerDuringPopUp=false;
+            Log.d("SOCWHATACTOION","ENTER 5 AND DO 0000AMPS");
+
+            showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
+        }
         //BatPackSwitcher.startSwitchingToAPU();
 //
 //        try {
@@ -1432,36 +1448,37 @@ public class UIUpdater  {
         //Log.d("CAN", "🟢 ISREDVALUE ENTERED ISREADY======"+READY);
 
         boolean isReady = (READY == 1);
-        if (isReady) {
-            //Log.d("CAN", "🟢 ISRED ENTERED ISREADY");
-
-            if (!startReasySound && directionalGears==1) {
-                startReasySound = true;
-                ReadystartBeeping();
-               // Log.d("CAN", "🟢 ISRED ENTERED LOGIC ISREADY");
-            }
-        } else {
-            //Log.d("CAN", "🔴 ISRED ENTERED ELSE");
-            if (startReasySound) {
-                startReasySound = false;
-                ReadystopBeeping();
-                //Log.d("CAN", "🔴 ISRED ENTERED LOGIC ELSE");
-            }
-            if (!MainActivity.isVisible && directionalGears==1 && !MainActivity.isrideOSOTA) {
-                //Log.d("CAN", "🔴 ISRED ENTERED SECONDS LOGIC ELSE");
-
-                Intent intent = new Intent(activity, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-                activity.startActivity(intent);
-                activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
-            }
-            if (activity != null && directionalGears==1 && !MainActivity.isrideOSOTA) {
-                (activity).closeRecoIfOpen();
-                (activity).closeQuickSettingsIfOpen();
-            }
-
-        }
+        Log.d("nolockbug","VALUE REDAY IS ----------"+isReady);
+//        if (isReady) {
+//            //Log.d("CAN", "🟢 ISRED ENTERED ISREADY");
+//
+//            if (!startReasySound && directionalGears==1) {
+//                startReasySound = true;
+//                ReadystartBeeping();
+//               // Log.d("CAN", "🟢 ISRED ENTERED LOGIC ISREADY");
+//            }
+//        } else {
+//            //Log.d("CAN", "🔴 ISRED ENTERED ELSE");
+//            if (startReasySound) {
+//                startReasySound = false;
+//                ReadystopBeeping();
+//                //Log.d("CAN", "🔴 ISRED ENTERED LOGIC ELSE");
+//            }
+//            if (!MainActivity.isVisible && directionalGears==1 && !MainActivity.isrideOSOTA) {
+//                Log.d("nolockbug", "🔴 ISRED ENTERED SECONDS LOGIC ELSE");
+//
+//                Intent intent = new Intent(activity, MainActivity.class);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//
+//                activity.startActivity(intent);
+//                activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
+//            }
+//            if (activity != null && directionalGears==1 && !MainActivity.isrideOSOTA) {
+//                (activity).closeRecoIfOpen();
+//                (activity).closeQuickSettingsIfOpen();
+//            }
+//
+//        }
 
         int STAND =FrameUtils.extractBits(hb3.getBSG1_BYTE2(),0,1);
         isboost=hb3.getBSG1_BYTE3()==8; //hex value 08
@@ -1562,8 +1579,6 @@ public class UIUpdater  {
             default:
                 MainActivity.currentgear='O';
                 break;
-
-
         }
 
         if (directionalGears != lastGear || standChanged) {
@@ -2462,6 +2477,7 @@ public class UIUpdater  {
     }
 
     private boolean resetboost=false;
+    private boolean wasMoving = false;
     public void updateCanData10F907A8(Heartbeat3 hb3) {
 
         long now = System.currentTimeMillis();
@@ -2496,6 +2512,44 @@ public class UIUpdater  {
                 updateSpeedTrueAnimation((int)speed);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
+            }
+            boolean shouldPlayReadySound =
+                    directionalGears == 1 && speed == 0;
+
+            if (shouldPlayReadySound) {
+                if (!startReasySound) {
+                    startReasySound = true;
+                    ReadystartBeeping();
+                    Log.d("CAN", " Ready sound START");
+                }
+            } else {
+                if (startReasySound) {
+                    startReasySound = false;
+                    ReadystopBeeping();
+                    Log.d("CAN", " Ready sound STOP");
+                }
+            }
+
+            boolean isMoving = directionalGears == 1 && speed > 0;
+
+            // Ride started transition
+            if (isMoving && !wasMoving) {
+                wasMoving = true;
+                // stop ready beep
+                if (startReasySound) {
+                    startReasySound = false;
+                    ReadystopBeeping();
+                }
+
+                if (activity != null) {
+                    (activity).closeRecoIfOpen();
+                    (activity).closeQuickSettingsIfOpen();
+                }
+            }
+
+            // Vehicle stopped again
+            if (!isMoving) {
+                wasMoving = false;
             }
         }
 
@@ -3226,21 +3280,23 @@ public class UIUpdater  {
                 PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                 Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
                 goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-               // InactivityManager.getInstance().startTimer(2);
+               //InactivityManager.getInstance().startTimer(2);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
             Context context = MainActivity.instance;
             if (context != null) {
                 Intent intent = new Intent(context, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
                 context.startActivity(intent);
+                Log.d("nolockbug","CONTEXTNOTNULLLWHILEDOUBLETAP SO YES LOGIN");
+
             }
             else {
-                Log.d("asfg","CONTEXTNULLWHILEDOUBLETAP SO NO LOGIN");
+                Log.d("nolockbug","CONTEXTNULLWHILEDOUBLETAP SO NO LOGIN");
             }
-
         }
         //Log.d("UIUpdater", "Double-tap triggered inUIUPDSTOR");
     }

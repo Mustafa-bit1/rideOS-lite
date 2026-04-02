@@ -55,6 +55,18 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         context2.startActivity(intent);
                     }
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        try {
+                            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                            Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
+
+                            Log.d("PowerAction", "Calling goToSleep()");
+                            goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
+                            Log.d("PowerAction", "goToSleep() invoked.");
+                        } catch (Exception e) {
+                            Log.e("PowerAction", "Failed to initiate goToSleep:", e);
+                        }
+                    }, 1000); // Wait 1 seconds after lock before sleeping
                 }
                 else Log.d("sdafgf","ELSEOF TOUCHTIMER TIMER");
 

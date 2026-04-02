@@ -2184,6 +2184,7 @@ public void recoNavLeft(View view) {
         super.onPause();
         LoginisActive = false;
         isVisible = false;
+        Log.d("MainActivity", "PAUSE OF MAINACTIVTY ");
 
 //        MainisActive = false;
 
@@ -2563,7 +2564,7 @@ public void runPostLoginInit() {
 
             }
             requestIndex = (requestIndex + 1) % 12;
-            bmsHandler.postDelayed(this, 2000); // 650ms interval
+            bmsHandler.postDelayed(this, 700); // 650ms interval
         }
     };
 
