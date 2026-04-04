@@ -856,31 +856,28 @@ public class LoginActivity extends AppCompatActivity{
 
 
             if (batteryLevel ==0) { // phase max , all normal
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
+//                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";//Phase 0 all normal
                 Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
             }
-            else if (batteryLevel <= 10 && !UIUpdater.apuflag) { // phase 0 , all normal
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
+            else if (batteryLevel <= 5 && !UIUpdater.apuflag) { // phase 0 , all normal
+                //torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
+                torqueFrame = "FFAA550103001510FBA8072800A000B004C800";//line current 10amps(2800)
                 Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
-
             }
             else if (batteryLevel <= 20) { //  line 15A, phase max, all normal
                 torqueFrame = "FFAA550103001510FBA8073C00A000B004C800";
                 Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
-
             } else if (batteryLevel <= 90) { // phase max, all normal  A000(45A regen) - C800(50A)
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
                 Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
-
             } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
                 Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
-
             }
             else{//all max
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
                 Log.d("SEDINGSOCFRAMEAS","else "+torqueFrame);
-
             }
 
             final String finalTorqueFrame = torqueFrame; // make it final for lambdas

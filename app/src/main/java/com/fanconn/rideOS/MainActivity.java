@@ -558,7 +558,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         animator.addUpdateListener(animation -> {
             float value = (float) animation.getAnimatedValue();
-            speedArc.setSpeed(value);
+            speedArc.setSpeed(value,0);
         });
 
         animator.start();
@@ -2375,7 +2375,7 @@ public void runPostLoginInit() {
 }
     public void startSpeedIntroFromUpdater() {
         runOnUiThread(() -> {
-            binding.speedArc.setSpeed(0);
+            binding.speedArc.setSpeed(0,0);
             binding.speedArc.setIntroMode(true);
             runSpeedIntroAnimation();
         });
@@ -2450,11 +2450,11 @@ public void runPostLoginInit() {
             down.setDuration(930);
 
             up.addUpdateListener(a ->
-                    speedView.setSpeed((float) a.getAnimatedValue())
+                    speedView.setSpeed((float) a.getAnimatedValue(),0)
             );
 
             down.addUpdateListener(a ->
-                    speedView.setSpeed((float) a.getAnimatedValue())
+                    speedView.setSpeed((float) a.getAnimatedValue(),0)
             );
 
             up.addListener(new AnimatorListenerAdapter() {
@@ -2473,7 +2473,7 @@ public void runPostLoginInit() {
                         speedView.setIntroMode(false); //  BACK TO NORMAL
 
                         // optionally reset to 0
-                        speedView.setSpeed(0);
+                        speedView.setSpeed(0,0);
 
                     }, 500);
                 }

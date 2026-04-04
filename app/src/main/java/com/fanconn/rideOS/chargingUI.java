@@ -40,7 +40,7 @@ public class chargingUI extends AppCompatActivity {
     private Runnable socUpdateRunnable;
     // Battery constants
     private static  float BATTERY_CAPACITY_AH;
-    private static final float RANGE_km_PER_SOC = 1.5f;
+    private static final float RANGE_km_PER_SOC = 1.42f;
     private static final float KM_PER_AH = RANGE_km_PER_SOC * 1.666f;
 
     // Runtime variables
@@ -180,8 +180,8 @@ public class chargingUI extends AppCompatActivity {
         socUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
-//                actualSOC = (int)ahTrackerManager.getSOC();
+//                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
+                actualSOC = (int)ahTrackerManager.getSOC();
 
 //                Log.d("SOC", "Battery SOC: " + actualSOC);
                 APUsoc = serialPortManager.hb3.getAPUBatteryLevel() / 10;

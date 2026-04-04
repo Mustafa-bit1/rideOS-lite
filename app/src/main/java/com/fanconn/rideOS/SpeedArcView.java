@@ -3,6 +3,7 @@ package com.fanconn.rideOS;
 import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 public class SpeedArcView extends View {
@@ -106,19 +107,20 @@ public class SpeedArcView extends View {
     public void setIntroMode(boolean intro) {
         isIntroMode = intro;
     }
-    public void setSpeed(float speed) {
-        this.speed = speed;
+    public void setSpeed(float speed, float currentColour) {
+        this.speed = speed;   // ✅ animation still based on speed
 
         int newColor;
 
         if (isIntroMode) {
-            // 🔥 ALWAYS BLUE during intro
+            //  ALWAYS BLUE during intro
             newColor = Color.parseColor("#2097F6");
         } else {
 
-            if (speed <= 45) {
+            // ✅ color based on current consumption
+            if (currentColour <= 30) {
                 newColor = Color.parseColor("#2097F6");
-            } else if (speed <= 75) {
+            } else if (currentColour <= 70) {
                 newColor = Color.parseColor("#FF5C00");
             } else {
                 newColor = Color.parseColor("#C81F1F");

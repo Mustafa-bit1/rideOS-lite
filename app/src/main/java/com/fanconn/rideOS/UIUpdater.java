@@ -668,18 +668,17 @@ public class UIUpdater  {
 
     private static int UniversalAPUbatteryLevel;
 //    public static boolean resetParamtersAfterLowbat=false;
-    private double RANGE_km_PER_SOC =1.5;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
+    private double RANGE_km_PER_SOC =1.42;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
     private float lastKnownBattery = 0;
     private boolean isBatteryIntroRunning = false;
 
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
 //        int batteryLevel1= hb3.getBatteryLevel() / 10;
-//        int batteryLevel = (int) ahTrackerManager.getSOC();
+//        int batteryLevel = get10LessSOC(batteryLevel1);//BMS SOC BUT 10 LESS
 
-//        int batteryLevel = get10LessSOC(batteryLevel1);
-        int batteryLevel= hb3.getBatteryLevel() / 10;
-//        int batteryLevel = (int) ahTrackerManager.getSOC();
+//        int batteryLevel= hb3.getBatteryLevel() / 10; //BMS SOC AND NO 10 LESS
+        int batteryLevel = (int) ahTrackerManager.getSOC();//AH BASED SOC , TO MAKE AH BASED OR 10 LESS GO TO ahTrackerManager class
 
 //        Log.d("SOC10LESS", "Actual SOC = " + batteryLevel1);
 //        Log.d("SOC10LESS", "Display SOC = " + batteryLevel);
@@ -756,11 +755,11 @@ public class UIUpdater  {
             binding.yellowalert.setVisibility(View.INVISIBLE);
             binding.LowBatmsg.setVisibility(View.INVISIBLE);
         }
-        if (batteryLevel >= 21 && atSOC10Lowbatflag) {
+        if (batteryLevel >= 6 && atSOC10Lowbatflag) {
 //            resetParamtersAfterLowbat=true;
             atSOC10Lowbatflag = false;
         }
-        if (batteryLevel >= 21 && atSOC7Lowbatflag) {
+        if (batteryLevel >= 2 && atSOC7Lowbatflag) {
 //            resetParamtersAfterLowbat=true;
             atSOC7Lowbatflag = false;
         }
@@ -778,7 +777,7 @@ public class UIUpdater  {
 //            }
 //        }
 
-        if(!atSOC10Lowbatflag && batteryLevel==10 && tm.getTeleChargingState()==0){
+        if(!atSOC10Lowbatflag && (batteryLevel==5 || batteryLevel==4) && tm.getTeleChargingState()==0){
             atSOC10Lowbatflag=true;
             startBeeping(2);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -825,7 +824,7 @@ public class UIUpdater  {
 //            InactivityManager.getInstance().stopTimer();
 //            showCustomPopup("Alert","Your Battery is Low, Switch to APU for Extra Range");
 //        }
-        if(!atSOC7Lowbatflag && (batteryLevel==5 || batteryLevel==4) && !apuflag  && tm.getTeleChargingState()==0){
+        if(!atSOC7Lowbatflag && (batteryLevel==0) && !apuflag  && tm.getTeleChargingState()==0){
             atSOC7Lowbatflag=true;
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8070000000088040000");
@@ -2565,7 +2564,7 @@ public class UIUpdater  {
             try {
                 tm.setTeleSpeed((int)speed);
                 binding.speedNumberTV.setText(String.valueOf((int) speed));
-                updateSpeedTrueAnimation((int)speed);
+                updateSpeedTrueAnimation((int)speed,currentComsForSpeed*-1);
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -2794,29 +2793,24 @@ public class UIUpdater  {
      * 更新 CAN 数据 10FA07A8
      * @param hb3 解析后的 Heartbeat3 对象
      */
+    private static int currentComsForSpeed;
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
 
         float current = (float) roundTo1Decimal(
                 getFormattedBusCurrent(hb3.getBSG3_BYTE34()) * -1
         );
-
         tm.setTeleCurrentConsumption(current);
-
-        if(current <= 0){
+        currentComsForSpeed=(int)current;
+        if(current >= 0){
             binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
             updateRegenAnimation(0);   // reset animation
             setSpeedColor(false);
-
         } else {
             binding.RegenCurrentValue.setVisibility(View.VISIBLE);
             binding.RegenCurrentValue.setText(current + "A");
-
             updateRegenAnimation(current);  //  animation trigger
             setSpeedColor(true);
-
-
         }
-
         Log.d("fdsadg", "THIS IS REGEN CURRENT = " + current);
     }
 
@@ -2859,8 +2853,8 @@ public class UIUpdater  {
         lastSpeed = mappedSpeed;
     }
     private ValueAnimator speedAnimator;
-    private void updateSpeedTrueAnimation(int newSpeed) {
-        binding.speedArc.setSpeed(newSpeed);
+    private void updateSpeedTrueAnimation(int newSpeed,int currentColour) {
+        binding.speedArc.setSpeed(newSpeed,currentColour);
     }
     private int lastRegen = -1;
 

@@ -51,7 +51,7 @@ public class DiagnosticsFragment extends Fragment {
     private TextView ipTV;
     private Button resetRecoBtn, resetChargerRegenBtn;
     private Button resetOdoBtn;
-    private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON,In60,In90,out0, LEDOFF, debugbtn,highTorque;
+    private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON,In60,In90,out0, LEDOFF, debugbtn,lowtorue,highTorque;
     private ImageButton  rebootbtn, shutdownbtn;
     private Button wifiBtn, wifiOffBtn, Devicesettings;
     private TextView tireDimensionDisplay;
@@ -92,6 +92,7 @@ public class DiagnosticsFragment extends Fragment {
     private void initViews(View view) {
         bootbutton = view.findViewById(R.id.bootbutton);
         highTorque = view.findViewById(R.id.hightorque);
+        lowtorue = view.findViewById(R.id.Low);
         handlelockbutton = view.findViewById(R.id.handlelockbutton);
         handleUNlockbutton = view.findViewById(R.id.handleUNlockbutton);
         lockScreen = view.findViewById(R.id.lockScreen);
@@ -131,6 +132,17 @@ public class DiagnosticsFragment extends Fragment {
         });
         highTorque.setOnClickListener(v -> {
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400");//FFAA550103001510FBA807B8018C000000B400 35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510FCA807100E00000000051E"),
+                    1200
+            );
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
+                    1200
+            );
+        });
+        lowtorue.setOnClickListener(v -> {
+            serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C008C00B004B400");//FFAA550103001510FBA807B8018C000000B400 35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 15A(3C00) ,
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550103001510FCA807100E00000000051E"),
                     1200
