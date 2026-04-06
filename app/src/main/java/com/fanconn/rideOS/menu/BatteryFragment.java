@@ -32,7 +32,7 @@ public class BatteryFragment extends Fragment {
     private SerialPortManager serialPortManager;
     // Main Battery Views
     private TextView mainBatteryVoltage, mainRemainingAh,maincurrentcon;
-    private TextView NTC1, NTC2, NTC3, NTC4;
+    private TextView BMSMosTemp,NTC1, NTC2, NTC3, NTC4;
     // Aux / APU Battery Views
     private TextView apuBatteryVoltage, apuRemainingAh,apucurrentcon;
     private TextView AuxNTC1, AuxNTC2, AuxNTC3, AuxNTC4;
@@ -112,9 +112,13 @@ public class BatteryFragment extends Fragment {
                         float remAh = ahTrackerManager.getRemainingAh();
 
                         // truncate to 1 decimal place (no rounding)
-                        float truncated = (float) (Math.floor(remAh * 10) / 10.0);
-
+                        float clippedAh = Math.min(remAh, 60f);
+                        float truncated = (float) (Math.floor(clippedAh * 10) / 10.0);
                         mainRemainingAh.setText(String.format("%.1f Ah", truncated));
+
+                        int BMS_Mos_Temp = hb3.getBMS_MOS_Temp();
+                        BMSMosTemp.setText(BMS_Mos_Temp + "°C");
+
                         int ntc1 = hb3.getNTC1();
                         NTC1.setText(ntc1 < 40 ? "--" : (ntc1 - 40) + "°C");
 
@@ -223,6 +227,7 @@ public class BatteryFragment extends Fragment {
         mainBatteryVoltage = view.findViewById(R.id.mainBatteryVoltage);
         maincurrentcon = view.findViewById(R.id.maincurrentconsumption);
         mainRemainingAh = view.findViewById(R.id.mainBatteryCapacity);
+        BMSMosTemp = view.findViewById(R.id.BMSMosTemp);
         NTC1 = view.findViewById(R.id.NTC1);
         NTC2 = view.findViewById(R.id.NTC2);
         NTC3 = view.findViewById(R.id.NTC3);

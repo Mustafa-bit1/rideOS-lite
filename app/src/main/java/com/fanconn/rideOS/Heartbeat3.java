@@ -18,6 +18,7 @@ public class Heartbeat3 {
     private float APUbatvoltage;
     private float APUremainingAH;
     private int BMSlifecycles;
+    private int BMS_MOS_Temp;
     private int NTC1,NTC2,NTC3,NTC4,NTC5,NTC6,NTC7,NTC8;
     private String cell1TO3,cell4TO6,cell7TO9,cell10TO12,cell13TO15,cell16TO18,cell19TO21,cell22TO23;
     private int BSG1_BYTE1;
@@ -129,6 +130,14 @@ public class Heartbeat3 {
 
     public void setBMSlifecycles(int BMSlifecycles) {
         this.BMSlifecycles = BMSlifecycles;
+    }
+
+    public int getBMS_MOS_Temp() {
+        return  BMS_MOS_Temp;
+    }
+
+    public void setBMS_MOS_Temp(int BMS_MOS_Temp) {
+        this.BMS_MOS_Temp = BMS_MOS_Temp;
     }
 
 

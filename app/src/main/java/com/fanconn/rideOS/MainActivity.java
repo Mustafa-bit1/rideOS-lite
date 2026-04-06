@@ -2561,9 +2561,12 @@ public void runPostLoginInit() {
                 case 11:
                     serialPortManager.VCUSendToMCU("FFAA550103001518FF50A5"+VIN_On_CAN);
                     break;
+                case 12:
+                    serialPortManager.VCUSendToMCU("FFAA5501030015189401400001020304050607");
+                    break;
 
             }
-            requestIndex = (requestIndex + 1) % 12;
+            requestIndex = (requestIndex + 1) % 13;
             bmsHandler.postDelayed(this, 700); // 650ms interval
         }
     };

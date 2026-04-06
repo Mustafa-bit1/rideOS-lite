@@ -609,6 +609,9 @@ public class UIUpdater  {
             case "18934001":
                 updateCanData18934001(hb3);
                 break;
+            case "18944001":
+                updateCanData18944001(hb3);
+                break;
             case "18934002":
                 updateCanData18934002(hb3);
                 break;
@@ -1064,6 +1067,10 @@ public class UIUpdater  {
 //        tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
         tm.setTeleBmsLifeCycles(hb3.getBMSlifecycles());
         tm.setTeleBMSMosStates(hb3.getMainChargeMosState()+","+hb3.getMainDisChargeMosState()+","+hb3.getApuChargeMosState()+","+hb3.getApuDisChargeMosState());
+    }
+    public void updateCanData18944001(Heartbeat3 hb3) {
+        int BMS_Mos_Temp=hb3.getBMS_MOS_Temp();
+        tm.setTeleBMSMosTemp(BMS_Mos_Temp);
     }
     public void updateCanData18934002(Heartbeat3 hb3) {
         // 更新电池电量
