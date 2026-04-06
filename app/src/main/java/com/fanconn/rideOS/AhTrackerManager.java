@@ -37,6 +37,14 @@ public class AhTrackerManager {
     // Update Charging Ah
     public void updateChargingAh(float bmsInAh) {
         //Log.d("AH_TRACKER", "ChargingAh input = " + bmsInAh);
+        if (prevBMSInAh == 0f && rideOSInAh == 0f) {
+            // First sync from battery full capacity baseline
+            rideOSInAh = getBatteryCapacity();
+            prevBMSInAh = bmsInAh;
+            save();
+            return;
+        }
+
 
         if (bmsInAh < prevBMSInAh) {
             // BMS counter reset happened
@@ -71,7 +79,7 @@ public class AhTrackerManager {
 
         // Physical limits
         if (rem < 0f) rem = 0f;
-        if (rem > capacity) rem = capacity;   //HARD LOCK
+        //if (rem > capacity) rem = capacity;   //HARD LOCK
 
        //Log.d("AH_TRACKER", "RemainingAh(clamped) = " + rem);
         return rem;

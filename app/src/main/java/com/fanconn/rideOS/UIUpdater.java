@@ -1321,15 +1321,18 @@ public class UIUpdater  {
     public void updateCanData160B8001(Heartbeat3 hb3) {
         updateCanData18904001(hb3);
 
-        float currentAh = roundTo3(hb3.getChargeAH() / 1000f);
+//        float currentAh = roundTo3(hb3.getChargeAH() / 1000f);//dont rounf off
+        float currentAh = hb3.getChargeAH() / 1000f;
         Log.d("AH", "IN_AH = " + currentAh);
 
         ahTrackerManager.updateChargingAh(currentAh);
         Log.d("AH", "SOC = " + ahTrackerManager.getSOC());
         Log.d("AH", "RemainingAh = " + ahTrackerManager.getRemainingAh());
+        Log.d("AHA", "previousAh = " + previousAh);
 
         // First frame protection
         if (previousAh == 0f) {
+            Log.d("AHA", "previousAh EQUAL = 0 ENTERED= " + previousAh);
             previousAh = currentAh;
             loadStoredAhValues(); // load persisted totals
             return;
@@ -1338,10 +1341,10 @@ public class UIUpdater  {
         float delta = currentAh - previousAh;
 
         // Valid increment range protection
-        if (delta > 0.001f && delta < 1.0f) {
+        if (delta > 0 && delta < 2.0f) {
             if (tm.getTeleChargingState() == 1) {
                 ahByCharger += delta;
-            } else if (tm.getTeleChargingState() == 0 && rpm>20) {
+            } else if ((tm.getTeleChargingState() == 0 || tm.getTeleChargingCurrentValue()==0) && rpm>20) {
                 ahByRegen += delta;        // total regen
                 tripAhByRegen += delta;    // trip regen
             }
@@ -2800,9 +2803,11 @@ public class UIUpdater  {
                 getFormattedBusCurrent(hb3.getBSG3_BYTE34()) * -1
         );
         tm.setTeleCurrentConsumption(current);
+
         currentComsForSpeed=(int)current;
-        if(current >= 0){
+        if(current <= 0){
             binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
+            binding.CurrentConsumptionValue.setText(current + "A");
             updateRegenAnimation(0);   // reset animation
             setSpeedColor(false);
         } else {
@@ -2811,8 +2816,9 @@ public class UIUpdater  {
             updateRegenAnimation(current);  //  animation trigger
             setSpeedColor(true);
         }
-        Log.d("fdsadg", "THIS IS REGEN CURRENT = " + current);
+        //Log.d("fdsadg", "THIS IS REGEN CURRENT = " + current);
     }
+
 
     private void setSpeedColor(boolean isRegen) {
         if (isRegen) {

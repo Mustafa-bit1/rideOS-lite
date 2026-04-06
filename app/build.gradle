@@ -11,13 +11,14 @@ android {
         minSdk 26
         targetSdk 35
         versionCode 4
-        versionName "4.9.9.8"
+        versionName "4.9.9.9"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         packagingOptions {
             pickFirst 'libs/arm64-v8a/libnative-lib.so'
             pickFirst 'libs/armeabi-v7a/libnative-lib.so'
+
 
             exclude 'META-INF/INDEX.LIST'
             exclude 'META-INF/DEPENDENCIES'

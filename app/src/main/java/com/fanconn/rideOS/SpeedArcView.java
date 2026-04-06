@@ -117,7 +117,7 @@ public class SpeedArcView extends View {
             newColor = Color.parseColor("#2097F6");
         } else {
 
-            // ✅ color based on current consumption
+            // color based on current consumption
             if (currentColour <= 30) {
                 newColor = Color.parseColor("#2097F6");
             } else if (currentColour <= 70) {
