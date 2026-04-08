@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.fanconn.rideOS.AhTrackerManager;
 import com.fanconn.rideOS.Heartbeat3;
+import com.fanconn.rideOS.MetadataManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 
@@ -112,7 +113,7 @@ public class BatteryFragment extends Fragment {
                         float remAh = ahTrackerManager.getRemainingAh();
 
                         // truncate to 1 decimal place (no rounding)
-                        float clippedAh = Math.min(remAh, 60f);
+                        float clippedAh = Math.min(remAh, getBatteryCapacity());
                         float truncated = (float) (Math.floor(clippedAh * 10) / 10.0);
                         mainRemainingAh.setText(String.format("%.1f Ah", truncated));
 
@@ -198,6 +199,23 @@ public class BatteryFragment extends Fragment {
             uiHandler.postDelayed(this, 1000);
         }
     };
+
+    private float getBatteryCapacity() {
+        String model = MetadataManager.get().getModel();
+
+        if (model == null) return 60f; // default safety
+
+        switch (model) {
+            case "nx100 Pro":
+                return 60f;
+
+            case "nx100 Max":
+                return 90f;
+
+            default:
+                return 60f; // fallback
+        }
+    }
     private double roundTo2Decimal(double value) {
         return Math.round(value * 100.0) / 100.0;
     }

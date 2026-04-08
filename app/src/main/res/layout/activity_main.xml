@@ -383,9 +383,11 @@
             android:layout_marginEnd="446dp"
             android:layout_marginBottom="131dp"
             android:visibility="gone"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ecoimage" />
+
 
         <!--    <TextView-->
         <!--        android:id="@+id/voltage"-->
@@ -411,6 +413,17 @@
         <!--        app:layout_constraintStart_toStartOf="parent"-->
         <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
+
+        <ImageView
+            android:id="@+id/regentab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="418dp"
+            android:layout_marginBottom="103dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/regentab" />
 
         <ImageView
             android:id="@+id/chargingredtab"

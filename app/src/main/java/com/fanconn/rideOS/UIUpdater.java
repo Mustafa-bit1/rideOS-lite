@@ -311,16 +311,12 @@ public class UIUpdater  {
     public float getLastTripRecoKm() {
         return getLastTripAh() * RECO_KM_PER_AH;
     }
-
     public float getTotalRecoKm() {
         return getTotalAhByRegen() * RECO_KM_PER_AH;
     }
     public String getrecoEngineParams() {
-        return "LT-"+getLastTripRecoKm()+",CT-"+getTripRecoKm()+"TT-"+getTotalRecoKm();
+        return "LT-"+getLastTripRecoKm()+",CT-"+getTripRecoKm()+",TT-"+getTotalRecoKm();
     }
-
-
-
 //    @Override
 //    protected void onCreate(Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -2200,6 +2196,7 @@ public class UIUpdater  {
         binding.neutral.setVisibility(View.INVISIBLE);
         binding.brk.setVisibility(View.INVISIBLE);
         binding.removestand.setVisibility(View.INVISIBLE);
+        binding.regentab.setVisibility(View.GONE);
         binding.ecoimage.setVisibility(View.GONE);
         binding.sports.setVisibility((View.GONE));
         binding.boost.setVisibility(View.GONE);
@@ -2265,6 +2262,7 @@ public class UIUpdater  {
 //                boost.setVisibility((isStand?View.INVISIBLE:View.INVISIBLE));
 //                ecoimage.setVisibility((isStand?View.INVISIBLE:View.VISIBLE));
         binding.speedImageView.setVisibility(View.INVISIBLE);
+        binding.regentab.setVisibility(View.GONE);
         binding.ecoimage.setVisibility(View.GONE);
         binding.sports.setVisibility((View.GONE));
         binding.boost.setVisibility(View.GONE);
@@ -2501,6 +2499,7 @@ public class UIUpdater  {
                         startReasySound = false;
                         stopReverseBeep();
                         updateSpeedAnimation(0);
+                        binding.regentab.setVisibility(View.GONE);
                         binding.ecoimage.setVisibility(View.GONE);
                         binding.sports.setVisibility(View.GONE);
                         binding.boost.setVisibility(View.GONE);
@@ -2619,42 +2618,53 @@ public class UIUpdater  {
         }
 
         String currentMode = ""; // new
-        int boostEcoSpeed=((int)speed);
+        int boostEcoSpeed=currentComsForSpeed*-1;
 
         if (directionalGears != 2 && !isboost) {
             resetboost=true;
 //            Log.d("dsfgd","SOOOOOOboost=true");
             binding.actualboost.setVisibility(View.INVISIBLE);
 
-            if (boostEcoSpeed <= 45 && boostEcoSpeed != 0) {
+            if (boostEcoSpeed <= 30 && boostEcoSpeed > 0) {
                 currentMode = "eco";
                 if(!isStand)binding.ecoimage.setVisibility(View.VISIBLE);
                 binding.sports.setVisibility(View.GONE);
                 binding.boost.setVisibility(View.GONE);
-            } else if (boostEcoSpeed > 45 && boostEcoSpeed <= 75) {
+                binding.regentab.setVisibility(View.GONE);
+            } else if (boostEcoSpeed > 30 && boostEcoSpeed <= 70) {
                 currentMode = "city";
                 binding.ecoimage.setVisibility(View.GONE);
+                binding.regentab.setVisibility(View.GONE);
                 if(!isStand)binding.sports.setVisibility(View.VISIBLE);
                 binding.boost.setVisibility(View.GONE);
-            } else if (boostEcoSpeed > 75 && boostEcoSpeed < 150) {
+            } else if (boostEcoSpeed > 70 && boostEcoSpeed < 110) {
                 currentMode = "sport";
                 binding.ecoimage.setVisibility(View.GONE);
                 binding.sports.setVisibility(View.GONE);
+                binding.regentab.setVisibility(View.GONE);
                 if(!isStand)binding.boost.setVisibility(View.VISIBLE);
-            } else {
+            }
+            else if (boostEcoSpeed < 0) {
+                currentMode = "regen";
+                binding.ecoimage.setVisibility(View.GONE);
+                binding.sports.setVisibility(View.GONE);
+                binding.boost.setVisibility(View.GONE);
+                if(!isStand)binding.regentab.setVisibility(View.VISIBLE);
+            }else {
                 currentMode = "";
                 binding.ecoimage.setVisibility(View.GONE);
                 binding.sports.setVisibility(View.GONE);
                 binding.boost.setVisibility(View.GONE);
+                binding.regentab.setVisibility(View.GONE);
             }
 
             // ✅ Play sound only on upward mode transition
-            if (
-                    (previousMode.equals("eco") && currentMode.equals("city")) ||
-                            (previousMode.equals("city") && currentMode.equals("sport"))
-            ) {
-                playModeChangeSound(); // play sound
-            }
+//            if (
+//                    (previousMode.equals("eco") && currentMode.equals("city")) ||
+//                            (previousMode.equals("city") && currentMode.equals("sport"))
+//            ) {
+//                playModeChangeSound(); // play sound
+//            }
 
             // ✅ Update previousMode
             if (!currentMode.equals("")) {
@@ -2812,7 +2822,7 @@ public class UIUpdater  {
         tm.setTeleCurrentConsumption(current);
 
         currentComsForSpeed=(int)current;
-        if(current <= 0){
+        if(current <= 0.4){
             binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
             binding.CurrentConsumptionValue.setText(current + "A");
             updateRegenAnimation(0);   // reset animation
