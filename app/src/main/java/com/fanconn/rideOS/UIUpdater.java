@@ -121,6 +121,8 @@ public class UIUpdater  {
         this.handlerTurnSignal = new Handler();
         this.BatPackSwitcher = new batteryPackSwitcher();
 
+        reverseArrowAnimation = AnimationUtils.loadAnimation(ctx, R.anim.reverse_arrow_blink_down);
+
         initIndicatorLogic(context);
         initReverseBeep(context);
         serialPortManager = serialApplication.getSerialPortManager();
@@ -183,7 +185,7 @@ public class UIUpdater  {
         } else if (recoMode == 2) {
             // Last Trip
             regenAh = getTotalAhByRegen();
-            label = "Total trip";
+            label = "Total reco";
         }
 
         float km = regenAh * RECO_KM_PER_AH;
@@ -667,7 +669,7 @@ public class UIUpdater  {
 
     private static int UniversalAPUbatteryLevel;
 //    public static boolean resetParamtersAfterLowbat=false;
-    private double RANGE_km_PER_SOC =1.42;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
+    private double RANGE_km_PER_SOC =1.5;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
     private float lastKnownBattery = 0;
     private boolean isBatteryIntroRunning = false;
 
@@ -963,7 +965,6 @@ public class UIUpdater  {
         //int batteryImageResId = getBatteryImageResource(batteryLevel);
         //binding.batteryIV.setImageResource(batteryImageResId);
     }
-
     private void startApuDisconnectWatcher() {
         apuWatcherRunning = true;
 
@@ -1016,8 +1017,6 @@ public class UIUpdater  {
             }
         }, 1000);
     }
-
-
 
     public void updateCanData18FF50E5(Heartbeat3 hb3) {
        //Log.d("ChargingDebug", "RESETING FROM UIUPDATORrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
@@ -1237,7 +1236,6 @@ public class UIUpdater  {
                 }
             }
         };
-
         beepHandler.post(beepRunnable);
     }
 
@@ -1326,12 +1324,12 @@ public class UIUpdater  {
 
 //        float currentAh = roundTo3(hb3.getChargeAH() / 1000f);//dont rounf off
         float currentAh = hb3.getChargeAH() / 1000f;
-        Log.d("AH", "IN_AH = " + currentAh);
+        Log.d("TROBLESHOOTINGCOLOUMB", "IN_AH = " + currentAh);
 
         ahTrackerManager.updateChargingAh(currentAh);
-        Log.d("AH", "SOC = " + ahTrackerManager.getSOC());
-        Log.d("AH", "RemainingAh = " + ahTrackerManager.getRemainingAh());
-        Log.d("AHA", "previousAh = " + previousAh);
+        Log.d("TROBLESHOOTINGCOLOUMB", "SOC = " + ahTrackerManager.getSOC());
+        Log.d("TROBLESHOOTINGCOLOUMB", "RemainingAh = " + ahTrackerManager.getRemainingAh());
+        Log.d("TROBLESHOOTINGCOLOUMB", "previousAh = " + previousAh);
 
         // First frame protection
         if (previousAh == 0f) {
@@ -1344,7 +1342,7 @@ public class UIUpdater  {
         float delta = currentAh - previousAh;
 
         // Valid increment range protection
-        if (delta > 0 && delta < 2.0f) {
+        if (delta > 0 && delta < 20.0f) {
             if (tm.getTeleChargingState() == 1) {
                 ahByCharger += delta;
             } else if ((tm.getTeleChargingState() == 0 || tm.getTeleChargingCurrentValue()==0) && rpm>20) {
@@ -1503,6 +1501,7 @@ public class UIUpdater  {
     private boolean isAlreadyInMainActivity() {
         return activity != null && activity instanceof MainActivity;
     }
+    private Animation reverseArrowAnimation;
     public void updateCanData10F807A8(Heartbeat3 hb3) {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
@@ -1644,6 +1643,10 @@ public class UIUpdater  {
 
         if (directionalGears != lastGear || standChanged) {
             lastGear = directionalGears;
+
+            binding.arrow3.clearAnimation();
+            binding.arrow3.setVisibility(View.GONE);
+
             if (!isStand) {
                 switch (directionalGears) {
                     case 0: // Neutral
@@ -2205,6 +2208,7 @@ public class UIUpdater  {
         //reverse visisble ui
         binding.reverseui.setVisibility(View.VISIBLE);
         binding.arrow3.setVisibility(View.VISIBLE);
+        binding.arrow3.startAnimation(reverseArrowAnimation);
         binding.stand.setVisibility((View.INVISIBLE));
         binding.chargingSOC.setVisibility(View.INVISIBLE);
         // binding.percenticon.setVisibility(View.INVISIBLE);
@@ -2251,6 +2255,7 @@ public class UIUpdater  {
         binding.brk.setVisibility(View.INVISIBLE);
 
         binding.reverseui.setVisibility(View.INVISIBLE);
+        binding.arrow3.clearAnimation();
         binding.arrow3.setVisibility(View.INVISIBLE);
 
         binding.removestand.setVisibility((!shouldshowchargingicononmainonot  && isStand   ? View.VISIBLE : View.INVISIBLE));//visible

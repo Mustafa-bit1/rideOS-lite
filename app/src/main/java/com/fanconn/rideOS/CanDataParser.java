@@ -101,12 +101,13 @@ public class CanDataParser {
     public static  void parseCanData160B8001(Heartbeat3 hb3, String canData) {
 
         hb3.setChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//charge AH
+        Log.d("TROBLESHOOTINGCOLOUMB","SETTINGCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
 
     }
     public static  void parseCanData160D8001(Heartbeat3 hb3, String canData) {
 
         hb3.setDisChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//discharge AH
-        Log.d("sdafsg","SETTINGDISCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
+        Log.d("TROBLESHOOTINGCOLOUMB","SETTINGDISCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
     }
 
     public static  void parseCanData18934002(Heartbeat3 hb3, String canData) {

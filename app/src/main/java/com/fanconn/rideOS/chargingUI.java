@@ -40,9 +40,8 @@ public class chargingUI extends AppCompatActivity {
     private Runnable socUpdateRunnable;
     // Battery constants
     private static  float BATTERY_CAPACITY_AH;
-    private static final float RANGE_km_PER_SOC = 1.42f;
+    private static final float RANGE_km_PER_SOC = 1.5f;
     private static final float KM_PER_AH = RANGE_km_PER_SOC * 1.666f;
-
     // Runtime variables
     private float currentRangeKm = 0f;
     private long lastUpdateTime = 0;

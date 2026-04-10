@@ -45,7 +45,6 @@ public class AhTrackerManager {
             return;
         }
 
-
         if (bmsInAh < prevBMSInAh) {
             // BMS counter reset happened
             rideOSInAh += bmsInAh;
