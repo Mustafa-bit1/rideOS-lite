@@ -41,7 +41,6 @@ public class BLEScanService extends Service {
     private long lastSeenTime = 0;
     private boolean keyLostWhileMoving = false;
     private boolean isScanning = false;
-
     private int weakSignalCount = 0;
     private int missedScanCount = 0;
     private boolean signalSeenThisScan = false;
@@ -82,7 +81,7 @@ public class BLEScanService extends Service {
                     unlock(TARGET_NAME, deviceName, rssi);
                 }
                 else {
-                    Log.d(TAG, "❌ Weak RSSI ignored (" + rssi + ")");
+                    //Log.d(TAG, "❌ Weak RSSI ignored (" + rssi + ")");
                 }
 
                 return;
@@ -102,8 +101,8 @@ public class BLEScanService extends Service {
                 missedScanCount = 0;
                 lastSeenTime = now;
 
-                Log.d(TAG, "✅ " + unlockedBy +
-                        " STRONG RSSI (" + rssi + " dBm) → counters reset");
+                // Log.d(TAG, "✅ " + unlockedBy +
+                //      " STRONG RSSI (" + rssi + " dBm) → counters reset");
 
                 return;
             }
@@ -115,8 +114,8 @@ public class BLEScanService extends Service {
                 missedScanCount = 0;
                 lastSeenTime = now;
 
-                Log.d(TAG, "➖ " + unlockedBy +
-                        " MID RSSI (" + rssi + " dBm) → keep unlocked");
+                // Log.d(TAG, "➖ " + unlockedBy +
+                //         " MID RSSI (" + rssi + " dBm) → keep unlocked");
 
                 return;
             }
@@ -125,15 +124,15 @@ public class BLEScanService extends Service {
             weakSignalCount++;
             missedScanCount = 0;
 
-            Log.w(TAG, "⚠️ " + unlockedBy +
-                    " BELOW LOCK RSSI (" + rssi + " dBm) (" +
-                    weakSignalCount + "/" + NUMBER_OF_MISSED_SCANS + ")");
+            // Log.w(TAG, "⚠️ " + unlockedBy +
+            //    " BELOW LOCK RSSI (" + rssi + " dBm) (" +
+            //     weakSignalCount + "/" + NUMBER_OF_MISSED_SCANS + ")");
 
             if (weakSignalCount >= NUMBER_OF_MISSED_SCANS) {
 
-                Log.e(TAG, "🔴 " + unlockedBy +
-                        " " + NUMBER_OF_MISSED_SCANS +
-                        " consecutive BELOW LOCK RSSI → OUT OF RANGE");
+                //  Log.e(TAG, "🔴 " + unlockedBy +
+                //     " " + NUMBER_OF_MISSED_SCANS +
+                //      " consecutive BELOW LOCK RSSI → OUT OF RANGE");
 
                 handleOutOfRange();
             }
@@ -150,17 +149,17 @@ public class BLEScanService extends Service {
         weakSignalCount = 0;
         missedScanCount = 0;
         signalSeenThisScan = false;
-        Log.i(TAG, "🟢 " + keyType + " detected → UNLOCK (RSSI " + rssi + ")");
+        //Log.i(TAG, "🟢 " + keyType + " detected → UNLOCK (RSSI " + rssi + ")");
 
         if (MainActivity.instance != null)
             MainActivity.instance.updateKeyImage(true);
-        else Log.d("BLEKeyService","DETCETDBUTELSE OF111");
+        else// Log.d("BLEKeyService","DETCETDBUTELSE OF111");
 
         if (UIUpdater.getInstance() != null) {
             UIUpdater.getInstance().stopKeylostRedAlertAnimation();
             UIUpdater.getInstance().stopBeeping();
         }
-        else Log.d("BLEKeyService","DETCETDBUTELSE OF222");
+        else //Log.d("BLEKeyService","DETCETDBUTELSE OF222");
 
         if (LoginActivity.getInstance() != null) {
             LoginActivity.getInstance().loginSuccess("Key Rider");
@@ -177,11 +176,11 @@ public class BLEScanService extends Service {
 
                 wakeLock.acquire(1000); // screen stays awake 1 second
             }
-            Log.d("BLEKeyService","DETCETDBUTifffffffffff OF333");
+            // Log.d("BLEKeyService","DETCETDBUTifffffffffff OF333");
 
         }
         else if(!MainActivity.MainisActive) {
-            Log.d("BLEKeyService","DETCETDBUTELSE OF333");
+            // Log.d("BLEKeyService","DETCETDBUTELSE OF333");
 
             Intent intent = new Intent(this, LoginActivity.class);
             intent.setFlags(
@@ -196,16 +195,16 @@ public class BLEScanService extends Service {
             SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A01");
             handler.postDelayed(() ->
                     SerialPortManager.getInstance().VCUSendToMCU("FFAA550101000A01"), 500);
-            Log.d("BLEKeyService","DETCETDBUTIFFF OF444");
+            // Log.d("BLEKeyService","DETCETDBUTIFFF OF444");
 
         }
-        else Log.d("BLEKeyService","DETCETDBUTELSE OF444");
+        else{} //Log.d("BLEKeyService","DETCETDBUTELSE OF444");
     }
 
     // ---------------- Out-of-range ----------------
     private void handleOutOfRange() {
 
-        Log.e(TAG, "🔴 " + unlockedBy + " OUT OF RANGE");
+        // Log.e(TAG, "🔴 " + unlockedBy + " OUT OF RANGE");
         keyInRange = false;
         consecutiveOutOfRangeCount = 0;
 
@@ -220,13 +219,14 @@ public class BLEScanService extends Service {
                     UIUpdater.getInstance().stopKeylostRedAlertAnimation();
                     UIUpdater.getInstance().stopBeeping();
                 }
-            } else {
-                keyLostWhileMoving = true;
-                if (UIUpdater.getInstance() != null) {
-                    UIUpdater.getInstance().startKeylostRedAlertAnimation();
-                    UIUpdater.getInstance().startBeeping(4);
-                }
             }
+//            } else {
+//                keyLostWhileMoving = true;
+//                if (UIUpdater.getInstance() != null) {
+//                    UIUpdater.getInstance().startKeylostRedAlertAnimation();
+//                    UIUpdater.getInstance().startBeeping(4);
+//                }
+//            }
         }
 
         if (MainActivity.instance != null)
@@ -264,7 +264,7 @@ public class BLEScanService extends Service {
             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 
             if (adapter == null || !adapter.isEnabled()) {
-                Log.w(TAG, "⚠️ Bluetooth disabled, skipping scan");
+                //  Log.w(TAG, "⚠️ Bluetooth disabled, skipping scan");
                 handler.postDelayed(this, 1000);
                 return;
             }
@@ -282,7 +282,7 @@ public class BLEScanService extends Service {
                     //Log.d(TAG, "▶️ BLE scan started");
                 }
             } catch (IllegalStateException e) {
-                Log.w(TAG, "⚠️ startScan failed (BT state change)");
+                //  Log.w(TAG, "⚠️ startScan failed (BT state change)");
             }
 
 
@@ -302,7 +302,7 @@ public class BLEScanService extends Service {
             int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 
             if (state == BluetoothAdapter.STATE_OFF) {
-                Log.w(TAG, "🔴 Bluetooth OFF → stopping BLE scan");
+                //  Log.w(TAG, "🔴 Bluetooth OFF → stopping BLE scan");
 
                 handler.removeCallbacks(scanRunnable);
                 safeStopScan();
@@ -314,7 +314,7 @@ public class BLEScanService extends Service {
             }
 
             else if (state == BluetoothAdapter.STATE_ON) {
-                Log.i(TAG, "🔵 Bluetooth ON → restarting BLE scan");
+                // Log.i(TAG, "🔵 Bluetooth ON → restarting BLE scan");
                 handler.removeCallbacks(scanRunnable);
                 handler.post(scanRunnable);
             }
@@ -329,14 +329,14 @@ public class BLEScanService extends Service {
 
             missedScanCount++;
 
-            Log.w(TAG, "⚠️ " + unlockedBy +
-                    " NO SIGNAL this scan (" +
-                    missedScanCount + "/"+NUMBER_OF_MISSED_SCANS+")");
+            // Log.w(TAG, "⚠️ " + unlockedBy +
+            //        " NO SIGNAL this scan (" +
+            //        missedScanCount + "/"+NUMBER_OF_MISSED_SCANS+")");
 
             if (missedScanCount >= NUMBER_OF_MISSED_SCANS) {
 
-                Log.e(TAG, "🔴 " + unlockedBy +
-                        NUMBER_OF_MISSED_SCANS+" consecutive MISSED SCANS → OUT OF RANGE");
+                //    Log.e(TAG, "🔴 " + unlockedBy +
+                //         NUMBER_OF_MISSED_SCANS+" consecutive MISSED SCANS → OUT OF RANGE");
 
                 handleOutOfRange();
             }
@@ -380,12 +380,12 @@ public class BLEScanService extends Service {
         handler.removeCallbacks(scanRunnable);
         handler.post(scanRunnable);
 
-        handler.post(rpmCheckRunnable);
+        //handler.post(rpmCheckRunnable);
 
         registerReceiver(btReceiver,
                 new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         loadRSSIThreshold();
-        Log.i(TAG, "⏳ BLEScanService started");
+        // Log.i(TAG, "⏳ BLEScanService started");
     }
 
 
@@ -401,7 +401,7 @@ public class BLEScanService extends Service {
             unregisterReceiver(btReceiver);
         } catch (Exception ignored) {}
 
-        Log.i(TAG, "🛑 BLEScanService stopped");
+        // Log.i(TAG, "🛑 BLEScanService stopped");
     }
 
     private void startForegroundNotification() {
@@ -432,7 +432,7 @@ public class BLEScanService extends Service {
                 //Log.d(TAG, "⏹️ BLE scan stopped");
             }
         } catch (IllegalStateException e) {
-            Log.w(TAG, "⚠️ stopScan ignored (Bluetooth OFF)");
+            //Log.w(TAG, "⚠️ stopScan ignored (Bluetooth OFF)");
         }
     }
 
@@ -440,7 +440,7 @@ public class BLEScanService extends Service {
         SharedPreferences prefs = getSharedPreferences("ble_settings", MODE_PRIVATE);
         rssiUnlockThreshold = prefs.getInt("rssi_unlock_threshold", -65);
 
-        Log.d(TAG, "Loaded RSSI unlock threshold = " + rssiUnlockThreshold);
+        //Log.d(TAG, "Loaded RSSI unlock threshold = " + rssiUnlockThreshold);
     }
     @Nullable
     @Override

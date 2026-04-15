@@ -2313,16 +2313,13 @@ public class UIUpdater  {
     private Runnable blinkRunnable;
     private Runnable stopBlinkingRunnable;
     private Runnable soundRunnable;
-
     private SoundPool soundPool;
     private int soundId;
     private boolean soundLoaded = false;
     public static boolean ignorefirstblink;
-
-
     public void initIndicatorLogic(Context context) {
         soundPool = new SoundPool.Builder().setMaxStreams(1).build();
-        soundId = soundPool.load(context, R.raw.turn22loud, 1);
+        soundId = soundPool.load(context, R.raw.indicatorsound_cleaned, 1);
         soundPool.setOnLoadCompleteListener((sp, id, status) -> {
             soundLoaded = (status == 0);
         });
