@@ -133,6 +133,24 @@ public class LoginActivity extends AppCompatActivity{
     private TextView tempWarningMessage;
 
 
+    //-----------------------------
+    // ===== Login attempt lock system =====
+    private int invalidAttemptCount = 0;
+    private long lastInvalidAttemptTime = 0L;
+
+    private static final int MAX_INVALID_ATTEMPTS = 3;
+    private static final long ATTEMPT_RESET_WINDOW_MS = 30_000; // 30 sec
+    private static final long LOCK_DURATION_MS = 30_000; // 30 sec
+
+    private boolean isInputLocked = false;
+    private long lockEndTime = 0L;
+
+    private final Handler loginLockHandler = new Handler(Looper.getMainLooper());
+    private Runnable countdownRunnable;
+
+    private TextView tvLoginLockTimer; // countdown text
+
+
     private final BroadcastReceiver frameReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -373,7 +391,7 @@ public class LoginActivity extends AppCompatActivity{
         patternView = findViewById(R.id.patternView);
        // btnRegister = findViewById(R.id.btnRegister);
         tempWarningMessage = findViewById(R.id.tempWarningMessage);
-
+        tvLoginLockTimer = findViewById(R.id.tvLoginLockTimer);
         SwitchCompat switchAuthMethod = findViewById(R.id.switchAuthMethod);
         switchAuthMethod.setThumbDrawable(ContextCompat.getDrawable(this, R.drawable.custom_thumb_selector));
         switchAuthMethod.setTrackDrawable(ContextCompat.getDrawable(this, R.drawable.custom_track));
@@ -419,7 +437,6 @@ public class LoginActivity extends AppCompatActivity{
 //            }
 //        });
 
-
         // PIN entry listener
         etCredential.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -435,19 +452,37 @@ public class LoginActivity extends AppCompatActivity{
 
         // Pattern login listener
         patternView.setOnPatternCompleteListener(pattern -> {
+
+            // 🚫 Completely block input during timer
+            if (isInputLocked) {
+                patternView.clearPattern();
+                return;
+            }
+
             String inputPattern = TextUtils.join("", pattern);
+
             for (Map.Entry<String, ?> entry : prefs.getAll().entrySet()) {
-                if (entry.getKey().endsWith("_pattern") && inputPattern.equals(entry.getValue())) {
-                    String username = entry.getKey().replace("user_", "").replace("_pattern", "");
+                if (entry.getKey().endsWith("_pattern") &&
+                        inputPattern.equals(entry.getValue())) {
+
+                    resetInvalidAttemptCounter();
+
+                    String username = entry.getKey()
+                            .replace("user_", "")
+                            .replace("_pattern", "");
+
                     loginSuccess(username);
                     return;
                 }
             }
-            playErrorSound();
+
+            //playErrorSound();
             showCustomToasterror("Invalid Pattern");
             vibrateError();
-        });
+            registerInvalidAttempt(true);
 
+            patternView.clearPattern();
+        });
         // Default: Show pattern
         switchToPatternMode();
 
@@ -619,6 +654,12 @@ public class LoginActivity extends AppCompatActivity{
     private static final int MAX_ATTEMPTS = 20;
 
     private void validatePin() {
+
+        if (isInputLocked) {
+            actualPin.setLength(0);
+            etCredential.setText("");
+            return;
+        }
         String inputPin = actualPin.toString();
 
         try {
@@ -678,16 +719,10 @@ public class LoginActivity extends AppCompatActivity{
             }
 
             // FAILED ATTEMPTS
-            failedAttempts++;
-            if (failedAttempts >= MAX_ATTEMPTS) {
-                showCustomToasterror("Too many failed attempts. Please try again later.");
-                playErrorSound();
-                vibrateError();
-            } else {
-                playErrorSound();
-                showCustomToasterror("Invalid PIN");
-                vibrateError();
-            }
+            //playErrorSound();
+            showCustomToasterror("Invalid PIN");
+            vibrateError();
+            registerInvalidAttempt(true);
 
             actualPin.setLength(0);
             etCredential.setText("");
@@ -700,17 +735,18 @@ public class LoginActivity extends AppCompatActivity{
             etCredential.setText("");
         }
     }
-
     int Level1_Line_Current = 35;
     int Level2_Line_Current = 65;
-    int Level3_Line_Current = 95;
+    int Level3_Line_Current = 90;
     int Level4_Line_Current = 110;
-
+    private double Speed_ratio_Value = 1.5536444;//// 10% high
+    //private double Speed_ratio_Value = 1.48331442;//// 5% high
+    //private double Speed_ratio_Value = 1.412404;//// 0% high
     public void loginSuccess(String username) {
 
         showCustomToast("Welcome " + username + " !");
         Log.d("adfsd","WELCOMETOAST "+username);
-
+        resetInvalidAttemptCounter();
         if(serialPortManager!=null){
             serialPortManager.VCUSendToMCU("FFAA550101000A01");
             new Handler(Looper.getMainLooper()).postDelayed(
@@ -755,7 +791,7 @@ public class LoginActivity extends AppCompatActivity{
                 // Fetch user data
                 String age = prefs.getString("user_" + username + "_age", "N/A");
 //                String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
-                String maxSpeedStr = prefs.getString("user_" + username + "_maxspeed", "0");
+                String maxSpeedStr = prefs.getString("user_" + username + "_maxspeed", "100");
 
 
                 Log.d("UserData", "Username: " + username);
@@ -773,7 +809,7 @@ public class LoginActivity extends AppCompatActivity{
 
                 // Speed calculation
                 double numerator = maxSpeed * 3.3125 * 1000;
-                double denominator = 60.0 * 1.4825;
+                double denominator = 60.0 * Speed_ratio_Value;
                 int xRounded = (int) Math.round(numerator / denominator);
                 String speedHex = String.format("%04X", xRounded);
                 String speedByte01 = speedHex.substring(2, 4); // low byte
@@ -800,8 +836,8 @@ public class LoginActivity extends AppCompatActivity{
 
                 // Frame templates
                 SharedPreferences boostPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                String durationHex = boostPrefs.getString("boost_duration_hex", "00");
-                String intervalHex = boostPrefs.getString("boost_interval_hex", "00");
+                String durationHex = boostPrefs.getString("boost_duration_hex", "05");
+                String intervalHex = boostPrefs.getString("boost_interval_hex", "05");
 
                 String finalSpeedFrame = "FFAA550103001510FCA807" + speedByte01 + speedByte02 + "00000000" + durationHex + intervalHex;//FFAA550103001510FCA807740E00000000051E  speed 3700(740E) 5seconds and 30 seconds boost
 //                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "000088040000";
@@ -830,7 +866,7 @@ public class LoginActivity extends AppCompatActivity{
                 }
             }//END OF SAME USER
 
-            String maxTorque = prefs.getString("user_" + username + "_torque", "Easy");
+            String maxTorque = prefs.getString("user_" + username + "_torque", "Insane");
             Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
             int lineCurrent;
             switch (maxTorque) {
@@ -987,7 +1023,7 @@ public class LoginActivity extends AppCompatActivity{
 
 
     public void onKeypadButtonClick(View view) {
-
+        if (isInputLocked) return;
         playTapSound();
         String tag = view.getTag().toString();
         vibrateTap();
@@ -1198,9 +1234,6 @@ public class LoginActivity extends AppCompatActivity{
 //        };
 //        delayedLockHandler.postDelayed(delayedLockRunnable, 5000);
     }
-
-
-
     private  String canId;
 
     private String getloginCanid()
@@ -1380,5 +1413,61 @@ public class LoginActivity extends AppCompatActivity{
             bmsHandler.postDelayed(this, 650); // 650ms interval
         }
     };
+
+    private void registerInvalidAttempt(boolean playTimerVoice) {
+        long now = System.currentTimeMillis();
+
+        // Reset if user waited >30 sec
+        if (now - lastInvalidAttemptTime > ATTEMPT_RESET_WINDOW_MS) {
+            invalidAttemptCount = 0;
+        }
+
+        invalidAttemptCount++;
+        lastInvalidAttemptTime = now;
+
+        if (invalidAttemptCount >= MAX_INVALID_ATTEMPTS) {
+            startInputLockTimer();
+            invalidAttemptCount = 0;
+
+            if (playTimerVoice) {
+                SoundPlayer.playOnce(this, R.raw.failedattemptssound);
+            }
+        } else {
+            SoundPlayer.playOnce(this, R.raw.errorsoundtrim);
+        }
+    }
+
+    private void startInputLockTimer() {
+        isInputLocked = true;
+        lockEndTime = System.currentTimeMillis() + LOCK_DURATION_MS;
+
+        patternView.setEnabled(false); //  disable dots
+        tvLoginLockTimer.setVisibility(View.VISIBLE);
+
+        countdownRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long remaining = lockEndTime - System.currentTimeMillis();
+
+                if (remaining <= 0) {
+                    isInputLocked = false;
+                    patternView.setEnabled(true); // ✅ enable again
+                    tvLoginLockTimer.setVisibility(View.GONE);
+                    return;
+                }
+
+                long seconds = remaining / 1000;
+                tvLoginLockTimer.setText("Try again in " + seconds + "s");
+
+                loginLockHandler.postDelayed(this, 1000);
+            }
+        };
+
+        loginLockHandler.post(countdownRunnable);
+    }
+    private void resetInvalidAttemptCounter() {
+        invalidAttemptCount = 0;
+        lastInvalidAttemptTime = 0L;
+    }
 }
 

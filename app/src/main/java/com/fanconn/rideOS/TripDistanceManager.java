@@ -21,6 +21,9 @@ public class TripDistanceManager {
         lastUpdateTime = preferences.getLong(KEY_LAST_TIME, System.currentTimeMillis());
     }
 
+    private double Speed_ratio_Value = 1.5536444;//// 10% high
+    //    private double Speed_ratio_Value = 1.48331442;//// 5% high
+//    private double Speed_ratio_Value = 1.412404;//// 0% high
     public void updateTrip(double rpm) {
         long currentTime = System.currentTimeMillis();
 
@@ -36,7 +39,7 @@ public class TripDistanceManager {
         // Speed formula (convert rpm to km/h)
         //double speed = (rpm * 60.0 * 1.412404) / 3.3125 * 1 / 1000.0; //0% km/h
 //        double speed = (rpm * 60.0 * 1.48331442) / 3.3125 * 1 / 1000.0; //5% km/h
-        double speed = (rpm * 60.0 * 1.5536444) / 3.3125 * 1 / 1000.0; //10% km/h
+        double speed = (rpm * 60.0 * Speed_ratio_Value) / 3.3125 * 1 / 1000.0; //10% km/h
 
 
         double deltaDistance = speed * deltaTimeHours;

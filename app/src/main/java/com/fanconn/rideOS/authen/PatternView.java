@@ -78,7 +78,6 @@ public class PatternView extends View {
         isMuted = context.getSharedPreferences("volume_prefs", Context.MODE_PRIVATE)
                 .getBoolean("is_muted", false);
     }
-
     @Override
     protected void onDraw(Canvas canvas) {
         if (dotCenters == null) calculateDotCenters();
@@ -86,15 +85,18 @@ public class PatternView extends View {
         for (float[] center : dotCenters) {
             canvas.drawCircle(center[0], center[1], radius, circlePaint);
         }
-
         canvas.drawPath(linePath, linePaint);
     }
-
     public void setLoginMode(boolean isLoginMode) {
         linePaint.setAlpha(isLoginMode ? 0 : 255);
         invalidate();
     }
-
+    public void clearPattern() {
+        pattern.clear();
+        linePath.reset();
+        isDrawing = false;
+        invalidate();
+    }
     private void calculateDotCenters() {
         dotCenters = new float[9][2];
         int width = getWidth();

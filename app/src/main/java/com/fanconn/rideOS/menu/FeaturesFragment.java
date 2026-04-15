@@ -54,6 +54,10 @@ public class FeaturesFragment extends Fragment {
     private TextView rssiValueText;
     private Context ctx;
     SwitchCompat handleLockSwitch;
+    private double Speed_ratio_Value = 1.5536444;//// 10% high
+    //private double Speed_ratio_Value = 1.48331442;//// 5% high
+    //private double Speed_ratio_Value = 1.412404;//// 0% hi
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -231,7 +235,7 @@ public class FeaturesFragment extends Fragment {
                 int seekBarValue = seekBar.getProgress() + min;
                 Log.d("adfsgd","REVERSERSETTEDAS "+seekBarValue);
                 double numerator = seekBarValue * 3.3125 * 1000;
-                double denominator = 60.0 * 1.5536444;
+                double denominator = 60.0 * Speed_ratio_Value;
                 double x = numerator / denominator;
                 int xRounded = (int) Math.round(x);
 

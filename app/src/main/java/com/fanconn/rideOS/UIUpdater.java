@@ -2547,6 +2547,11 @@ public class UIUpdater  {
 
     private boolean resetboost=false;
     private boolean wasMoving = false;
+    private double Speed_ratio_Value = 1.5536444;//// 10% high
+//    private double Speed_ratio_Value = 1.48331442;//// 5% high
+//    private double Speed_ratio_Value = 1.412404;//// 0% high
+
+
     public void updateCanData10F907A8(Heartbeat3 hb3) {
 
         long now = System.currentTimeMillis();
@@ -2554,7 +2559,7 @@ public class UIUpdater  {
         canPopupShown = false;
         tm.setTeleControllerAbruptOff(0);
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
-        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.5536444) / 3.3125 * 1 / 1000; // 10% high
+        double speed = (hb3.getBSG2_BYTE78() * 60.0 * Speed_ratio_Value) / 3.3125 * 1 / 1000; // 10% high
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.48331442) / 3.3125 * 1 / 1000;//5 % high
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.412404) / 3.3125 * 1 / 1000;// 0% high
 
