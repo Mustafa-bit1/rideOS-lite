@@ -462,8 +462,7 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginStart="163dp"
-                android:padding="10dp"
-                >
+                android:padding="10dp">
 
                 <!-- LEFT TEXT -->
                 <TextView
@@ -472,7 +471,7 @@
                     android:text="Set Max Torque"
                     android:textColor="#FFFFFF"
                     android:textSize="23sp"
-                    android:fontFamily="@font/kanit"/>
+                    android:fontFamily="@font/kanit" />
 
                 <!-- MIDDLE BLOCK -->
                 <LinearLayout
@@ -488,22 +487,31 @@
                         android:id="@+id/seekBarTorque"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:max="3"
+                        android:max="4"
                         android:progress="1"
                         android:paddingStart="25dp"
                         android:paddingEnd="25dp"
                         android:thumb="@drawable/reverse_speed_seekbarthumb"
                         android:progressTint="#F88213"
-                        android:progressBackgroundTint="#FFFFFF"
-                        />
+                        android:progressBackgroundTint="#FFFFFF" />
 
                     <!-- LABELS -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:weightSum="4"
+                        android:weightSum="5"
                         android:layout_marginTop="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Minimum"
+                            android:textColor="#00E5FF"
+                            android:gravity="center"
+                            android:textSize="15sp"
+                            android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -512,8 +520,8 @@
                             android:text="Easy"
                             android:textColor="#2AFF00"
                             android:gravity="center"
-                            android:textSize="17sp"
-                            android:fontFamily="@font/kanit"/>
+                            android:textSize="15sp"
+                            android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -522,8 +530,8 @@
                             android:text="Medium"
                             android:textColor="#FFEE00"
                             android:gravity="center"
-                            android:textSize="17sp"
-                            android:fontFamily="@font/kanit"/>
+                            android:textSize="15sp"
+                            android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -532,8 +540,8 @@
                             android:text="Rush"
                             android:textColor="#FC7E09"
                             android:gravity="center"
-                            android:textSize="17sp"
-                            android:fontFamily="@font/kanit"/>
+                            android:textSize="15sp"
+                            android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
@@ -542,8 +550,8 @@
                             android:text="Insane"
                             android:textColor="#FF4040"
                             android:gravity="center"
-                            android:textSize="17sp"
-                            android:fontFamily="@font/kanit"/>
+                            android:textSize="15sp"
+                            android:fontFamily="@font/kanit" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -553,11 +561,11 @@
                     android:id="@+id/tvTorqueLevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Lvl 1"
+                    android:text="Lvl 2"
                     android:textColor="#FFFFFF"
                     android:textSize="28sp"
                     android:fontFamily="@font/kanit"
-                    android:layout_marginStart="25dp"/>
+                    android:layout_marginStart="25dp" />
 
             </LinearLayout>
 

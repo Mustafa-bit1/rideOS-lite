@@ -642,7 +642,7 @@ public class TelemetryService extends Service {
                             .setTeleEvPowerState(shdtelemetrywhenunlocked ? 1 : 0);
 
                     sendRealTimeData(vin);
-//                    RideOSTelemetrySender.send(vin); // 🔥 YOUR backend
+//                    RideOSTelemetrySender.send(vin);
                     RideOSTelemetrySender.send(vin, rideOsVersion);
 
 

@@ -170,7 +170,7 @@ public class chargingUI extends AppCompatActivity {
         }
     }
 
-    private int actualSOC = 0; // store real SOC from hardware
+    private float actualSOC = 0; // store real SOC from hardware
     private int APUsoc = 0;
     private boolean isChargingAnimationRunning = false;
     AhTrackerManager ahTrackerManager;
@@ -180,15 +180,15 @@ public class chargingUI extends AppCompatActivity {
             @Override
             public void run() {
 //                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
-                actualSOC = (int)ahTrackerManager.getSOC();
+                actualSOC = ahTrackerManager.getSOC();
 
-//                Log.d("SOC", "Battery SOC: " + actualSOC);
+                Log.d("SOC", "BatteryCHARGINGUI SOC: " + actualSOC);
                 APUsoc = serialPortManager.hb3.getAPUBatteryLevel() / 10;
 
 
                 runOnUiThread(() -> {
                     if (lastUpdateTime == 0) {
-                        initializeRangeFromSOC(actualSOC);
+                        initializeRangeFromSOC((int)actualSOC);
                         lastUpdateTime = System.currentTimeMillis();
                     }
                     Heartbeat3 hb3 = serialPortManager.getHb3();
@@ -219,16 +219,17 @@ public class chargingUI extends AppCompatActivity {
                         binding.plugged.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.VISIBLE);
                         updateChargingRange(chargingbit);
-                        updateChargingETA(actualSOC, chargingbit);
+                        updateChargingETA((int)actualSOC, chargingbit);
                         // Update SOC text
                         if (actualSOC >= 0 && actualSOC <= 100) {
-                            String socValue = actualSOC + "%";
+                            String socValue = String.format("%.2f%%", actualSOC);
 
                             SpannableString spannable = new SpannableString(socValue);
                             spannable.setSpan(new RelativeSizeSpan(0.45f),
                                     socValue.length() - 1,
                                     socValue.length(),
                                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
                             binding.socText.setText(spannable);
                         }
 
@@ -335,7 +336,7 @@ public class chargingUI extends AppCompatActivity {
 
         pulseRunnable = new Runnable() {
 
-            int displaySOC = actualSOC;
+            int displaySOC = (int)actualSOC;
             boolean goingUp = true;
 
             @Override
@@ -354,7 +355,7 @@ public class chargingUI extends AppCompatActivity {
                 } else {
                     displaySOC -= 1;
                     if (displaySOC <= actualSOC) {
-                        displaySOC = actualSOC;
+                        displaySOC = (int)actualSOC;
                         goingUp = true;
                     }
                 }

@@ -735,13 +735,14 @@ public class LoginActivity extends AppCompatActivity{
             etCredential.setText("");
         }
     }
-    int Level1_Line_Current = 35;
-    int Level2_Line_Current = 65;
-    int Level3_Line_Current = 90;
+    int Level0_Line_Current = 15;
+    int Level1_Line_Current = 25;
+    int Level2_Line_Current = 50;
+    int Level3_Line_Current = 75;
     int Level4_Line_Current = 110;
-    private double Speed_ratio_Value = 1.5536444;//// 10% high
+//    private double Speed_ratio_Value = 1.5536444;//// 10% high
     //private double Speed_ratio_Value = 1.48331442;//// 5% high
-    //private double Speed_ratio_Value = 1.412404;//// 0% high
+    private final double Speed_ratio_Value = 1.412404;//// 0% high
     public void loginSuccess(String username) {
 
         showCustomToast("Welcome " + username + " !");
@@ -874,6 +875,8 @@ public class LoginActivity extends AppCompatActivity{
                 case "Rush":   lineCurrent = Level3_Line_Current; break;
                 case "Insane": lineCurrent = Level4_Line_Current; break;
                 case "Easy":   lineCurrent = Level1_Line_Current; break;
+                case "Minimum":   lineCurrent = Level0_Line_Current; break;
+
                 default:       lineCurrent = Level4_Line_Current; break;
             }
 
@@ -926,10 +929,10 @@ public class LoginActivity extends AppCompatActivity{
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 4500);
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5000);
-            new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5500);
-            new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 6000);
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5500);
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 6000);
 //            new Handler(Looper.getMainLooper()).postDelayed(
 //                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 6500);
 

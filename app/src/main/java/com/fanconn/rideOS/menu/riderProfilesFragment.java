@@ -204,22 +204,40 @@ public class riderProfilesFragment extends Fragment {
             @Override public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
-        seekBarTorque.setMax(3);
+        seekBarTorque.setMax(4);
         seekBarTorque.setProgress(1);
+        selectedTorqueLevel = "Easy";
         tvTorqueLevel.setText(selectedTorqueLevel);
 
         seekBarTorque.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch (progress) {
-                    case 0: selectedTorqueLevel = "Easy"; break;
-                    case 1: selectedTorqueLevel = "Medium"; break;
-                    case 2: selectedTorqueLevel = "Rush"; break;
-                    default: selectedTorqueLevel = "Insane"; break;
+                    case 0:
+                        selectedTorqueLevel = "Minimum";
+                        break;
+                    case 1:
+                        selectedTorqueLevel = "Easy";
+                        break;
+                    case 2:
+                        selectedTorqueLevel = "Medium";
+                        break;
+                    case 3:
+                        selectedTorqueLevel = "Rush";
+                        break;
+                    case 4:
+                        selectedTorqueLevel = "Insane";
+                        break;
                 }
+
                 tvTorqueLevel.setText(selectedTorqueLevel);
             }
-            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
-            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
         });
 
         // ----- ADD RIDER BUTTON -----
@@ -450,6 +468,8 @@ public class riderProfilesFragment extends Fragment {
         etAge.setText("");
         seekBarMaxSpeed.setProgress(40);
         seekBarTorque.setProgress(1);
+        selectedTorqueLevel = "Easy";
+        tvTorqueLevel.setText("Easy");
         etPin.setText("");
         etPinConfirm.setText("");
         resetPatterns();
@@ -657,10 +677,10 @@ public class riderProfilesFragment extends Fragment {
 
         // Advanced
         seekBarMaxSpeed.setProgress(40);
-        seekBarTorque.setProgress(1);
         tvMaxspeedValue.setText((20 + 40) + " Kmph");
-        tvTorqueLevel.setText("Medium");
-
+        seekBarTorque.setProgress(1);
+        selectedTorqueLevel = "Easy";
+        tvTorqueLevel.setText("Easy");
         // Security (reset inputs)
         etPin.setText("");
         etPinConfirm.setText("");
