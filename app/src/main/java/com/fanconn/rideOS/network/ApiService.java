@@ -1,6 +1,7 @@
 package com.fanconn.rideOS.network;
 
 import com.fanconn.rideOS.RealTimeData;
+import com.fanconn.rideOS.RealTimeDataApi;
 import com.fanconn.rideOS.UIUpdater;
 
 import okhttp3.ResponseBody;
@@ -15,5 +16,5 @@ public interface ApiService {
 
     // Change RealTimeData to VehicleData (or your class name)
     @POST("api/realtimedata/save")
-    Call<ResponseBody> saveRealTimeData(@Body RealTimeData data);
+    Call<ResponseBody> saveRealTimeData(@Body RealTimeDataApi data);
 }

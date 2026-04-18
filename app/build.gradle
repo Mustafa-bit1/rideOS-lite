@@ -148,4 +148,7 @@ dependencies {
     implementation 'com.google.guava:guava:30.1-android'
     implementation files('libs/fancsdk.aar')
 
+
+    implementation "androidx.room:room-runtime:2.6.1"
+    annotationProcessor "androidx.room:room-compiler:2.6.1"
 }

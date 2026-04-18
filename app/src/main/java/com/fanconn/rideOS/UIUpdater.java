@@ -1126,13 +1126,13 @@ public class UIUpdater  {
             if (temp >= 60) allBelow45 = false;
         }
 
-        // ✅ Reset 45-warning ONLY when all temps are below 45
+        //  Reset 45-warning ONLY when all temps are below 45
         if (allBelow45 && is45WarningShown) {
             //Log.d("TempReset", "All NTCs below 45. Resetting 10s warning flag.");
             is45WarningShown = false;
         }
 
-        // 🔥 Handle 50+ Continuous warning
+        //  Handle 50+ Continuous warning
         if (anyIs50OrAbove) {
             if (!is50WarningActive) {
                 Log.d("TempWarning", "Temp >= 50. Starting continuous warning.");
@@ -1146,7 +1146,7 @@ public class UIUpdater  {
                 is50WarningActive = true;
             }
         } else {
-            // ❄️ Stop 50°C continuous warning if previously active
+            //  Stop 50°C continuous warning if previously active
             if (is50WarningActive) {
                 Log.d("TempWarning", "Temp dropped below 50. Stopping continuous warning.");
                 stopTempWarningAnimation();
@@ -1155,7 +1155,7 @@ public class UIUpdater  {
                 is50WarningActive = false;
             }
 
-            // ✅ Handle 45°C exactly → 10s warning only ONCE
+            //  Handle 45°C exactly → 10s warning only ONCE
             if (anyIs45 && !is45WarningShown) {
                 Log.d("TempWarning", "Temp == 45. Starting 10s warning.");
                 startTempWarningAnimation();

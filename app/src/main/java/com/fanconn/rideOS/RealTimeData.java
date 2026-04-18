@@ -1,6 +1,14 @@
 package com.fanconn.rideOS;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import com.google.gson.annotations.Expose;
+@Entity(tableName = "telemetry_queue")
 public class RealTimeData {
+
+    @PrimaryKey(autoGenerate = true)
+    public long id;
+
     public String vinNumber;
     public double speed_kmph;
     public double tripkm;
@@ -8,8 +16,6 @@ public class RealTimeData {
     public double motorTemp;
     public double bmsMosTemp;
     public String ntc;
-    public String data;
-
     public double currentconsumption;
     public double batvoltage;
     public double remainingCapacity_AH;
@@ -24,4 +30,5 @@ public class RealTimeData {
     public double apuSoc;
     public String lat_long;
     public String time;
+    public String data;
 }

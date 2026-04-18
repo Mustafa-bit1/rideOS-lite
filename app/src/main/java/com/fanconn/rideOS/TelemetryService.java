@@ -775,7 +775,7 @@ public class TelemetryService extends Service {
 //                }).start();
 //            }
 
-            if (TelemetryStagingManager.getInstance().hasData()) {
+            if (TelemetryStagingManager.getInstance(getApplicationContext()).hasData()) {
                 flushStagedData();
             }
 
@@ -792,30 +792,33 @@ public class TelemetryService extends Service {
 
         } else {
             //Log.e("Telemetry", "NOOINTENET VAIL SNEDNING ");
-            TelemetryStagingManager.getInstance().addData(data);
+            TelemetryStagingManager.getInstance(getApplicationContext()).addData(data);
         }
     }
     private boolean isFlushing = false;
-
     private void flushStagedData() {
-        if (isFlushing) return;   // prevents duplicate workers
-
+        if (isFlushing) return;
         isFlushing = true;
-        telemetryHandler.post(() -> {   // SAME LOGIC, different execution model
-            while (TelemetryStagingManager.getInstance().hasData()
-                    && hasActiveInternetConnection()) {
+
+        telemetryHandler.post(() -> {
+            try {
+                if (!hasActiveInternetConnection()) return;
 
                 List<RealTimeData> batch =
-                        TelemetryStagingManager.getInstance().pollBatch();
+                        TelemetryStagingManager
+                                .getInstance(getApplicationContext())
+                                .pollBatch();
 
                 for (RealTimeData r : batch) {
-                    sendToServer(r);   // SAME sending logic
-                    try { Thread.sleep(50); } catch (Exception ignored) {}
+                    sendToServer(r);
+                    try {
+                        Thread.sleep(100); // smooth throttle
+                    } catch (Exception ignored) {}
                 }
 
-                try { Thread.sleep(300); } catch (Exception ignored) {}
+            } finally {
+                isFlushing = false;
             }
-            isFlushing = false;
         });
     }
 
@@ -868,26 +871,47 @@ public class TelemetryService extends Service {
     }
 
     private void sendToServer(RealTimeData data) {
-        //Log.d("TelemetryService", "12311111111111111111111");
 
-        apiService.saveRealTimeData(data).enqueue(new Callback<ResponseBody>() {
+        RealTimeDataApi apiData = new RealTimeDataApi();
+
+        apiData.vinNumber = data.vinNumber;
+        apiData.speed_kmph = data.speed_kmph;
+        apiData.tripkm = data.tripkm;
+        apiData.controllerMosTemp = data.controllerMosTemp;
+        apiData.motorTemp = data.motorTemp;
+        apiData.bmsMosTemp = data.bmsMosTemp;
+        apiData.ntc = data.ntc;
+        apiData.currentconsumption = data.currentconsumption;
+        apiData.batvoltage = data.batvoltage;
+        apiData.remainingCapacity_AH = data.remainingCapacity_AH;
+        apiData.inAH = data.inAH;
+        apiData.inAH_by_charger = data.inAH_by_charger;
+        apiData.inAH_by_regen = data.inAH_by_regen;
+        apiData.outAH = data.outAH;
+        apiData.ev_power_state = data.ev_power_state;
+        apiData.currentRider = data.currentRider;
+        apiData.tirepressure = data.tirepressure;
+        apiData.soc = data.soc;
+        apiData.apuSoc = data.apuSoc;
+        apiData.lat_long = data.lat_long;
+        apiData.time = data.time;
+        apiData.data = data.data;
+
+        apiService.saveRealTimeData(apiData).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    //Log.i("TelemetryService", "✅ RealTimeData sent successfully: " + response.code());
-                } else {
-                    Log.e("TelemetryService", "❌ RealTimeData failed with code: " + response.code());
-                    try {
-                        Log.e("TelemetryService", "Error body: " + response.errorBody().string());
-                    } catch (Exception ignored) {}
+                if (!response.isSuccessful()) {
+                    Log.e("TelemetryService", "❌ RealTimeData failed: " + response.code());
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                // If sending fails due to network, re-stage
-                TelemetryStagingManager.getInstance().addData(data);
-                Log.e("TelemetryService", "Failed to send data, staging", t);
+                TelemetryStagingManager
+                        .getInstance(getApplicationContext())
+                        .addData(data);
+
+                Log.e("TelemetryService", "Failed, re-staged", t);
             }
         });
     }
