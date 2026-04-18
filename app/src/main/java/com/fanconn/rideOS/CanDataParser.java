@@ -57,40 +57,40 @@ public class CanDataParser {
 
     public static  void parseCanData18954001(Heartbeat3 hb3, String canData) {
         //NTC VALUES
-        Log.d("dassfg","FRAMENUMBEROFICV  "+FrameUtils.getByteSubstring(canData,0,0));
+       // Log.d("dassfg","FRAMENUMBEROFICV  "+FrameUtils.getByteSubstring(canData,0,0));
         switch (FrameUtils.getByteSubstring(canData,0,0))
         {
             case "01":
                 hb3.setcell1TO3(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","kELL 1 to 3 --"+FrameUtils.getByteSubstring(canData,1,6));
+             //   Log.d("CELLVOLATGE","kELL 1 to 3 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "02":
                 hb3.setcell4TO6(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","CELL 4 to 6 --"+FrameUtils.getByteSubstring(canData,1,6));
+              //  Log.d("CELLVOLATGE","CELL 4 to 6 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "03":
                 hb3.setcell7TO9(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","CELL 7 to 9 --"+FrameUtils.getByteSubstring(canData,1,6));
+               // Log.d("CELLVOLATGE","CELL 7 to 9 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "04":
                 hb3.setcell10TO12(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","CELL 10 to 12 --"+FrameUtils.getByteSubstring(canData,1,6));
+               // Log.d("CELLVOLATGE","CELL 10 to 12 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "05":
                 hb3.setcell13TO15(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","CELL 13 to 15 --"+FrameUtils.getByteSubstring(canData,1,6));
+                //Log.d("CELLVOLATGE","CELL 13 to 15 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "06":
                 hb3.setcell16TO18(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","CELL 16 to 18 --"+FrameUtils.getByteSubstring(canData,1,6));
+              //  Log.d("CELLVOLATGE","CELL 16 to 18 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "07":
                 hb3.setcell19TO21(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","CELL 19 to 21--"+FrameUtils.getByteSubstring(canData,1,6));
+                //Log.d("CELLVOLATGE","CELL 19 to 21--"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "08":
                 hb3.setcell22TO23(FrameUtils.getByteSubstring(canData,1,7));
-                Log.d("CELLVOLATGE","CELL 22 to 23 --"+FrameUtils.getByteSubstring(canData,1,4));
+              //  Log.d("CELLVOLATGE","CELL 22 to 23 --"+FrameUtils.getByteSubstring(canData,1,4));
                 break;
             default:
                 break;
@@ -101,13 +101,13 @@ public class CanDataParser {
     public static  void parseCanData160B8001(Heartbeat3 hb3, String canData) {
 
         hb3.setChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//charge AH
-        Log.d("TROBLESHOOTINGCOLOUMB","SETTINGCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
+        //Log.d("TROBLESHOOTINGCOLOUMB","SETTINGCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
 
     }
     public static  void parseCanData160D8001(Heartbeat3 hb3, String canData) {
 
         hb3.setDisChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//discharge AH
-        Log.d("TROBLESHOOTINGCOLOUMB","SETTINGDISCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
+        //Log.d("TROBLESHOOTINGCOLOUMB","SETTINGDISCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
     }
 
     public static  void parseCanData18934002(Heartbeat3 hb3, String canData) {

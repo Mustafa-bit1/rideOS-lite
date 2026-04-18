@@ -381,7 +381,6 @@ public class LoginActivity extends AppCompatActivity{
         TelemetryService.shdtelemetrywhenunlocked=false;
         instance = this;
 
-        Log.d("nolockbug","THIUSLOGGEDTHELOGINONCRETE");
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
@@ -746,7 +745,7 @@ public class LoginActivity extends AppCompatActivity{
     public void loginSuccess(String username) {
 
         showCustomToast("Welcome " + username + " !");
-        Log.d("adfsd","WELCOMETOAST "+username);
+        //Log.d("adfsd","WELCOMETOAST "+username);
         resetInvalidAttemptCounter();
         if(serialPortManager!=null){
             serialPortManager.VCUSendToMCU("FFAA550101000A01");
@@ -794,10 +793,10 @@ public class LoginActivity extends AppCompatActivity{
 //                String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
                 String maxSpeedStr = prefs.getString("user_" + username + "_maxspeed", "100");
 
-
-                Log.d("UserData", "Username: " + username);
-                Log.d("UserData", "Age: " + age);
-                Log.d("UserData", "Max Speed: " + maxSpeedStr);
+//
+//                Log.d("UserData", "Username: " + username);
+//                Log.d("UserData", "Age: " + age);
+//                Log.d("UserData", "Max Speed: " + maxSpeedStr);
 //                Log.d("UserData", "Max Torque: " + maxTorque);
 
                 // Convert speed string to int
@@ -805,7 +804,7 @@ public class LoginActivity extends AppCompatActivity{
                 try {
                     maxSpeed = Integer.parseInt(maxSpeedStr);
                 } catch (NumberFormatException e) {
-                    Log.e("ParseError", "Invalid maxSpeed: " + maxSpeedStr);
+                  //  Log.e("ParseError", "Invalid maxSpeed: " + maxSpeedStr);
                 }
 
                 // Speed calculation
@@ -868,7 +867,7 @@ public class LoginActivity extends AppCompatActivity{
             }//END OF SAME USER
 
             String maxTorque = prefs.getString("user_" + username + "_torque", "Insane");
-            Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
+           // Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
             int lineCurrent;
             switch (maxTorque) {
                 case "Medium": lineCurrent = Level2_Line_Current; break;
@@ -897,30 +896,30 @@ public class LoginActivity extends AppCompatActivity{
             if (batteryLevel ==0) { // phase max , all normal
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";//Phase 0 all normal
-                Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
+               // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
             }
             else if (batteryLevel <= 5 && !UIUpdater.apuflag) { // phase 0 , all normal
                 //torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
                 torqueFrame = "FFAA550103001510FBA8072800A000B004C800";//line current 10amps(2800)
-                Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
+               // Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
             }
             else if (batteryLevel <= 20) { //  line 15A, phase max, all normal
                 torqueFrame = "FFAA550103001510FBA8073C00A000B004C800";
-                Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
+              //  Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
             } else if (batteryLevel <= 90) { // phase max, all normal  A000(45A regen) - C800(50A)
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
-                Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
+              //  Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
             } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
-                Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
+              //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
             }
             else{//all max
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
-                Log.d("SEDINGSOCFRAMEAS","else "+torqueFrame);
+              //  Log.d("SEDINGSOCFRAMEAS","else "+torqueFrame);
             }
 
             final String finalTorqueFrame = torqueFrame; // make it final for lambdas
-            Log.d("dacsdvsf","THISISCONTROLECOMS  "+finalTorqueFrame);
+           // Log.d("dacsdvsf","THISISCONTROLECOMS  "+finalTorqueFrame);
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 3500);
             new Handler(Looper.getMainLooper()).postDelayed(
@@ -1138,7 +1137,7 @@ public class LoginActivity extends AppCompatActivity{
 
         if (chargingUIFlagRunnable != null) {
             chargingUIFlagHandler.removeCallbacks(chargingUIFlagRunnable);
-            Log.d("LoginActivity", "Charging UI flag delay cancelled");
+            //Log.d("LoginActivity", "Charging UI flag delay cancelled");
         }
     }
 
@@ -1458,7 +1457,6 @@ public class LoginActivity extends AppCompatActivity{
                     tvLoginLockTimer.setVisibility(View.GONE);
                     return;
                 }
-
                 long seconds = remaining / 1000;
                 tvLoginLockTimer.setText("Try again in " + seconds + "s");
 

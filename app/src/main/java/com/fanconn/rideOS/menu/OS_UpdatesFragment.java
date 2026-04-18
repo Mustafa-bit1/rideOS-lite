@@ -311,7 +311,7 @@ public class OS_UpdatesFragment extends Fragment {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } else {
-                Log.e("OTA", "Target app not found: " + targetPkg);
+              //  Log.e("OTA", "Target app not found: " + targetPkg);
                 return;
             }
 
@@ -320,10 +320,10 @@ public class OS_UpdatesFragment extends Fragment {
                     "sh", "-c", "am force-stop " + myPkg
             });
 
-            Log.i("OTA", "Force-stopped self and launched target app");
+           // Log.i("OTA", "Force-stopped self and launched target app");
 
         } catch (Exception e) {
-            Log.e("OTA", "Failed to force stop and launch", e);
+          //  Log.e("OTA", "Failed to force stop and launch", e);
         }
     }
 
@@ -438,7 +438,7 @@ public class OS_UpdatesFragment extends Fragment {
 
     private void updateVersionInfo(View view) {
 
-        Log.d(TAG, "updateVersionInfo() called");
+      //  Log.d(TAG, "updateVersionInfo() called");
 
         TextView versionText = view.findViewById(R.id.version);
         TextView installedDateTV = view.findViewById(R.id.installeddate);
@@ -461,11 +461,11 @@ public class OS_UpdatesFragment extends Fragment {
             versionName = pInfo.versionName;
             updateTime = pInfo.lastUpdateTime;
 
-            Log.d(TAG, "App version=" + versionName +
-                    " updateTime=" + updateTime);
+//            Log.d(TAG, "App version=" + versionName +
+//                    " updateTime=" + updateTime);
 
         } catch (Exception e) {
-            Log.e(TAG, "Failed to read package info", e);
+           // Log.e(TAG, "Failed to read package info", e);
         }
 
         installedDateTV.setText(
@@ -478,9 +478,9 @@ public class OS_UpdatesFragment extends Fragment {
 
         //Log.d(TAG, "Build number displayed: GA_" + Build.DISPLAY);
 
-        // 🔐 Hidden 7-tap activation
+        //  Hidden 7-tap activation
         buildNumTV.setOnClickListener(v -> {
-            Log.d(TAG, "Build number tapped");
+         //   Log.d(TAG, "Build number tapped");
             handleBuildNumberTap();
         });
 
@@ -490,11 +490,11 @@ public class OS_UpdatesFragment extends Fragment {
 
         if (deviceName == null) {
             deviceName = Build.DEVICE;
-            Log.w(TAG, "Device name not found in settings, using Build.DEVICE");
+           // Log.w(TAG, "Device name not found in settings, using Build.DEVICE");
         }
 
         deviceNameTV.setText(deviceName);
-        Log.d(TAG, "Device name=" + deviceName);
+       // Log.d(TAG, "Device name=" + deviceName);
 
         //String bluetoothName = "Unavailable";
 //        BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
@@ -520,15 +520,15 @@ public class OS_UpdatesFragment extends Fragment {
 
     private void triggerHiddenMcuOta() {
 
-        Log.i(TAG, "triggerHiddenMcuOta() started");
+       // Log.i(TAG, "triggerHiddenMcuOta() started");
 
         if (!FrameUtils.isNetworkAvailable(requireActivity())) {
-            Log.e(TAG, "No internet connection → aborting MCU OTA");
+           // Log.e(TAG, "No internet connection → aborting MCU OTA");
             showCustomToast("No internet connection");
             return;
         }
 
-        Log.d(TAG, "Internet available, checking versions");
+       // Log.d(TAG, "Internet available, checking versions");
 
         new Thread(() -> {
 
@@ -542,19 +542,19 @@ public class OS_UpdatesFragment extends Fragment {
                     serverVersion > 0 &&
                             serverVersion > localVersion;
 
-            Log.d(TAG, "MCU updateRequired=" + updateRequired);
+          //  Log.d(TAG, "MCU updateRequired=" + updateRequired);
 
             if (!isAdded()) {
-                Log.w(TAG, "Fragment not attached, aborting UI update");
+              // Log.w(TAG, "Fragment not attached, aborting UI update");
                 return;
             }
 
             requireActivity().runOnUiThread(() -> {
                 if (updateRequired) {
-                    Log.i(TAG, "MCU update REQUIRED → launching updater");
+                   // Log.i(TAG, "MCU update REQUIRED → launching updater");
                     forceStopSelfAndLaunchOther();
                 } else {
-                    Log.i(TAG, "MCU already up-to-date");
+                  //  Log.i(TAG, "MCU already up-to-date");
                     showCustomToast("No update available");
                 }
             });
@@ -570,7 +570,7 @@ public class OS_UpdatesFragment extends Fragment {
 
         // Reset if delayed
         if (now - lastTapTime > TAP_TIMEOUT_MS) {
-            Log.w(TAG, "Tap timeout exceeded → resetting tap counter");
+            //Log.w(TAG, "Tap timeout exceeded → resetting tap counter");
             buildTapCount = 0;
         }
 
@@ -585,7 +585,7 @@ public class OS_UpdatesFragment extends Fragment {
         }
 
         //Activation reached
-        Log.i(TAG, "Hidden MCU OTA mode ACTIVATED");
+       // Log.i(TAG, "Hidden MCU OTA mode ACTIVATED");
 
         buildTapCount = 0;
         lastTapTime = 0;
@@ -626,17 +626,17 @@ public class OS_UpdatesFragment extends Fragment {
                 liveVersion = serialPortManager.mad.getMcuVersions();
             }
         } catch (Exception e) {
-            Log.e("OTA", "MCU version read failed", e);
+           // Log.e("OTA", "MCU version read failed", e);
         }
 
         if (liveVersion > 0) {
             saveLastMcuVersion(liveVersion);
-            Log.d("OTA", "LIVE MCU version used: " + liveVersion);
+           // Log.d("OTA", "LIVE MCU version used: " + liveVersion);
             return liveVersion;
         }
 
         int storedVersion = getLastSavedMcuVersion();
-        Log.w("OTA", "MCU invalid, fallback to stored version: " + storedVersion);
+       // Log.w("OTA", "MCU invalid, fallback to stored version: " + storedVersion);
         return storedVersion;
     }
     public static int fetchServerVersion(String versionUrl) {
@@ -651,7 +651,7 @@ public class OS_UpdatesFragment extends Fragment {
             connection.setReadTimeout(5000);
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                Log.e("OTA", "HTTP error: " + connection.getResponseCode());
+               // Log.e("OTA", "HTTP error: " + connection.getResponseCode());
                 return -1;
             }
 
@@ -669,7 +669,7 @@ public class OS_UpdatesFragment extends Fragment {
             return obj.getInt("version");
 
         } catch (Exception e) {
-            Log.e("OTA", "Failed to fetch version", e);
+           // Log.e("OTA", "Failed to fetch version", e);
             return -1;
         } finally {
             try {
@@ -682,18 +682,16 @@ public class OS_UpdatesFragment extends Fragment {
 
         int localVersion = getEffectiveLocalMcuVersion();
 
-        Log.d("OTA", "Server version = " + serverVersion);
-        Log.d("OTA", "Local version  = " + localVersion);
-
-        // ❌ Any invalid version → STOP
+      //  Log.d("OTA", "Server version = " + serverVersion);
+       // Log.d("OTA", "Local version  = " + localVersion);
         if (serverVersion <= 0 || localVersion <= 0) {
-            Log.w("OTA", "Invalid version detected, update blocked");
+           // Log.w("OTA", "Invalid version detected, update blocked");
             return false;
         }
 
         boolean updateRequired = serverVersion > localVersion;
 
-        Log.d("OTA", "Update required = " + updateRequired);
+      //  Log.d("OTA", "Update required = " + updateRequired);
         return updateRequired;
     }
 

@@ -68,23 +68,23 @@ public class ScooterMqttClient {
 
                 @Override
                 public void connectComplete(boolean reconnect, String serverURI) {
-                    Log.d(TAG, "✅ MQTT connectComplete | reconnect = " + reconnect);
+                   // Log.d(TAG, " MQTT connectComplete | reconnect = " + reconnect);
 
                     String topic = COMMAND_PREFIX + vin;
                     client.subscribe(topic, 1);
-                    Log.d(TAG, "📡 Subscribed to: " + topic);
+                   // Log.d(TAG, "📡 Subscribed to: " + topic);
                 }
 
                 @Override
                 public void connectionLost(Throwable cause) {
-                    //Log.e(TAG, "❌ MQTT connection lost", cause);
+                    //Log.e(TAG, " MQTT connection lost", cause);
                 }
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) {
                     String payload = new String(message.getPayload());
 
-//                    Log.d(TAG, "📥 Command received");
+//                    Log.d(TAG, " Command received");
 //                    Log.d(TAG, "   Topic   : " + topic);
 //                    Log.d(TAG, "   Payload : " + payload);
 
@@ -93,7 +93,7 @@ public class ScooterMqttClient {
 
                 @Override
                 public void deliveryComplete(IMqttDeliveryToken token) {
-                    //Log.d(TAG, "✅ MQTT delivery complete");
+                    //Log.d(TAG, " MQTT delivery complete");
                 }
             });
 
@@ -106,24 +106,23 @@ public class ScooterMqttClient {
 
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                   // Log.d(TAG, "✅ Connected to MQTT broker");
-                    // ❗ DO NOT subscribe here
+                   // Log.d(TAG, " Connected to MQTT broker");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    //Log.e(TAG, "❌ MQTT connect failed", exception);
+                    //Log.e(TAG, " MQTT connect failed", exception);
                 }
             });
 
         } catch (Exception e) {
-            //Log.e(TAG, "❌ MQTT setup error", e);
+            //Log.e(TAG, " MQTT setup error", e);
         }
     }
 
     private void subscribe(String topic) throws MqttException {
         client.subscribe(topic, 1);
-        //Log.d(TAG, "📡 Subscribed to: " + topic);
+        //Log.d(TAG, " Subscribed to: " + topic);
     }
 
     // ----------------------------------------------------
@@ -145,9 +144,8 @@ public class ScooterMqttClient {
 
             String ackStatus = "success";
 
-            // ❌ STRICT VALIDATION — reject ANY whitespace in value
             if (value.matches(".*\\s+.*")) {
-               // Log.e(TAG, "❌ Invalid command value (contains spaces): [" + value + "]");
+               // Log.e(TAG, " Invalid command value (contains spaces): [" + value + "]");
                 sendAck(vin, clientId, commandType, value, commandId, ackStatus);
                 return;
             }
@@ -236,7 +234,7 @@ public class ScooterMqttClient {
                     }
 
                     // ---- UNKNOWN FRAME ----
-                    Log.d(TAG, "Unknown frame ignored: " + value);
+                  //  Log.d(TAG, "Unknown frame ignored: " + value);
                     ackStatus = "invalidcommand";
                     break;
                 case "HANDLELOCK":
@@ -361,7 +359,7 @@ public class ScooterMqttClient {
                 case "AIRPLANE":
                     if ("1".equals(value)) {
                         ackStatus = "success";
-                        Log.d("AIRPLANE", " Airplane mode auto-disabled");
+                       // Log.d("AIRPLANE", " Airplane mode auto-disabled");
                         DeviceNetworkController.enableAirplaneModeWithAutoOff(
                                 context,
                                 3000   // 3 seconds
@@ -373,14 +371,14 @@ public class ScooterMqttClient {
                     break;
 
                 default:
-                    //Log.e(TAG, "❌ Unknown commandType: " + commandType);
+                    //Log.e(TAG, " Unknown commandType: " + commandType);
                     ackStatus = "invalidcommand";
             }
 
-            // ✅ Send ACK only once
+            //  Send ACK only once
             sendAck(vin, clientId, commandType, value, commandId, ackStatus);
         } catch (Exception e) {
-            //Log.e(TAG, "❌ Command parse failed", e);
+            //Log.e(TAG, " Command parse failed", e);
         }
     }
 
@@ -417,9 +415,9 @@ public class ScooterMqttClient {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (LoginActivity.instance != null) {
                 LoginActivity.instance.loginSuccess("Key Rider");
-               // Log.d(TAG, "🔓 Remote unlock executed after screen shown");
+               // Log.d(TAG, " Remote unlock executed after screen shown");
             } else {
-                //Log.e(TAG, "❌ LoginActivity instance still null");
+                //Log.e(TAG, " LoginActivity instance still null");
             }
 
             PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -453,7 +451,7 @@ public class ScooterMqttClient {
     ) {
 
         if (client == null || !client.isConnected()) {
-            Log.e(TAG, "❌ Cannot send ACK, MQTT not connected");
+//            Log.e(TAG, " Cannot send ACK, MQTT not connected");
             return;
         }
 
@@ -475,10 +473,10 @@ public class ScooterMqttClient {
                     false
             );
 
-            Log.d(TAG, "📤 ACK sent → " + ack.toString());
+//            Log.d(TAG, " ACK sent → " + ack.toString());
 
         } catch (Exception e) {
-            Log.e(TAG, "❌ ACK publish failed", e);
+//            Log.e(TAG, " ACK publish failed", e);
         }
     }
     // ----------------------------------------------------
@@ -489,10 +487,10 @@ public class ScooterMqttClient {
         try {
             if (client != null && client.isConnected()) {
                 client.disconnect();
-                //Log.d(TAG, "🔌 MQTT disconnected");
+                //Log.d(TAG, " MQTT disconnected");
             }
         } catch (Exception e) {
-            //Log.e(TAG, "❌ MQTT disconnect error", e);
+            //Log.e(TAG, " MQTT disconnect error", e);
         }
     }
 
@@ -511,7 +509,7 @@ public class ScooterMqttClient {
     private void startRideOSRemoteOta(Context context) {
 
         if (!FrameUtils.isNetworkAvailable(context)) {
-            Log.e("MQTT", "❌ No internet, rideOS OTA aborted");
+//            Log.e("MQTT", " No internet, rideOS OTA aborted");
             return;
         }
 
@@ -521,15 +519,11 @@ public class ScooterMqttClient {
     }
 
     private void triggerMcuOtaFromMqtt() {
-        Log.i(TAG, "MCU OTA command received from MQTT");
-
-        // ✅ Context-safe network check
+        //Log.i(TAG, "MCU OTA command received from MQTT");
         if (!FrameUtils.isNetworkAvailable(context)) {
-            Log.e(TAG, "No internet → MCU OTA blocked");
+           // Log.e(TAG, "No internet → MCU OTA blocked");
             return;
         }
-
-        // ✅ Launch MCU OTA exactly like hidden build-tap flow
         McuOtaExecutor.startMcuOta(context);
     }
 
@@ -546,7 +540,7 @@ public class ScooterMqttClient {
 
         new Thread(() -> {
 
-            Log.i("MQTT", "MCUOTA command received");
+            //Log.i("MQTT", "MCUOTA command received");
 
             String ackStatus;
 
@@ -562,8 +556,8 @@ public class ScooterMqttClient {
             int serverVersion =
                     McuOtaExecutor.fetchServerVersion(MCU_VERSION_URL);
 
-            Log.i("MQTT", "MCU local=" + localVersion +
-                    ", server=" + serverVersion);
+//            Log.i("MQTT", "MCU local=" + localVersion +
+//                    ", server=" + serverVersion);
 
             if (serverVersion <= 0) {
                 ackStatus = "version-fetch-failed";

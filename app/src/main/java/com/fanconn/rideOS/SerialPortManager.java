@@ -438,9 +438,9 @@ public class SerialPortManager {
            // mad.setMcuOtaAnswer((byte) mcudata);  // 存储 MCU OTA应答数据
             mad.setMcuOtaAnswer((byte) FrameUtils.getByteValue(frame,0));  // 存储 MCU OTA应答数据
             String temp = String.valueOf(mad.getMcuOtaAnswer());
-            Log.e("SerialPortManager", " McuOtaAnswer: " + temp );
+           // Log.e("SerialPortManager", " McuOtaAnswer: " + temp );
         } else {
-            Log.e("SerialPortManager", " FFAA66 Invalid frame format");
+           // Log.e("SerialPortManager", " FFAA66 Invalid frame format");
         }
     }
 
@@ -451,7 +451,7 @@ public class SerialPortManager {
      */
     public void parseHeartbeat1(String frame) {
         hb1.setDragonLock(FrameUtils.getByteValue(frame,7));   // 龙头锁状态
-        Log.d("sdfdf","HANDLE LOCK CURRENT STATE "+FrameUtils.getByteValue(frame,7));
+       // Log.d("sdfdf","HANDLE LOCK CURRENT STATE "+FrameUtils.getByteValue(frame,7));
         hb1.setSeatLock(FrameUtils.getByteValue(frame,8));   // 坐垫锁状态
         hb1.setSideStand(FrameUtils.getByteValue(frame,9));  //侧支架状态
         hb1.setSeatLockSensor(FrameUtils.getByteValue(frame,10)); // 座椅锁状态
@@ -503,7 +503,7 @@ public class SerialPortManager {
             hb3.setCanData(FrameUtils.getByteSubstring(frame,11,18));
         }  // CAN 数据}
         else {
-            Log.d("sdfgh","FRAMEPARSERETURN------"+frame);
+           // Log.d("sdfgh","FRAMEPARSERETURN------"+frame);
 
             return;
         }
@@ -578,7 +578,7 @@ public class SerialPortManager {
     public void parseLEDControlResponse(String frame)
     {
         hb3.setLEDresponse(FrameUtils.getByteValue(frame,7));
-        Log.d("dsfghf","this is led response value "+frame);
+      //  Log.d("dsfghf","this is led response value "+frame);
     }
     private void parseSeatLockResponse(String frame)
     {

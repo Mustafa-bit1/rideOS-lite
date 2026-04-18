@@ -31,8 +31,8 @@ public class serialApplication extends MyApp {
         for (String frame : frames) {
 //            if (frame.startsWith("FFAA660101")) {
 //                Log.d("DATA FRAME", "Frame: " + frame);
-            if(frame.startsWith("FFAA770301"))
-                Log.d("sdfgh","FRAME------"+frame);
+//            if(frame.startsWith("FFAA770301"))
+//                Log.d("sdfgh","FRAME------"+frame);
 
             Intent intent = new Intent("FRAME_RECEIVED");
             intent.putExtra("frame_data", frame);
@@ -54,13 +54,13 @@ public class serialApplication extends MyApp {
         // Initialize only once for global access
         serialPortManager = SerialPortManager.getInstance(sPort, iBaudRate, RX_type, mHandler);
         serialPortManager.initSerialConfig(this);
-        Log.d("MyApplication", "SerialPortManager initialized globally and reading continuously");
+       // Log.d("MyApplication", "SerialPortManager initialized globally and reading continuously");
 
         String vin = MetadataManager.get().getVin();
 
         if(!MetadataManager.get().getVin().startsWith("UNKNOWN_VIN"))
         {
-            Log.d("MainActivity", "🚀 Starting Telemetry for VIN: " + vin);
+           // Log.d("MainActivity", "Starting Telemetry for VIN: " + vin);
             Intent intent = new Intent(this, TelemetryService.class);
             intent.putExtra("VIN_NUMBER", vin);
             startService(intent);

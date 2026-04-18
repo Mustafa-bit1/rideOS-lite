@@ -42,6 +42,7 @@ public class chargingUI extends AppCompatActivity {
     private static  float BATTERY_CAPACITY_AH;
     private static final float RANGE_km_PER_SOC = 1.5f;
     private static final float KM_PER_AH = RANGE_km_PER_SOC * 1.666f;
+    private static final float MAX_RANGE_KM = RANGE_km_PER_SOC * 100f;
     // Runtime variables
     private float currentRangeKm = 0f;
     private long lastUpdateTime = 0;
@@ -555,7 +556,6 @@ public class chargingUI extends AppCompatActivity {
 //            Log.e("PowerAction", "Exception during screen off attempt: ", e);
 //        }
 //    }
-    private static final float MAX_RANGE_KM = 200f;
     private void initializeRangeFromSOC(int soc) {
 
         BATTERY_CAPACITY_AH=getBatteryCapacity();

@@ -240,7 +240,7 @@ public class RideOSTelemetrySender {
         data.tripKm = t.getTeleTrip();
         data.odo = t.getTeleODO();
 
-        Log.e("ODOFORRO ","ODOFORRO "+data.odo);
+        //Log.e("ODOFORRO ","ODOFORRO "+data.odo);
 
 
         // =============================

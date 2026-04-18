@@ -58,46 +58,6 @@ public class UIUpdater  {
     //    InactivityManager inactivityManager;
     SerialPortManager serialPortManager;
     batteryPackSwitcher BatPackSwitcher;
-
-    //=================telemetry
-//    private EVWebSocketClient evClient;
-//    private ApiService apiService;
-//    private boolean isSending = true;
-//    private final Handler telemetryHandler = new Handler(Looper.getMainLooper());
-//
-//    public static int telechargingstate;
-//    public static int telebmslifecycles;
-//    public static String telelatlong;
-//    public static int teleHandleLockState;
-//    public static int teleSeatLockState;
-//    public static String teleBMSMosStates;
-//    private static float teletirepressure;
-//    private static float teletrip;
-//    private static String teleRider;
-//    public static String telecurrentrider;
-//    private static float teletotalAH;
-//    private static float telechargerAH;
-//    private static float teleregenAH;
-//    private static float teledischargeAH;
-//    private static int  teleEvPowerState;
-//    private static float  teleCurrentConsumption;
-//    private static float  teleBatVoltage;
-//    private static float  teleRemainingCapacityAH;
-//    private static float teleODO;
-//    public static float teleSpeed;
-//    public static float teleControllerMosTemp;
-//    public static float teleMotorTemp;
-//    public static float teleBMSMosTemp;
-//    public static String teleNTC;
-//    private static float teleSOC;
-//    private static float teleAPUSOC;
-
-//    int handleLockState = teleHandleLockState;
-//    int seatLockState = teleSeatLockState;
-//    String bmsMosStates = teleBMSMosStates;
-//    String riders = teleRiders;
-
-    //===========================
     private final MainActivity activity; // Actual activity for dialogs, UI
 //    private CameraHandler cameraHandler;
     TelemetryDataManager tm;
@@ -157,11 +117,8 @@ public class UIUpdater  {
     public static UIUpdater getInstance() {
         return instance;
     }
-
     private int recoMode = 0;
-    // 0 = Trip, 1 = Total, 2 = Last Trip
     private static final float RECO_KM_PER_AH = 2.5f;
-
     public void toggleRecoMode() {
         recoMode++;
         if (recoMode > 2) recoMode = 0;
@@ -208,7 +165,6 @@ public class UIUpdater  {
         ahByCharger = 0f;
         previousAh = 0f;
 
-        // SharedPreferences values
         SharedPreferences prefs =
                 context.getSharedPreferences("ah_data", Context.MODE_PRIVATE);
 
@@ -219,7 +175,6 @@ public class UIUpdater  {
                 .putFloat("lastTripAh", 0f)
                 .apply();
 
-        // Telemetry reset
         tm.setTeleTotalAH(0f);
         tm.setTeleChargerAH(0f);
         tm.setTeleRegenAH(0f);
@@ -234,7 +189,6 @@ public class UIUpdater  {
         ahByCharger = 0f;
         ahByRegen = 0f;
 
-        // Update stored values only for these keys
         SharedPreferences prefs =
                 context.getSharedPreferences("ah_data", Context.MODE_PRIVATE);
 
@@ -247,20 +201,19 @@ public class UIUpdater  {
         tm.setTeleChargerAH(0f);
         tm.setTeleRegenAH(0f);
 
-        Log.d("AH_RESET", "✅ Charger Ah + Total Regen Ah reset");
+        //Log.d("AH_RESET", "✅ Charger Ah + Total Regen Ah reset");
 
-        // Refresh reco because Total mode depends on ahByRegen
         updateRecoKm();
     }
     private static final String PREF_RECO = "reco_data";
     private static final String KEY_LAST_TRIP_AH = "last_trip_ah";
     public void onTripReset() {
-        float currentTripAh = getTripAhByRegen();   // current trip regen
+        float currentTripAh = getTripAhByRegen();
 
         SharedPreferences prefs = context.getSharedPreferences(PREF_RECO, Context.MODE_PRIVATE);
         prefs.edit().putFloat(KEY_LAST_TRIP_AH, currentTripAh).apply();
 
-        resetTripAhByRegen(); // your existing reset logic
+        resetTripAhByRegen();
     }
     private void setRecoKmText(float km) {
 
@@ -271,7 +224,7 @@ public class UIUpdater  {
         int kmStart = valueText.indexOf("km");
         if (kmStart != -1) {
             spannable.setSpan(
-                    new RelativeSizeSpan(0.6f), // smaller "km"
+                    new RelativeSizeSpan(0.6f),
                     kmStart,
                     valueText.length(),
                     Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -319,25 +272,6 @@ public class UIUpdater  {
     public String getrecoEngineParams() {
         return "LT-"+getLastTripRecoKm()+",CT-"+getTripRecoKm()+",TT-"+getTotalRecoKm();
     }
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//    }
-
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        tripManager = new TripDistanceManager(this);
-//        serialPortManager = serialApplication.getSerialPortManager();
-//        Log.d("InitCheck", "serialPortManager = " + serialPortManager);
-//
-//        BatPackSwitcher = new batteryPackSwitcher(serialPortManager);
-//    }
-
-    /**
-     * 更新 UI 组件
-     * @param hb1 解析后的 Heartbeat1 对象
-     */
     private int lastTurnSignalState = -1;
     private boolean reset_Auto_lock_inHighbeam_flag;
     public void updateHeartbeat1UI(Heartbeat1 hb1) {
@@ -349,42 +283,6 @@ public class UIUpdater  {
             lastTurnSignalState = currentSignal; // update tracker
 
         }
-        // 更新龙头锁状态
-//        updateImageView(binding.BluetoothIV, hb1.getDragonLock() == 1 ? R.drawable.bluetooth : R.drawable.bluetooth_not_connected);
-//        updateImageView(binding.frontLockIV, hb1.getDragonLock() == 1 ? R.drawable.unlocked : R.drawable.lock);
-//        if (MainActivity.frontLockSW != null) {
-//            MainActivity.frontLockSW.setChecked(hb1.getDragonLock() == 1);
-//        }
-//        if (MainActivity.frontLockSWSTV != null) {
-//            MainActivity.frontLockSWSTV.setText(hb1.getDragonLock() == 1 ? "开" : "关");
-//        }
-//
-//        // 更新坐垫锁状态
-//        updateImageView(binding.seatCushionLockIV, hb1.getSeatLock() == 1 ? R.drawable.unlocked : R.drawable.lock);
-//        if (MainActivity.seatCushionLockSW != null) {
-//            MainActivity.seatCushionLockSW.setChecked(hb1.getSeatLock() == 1);
-//        }
-//        if (MainActivity.seatCushionLockSWSTV != null) {
-//            MainActivity.seatCushionLockSWSTV.setText(hb1.getSeatLock() == 1 ? "开" : "关");
-//        }
-//
-//        // 更新侧⽀架传感器磁感状态
-//        updateTextView(binding.sideSupportInductionStatusTV, hb1.getSideStand() == 0 ? R.string.magnetic : R.string.non_magnetic);
-//
-//        // 更新座椅锁传感器磁感状态
-//        updateTextView(binding.seatInductionStatusTV, hb1.getSeatLockSensor() == 0 ? R.string.magnetic : R.string.non_magnetic);
-//
-//        // 更新小电池电压值
-//        updateTextView(binding.smallBatteryVoltageTV, String.format("%.2f V", hb1.getBatteryVoltage() / 1000.0));
-//
-//        // 更新外部温度
-//        updateTextView(binding.temperatureTV, String.format("%.1f°", hb1.getExternalTemperature() / 1000.0));
-//
-//        // 更新手势磁感状态
-//        updateTextView(binding.gestureStatusTV, getGestureStatusText(binding.getRoot().getContext(), hb1.getGestureSlide()));
-//
-//        // 更新大灯状态
-        //updateImageView(binding.highBeamIV, hb1.getHeadlights() == 1 ? R.drawable.high_beam : R.drawable.headlamp);
         if(hb1.getHeadlights() == 1)
         {
             binding.highBeamIVon.setVisibility(View.VISIBLE);
@@ -457,125 +355,11 @@ public class UIUpdater  {
                 return "";
         }
     }
-
-    /**
-     * 更新转向灯图片资源
-     * @param turnSignalState 转向灯状态
-     */
-//    private void updateTurnSignalImages(int turnSignalState) {
-//        // 立即移除之前的任务
-//        handlerTurnSignal.removeCallbacksAndMessages(null);
-//        switch (turnSignalState) {
-//            case 0:
-//                updateTurnSignal(R.drawable.lmp_l, R.drawable.lmp_r, false);
-//                break;
-//            case 1:
-//                updateTurnSignal(R.drawable.left, R.drawable.lmp_r, true);
-//                startTurnSignalAnimation(R.drawable.lmp_l, R.drawable.left, binding.turnLeftIV);
-//                break;
-//            case 2:
-//                updateTurnSignal(R.drawable.lmp_l, R.drawable.right, true);
-//                startTurnSignalAnimation(R.drawable.lmp_r, R.drawable.right, binding.turnRightIV);
-//                break;
-//            case 3:
-//                updateTurnSignal(R.drawable.flicker_2, R.drawable.flicker_1, true);
-//                startFaultSignalAnimation();
-//                break;
-//            default:
-//                break;
-//        }
-//    }
-//
-//    /**
-//     * 更新转向灯图片资源
-//     * @param leftRes 左转向灯资源
-//     * @param rightRes 右转向灯资源
-//     * @param animated 是否需要动画
-//     */
-//    private void updateTurnSignal(int leftRes, int rightRes, boolean animated) {
-//        binding.turnLeftIV.setImageResource(leftRes);
-//        binding.turnRightIV.setImageResource(rightRes);
-//
-//        if (!animated) {
-//            stopTurnSignalAnimation();
-//        }
-//    }
-//
-//    /**
-//     * 开始转向灯动画
-//     * @param initialRes 初始资源
-//     * @param alternateRes 替换资源
-//     * @param imageView 图片视图
-//     */
-//    private void startTurnSignalAnimation(final int initialRes, final int alternateRes, final ImageView imageView) {
-//        handlerTurnSignal.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (imageView.getDrawable().getConstantState().equals(imageView.getContext().getResources().getDrawable(alternateRes).getConstantState())) {
-//                    imageView.setImageResource(initialRes);
-//                } else {
-//                    imageView.setImageResource(alternateRes);
-//                }
-//                handlerTurnSignal.postDelayed(this, 500);
-//            }
-//        }, 500);
-//    }
-//
-//    /**
-//     * 开始故障灯动画
-//     */
-//    private void startFaultSignalAnimation() {
-//        handlerTurnSignal.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                toggleImageResource(binding.turnLeftIV, R.drawable.flicker_2, R.drawable.lmp_l);
-//                toggleImageResource(binding.turnRightIV, R.drawable.flicker_1, R.drawable.lmp_r);
-//                handlerTurnSignal.postDelayed(this, 500);
-//            }
-//        }, 500);
-//    }
-//
-//    /**
-//     * 切换 ImageView 的图片资源
-//     * @param imageView 需要切换的 ImageView
-//     * @param res1 图片资源1
-//     * @param res2 图片资源2
-//     */
-//    private voidoggleImageResource(ImageView imageView, int res1, int res2) {
-//        if (imageView.getDrawable().getConstantState().equals(imageView.getContext().getResources().getDrawable(res1).getConstantState())) {
-//            imageView.setImageResource(res2);
-//        } else {
-//            imageView.setImageResource(res1);
-//        }
-//    }
-//
-//    /**
-//     * 停止更新和动画
-//     */
-//    public void stopUpdating() {
-//        stopTurnSignalAnimation();
-//    }
-//
-//    /**
-//     * 停止转向灯动画和定时任务
-//     */
-//    private void stopTurnSignalAnimation() {
-//        handlerTurnSignal.removeCallbacksAndMessages(null);
-//    }
-
-    /**
-     * 更新 UI 组件
-     * @param hb2 解析后的 Heartbeat2 对象
-     */
     public void updateHeartbeat2UI(Heartbeat2 hb2) {
         // 更新六轴数据
         updateSixAxisData(hb2);
     }
 
-    /**
-     * 更新六轴数据
-     * @param hb2 解析后的 Heartbeat2 对象
-     */
     private void updateSixAxisData(Heartbeat2 hb2) {
         double xuAcc = hb2.getXuAcc() / 1000000.0;
         double yuAcc = hb2.getYuAcc() / 1000000.0;
@@ -585,7 +369,7 @@ public class UIUpdater  {
         double zGyro = hb2.getZGyro() / 1000000.0;
 
         String sixAxisData = String.format("uAcc  ：%.6f  %.6f  %.6f\n\n\n\nuGyro：%.6f  %.6f  %.6f", xuAcc, yuAcc, zuAcc, xGyro, yGyro, zGyro);
-        Log.d("asdfg","THISISAXISDATA \n\n"+sixAxisData);
+        //Log.d("asdfg","THISISAXISDATA \n\n"+sixAxisData);
 //        binding.sixAxisDateTV.setText(sixAxisData);
     }
 
@@ -683,7 +467,7 @@ public class UIUpdater  {
 
 //        Log.d("SOC10LESS", "Actual SOC = " + batteryLevel1);
 //        Log.d("SOC10LESS", "Display SOC = " + batteryLevel);
-        Log.d("adsfg","THISISAHSOC="+batteryLevel);
+       // Log.d("adsfg","THISISAHSOC="+batteryLevel);
 
         tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
         tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
@@ -701,9 +485,9 @@ public class UIUpdater  {
 
         if (current > -500 && current < 500) {
             //tm.setTeleCurrentConsumption(current);
-            Log.d("CURR", "Valid current: " + current);
+           // Log.d("CURR", "Valid current: " + current);
         } else {
-            Log.d("CURR", "Invalid current rejected: " + current);
+           // Log.d("CURR", "Invalid current rejected: " + current);
         }
 
         tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
@@ -718,7 +502,7 @@ public class UIUpdater  {
         if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18)  && tm.getTeleChargingState()==0) {
 
             if(serialPortManager!=null){
-                Log.d("SOCWHATACTOION","ENTER 20");
+              //  Log.d("SOCWHATACTOION","ENTER 20");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000");//line current 15A, max phase current 300A ,regen 30-40
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000"), 800);
 //                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
@@ -787,18 +571,18 @@ public class UIUpdater  {
 
             if(isAPUPresent && !apuflag){
                 StopInactivtyTimerDuringPopUp=false;
-                Log.d("SOCWHATACTOION","ENTER 10 an ask for APU");
+              //  Log.d("SOCWHATACTOION","ENTER 10 an ask for APU");
                 InactivityManager.getInstance().stopTimer();
                 showCustomPopup("Alert","Your Battery is Low, Switch to APU for Extra Range");
             } else if  (!isAPUPresent) {
-                Log.d("SOCWHATACTOION","ENTER 10 AND DO 10AMPS");
+               // Log.d("SOCWHATACTOION","ENTER 10 AND DO 10AMPS");
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728008C00B004B400");//line current 10A(2800), phase current max, regen currents as 35A(8C00) to make 6 (1800) and 45A(B400) to make 8 (2000)
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
-                Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
+         //       Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
 
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
@@ -835,7 +619,7 @@ public class UIUpdater  {
 
             //------------
             StopInactivtyTimerDuringPopUp=false;
-            Log.d("SOCWHATACTOION","ENTER 5 AND DO 0000AMPS");
+          //  Log.d("SOCWHATACTOION","ENTER 5 AND DO 0000AMPS");
 
             showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
         }
@@ -916,7 +700,7 @@ public class UIUpdater  {
         // Detect APU connection transition
         if (!isApuConnected && !apuflag) {
             isApuConnected = true;
-            Log.d("APU", "APU Connected");
+           // Log.d("APU", "APU Connected");
             showCustomPopupAPUdetected("Assistance", "APU detected. Do you want to switch to APU?");
         }
         tm.setTeleAPUBatVoltage(hb3.getAPUbatvoltage()/10);
@@ -955,7 +739,7 @@ public class UIUpdater  {
 
 
         try {
-            if (APUbatteryLevel>=0 && APUbatteryLevel<=100) { // ✅ Only update if animation is done
+            if (APUbatteryLevel>=0 && APUbatteryLevel<=100) {
                 APUupdateBatteryAnimation(APUbatteryLevel);
             }
         } catch (NumberFormatException e) {
@@ -976,7 +760,7 @@ public class UIUpdater  {
                 // Check if APU is disconnected
                 if (isApuConnected && (now - lastApuFrameTime > APU_TIMEOUT_MS)) {
                     isApuConnected = false;
-                    Log.d("APU", "APU Disconnected");
+                //    Log.d("APU", "APU Disconnected");
 
                     binding.APUbatteryTV.setVisibility(View.GONE);
                     binding.apubaticon.setVisibility(View.GONE);
@@ -1038,20 +822,6 @@ public class UIUpdater  {
             chargingUI.resetChargingTimeout();
         }
 
-        boolean isCharging = chargingbit == 1;
-//        if(isCharging)binding.chargingicononmainactivty.setVisibility(View.VISIBLE);
-//        if (isCharging && !AlreadyInChargingUI) {
-//            AlreadyInChargingUI = true;
-//                finish();
-////            Intent intent = new Intent(context, chargingUI.class);
-////            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////            context.startActivity(intent);
-//        }
-//
-//        // Only reset the flag when charging has completely stopped.
-//        if (!isCharging && AlreadyInChargingUI) {
-//            AlreadyInChargingUI = false;
-//        }
     }
 
 
@@ -1073,7 +843,7 @@ public class UIUpdater  {
         int apuChargingMosState= hb3.getApuChargeMosState();
         int apuDisMosState= hb3.getApuDisChargeMosState();
         int mainChargeMos=hb3.getMainChargeMosState();
-       Log.d("dfsgdfh","MOSSSSSSSSSOOOOOSSSFET"+mainChargeMos);
+      // Log.d("dfsgdfh","MOSSSSSSSSSOOOOOSSSFET"+mainChargeMos);
 //        Log.d("sadfgd","MOSSSSSSSSSOOOOOSSSFETAPUDISCG"+apuDisMosState);
         if( apuDisMosState==1 && mainChargeMos==0 ){
             binding.RunningOnAPU.setVisibility(View.VISIBLE);
@@ -1135,7 +905,7 @@ public class UIUpdater  {
         //  Handle 50+ Continuous warning
         if (anyIs50OrAbove) {
             if (!is50WarningActive) {
-                Log.d("TempWarning", "Temp >= 50. Starting continuous warning.");
+             //   Log.d("TempWarning", "Temp >= 50. Starting continuous warning.");
                 startTempWarningAnimation();
                 highVolumeForWarning();
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -1148,7 +918,7 @@ public class UIUpdater  {
         } else {
             //  Stop 50°C continuous warning if previously active
             if (is50WarningActive) {
-                Log.d("TempWarning", "Temp dropped below 50. Stopping continuous warning.");
+               // Log.d("TempWarning", "Temp dropped below 50. Stopping continuous warning.");
                 stopTempWarningAnimation();
                 stopBeeping();
                 sendWarningToUI("");
@@ -1157,7 +927,7 @@ public class UIUpdater  {
 
             //  Handle 45°C exactly → 10s warning only ONCE
             if (anyIs45 && !is45WarningShown) {
-                Log.d("TempWarning", "Temp == 45. Starting 10s warning.");
+              //  Log.d("TempWarning", "Temp == 45. Starting 10s warning.");
                 startTempWarningAnimation();
                 highVolumeForWarning();
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -1167,7 +937,7 @@ public class UIUpdater  {
                 is45WarningShown = true;
 
                 warningHandler.postDelayed(() -> {
-                    Log.d("TempWarning", "10s warning done. Stopping animation and beep.");
+               //     Log.d("TempWarning", "10s warning done. Stopping animation and beep.");
                     stopTempWarningAnimation();
                     stopBeeping();
                     sendWarningToUI("");
@@ -1222,7 +992,7 @@ public class UIUpdater  {
                         mediaPlayer = MediaPlayer.create(context, R.raw.low_tire_speech);
                         break;
                     default:
-                        Log.w("Beep", "Unknown beep code: " + code);
+                      //  Log.w("Beep", "Unknown beep code: " + code);
                         stopBeeping(); // Or just return; if you want to keep isBeeping true
                         return;
                 }
@@ -1231,7 +1001,7 @@ public class UIUpdater  {
                     mediaPlayer.start();
                     beepHandler.postDelayed(this, 2720); // Repeat every ~2.7 seconds
                 } else {
-                    Log.e("Beep", "MediaPlayer failed to create for code: " + code);
+                  //  Log.e("Beep", "MediaPlayer failed to create for code: " + code);
                     stopBeeping(); // or just return;
                 }
             }
@@ -1287,7 +1057,7 @@ public class UIUpdater  {
                 startBeeping(4);
             }
         } catch (Exception e) {
-            Log.e("UIUpdater", "SMARTKEY Error starting red alert animation", e);
+            //Log.e("UIUpdater", "SMARTKEY Error starting red alert animation", e);
         }
     }
 
@@ -1301,15 +1071,9 @@ public class UIUpdater  {
                 stopBeeping();
             }
         } catch (Exception e) {
-            Log.e("UIUpdater", "SMARTKEY Error stopping red alert animation", e);
+           // Log.e("UIUpdater", "SMARTKEY Error stopping red alert animation", e);
         }
     }
-
-
-    // Class variables to persist values across calls
-    // =====================
-// Member variables
-// =====================
     private float previousAh = 0f;
 
     private float ahByCharger = 0f;     // Total (stored)
@@ -1324,16 +1088,16 @@ public class UIUpdater  {
 
 //        float currentAh = roundTo3(hb3.getChargeAH() / 1000f);//dont rounf off
         float currentAh = hb3.getChargeAH() / 1000f;
-        Log.d("TROBLESHOOTINGCOLOUMB", "IN_AH = " + currentAh);
+       // Log.d("TROBLESHOOTINGCOLOUMB", "IN_AH = " + currentAh);
 
         ahTrackerManager.updateChargingAh(currentAh);
-        Log.d("TROBLESHOOTINGCOLOUMB", "SOC = " + ahTrackerManager.getSOC());
-        Log.d("TROBLESHOOTINGCOLOUMB", "RemainingAh = " + ahTrackerManager.getRemainingAh());
-        Log.d("TROBLESHOOTINGCOLOUMB", "previousAh = " + previousAh);
+//        Log.d("TROBLESHOOTINGCOLOUMB", "SOC = " + ahTrackerManager.getSOC());
+//        Log.d("TROBLESHOOTINGCOLOUMB", "RemainingAh = " + ahTrackerManager.getRemainingAh());
+//        Log.d("TROBLESHOOTINGCOLOUMB", "previousAh = " + previousAh);
 
         // First frame protection
         if (previousAh == 0f) {
-            Log.d("AHA", "previousAh EQUAL = 0 ENTERED= " + previousAh);
+//            Log.d("AHA", "previousAh EQUAL = 0 ENTERED= " + previousAh);
             previousAh = currentAh;
             loadStoredAhValues(); // load persisted totals
             return;
@@ -1369,12 +1133,12 @@ public class UIUpdater  {
         tm.setTeleChargerAH(roundedChargerAh);
         tm.setTeleRegenAH(roundedRegenAh);
 
-        Log.d("AH_REGEN",
-                "TotalRegen=" + roundedRegenAh +
-                        ", TripRegen=" + getTripAhByRegen());
+//        Log.d("AH_REGEN",
+//                "TotalRegen=" + roundedRegenAh +
+//                        ", TripRegen=" + getTripAhByRegen());
 
-        Log.d("CAN", "TOTALREGENAH      " + getTotalAhByRegen());
-        Log.d("CAN", "TOTALREGENAH_TRIP " + getTripAhByRegen());
+//        Log.d("CAN", "TOTALREGENAH      " + getTotalAhByRegen());
+//        Log.d("CAN", "TOTALREGENAH_TRIP " + getTripAhByRegen());
 
         activity.runOnUiThread(this::updateRecoKm);
     }
@@ -1411,10 +1175,10 @@ public class UIUpdater  {
         updateCanData18904001(hb3);
 
         float rawDischargeAH = hb3.getDisChargeAH() / 1000f;
-        Log.d("AH", "DIS_AH = " + rawDischargeAH);
+//        Log.d("AH", "DIS_AH = " + rawDischargeAH);
 
         ahTrackerManager.updateDischargingAh(rawDischargeAH);
-        Log.d("AH", "SOC@DIS = " + ahTrackerManager.getSOC());
+//        Log.d("AH", "SOC@DIS = " + ahTrackerManager.getSOC());
 
         float dischargeAH = roundTo3(rawDischargeAH);
 
@@ -1448,7 +1212,7 @@ public class UIUpdater  {
 // =====================
     public void resetTripAhByRegen() {
         tripAhByRegen = 0f;
-        Log.d("AH_REGEN", "Trip regen Ah reset");
+//        Log.d("AH_REGEN", "Trip regen Ah reset");
 
         // Always refresh reco UI after reset
         updateRecoKm();
@@ -1509,37 +1273,7 @@ public class UIUpdater  {
         //Log.d("CAN", "🟢 ISREDVALUE ENTERED ISREADY======"+READY);
 
         boolean isReady = (READY == 1);
-        Log.d("nolockbug","VALUE REDAY IS ----------"+isReady);
-//        if (isReady) {
-//            //Log.d("CAN", "🟢 ISRED ENTERED ISREADY");
-//
-//            if (!startReasySound && directionalGears==1) {
-//                startReasySound = true;
-//                ReadystartBeeping();
-//               // Log.d("CAN", "🟢 ISRED ENTERED LOGIC ISREADY");
-//            }
-//        } else {
-//            //Log.d("CAN", "🔴 ISRED ENTERED ELSE");
-//            if (startReasySound) {
-//                startReasySound = false;
-//                ReadystopBeeping();
-//                //Log.d("CAN", "🔴 ISRED ENTERED LOGIC ELSE");
-//            }
-//            if (!MainActivity.isVisible && directionalGears==1 && !MainActivity.isrideOSOTA) {
-//                Log.d("nolockbug", "🔴 ISRED ENTERED SECONDS LOGIC ELSE");
-//
-//                Intent intent = new Intent(activity, MainActivity.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//
-//                activity.startActivity(intent);
-//                activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
-//            }
-//            if (activity != null && directionalGears==1 && !MainActivity.isrideOSOTA) {
-//                (activity).closeRecoIfOpen();
-//                (activity).closeQuickSettingsIfOpen();
-//            }
-//
-//        }
+//        Log.d("nolockbug","VALUE REDAY IS ----------"+isReady);
 
         int STAND =FrameUtils.extractBits(hb3.getBSG1_BYTE2(),0,1);
         isboost=hb3.getBSG1_BYTE3()==8; //hex value 08
@@ -1653,7 +1387,7 @@ public class UIUpdater  {
                         neutralUI();
                         //mp3name is shiftneutral
                         playGearSound(R.raw.shiftneutral); // 🔊 Play neutral shift sound
-                        if(StopInactivtyTimerDuringPopUp){Log.d("sadfgg","********1");InactivityManager.getInstance().startTimer(1);}
+                        if(StopInactivtyTimerDuringPopUp){InactivityManager.getInstance().startTimer(1);}
                         break;
 
                     case 1: // Forward
@@ -1708,65 +1442,6 @@ public class UIUpdater  {
                 }
             }
         }
-
-
-//        binding.rectangleGearsTV.setText(direction);
-//        if (MainActivity.driveGear != null) {
-//            switch (directionalGears) {
-//                case 0:
-//                    MainActivity.driveGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.reverseGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.neutralGear.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//                case 1:
-//                    MainActivity.neutralGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.reverseGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.driveGear.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//                case 2:
-//                    MainActivity.neutralGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.driveGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.reverseGear.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//                default:
-//                    MainActivity.neutralGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.reverseGear.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.driveGear.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//            }
-//        }
-
-        // 更新速度档位
-        String speedGear = FrameUtils.getSpeedGear(speedGears);
-//        binding.rectangleTV.setText(speedGear);
-//        if (MainActivity.speedThreshold1 != null) {
-//            switch (speedGears) {
-//                case 0:
-//                    MainActivity.speedThreshold2.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold3.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold1.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//                case 1:
-//                    MainActivity.speedThreshold1.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold3.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold2.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//                case 2:
-//                    MainActivity.speedThreshold1.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold2.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold3.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//                default:
-//                    MainActivity.speedThreshold1.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold3.setBackgroundColor(Color.TRANSPARENT); // 透明
-//                    MainActivity.speedThreshold2.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//                    break;
-//            }
-//        }
-
-        // 更新 READY 状态
-        // isReady = (READY == 1);
-//        binding.readyIV.setVisibility(isReady ? View.VISIBLE : View.INVISIBLE);
     }
 
 
@@ -1848,7 +1523,7 @@ public class UIUpdater  {
 
     private void playGearSound(int resId) {
         if (context == null) {
-            Log.e("GearSound", "Context is null, cannot play sound");
+//            Log.e("GearSound", "Context is null, cannot play sound");
             return;
         }
 
@@ -1860,7 +1535,7 @@ public class UIUpdater  {
 
             gearshiftmediaPlayer = MediaPlayer.create(context, resId);
             if (gearshiftmediaPlayer == null) {
-                Log.e("GearSound", "MediaPlayer creation failed for resId: " + resId);
+//                Log.e("GearSound", "MediaPlayer creation failed for resId: " + resId);
                 return;
             }
 
@@ -1868,7 +1543,7 @@ public class UIUpdater  {
                 try {
                     mp.release();
                 } catch (Exception e) {
-                    Log.e("GearSound", "Error releasing MediaPlayer: " + e.getMessage());
+//                    Log.e("GearSound", "Error releasing MediaPlayer: " + e.getMessage());
                 }
                 gearshiftmediaPlayer = null;
             });
@@ -1876,7 +1551,7 @@ public class UIUpdater  {
             gearshiftmediaPlayer.start();
 
         } catch (Exception e) {
-            Log.e("GearSound", "Exception while playing gear sound: " + e.getMessage(), e);
+//            Log.e("GearSound", "Exception while playing gear sound: " + e.getMessage(), e);
         }
     }
 
@@ -1925,115 +1600,8 @@ public class UIUpdater  {
 //        return super.dispatchTouchEvent(ev);
 //    }
 
-    //    public void ChargingUI(String SOC)
-//    {
-//        binding.tripreco.setVisibility(View.INVISIBLE);
-//        binding.neutralicon.setVisibility((View.INVISIBLE));
-//        binding.neutral.setVisibility(View.INVISIBLE);
-//        binding.batterryBar.setVisibility(View.VISIBLE);
-//        binding.batteryTV.setVisibility(View.VISIBLE);
-//        binding.network.setVisibility(View.VISIBLE);
-//        binding.wifi.setVisibility(View.VISIBLE);
-//        binding.timeTextView.setVisibility(View.VISIBLE);
-//        binding.BluetoothIV.setVisibility(View.VISIBLE);
-//        binding.batteryImageView.setVisibility(View.VISIBLE);
-//        binding.picklocationIV.setVisibility(View.INVISIBLE);//visible
-//        binding.chargingSOC.setVisibility(View.VISIBLE);
-//        //binding.percenticon.setVisibility(View.VISIBLE);
-//        binding.chargingSOC.setText(SOC+"%");
-//        binding.chargingbike.setVisibility(View.VISIBLE);
-//
-//        binding.reverseui.setVisibility(View.INVISIBLE);
-//        binding.avgSpeed.setVisibility(View.INVISIBLE);
-//        binding.tripTextView.setVisibility(View.INVISIBLE);
-//        binding.tripresetbtn.setVisibility(View.INVISIBLE);
-//        binding.picklocationIV.setVisibility(View.INVISIBLE);//visible
-//        binding.speedImageView.setVisibility(View.INVISIBLE);
-//        binding.speedNumberTV.setVisibility(View.INVISIBLE);
-//        binding.speedTV.setVisibility(View.INVISIBLE);
-//
-//        binding.neutralicon.setVisibility((View.INVISIBLE));
-//        binding.neutral.setVisibility(View.INVISIBLE);
-//        binding.brk.setVisibility(View.INVISIBLE);
-//        binding.picklocationIV.setVisibility(View.INVISIBLE);
-//        binding.removestand.setVisibility(View.INVISIBLE);
-//        binding.ecoimage.setVisibility(View.GONE);
-//        binding.sports.setVisibility((View.GONE));
-//        binding.boost.setVisibility(View.GONE);
-//        binding.imageView4.setVisibility(View.INVISIBLE);
-//        binding.imageView5.setVisibility(View.INVISIBLE);
-//        binding.mapbtn.setVisibility(View.INVISIBLE);
-//        binding.menubtn.setVisibility(View.INVISIBLE);
-//        binding.enginestartIV.setVisibility(View.INVISIBLE);
-//        binding.chargingicon.setVisibility(View.VISIBLE);
-//        binding.neutralicon.setVisibility(View.INVISIBLE);
-//        binding.arrow3.setVisibility(View.INVISIBLE);
-//        binding.rectangleGearsTV.setVisibility((View.INVISIBLE));
-//        binding.removestand.setVisibility(View.INVISIBLE);
-//        binding.highBeamIVon.setVisibility(View.INVISIBLE);
-//        binding.stand.setVisibility(View.INVISIBLE);
-//        binding.ecoimage.setVisibility(View.GONE);
-//        binding.sports.setVisibility((View.GONE));
-//        binding.boost.setVisibility(View.GONE);
-//        binding.brk.setVisibility(View.INVISIBLE);
-//        binding.startButton.setVisibility(View.INVISIBLE);
-//        binding.turnLeftIV.setVisibility(View.INVISIBLE);
-//        binding.turnRightIV.setVisibility(View.INVISIBLE);
-//        binding.highBeamIVoff.setVisibility(View.INVISIBLE);
-//    }
-//    private Handler animationHandler = new Handler(Looper.getMainLooper());
-//    private Runnable fadeInRunnable;
+
     public void neutralUI() {
-//        runOnUiThread(() -> {
-//            if (!isDriveMode && binding.brk.getAnimation() == null) {
-//                Animation rotate = AnimationUtils.loadAnimation(binding.getRoot().getContext(), R.anim.rotate);
-//                Animation fade = AnimationUtils.loadAnimation(binding.getRoot().getContext(), R.anim.fade);
-//
-//                rotate.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {
-//                        binding.startButton.setVisibility(View.INVISIBLE);
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        if (!isDriveMode) {
-//                            binding.brk.startAnimation(rotate);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {
-//                    }
-//                });
-//
-//                binding.brk.startAnimation(rotate);
-//
-//                // Cancel any previous runnable
-//                if (fadeInRunnable != null) animationHandler.removeCallbacks(fadeInRunnable);
-//
-//                // Delay fade animation
-//                fadeInRunnable = () -> {
-//                    if (!isDriveMode && chargingFlag) {
-//                        binding.startButton.setVisibility(View.VISIBLE);
-//                        binding.startButton.startAnimation(fade);
-//                    }
-//                };
-//                animationHandler.postDelayed(fadeInRunnable, 1500);
-//
-//            } else if (isDriveMode) {
-//                // Cancel any pending fade animations
-//                if (fadeInRunnable != null) animationHandler.removeCallbacks(fadeInRunnable);
-//
-//                // Immediately clear animations and hide UI
-//                binding.brk.clearAnimation();
-//                binding.startButton.clearAnimation();
-//                binding.startButton.setVisibility(View.INVISIBLE);
-//            }
-//        });
-//        if (fadeInRunnable != null) animationHandler.removeCallbacks(fadeInRunnable);
-//        binding.brk.clearAnimation();
-//        binding.startButton.clearAnimation();
         stopReverseBeep();
         binding.ForwardInstruction.setVisibility(View.VISIBLE);
         binding.tpmsicon.setVisibility(View.VISIBLE);
@@ -2096,10 +1664,6 @@ public class UIUpdater  {
 
     public void powerOnUi()
     {
-        // Stop animations immediately
-//        if (fadeInRunnable != null) animationHandler.removeCallbacks(fadeInRunnable);
-//        binding.brk.clearAnimation();
-
         stopReverseBeep();
         binding.tpmsicon.setVisibility(View.VISIBLE);
         binding.ForwardInstruction.setVisibility(View.GONE);
@@ -2159,10 +1723,6 @@ public class UIUpdater  {
     public void reverseUI()
     {
 
-        // Stop animations immediately
-//        if (fadeInRunnable != null) animationHandler.removeCallbacks(fadeInRunnable);
-//        binding.brk.clearAnimation();
-//        binding.startButton.clearAnimation();
         startReverseBeep();
         binding.tpmsicon.setVisibility(View.INVISIBLE);
         binding.ForwardInstruction.setVisibility(View.GONE);
@@ -2365,10 +1925,10 @@ public class UIUpdater  {
     }
 
     public void indicators(int newSignal) {
-        Log.d("Indicator", "➡ New signal: " + newSignal);
+//        Log.d("Indicator", "➡ New signal: " + newSignal);
 
         if (isBlinking && currentState == 3 && (newSignal == 1 || newSignal == 2)) {
-            Log.d("Indicator", "⚠️ Ignored glitch signal " + newSignal + " while hazard (3) is active");
+//            Log.d("Indicator", "⚠️ Ignored glitch signal " + newSignal + " while hazard (3) is active");
             return;
         }
 
@@ -2591,13 +2151,13 @@ public class UIUpdater  {
                 if (!startReasySound) {
                     startReasySound = true;
                     ReadystartBeeping();
-                    Log.d("CAN", " Ready sound START");
+//                    Log.d("CAN", " Ready sound START");
                 }
             } else {
                 if (startReasySound) {
                     startReasySound = false;
                     ReadystopBeeping();
-                    Log.d("CAN", " Ready sound STOP");
+//                    Log.d("CAN", " Ready sound STOP");
                 }
             }
 
@@ -3006,140 +2566,8 @@ public class UIUpdater  {
      */
     private void updateMcuVersions(McuAnswerData mad) {
         // 获取MCU版本
-        Log.d("UIUpdater", "updateMacVersions getMcuVersions: " + mad.getMcuVersions());
+//        Log.d("UIUpdater", "updateMacVersions getMcuVersions: " + mad.getMcuVersions());
     }
-
-//    public void showCustomPopup(String title, String message) {
-//        // Inflate the custom layout
-//        LayoutInflater inflater = LayoutInflater.from(context);
-//        View dialogView = inflater.inflate(R.layout.popupdialog, null);
-//
-//        // Create the dialog with the custom view
-//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-//        builder.setView(dialogView);
-//
-//        AlertDialog alertDialog = builder.create();
-//        alertDialog.setCancelable(false); // User can't dismiss with back button or outside touch
-//
-//        // Set dynamic content
-//        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
-//        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
-//        dialogTitle.setText(title);
-//        dialogMessage.setText(message);
-//
-//        // Handle button actions
-//        Button btnYes = dialogView.findViewById(R.id.btnYes);
-//        Button btnNo = dialogView.findViewById(R.id.btnNo);
-//
-//        btnYes.setOnClickListener(v -> {
-//            StopInactivtyTimerDuringPopUp=true;
-//            batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
-//            switcher.startSwitchingToAPU();
-////            apuflag=true;
-////            BatPackSwitcher.startSwitchingToAPU();
-//            alertDialog.dismiss();
-//        });
-//
-//        btnNo.setOnClickListener(v -> {
-//            StopInactivtyTimerDuringPopUp=true;
-//            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
-//            alertDialog.dismiss();
-//            serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
-//            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
-//        });
-//
-//        alertDialog.show();
-//    }
-//
-//    private Dialog apuPopupDialog = null;
-//    public void showCustomPopupAPUdetected(String title, String message) {
-//        // Prevent multiple popups if one is already visible
-//        if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
-//            return;
-//        }
-//
-//
-//        LayoutInflater inflater = LayoutInflater.from(context);
-//        View dialogView = inflater.inflate(R.layout.popupdialog, null);
-//
-//        apuPopupDialog = new Dialog(activity);
-//        apuPopupDialog.setContentView(dialogView);
-//        apuPopupDialog.setCancelable(false);
-//
-//        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
-//        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
-//        dialogTitle.setText(title);
-//        dialogMessage.setText(message);
-//
-//        Button btnYes = dialogView.findViewById(R.id.btnYes);
-//        Button btnNo = dialogView.findViewById(R.id.btnNo);
-//
-//        btnYes.setOnClickListener(v -> {
-//            StopInactivtyTimerDuringPopUp = true;
-//            batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
-//            switcher.startSwitchingToAPU();
-////            apuflag = true;
-//
-//
-//
-//            if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
-//                apuPopupDialog.dismiss();
-//                apuPopupDialog = null;
-//            }
-//        });
-//
-//        btnNo.setOnClickListener(v -> {
-//            StopInactivtyTimerDuringPopUp = true;
-//            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
-//
-//            if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
-//                apuPopupDialog.dismiss();
-//                apuPopupDialog = null;
-//            }
-//        });
-//        Window window = apuPopupDialog.getWindow();
-//        if (window != null) {
-//            window.setBackgroundDrawableResource(android.R.color.transparent);
-//
-//            WindowManager.LayoutParams params = window.getAttributes();
-//            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
-//            params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-//            params.gravity = Gravity.CENTER;
-//            window.setAttributes(params);
-//        }
-//
-//        apuPopupDialog.show();
-//    }
-//
-//
-//    public void showCustomPopupatSOC7(String title, String message) {
-//        // Inflate the custom layout
-//        LayoutInflater inflater = LayoutInflater.from(context);
-//        View dialogView = inflater.inflate(R.layout.stopopup, null);
-//
-//        // Create the dialog with the custom view
-//        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-//        builder.setView(dialogView);
-//
-//        AlertDialog alertDialog = builder.create();
-//        alertDialog.setCancelable(false); // User can't dismiss with back button or outside touch
-//
-//        // Set dynamic content
-//        TextView dialogTitle = dialogView.findViewById(R.id.dialogTitle);
-//        TextView dialogMessage = dialogView.findViewById(R.id.dialogMessage);
-//        dialogTitle.setText(title);
-//        dialogMessage.setText(message);
-//
-//        // Handle button actions
-//        Button btnYes = dialogView.findViewById(R.id.btnOK);
-//
-//        btnYes.setOnClickListener(v -> {
-//            StopInactivtyTimerDuringPopUp=true;
-//            alertDialog.dismiss();
-//        });
-//
-//        alertDialog.show();
-//    }
 
     public void showCustomPopup(String title, String message) {
 
@@ -3183,7 +2611,7 @@ public class UIUpdater  {
 
         btnNo.setOnClickListener(v -> {
             StopInactivtyTimerDuringPopUp = true;
-            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
+//            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
             dialog.dismiss();
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
             new Handler(Looper.getMainLooper()).postDelayed(
@@ -3245,7 +2673,7 @@ public class UIUpdater  {
 
         btnNo.setOnClickListener(v -> {
             StopInactivtyTimerDuringPopUp = true;
-            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
+//            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
 
             if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
                 apuPopupDialog.dismiss();
@@ -3347,10 +2775,12 @@ public class UIUpdater  {
 //                }, 6000);
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     if(!MainActivity.MainisActive){
-                        Log.d("TAG", "LOCK6ECONDELYCODERAN delayed command: FFAA550107000A00");
+//                        Log.d("TAG", "LOCK6ECONDELYCODERAN delayed command: FFAA550107000A00");
                         SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A00");
                     }
-                    else     Log.d("TAG", "LOCK6ECONDELYCODERAN ELSE delayed command: FFAA550107000A00");
+                    else {
+                        // Log.d("TAG", "LOCK6ECONDELYCODERAN ELSE delayed command: FFAA550107000A00");
+                    }
                 }, 6000);
             }
             binding.batteryArc.setBatteryLevel(0);
@@ -3371,11 +2801,11 @@ public class UIUpdater  {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                 context.startActivity(intent);
-                Log.d("nolockbug","CONTEXTNOTNULLLWHILEDOUBLETAP SO YES LOGIN");
+               // Log.d("nolockbug","CONTEXTNOTNULLLWHILEDOUBLETAP SO YES LOGIN");
 
             }
             else {
-                Log.d("nolockbug","CONTEXTNULLWHILEDOUBLETAP SO NO LOGIN");
+               // Log.d("nolockbug","CONTEXTNULLWHILEDOUBLETAP SO NO LOGIN");
             }
         }
         //Log.d("UIUpdater", "Double-tap triggered inUIUPDSTOR");
@@ -3418,7 +2848,7 @@ public class UIUpdater  {
 
     public void startReverseBeep() {
         if (reverseBeepPool == null) {
-            Log.w("ReverseBeep", "startReverseBeep() called before initReverseBeep()");
+           // Log.w("ReverseBeep", "startReverseBeep() called before initReverseBeep()");
             return;
         }
 
@@ -3427,7 +2857,7 @@ public class UIUpdater  {
             if (reverseBeepLoaded) {
                 reverseBeepHandler.post(reverseBeepRunnable);
             } else {
-                Log.d("ReverseBeep", "Sound not yet loaded, will start after load completes");
+              //  Log.d("ReverseBeep", "Sound not yet loaded, will start after load completes");
             }
         }
     }
@@ -3446,350 +2876,8 @@ public class UIUpdater  {
         reverseBeepLoaded = false;
     }
 
-
-
-    //==============TELEMETRY ==============================================
-
-//    public void startTelemetry(String VINNUMBER) {
-//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.122:8080/ws/ev"));
-////        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.174.148.224:8080/ws/ev"));//grafana server
-//
-//        evClient.connect();
-//
-//        apiService = RetrofitClient.getClient().create(ApiService.class);
-//        isSending = true;
-//        //Log.d("Telemetry", "✅ isSending set to true");
-//
-//        sendDataContinuously(VINNUMBER);
-//
-//        new Thread(() -> {
-//            while (evClient == null || !evClient.isOpen()) {
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            if (serialPortManager != null) {
-//                serialPortManager.sendContinuousSensorData();
-//            } else {
-//                Log.e("Telemetry", "serialPortManager is null!");
-//            }
-//        }).start();
-//    }
-//    public static boolean shdtelemetrywhenunlocked;
-//    public int sendRealtimeDataOnceEvenAfterLocking=0;
-//    private void sendDataContinuously(String vin) {
-//        telemetryHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (isSending) {
-//                    telelatlong=getLatLong(context);
-//                    Log.d("dsfgf","ENTERSENDDATCONTINOUSLY "+telelatlong);
-//                    // Send updated real-time vehicle data with dynamic fields
-//                    sendVehicleData(
-//                            context,                      // ← you must pass or define `context`
-//                            teleODO,                      // Odometer value
-//                            telechargingstate,            // Charging state
-//                            teleHandleLockState,          // Handle lock
-//                            teleSeatLockState,            // Seat lock
-//                            teleBMSMosStates,             // BMS Mosfet states
-//                            telecurrentrider,                    // Riders info
-//                            telebmslifecycles,
-//                            telelatlong
-//                    );
-//                    if(shdtelemetrywhenunlocked){
-//                        sendRealTimeData(vin);
-//                        sendRealtimeDataOnceEvenAfterLocking=0;
-//                    }
-//                    else{
-//                        while(sendRealtimeDataOnceEvenAfterLocking==0){
-//                            sendRealTimeData(vin);
-//                            sendRealtimeDataOnceEvenAfterLocking++;
-//                        }
-//                    }
-//                    telemetryHandler.postDelayed(this, 1000);
-//                }
-//            }
-//        }, 1000);
-//    }
-//
-//
-//    public void sendVehicleData(Context context, float odo,  int chargingState,
-//                                int handleLockState, int seatLockState, String bmsMosStates, String riders,int bmslifecycles,String lat_long) {
-//
-//        MetadataManager metadata = MetadataManager.get();
-//
-//        String vinNumber    = metadata.getVin();
-//        String ownerName    = metadata.getOwner();
-//        String phoneNumber  = metadata.getPhone();
-//        String controllerID = metadata.getControllerId();
-//        String motorID      = metadata.getMotorId();
-//        String bmsID        = metadata.getBmsId();
-//        String chargerID    = metadata.getCharger();
-//        String smartKeyID   = metadata.getSmartKeyId();
-//        String model        = metadata.getModel(); // ✅ added model
-//
-//        String rideOSversion = "rideOS N/A";
-//        try {
-//            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-//            rideOSversion = "rideOS " + pInfo.versionName;
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//        String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-//
-//        if (vinNumber.contains("UNKNOWN")) {
-//            //Log.d("VehicleData", "⛔ VIN is UNKNOWN — skipping send.");
-//            return;
-//        }
-//
-//        SharedPreferences prefs = context.getSharedPreferences("last_uploaded_metadata", Context.MODE_PRIVATE);
-//
-//        // ✅ Check if any value changed since last send (including model)
-//        boolean anyChanged =
-//                !ownerName.equals(prefs.getString("owner", "")) ||
-//                        !phoneNumber.equals(prefs.getString("phone", "")) ||
-//                        !controllerID.equals(prefs.getString("controller", "")) ||
-//                        !motorID.equals(prefs.getString("motor", "")) ||
-//                        !bmsID.equals(prefs.getString("bms", "")) ||
-//                        !chargerID.equals(prefs.getString("charger", "")) ||
-//                        !smartKeyID.equals(prefs.getString("smartKey", "")) ||
-//                        !model.equals(prefs.getString("model", "")); // ✅ include model in comparison
-//
-//        VehicleData data;
-//
-//        if (anyChanged) {
-//           // Log.d("VehicleData", "🆕 Identity changed — sending full payload");
-//
-//            data = new VehicleData(
-//                    vinNumber, model, ownerName, phoneNumber, controllerID,
-//                    motorID, bmsID, chargerID, rideOSversion, smartKeyID,
-//                    odo, chargingState, handleLockState, seatLockState,
-//                    bmsMosStates, riders,bmslifecycles,lat_long, time
-//            );
-//
-//            // ✅ Save all identifiers including model
-//            prefs.edit()
-//                    .putString("owner", ownerName)
-//                    .putString("phone", phoneNumber)
-//                    .putString("controller", controllerID)
-//                    .putString("motor", motorID)
-//                    .putString("bms", bmsID)
-//                    .putString("charger", chargerID)
-//                    .putString("smartKey", smartKeyID)
-//                    .putString("model", model)
-//                    .apply();
-//        } else {
-//            //Log.d("VehicleData", "✅ No identity change — sending minimal payload");
-//
-//            data = new VehicleData(
-//                    vinNumber, null, null, null, null,
-//                    null, null, null, rideOSversion, null,
-//                    odo,  chargingState, handleLockState, seatLockState,
-//                    bmsMosStates, riders,bmslifecycles,lat_long,time
-//            );
-//        }
-//
-//        // ✅ Log the payload for debugging
-//        try {
-//            Gson gson = new Gson();
-//           // Log.d("VehicleData", "📦 Payload: " + gson.toJson(data));
-//        } catch (Exception e) {
-//            //Log.e("VehicleData", "❌ Failed to log payload", e);
-//        }
-//
-//        // ✅ Send to server via Retrofit
-//        Call<ResponseBody> call = apiService.saveVehicleData(data);
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if (response.isSuccessful()) {
-//                    try {
-//                        String body = response.body() != null ? response.body().string() : "No response";
-//                       // Log.d("VehicleData", "✅ Server: " + body);
-//                    } catch (Exception e) {
-//                        //Log.e("VehicleData", "❌ Error reading response", e);
-//                    }
-//                } else {
-//                   // Log.e("VehicleData", "❌ Server error: " + response.code());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                //Log.e("VehicleData", "🚨 Network error: " + t.getMessage());
-//            }
-//        });
-//    }
-//
-//    private void sendRealTimeData(String vin) {
-//        RealTimeData data = new RealTimeData();
-//
-//        data.vinNumber = vin;
-//        data.speed_kmph = teleSpeed;
-//        data.controllerMosTemp = teleControllerMosTemp;
-//        data.motorTemp = teleMotorTemp;
-//        data.bmsMosTemp = teleBMSMosTemp;
-//        data.ntc = teleNTC;
-//        data.currentconsumption = roundTo3Decimal(teleCurrentConsumption);
-//        data.batvoltage = roundTo1Decimal(teleBatVoltage);
-//        data.remainingCapacity_AH = roundTo3Decimal(teleRemainingCapacityAH);
-//        data.inAH = roundTo3Decimal(teletotalAH);
-//        data.inAH_by_charger = roundTo3Decimal(telechargerAH);
-//        data.inAH_by_regen = roundTo3Decimal(teleregenAH);
-//        data.outAH = roundTo3Decimal(teledischargeAH);
-//        data.ev_power_state = shdtelemetrywhenunlocked == true ? "ON" : "OFF";  // example mapping
-//        data.currentRider = shdtelemetrywhenunlocked == true ? telecurrentrider : "Scooter Locked";; //!= null ? telecurrentrider : teleRider;
-//        data.tirepressure = teletirepressure;
-//        data.soc = teleSOC;
-//        data.apuSoc = teleAPUSOC;
-//        data.lat_long = telelatlong;
-//        data.time = java.time.OffsetDateTime.now().toString();
-//
-//        apiService.saveRealTimeData(data).enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if (response.isSuccessful()) {
-//                   // Log.d("RealTimeData", "✅ Realtime data sent successfully");
-//                } else {
-//                    //Log.e("RealTimeData", "❌ Failed to send realtime data: " + response.code());
-//                }
-//            }
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                //Log.e("RealTimeData", "🚨 Network error sending realtime data: " + t.getMessage());
-//            }
-//        });
-//    }
-//    private double roundTo3Decimal(double value) {
-//        return Math.round(value * 1000.0) / 1000.0;
-//    }
-//
-//    private double roundTo1Decimal(double value) {
-//        return Math.round(value * 10.0) / 10.0;
-//    }
-//    @SuppressLint("MissingPermission")
-//    private String getLatLong(Context context) {
-//        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-//        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//
-//        if (location != null) {
-//            double latitude = location.getLatitude();
-//            double longitude = location.getLongitude();
-//            return latitude + ", " + longitude; // Return as "lat, long"
-//        } else {
-//            return "Location not available";
-//        }
-//    }
-//
-//    private boolean isUnknown(String value) {
-//        if (value == null) return true;
-//
-//        String normalized = value.trim().toUpperCase();
-//
-//        return normalized.startsWith("UNKNOWN");
-//    }
-
-
-//    private void sendVehicleDataIfValid() {
-//        SharedPreferences sharedPrefs = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-//
-//        String vin = sharedPrefs.getString("vin", "UNKNOWN_VIN");
-//        if (vin.contains("UNKNOWN")) return;  // Skip if VIN not initialized
-//
-//        String model = sharedPrefs.getString("model", "UNKNOWN_MODEL");
-//        String ownerName = sharedPrefs.getString("ownerName", "UNKNOWN_OWNER");
-//        String phoneNumber = sharedPrefs.getString("phoneNumber", "UNKNOWN_PHONE");
-//        String controllerID = sharedPrefs.getString("controllerID", "UNKNOWN_CONTROLLERID");
-//        String motorID = sharedPrefs.getString("motorID", "UNKNOWN_MOTORID");
-//        String bmsID = sharedPrefs.getString("bmsID", "UNKNOWN_BMSID");
-//        String chargerID = sharedPrefs.getString("chargerID", "UNKNOWN_CHARGERID");
-//        String smartKeyID = sharedPrefs.getString("smartKeyID", "UNKNOWN_SMARTKEYID");
-//
-//        String rideOSversion = "rideOS3.1"; // or fetch from system
-//        float odo = teleODO;
-//        float tripkm = teletrip;
-//        int chargingState = telechargingstate;
-//        int handleLockState = teleHandleLockState;
-//        int seatLockState = teleSeatLockState;
-//        String bmsMosStates = teleBMSMosStates;
-//        String riders = teleRider;
-//
-//        String currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-//
-//        VehicleData vehicleData = new VehicleData(
-//                vin,
-//                model,
-//                ownerName,
-//                phoneNumber,
-//                controllerID,
-//                motorID,
-//                bmsID,
-//                chargerID,
-//                rideOSversion,
-//                smartKeyID,
-//                odo,
-//                tripkm,
-//                chargingState,
-//                handleLockState,
-//                seatLockState,
-//                bmsMosStates,
-//                riders,
-//                currentTime
-//        );
-//
-//        // Skip sending identity fields if all are initialized
-//        if (!model.contains("UNKNOWN") &&
-//                !ownerName.contains("UNKNOWN") &&
-//                !phoneNumber.contains("UNKNOWN") &&
-//                !controllerID.contains("UNKNOWN") &&
-//                !motorID.contains("UNKNOWN") &&
-//                !bmsID.contains("UNKNOWN") &&
-//                !chargerID.contains("UNKNOWN") &&
-//                !smartKeyID.contains("UNKNOWN")) {
-//
-//            // If all identity fields are initialized, clear them before sending
-//            vehicleData = new VehicleData(
-//                    vin,
-//                    null, null, null, null, null, null, null,  // clear identity fields
-//                    rideOSversion,
-//                    null,
-//                    odo, tripkm, chargingState, handleLockState, seatLockState,
-//                    bmsMosStates, riders, currentTime
-//            );
-//        }
-//
-//        Call<ResponseBody> call = apiService.saveVehicleData(data);
-//        call.enqueue(new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                if (response.isSuccessful()) {
-//                    try {
-//                        String body = response.body() != null ? response.body().string() : "No response";
-//                        Log.d("VehicleData", "✅ Data sent: " + body);
-//                    } catch (Exception e) {
-//                        Log.e("VehicleData", "Error reading body", e);
-//                    }
-//                } else {
-//                    Log.e("VehicleData", "❌ Failed: " + response.code());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//                Log.e("VehicleData", "🚨 Error: " + t.getMessage());
-//            }
-//        });
-
-
-
-    //=========================================================================================
-
     public void release() {
-        Log.d("dfsg","REALSE CALLED");
+        //Log.d("dfsg","REALSE CALLED");
         handlerTurnSignal.removeCallbacksAndMessages(null);
         beepHandler.removeCallbacksAndMessages(null);
         warningHandler.removeCallbacksAndMessages(null);
@@ -3919,13 +3007,11 @@ public class UIUpdater  {
                     lastRearPsi = psi;
                 }
 
-                /* ================= TELEMETRY ================= */
-
                 String tpmsPayload = buildTirePressurePayload();
                 TelemetryDataManager.getInstance()
                         .setTeleTirePressure(tpmsPayload);
 
-                Log.d("TPMS-UI", "TELE_TIRE_PRESSURE = " + tpmsPayload);
+              //  Log.d("TPMS-UI", "TELE_TIRE_PRESSURE = " + tpmsPayload);
 
                 /* ================= UI ================= */
 
@@ -3950,17 +3036,15 @@ public class UIUpdater  {
                 .getInstance(ctx)
                 .registerReceiver(tpmsReceiver, filter);
 
-        Log.d("TPMS-UI", "TPMS receiver registered");
+       // Log.d("TPMS-UI", "TPMS receiver registered");
     }
 
     /* ================== SOUND PLAYER ================== */
 
     public void playLowTireSound() {
 
-        // 🚫 Ignore if already playing
         if (istireSoundPlaying) return;
 
-        // ✅ Create ONCE, reuse forever
         if (tirePlayer == null) {
             tirePlayer = MediaPlayer.create(
                     getInstance().context,
@@ -3971,7 +3055,7 @@ public class UIUpdater  {
 
             tirePlayer.setOnCompletionListener(mp -> {
                 istireSoundPlaying = false;
-                mp.seekTo(0); // reset for next trigger
+                mp.seekTo(0);
             });
         }
 
@@ -4031,19 +3115,14 @@ public class UIUpdater  {
             binding.transportModeYellowWarning.setVisibility(View.GONE);
             return;
         }
-
-        //  PRIORITY 2 → LOW BATTERY
         if (Lowbatflag) {
             binding.transportModeYellowWarning.setVisibility(View.GONE);
             return;
         }
-
-        // Normal logic
         if (!isTransportModeOn) {
             binding.transportModeYellowWarning.setVisibility(View.VISIBLE);
         } else {
             binding.transportModeYellowWarning.setVisibility(View.GONE);
         }
     }
-
 }

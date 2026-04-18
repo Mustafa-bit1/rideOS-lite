@@ -27,43 +27,43 @@ public class EVWebSocketClient extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         isConnected = true;
-        Log.d(TAG, " EV Connected to WebSocket");
+       // Log.d(TAG, " EV Connected to WebSocket");
         registerEV();
     }
 
     @Override
     public void onMessage(String message) {
         if (message == null || message.trim().isEmpty()) {
-            Log.w(TAG, " Received empty message");
+           // Log.w(TAG, " Received empty message");
             return;
         }
 
         try {
             JSONObject json = new JSONObject(message);
-            Log.d(TAG, " Received from server: " + json.toString());
+           // Log.d(TAG, " Received from server: " + json.toString());
 
             String type = json.optString("type", "");
 
             if ("command".equals(type)) {
                 handleCommand(json);
             } else {
-                Log.d(TAG, " Received data: " + json.toString());
+               // Log.d(TAG, " Received data: " + json.toString());
             }
         } catch (JSONException e) {
-            Log.e(TAG, " Error parsing JSON: " + message, e);
+            //Log.e(TAG, " Error parsing JSON: " + message, e);
         }
     }
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
         isConnected = false;
-        Log.w(TAG, " EV WebSocket Closed: " + reason);
+       // Log.w(TAG, " EV WebSocket Closed: " + reason);
         reconnectWebSocket();
     }
 
     @Override
     public void onError(Exception ex) {
-        Log.e(TAG, " WebSocket Error: ", ex);
+     //   Log.e(TAG, " WebSocket Error: ", ex);
     }
 
     private void registerEV() {
@@ -73,9 +73,9 @@ public class EVWebSocketClient extends WebSocketClient {
                 json.put("type", "registerEV");
                 json.put("vin", vin);
                 send(json.toString());
-                Log.d(TAG, "🔗 EV Registered with VIN: " + vin);
+               // Log.d(TAG, "🔗 EV Registered with VIN: " + vin);
             } catch (JSONException e) {
-                Log.e(TAG, " Error creating JSON for registration", e);
+              //  Log.e(TAG, " Error creating JSON for registration", e);
             }
         }
     }
@@ -90,10 +90,10 @@ public class EVWebSocketClient extends WebSocketClient {
                 send(json.toString());
                 //Log.d(TAG, " Sent sensor data: " + json.toString());
             } catch (JSONException e) {
-                Log.e(TAG, " Error sending sensor data", e);
+               // Log.e(TAG, " Error sending sensor data", e);
             }
         } else {
-            Log.w(TAG, " WebSocket not connected, cannot send data.");
+           // Log.w(TAG, " WebSocket not connected, cannot send data.");
         }
     }
 
@@ -103,35 +103,35 @@ public class EVWebSocketClient extends WebSocketClient {
 
         switch (commandType) {
             case "handlelockcommand":
-                Log.d(TAG, " Command received: handlelockcommand");
+                //Log.d(TAG, " Command received: handlelockcommand");
                 sendAcknowledgment(commandType, "handlelockcommand");
                // MainActivity.handlelockstate=0;
                 serialPortManager.VCUSendToMCU("FFAA550101000A00");
                 break;
 
             case "handleunlockcommand":
-                Log.d(TAG, " Command received: handleunlockcommand");
+               // Log.d(TAG, " Command received: handleunlockcommand");
                 sendAcknowledgment(commandType, "handleunlockcommand");
                // MainActivity.handlelockstate=1;
                 serialPortManager.VCUSendToMCU("FFAA550101000A01");
                 break;
 
             case "seatlockcommand":
-                Log.d(TAG, " Command received: seatlockcommand");
+              //  Log.d(TAG, " Command received: seatlockcommand");
                 sendAcknowledgment(commandType, "seatlockcommand");
                 //MainActivity.seatlockstate=0;
                 serialPortManager.VCUSendToMCU("FFAA550102000A01");
                 break;
 
             case "seatunlockcommand":
-                Log.d(TAG, "Command received: seatunlockcommand");
+              //  Log.d(TAG, "Command received: seatunlockcommand");
                 sendAcknowledgment(commandType, "seatunlockcommand");
                 //MainActivity.seatlockstate=1;
                 serialPortManager.VCUSendToMCU("FFAA550102000A01");
                 break;
 
             default:
-                Log.w(TAG, " Unknown command received: " + commandType);
+               // Log.w(TAG, " Unknown command received: " + commandType);
                 sendAcknowledgment(commandType, "Unknown Command");
                 break;
         }
@@ -146,9 +146,9 @@ public class EVWebSocketClient extends WebSocketClient {
                 json.put("message", message);
                 json.put("vin", vin);
                 send(json.toString());
-                Log.d(TAG, " Sent acknowledgment: " + json.toString());
+              //  Log.d(TAG, " Sent acknowledgment: " + json.toString());
             } catch (JSONException e) {
-                Log.e(TAG, " Error sending acknowledgment", e);
+               // Log.e(TAG, " Error sending acknowledgment", e);
             }
         }
     }
@@ -157,10 +157,10 @@ public class EVWebSocketClient extends WebSocketClient {
         new Thread(() -> {
             try {
                 Thread.sleep(3000); // Retry after 3 seconds
-                Log.d(TAG, " Attempting to reconnect...");
+              //  Log.d(TAG, " Attempting to reconnect...");
                 reconnect();
             } catch (InterruptedException e) {
-                Log.e(TAG, " Reconnect failed", e);
+                //Log.e(TAG, " Reconnect failed", e);
             }
         }).start();
     }

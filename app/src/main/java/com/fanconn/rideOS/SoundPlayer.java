@@ -12,7 +12,7 @@ public class SoundPlayer {
         stop(); // Stop any currently playing sound
 
         if (context == null) {
-            Log.e("SoundPlayer", "❌ Context is null, cannot play sound.");
+           // Log.e("SoundPlayer", " Context is null, cannot play sound.");
             return;
         }
 
@@ -23,17 +23,17 @@ public class SoundPlayer {
                 mediaPlayer.setOnCompletionListener(mp -> {
                     mp.release();
                     mediaPlayer = null;
-                    Log.d("SoundPlayer", "✅ Sound completed and released.");
+                   // Log.d("SoundPlayer", "Sound completed and released.");
                 });
 
                 mediaPlayer.start();
-                //Log.d("SoundPlayer", "🔊 Sound started.");
+                //Log.d("SoundPlayer", " Sound started.");
             } else {
-                //Log.e("SoundPlayer", "❌ MediaPlayer creation failed.");
+                //Log.e("SoundPlayer", " MediaPlayer creation failed.");
             }
 
         } catch (Exception e) {
-            //Log.e("SoundPlayer", "❌ Exception in playOnce: " + e.getMessage(), e);
+            //Log.e("SoundPlayer", " Exception in playOnce: " + e.getMessage(), e);
         }
     }
 
@@ -42,14 +42,14 @@ public class SoundPlayer {
             try {
                 if (mediaPlayer.isPlaying()) {
                     mediaPlayer.stop();
-                    Log.d("SoundPlayer", "⏹️ Sound stopped.");
+                  // Log.d("SoundPlayer", "️ Sound stopped.");
                 }
             } catch (IllegalStateException e) {
-                Log.e("SoundPlayer", "❌ IllegalStateException while stopping: " + e.getMessage());
+               // Log.e("SoundPlayer", " IllegalStateException while stopping: " + e.getMessage());
             } finally {
                 mediaPlayer.release();
                 mediaPlayer = null;
-                Log.d("SoundPlayer", "🧹 MediaPlayer released.");
+                //Log.d("SoundPlayer", " MediaPlayer released.");
             }
         }
     }

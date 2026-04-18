@@ -80,29 +80,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import com.fanconn.rideOS.authen.LoginActivity;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
 import com.fanconn.rideOS.mcuupdate.FileDownloader;
 import com.fanconn.rideOS.mcuupdate.YMode;
-
 import com.fanconn.rideOS.menu.menu;
-//import com.fanconn.rideOS.network.CommandHandler;
-//import com.fanconn.rideOS.network.CommandListener;
 import com.fanconn.rideOS.network.EVWebSocketClient;
 import com.fanconn.rideOS.network.ApiService;
 //import com.fanconn.rideOS.network.ScooterMqttManager;
-
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
-
 import tp.xmaihh.serialport.BuildConfig;
 
-/**
- * 主活动类，负责界面初始化和串口通信管理
- */
 public class MainActivity extends AppCompatActivity implements FrameDataListener {
     public  SerialPortManager serialPortManager;  // 串口管理类
     private ActivityMainBinding binding; // 自动生成的绑定类实例，用于访问布局文件中的视图组件
@@ -194,21 +184,9 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private ApiService apiService;
     final private String VINNUMBER = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
     static EVWebSocketClient evClient;
-    //public static int handlelockstate, seatlockstate;
-    //public Button bootbutton, handlelockbutton, handleUNlockbutton, riderprofile;
-
     ImageButton mapbtn,menubtn,lowtire_preesure_button;
     TripDistanceManager tripManager;
-    //String bms1890, bms1893, bms1894, bms1895, bms1896;
     GestureDetector gestureDetector;
-    //    InactivityManager inactivityManager;
-    private boolean command1Success = false;
-    private boolean command2Success = false;
-    //    private boolean EVloccommand1Success = false;
-//    private boolean EVloccommand2Success = false;
-    private final int MAX_RETRIES = 200;
-    private int retryCount1 = 0;
-    private int retryCount2 = 0;
     private Handler delayedUnlockHandler  = new Handler(Looper.getMainLooper());
     private Runnable delayedUnlockRunnable;
     public static MainActivity instance;
@@ -258,16 +236,14 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectAll()  // Logs all UI thread violations
-                    .penaltyLog() // Shows in Logcat
+                    .detectAll()
+                    .penaltyLog()
                     .build());
         }
-
-        // Inflate and set the layout after login check
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         TemperatureLogger.logImportantThermals();
-        //set app toi full screen
+
         setFullScreen();
 //        inactivityManager = new InactivityManager(this);
 //        inactivityManager.stopTimer();
@@ -334,40 +310,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }, f1, f1+1, 0);
 
         tv.setText(s);
-
-        //EVLockService.getInstance().startUnlockSequence();  // Start initial unlock attempt
-
-//        delayedUnlockRunnable = () -> {
-//            Heartbeat1 hb1 = serialPortManager.getHb1();
-//            if (hb1.getDragonLock() == 0 || hb1.getLED() == 0) {
-//                Log.d("MainActivity", "Unlocking again after delay...");
-//                EVLockService.getInstance().startUnlockSequence();
-//            } else {
-//                Log.d("MainActivity", "Scooter already unlocked, skipping re-unlock.");
-//            }
-//        };
-
-// Post delayed re-unlock after 5 seconds
-//        delayedUnlockHandler.postDelayed(delayedUnlockRunnable, 15000);
-
-//        bms1890 = "FFAA5501030015189001400001020304050607";//soc
-//        bms1893 = "FFAA5501030015189301400001020304050607";//MOS states  ,  Life Cycles  ,  Remaining Capacity
-//        bms1894 = "FFAA5501030015189401400001020304050607";//Charging started Indication
-//        bms1895 = "FFAA5501030015189501400001020304050607";//Cell voltage
-//        bms1896 = "FFAA5501030015189601400001020304050607";//ntc
-
-        // 检测SIM卡和SD卡
-//        checkSimCard();
-//        checkSDCard();
-
-        // 检测摄像头
-        //  cameraHandler.queryCameraAvailability();
-
-
-//        String mqttClientId = "rideos_" + System.currentTimeMillis();
-//        ScooterMqttManager.getInstance(this, VINNUMBER, mqttClientId);
-
-        // 实时获取时间
         acquisitionTime();
 
         //animateBatteryLevelOnce();
@@ -421,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
 
             if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
-                Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening menu");
+               // Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening menu");
 
                 serialPortManager.VCUSendToMCU("FFAA550107000A01");
                 Intent intent = new Intent(MainActivity.this, menu.class);
@@ -470,24 +412,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         tripResetBtn = binding.tripresetbtn;
         updateDistanceDisplay();
 
-//        menubtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showPasswordDialog();
-//            }
-//        });
-
-
-//        Button mosswitch = findViewById(R.id.mosswitch); // initialize and find view
-//
-//        mosswitch.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                // Directly send the command when button is pressed
-//                Log.d("sdfgfnh","btn pressed");
-//                serialPortManager.VCUSendToMCU("FFAA5501030015189001400000000000000000");
-//            }
-//        });
 
         tripManager = new TripDistanceManager(this);
         uiUpdater.setTripManager(tripManager);
@@ -619,14 +543,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         String targetPkg = "com.fanconn.rideOSfw";
 
         try {
-            // 1. Launch other app FIRST
             Intent intent = getPackageManager().getLaunchIntentForPackage(targetPkg);
             if (intent != null) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
-
-            // 2. Force-stop THIS app (same as Settings → Force stop)
             Runtime.getRuntime().exec(new String[]{
                     "sh", "-c", "am force-stop " + myPkg
             });
@@ -640,10 +561,9 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private void getFreshLatLong(Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-        // Try to get the last known location first (faster than waiting for GPS fix)
         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (lastLocation != null) {
-            Log.d("GPS", "Last Known Location: " + lastLocation.getLatitude() + ", " + lastLocation.getLongitude());
+           // Log.d("GPS", "Last Known Location: " + lastLocation.getLatitude() + ", " + lastLocation.getLongitude());
         }
 
         // Fresh update
@@ -652,7 +572,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             public void onLocationChanged(Location location) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
-                Log.d("GPS", "Fresh Location: " + latitude + ", " + longitude);
+              //  Log.d("GPS", "Fresh Location: " + latitude + ", " + longitude);
 
                 // Stop updates after first fix
                 locationManager.removeUpdates(this);
@@ -738,14 +658,14 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             return;
         }
 
-        int level = signalStrength.getLevel(); // 0 to 4 signal level
+        int level = signalStrength.getLevel();
 
         if (level <= 1) {
-            signalIcon.setImageResource(R.drawable.signalweakimg); // weak signal
+            signalIcon.setImageResource(R.drawable.signalweakimg);
         } else if (dataState == TelephonyManager.DATA_CONNECTED) {
-            signalIcon.setImageResource(R.drawable.signaldataimg); // good signal + data on
+            signalIcon.setImageResource(R.drawable.signaldataimg);
         } else {
-            signalIcon.setImageResource(R.drawable.signalstrongimg); // good signal
+            signalIcon.setImageResource(R.drawable.signalstrongimg);
         }
     }
 
@@ -886,7 +806,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //    }
 
     public void SpeedAndSOCANimation() {
-        for (int i = 0; i <= 100; i++) { // Load images for speeds 0 to 100
+        for (int i = 0; i <= 100; i++) {
             int resId = getResources().getIdentifier("speed_" + i, "drawable", getPackageName());
             if (resId != 0) {
                 speedImageMap.put(i, resId);
@@ -897,31 +817,26 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
 //BAttery Animation
 
-        for (int i = 0; i <= 100; i += 2) { // Load images for battery levels (0, 2, 4, ..., 100)
+        for (int i = 0; i <= 100; i += 2) {
             int resId = getResources().getIdentifier("bat_" + i, "drawable", getPackageName());
             if (resId != 0) {
                 batteryImageMap.put(i, resId);
             }
         }
-
-        // Ensure bat_100 is always available for levels >100
         batteryImageMap.put(101, getResources().getIdentifier("bat_100", "drawable", getPackageName()));
 
-        //APU level animation
-        for (int i = 0; i <= 100; i += 2) { // Load images for battery levels (0, 2, 4, ..., 100)
+        for (int i = 0; i <= 100; i += 2) {
             int resId = getResources().getIdentifier("apubat_" + i, "drawable", getPackageName());
             if (resId != 0) {
                 APUbatteryImageMap.put(i, resId);
             }
         }
-
-        // Ensure bat_100 is always available for levels >100
         APUbatteryImageMap.put(101, getResources().getIdentifier("apubat_100", "drawable", getPackageName()));
     }
 
     public void IntroBatteryAnimation() {
 
-        for (int i = 0; i <= 100; i += 2) { // Load images for battery levels (0, 2, 4, ..., 100)
+        for (int i = 0; i <= 100; i += 2) {
             int resId = getResources().getIdentifier("bati_" + i, "drawable", getPackageName());
             if (resId != 0) {
                 introbatteryImageMap.put(i, resId);
@@ -936,81 +851,12 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         boolean isUpdated = prefs.getBoolean(PREF_IS_UPDATED, false);
 
         if (!isUpdated) {
-            Log.d(TAG, "App not updated, checking for updates...");
+           // Log.d(TAG, "App not updated, checking for updates...");
             startUpdateService();
         } else {
-            Log.d(TAG, "App is already updated.");
+           // Log.d(TAG, "App is already updated.");
         }
     }
-
-//    public void Telemetry() {
-////        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.102:9090/ws/ev"));
-////        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.104.231.197:9090/ws/ev"));
-//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.107:9090/ws/ev"));//devan IP
-//
-//        evClient.connect();
-//
-//        //Sending data via retrofit to server
-//        apiService = RetrofitClient.getClient().create(ApiService.class);
-//        sendDataContinuously();
-//
-//
-////Sending States Via Websockets
-//        new Thread(() -> {
-//            while (evClient == null || !evClient.isOpen()) {
-//                try {
-//                    Thread.sleep(500); // Wait for connection
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            serialPortManager.sendContinuousSensorData();
-//// Start sending sensor data continuously
-//        }).start();
-//    }
-//
-//    private boolean isSending = true; // Flag to control data sending
-//    private Handler handler = new Handler();
-//
-//    private void sendDataContinuously() {
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (isSending) {
-//                    sendVehicleData(VINNUMBER, "75%", 100f, 1, 3.2f, 26.5f, "Alex");
-//                    handler.postDelayed(this, 5000); // Repeat every 5 seconds
-//                }
-//            }
-//        }, 5000);
-//    }
-//
-//    private void sendVehicleData(String vin, String soc, float apusoc, int chargingstate, float tirepressure, float temp, String rider) {
-//
-//
-//        VehicleData data = new VehicleData(vin, soc, apusoc, chargingstate, tirepressure, temp, rider);
-//        ApiService apiService = RetrofitClient.getClient().create(ApiService.class);
-//        Call<Void> call = apiService.saveVehicleData(data);
-//
-//        call.enqueue(new Callback<Void>() {
-//            @Override
-//            public void onResponse(Call<Void> call, Response<Void> response) {
-//                if (response.isSuccessful()) {
-//                    Log.d("Retrofit", "Sending Data: VIN=" + vin + ", SOC=" + soc + ", APUSOC=" + apusoc +
-//                            ", ChargingState=" + chargingstate + ", TirePressure=" + tirepressure +
-//                            ", Temp=" + temp + ", Rider=" + rider);
-//                    Log.d("Retrofit", "Data sent successfully!");
-//                } else {
-//                    Log.e("Retrofit", "Failed! Response code: " + response.code());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Void> call, Throwable t) {
-//                Log.e("Retrofit", "Request failed: " + t.getMessage());
-//            }
-//        });
-//    }
-
     private void startUpdateService() {
         // Start the UpdateService to check and prompt the user for an update
         Intent intent = new Intent(this, UpdateService.class);
@@ -1027,8 +873,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         showingTrip = !showingTrip;
         updateDistanceDisplay();
     }
-
-    // Updates the TextViews and button visibility
     private void updateDistanceDisplay() {
         if (uiUpdater == null || uiUpdater.tripManager == null) return;
 
@@ -1043,7 +887,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             tripResetBtn.setVisibility(showingTrip ? View.VISIBLE : View.GONE);
         }
     }
-    // Called by UIUpdater when CAN data updates
     public void refreshDistance() {
         runOnUiThread(this::updateDistanceDisplay);
     }
@@ -1060,18 +903,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 public void recoNavLeft(View view) {
     UIUpdater.getInstance().toggleRecoMode();
 }
-
     public void recoNavRight(View view) {
         UIUpdater.getInstance().toggleRecoMode();
     }
 
-
-
-    /**
-     * 解析数据帧
-     *
-     * @param frame 数据帧
-     */
     private void parseFrame(String frame) {
         serialPortManager.parseDataFrames(frame, MainActivity.this);
     }
@@ -1123,95 +958,6 @@ public void recoNavLeft(View view) {
         });
     }
 
-    /**
-     * 蓝牙Mac地址发送按钮响应函数
-     * @param v
-     */
-//    public void BluetoothSend_onClick(View v) {
-//        serialPortManager.mad.setBleMacChange(0);
-//
-//        //获取蓝牙Mac地址文本框内容
-//        String bluetoothMACInput = binding.BluetoothMACInput.getText().toString();
-//
-//        if (bluetoothMACInput.isEmpty()) {
-//            Toast.makeText(getBaseContext(), R.string.tips_please_enter_a_data, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // 移除输入文本中的冒号
-//        String formattedInput = bluetoothMACInput.replaceAll(":", "");
-//
-//        // 验证输入文本的长度和字符是否满足蓝牙地址的格式
-//        if (!FrameUtils.isBluetoothMacValid(formattedInput)) {
-//            // 输入的格式不正确，提示用户重新输入
-//            Toast.makeText(MainActivity.this, R.string.tips_formatting_Bluetooth_Mac_address_error, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        // 输入的格式正确，把MAC地址发给单片机
-//        serialPortManager.VCUSendToMCU("FFAA550100000F" + formattedInput); // 修改蓝牙MAC地址
-//    }
-
-    /**
-     * SIM测试
-     * @param v
-     */
-//    public void SIM_onClick(View v) {
-//        TelephonyManager telephonyManager = getSystemService(TelephonyManager.class);
-//        // 取所有插卡的SIM卡信息
-//        getSimInfo(telephonyManager);
-//
-//        if(isSIMCardExist){
-//            binding.SIMIV.setImageResource(R.drawable.sim_normal);
-//            binding.SIMTitle.setTextColor(Color.WHITE);
-//            binding.SIMTitle.setText(R.string.tips_SIM_normal);
-//        }else {
-//            binding.SIMIV.setImageResource(R.drawable.sim_warning);
-//            binding.SIMTitle.setTextColor(Color.YELLOW);
-//            binding.SIMTitle.setText(R.string.tips_SIM_exception);
-//        }
-//    }
-//
-//    /**
-//     * SD卡测试
-//     * @param v
-//     */
-//    public void SD_Card_onClick(View v) {
-//        isSDCardExist = FrameUtils.isSdCardAvailable(this);
-//        if(isSDCardExist){
-//            binding.SDIV.setImageResource(R.drawable.sd_normal);
-//            binding.SDTitle.setTextColor(Color.WHITE);
-//            binding.SDTitle.setText(R.string.tips_SD_normal);
-//        }else {
-//            binding.SDIV.setImageResource(R.drawable.sd_warning);
-//            binding.SDTitle.setTextColor(Color.YELLOW);
-//            binding.SDTitle.setText(R.string.tips_SD_exception);
-//        }
-//    }
-//
-//    /**
-//     * 用于处理相机开关按钮点击事件
-//     */
-//    public void camera_onClick(View view) {
-//        cameraState = (cameraState + 1) % 3; // 切换循环状态
-//        cameraHandler.updateCameraPreview(cameraState); // 更新摄像头预览状态  isPreviewing = true;
-//
-//    }
-
-    /**
-     * OTA 响应事件
-     *
-     * @param
-     */
-//    public void MCUOTA_onClick(View view) {
-//        if (FrameUtils.isNetworkAvailable(this)) {
-//            new FetchVersionTask().execute(version_URL);
-//        } else {
-//            Log.d("OTA_onClick", "no network ....");
-//            Toast.makeText(MainActivity.this, R.string.tips_mcuota_no_network, Toast.LENGTH_SHORT).show();
-//        }
-//    }
-
     private class FetchVersionTask extends AsyncTask<String, Void, Integer> {
 
         @Override
@@ -1227,8 +973,8 @@ public void recoNavLeft(View view) {
         @Override
         protected void onPostExecute(Integer mcuOtaVer_new) {
             int mcuOtaVer_local = serialPortManager.mad.getMcuVersions();
-            Log.d("UIUpdater", "updateMacVersions mcuOtaVer_local: " + mcuOtaVer_local);
-            Log.d("UIUpdater", "updateMacVersions mcuOtaVer_new: " + mcuOtaVer_new);
+          //  Log.d("UIUpdater", "updateMacVersions mcuOtaVer_local: " + mcuOtaVer_local);
+         //   Log.d("UIUpdater", "updateMacVersions mcuOtaVer_new: " + mcuOtaVer_new);
             if (mcuOtaVer_new != -1) {
                 if (mcuOtaVer_new > mcuOtaVer_local) {
                     showUpdateDialog();
@@ -1278,7 +1024,7 @@ public void recoNavLeft(View view) {
                     Toast.makeText(MainActivity.this, R.string.tips_mcuota_file_unexist, Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException | InterruptedException e) {
-                Log.e("startFirmwareDownload", "Error downloading or sending firmware", e);
+              //  Log.e("startFirmwareDownload", "Error downloading or sending firmware", e);
                 Toast.makeText(MainActivity.this, R.string.tips_mcuota_Error_downloading_or_sending_firmware, Toast.LENGTH_SHORT).show();
             }
 
@@ -1320,218 +1066,7 @@ public void recoNavLeft(View view) {
 
         }
     }
-    // 播放/暂停按钮点击事件
-//    public void Play_Pause_onClick(View v) {
-//        if (musicPlayer != null) {
-//            musicPlayer.playPauseMusic();
-//        }
-//    }
-//
-//    // 上一首按钮点击事件
-//    public void Previous_onClick(View v) {
-//        if (musicPlayer != null) {
-//            musicPlayer.playPreviousSong();
-//        }
-//    }
-//
-//    // 下一首按钮点击事件
-//    public void Next_onClick(View v) {
-//        if (musicPlayer != null) {
-//            musicPlayer.playNextSong();
-//        }
-//    }
-//
-//    // 循环模式按钮点击事件
-//    public void Loop_onClick(View v) {
-//        loopState = (loopState + 1) % 3; // 切换循环状态
-//        if (musicPlayer != null) {
-//            musicPlayer.updateLoopButtonImage(loopState); // 更新循环按钮图标
-//        }
-//    }
-//
-//    // 静音/取消静音按钮点击事件
-//    public void volume_onClick(View v) {
-//        if (musicPlayer != null) {
-//            musicPlayer.toggleMute();
-//        }
-//    }
 
-    // 多功能按钮点击事件
-//    public void Menu_onClick(View v) {
-//        if (popupWindow != null && popupWindow.isShowing()) {
-//            popupWindow.dismiss();
-//        } else {
-//            showPopup(v);
-//        }
-//    }
-
-//    private void showPopup(View anchorView) {
-//        // 初始化下拉菜单布局
-//        View popupView = LayoutInflater.from(this).inflate(R.layout.popup_menu, null);
-//        popupWindow = new PopupWindow(popupView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
-//
-//        // 设置 popupView 的系统 UI 可见性
-//        popupView.setSystemUiVisibility(
-//                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//        );
-//
-//        // 设置下拉菜单背景
-//        popupWindow.setOutsideTouchable(true);
-//
-//        // 显示下拉菜单
-//        popupWindow.showAsDropDown(anchorView);
-//
-//        // 获取控件
-//        frontLockSW = popupView.findViewById(R.id.frontLock_SW);
-//        frontLockSWSTV = popupView.findViewById(R.id.frontLock_SW_STV);
-//
-//        seatCushionLockSW = popupView.findViewById(R.id.seatCushionLock_SW);
-//        seatCushionLockSWSTV = popupView.findViewById(R.id.seatCushionLock_SW_STV);
-//
-//        // 获取方向档 TextView
-//        neutralGear = popupView.findViewById(R.id.neutral_gear);
-//        driveGear = popupView.findViewById(R.id.drive_gear);
-//        reverseGear = popupView.findViewById(R.id.reverse_gear);
-//
-//        // 获取速度档 TextView
-//        speedThreshold1 = popupView.findViewById(R.id.speedThreshold_1);
-//        speedThreshold2 = popupView.findViewById(R.id.speedThreshold_2);
-//        speedThreshold3 = popupView.findViewById(R.id.speedThreshold_3);
-//
-//        // 初始化按钮状态
-//        MenuUpdateUI();
-//
-//        // 添加开关状态变化监听器
-//        frontLockSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                frontLockSWSTV.setText(isChecked ? "开" : "关");
-//                if(isChecked){
-//                    serialPortManager.VCUSendToMCU("FFAA550101000A01");
-//                }else {
-//                    serialPortManager.VCUSendToMCU("FFAA550101000A00");
-//                }
-//            }
-//        });
-//
-//        seatCushionLockSW.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                seatCushionLockSWSTV.setText(isChecked ? "开" : "关");
-//                if(isChecked){
-//                    serialPortManager.VCUSendToMCU("FFAA550102000A01");
-//                }else {
-//                    serialPortManager.VCUSendToMCU("FFAA550102000A00");
-//                }
-//            }
-//        });
-//
-//        // 设置点击事件
-//        neutralGear.setOnClickListener(v -> setGearState(neutralGear, driveGear, reverseGear));
-//        driveGear.setOnClickListener(v -> setGearState(driveGear, neutralGear, reverseGear));
-//        reverseGear.setOnClickListener(v -> setGearState(reverseGear, neutralGear, driveGear));
-
-//        speedThreshold1.setOnClickListener(v -> setSpeedState(speedThreshold1, speedThreshold2, speedThreshold3));
-//        speedThreshold2.setOnClickListener(v -> setSpeedState(speedThreshold2, speedThreshold1, speedThreshold3));
-//        speedThreshold3.setOnClickListener(v -> setSpeedState(speedThreshold3, speedThreshold1, speedThreshold2));
-//
-//    }
-
-    // 设置方向档背景
-//    private void setGearState(String s) {
-//        int data = 0;
-//        int seep_data = 0;
-//        String sProt = "";
-//        String hexData = "";
-//        String hexSeepData = "";
-//
-//        /*
-//        selected.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//        for (TextView other : others) {
-//            other.setBackgroundColor(Color.TRANSPARENT); // 透明
-//        }
-//         */
-//
-//        switch (s) {
-//            case "N":
-//                // 空档
-//                data =(serialPortManager.hb3.getBSG1_BYTE1()&0xfc)+0;
-//                Log.d("data","data is "+data);
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4()&0xfc) + FrameUtils.extractBits(serialPortManager.hb3.getBSG1_BYTE1(), 2, 4);
-//                Log.d("data","seepdata is "+seep_data);
-//                // 使用String.format来确保两位数的十六进制表示
-//                hexData = String.format("%02x", data);
-//                Log.d("data","hexdata is "+hexData);
-//                hexSeepData = String.format("%02x", seep_data);
-//                Log.d("data","hexseepdata is "+hexSeepData);
-//                sProt = "FFAA550103001510F8A807" + hexData + "FF00" + hexSeepData + "00000000";
-//                Log.d("data","sport is "+sProt);
-//                serialPortManager.VCUSendToMCU(sProt);
-//                // Toast.makeText(this, "选择的方向档位是: N", Toast.LENGTH_SHORT).show();
-//                break;
-//            case "D":
-//                // 行驶档
-//                data =(serialPortManager.hb3.getBSG1_BYTE1()&0xfc)+1; Log.d("data","data is "+data);
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4()&0xfc) + FrameUtils.extractBits(serialPortManager.hb3.getBSG1_BYTE1(), 2, 4);
-//                Log.d("data","seepdata is "+seep_data);
-//                // 使用String.format来确保两位数的十六进制表示
-//                hexData = String.format("%02x", data);Log.d("data","hexdata is "+hexData);
-//                hexSeepData = String.format("%02x", seep_data);Log.d("data","hexseepdata is "+hexSeepData);
-//                sProt = "FFAA550103001510F8A807" + hexData + "FF00" + hexSeepData + "00000000"; Log.d("data","sport is "+sProt);
-//                serialPortManager.VCUSendToMCU(sProt);
-//                //Toast.makeText(this, "选择的方向档位是: D", Toast.LENGTH_SHORT).show();
-//                break;
-//            case "R":
-//                // 倒档
-//                data =(serialPortManager.hb3.getBSG1_BYTE1()&0xfc)+2;
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4()&0xfc) + FrameUtils.extractBits(serialPortManager.hb3.getBSG1_BYTE1(), 2, 4);
-//
-//                // 使用String.format来确保两位数的十六进制表示
-//                hexData = String.format("%02x", data);
-//                hexSeepData = String.format("%02x", seep_data);
-//                sProt = "FFAA550103001510F8A807" + hexData + "FF00" + hexSeepData + "00000000";
-//                serialPortManager.VCUSendToMCU(sProt);
-//                // Toast.makeText(this, "选择的方向档位是: R", Toast.LENGTH_SHORT).show();
-//                break;
-//            default:
-//                // 默认选择空档
-//                data =(serialPortManager.hb3.getBSG1_BYTE1()&0xfc)+0;
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4()&0xfc) + FrameUtils.extractBits(serialPortManager.hb3.getBSG1_BYTE1(), 2, 4);
-//
-//                // 使用String.format来确保两位数的十六进制表示
-//                hexData = String.format("%02x", data);
-//                hexSeepData = String.format("%02x", seep_data);
-//                sProt = "FFAA550103001510F8A807" + hexData + "FF00" + hexSeepData + "00000000";
-//                serialPortManager.VCUSendToMCU(sProt);
-//                //Toast.makeText(this, "选择的方向档位是: N", Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-//    }
-//    private final Handler bmsHandler = new Handler(Looper.getMainLooper());
-//
-//    // Runnable for bms1890
-//    private final Runnable send1896 = new Runnable() {
-//        @Override
-//        public void run() {
-//            serialPortManager.VCUSendToMCU(bms1896);
-//            bmsHandler.postDelayed(send1890, 300); // Delay before sending 1896
-//        }
-//    };
-//
-//    // Runnable for bms1896
-//    private final Runnable send1890 = new Runnable() {
-//        @Override
-//        public void run() {
-//            serialPortManager.VCUSendToMCU(bms1890);
-//            bmsHandler.postDelayed(send1896, 1200); // Wait before the next cycle
-//        }
-//    };
-//
 //    // Start the cycle
 //    private void startRequestCycle() {
 //        bmsHandler.post(send1896); // Kick off the loop
@@ -1580,8 +1115,6 @@ public void recoNavLeft(View view) {
 //        }
 //    };
 //
-
-
     private void sleep(int ms) {
         try {
             Thread.sleep(ms);
@@ -1589,75 +1122,13 @@ public void recoNavLeft(View view) {
             e.printStackTrace();
         }
     }
-
-    // 设置速度档背景
-//    private void setSpeedState(TextView selected, TextView... others) {
-//        String sProt = "";
-//        int data = 0;
-//        int seep_data = 0;
-//
-//        /*
-//        selected.setBackgroundColor(Color.parseColor("#ADD8E6")); // 淡蓝色
-//        for (TextView other : others) {
-//            other.setBackgroundColor(Color.TRANSPARENT); // 透明
-//        }
-//         */
-//
-//        switch (selected.getText().toString().trim()) {
-//            case "1":
-//                // 速度档1
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4() & 0xfc) + 0;
-//                sProt = "FFAA550103001510F8A807"
-//                        + String.format("%02x", serialPortManager.hb3.getBSG1_BYTE1())
-//                        + "FF00"
-//                        + String.format("%02x", seep_data)
-//                        + "00000000";
-//                serialPortManager.VCUSendToMCU(sProt);
-//                //Toast.makeText(this, "选择的速度档位是: 1", Toast.LENGTH_SHORT).show();
-//                break;
-//            case "2":
-//                // 速度档2
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4() & 0xfc) + 1;
-//                sProt = "FFAA550103001510F8A807"
-//                        + String.format("%02x", serialPortManager.hb3.getBSG1_BYTE1())
-//                        + "FF00"
-//                        + String.format("%02x", seep_data)
-//                        + "00000000";
-//                serialPortManager.VCUSendToMCU(sProt);
-//                //Toast.makeText(this, "选择的速度档位是: 2", Toast.LENGTH_SHORT).show();
-//                break;
-//            case "3":
-//                // 速度档3
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4() & 0xfc) + 2;
-//                sProt = "FFAA550103001510F8A807"
-//                        + String.format("%02x", serialPortManager.hb3.getBSG1_BYTE1())
-//                        + "FF00"
-//                        + String.format("%02x", seep_data)
-//                        + "00000000";
-//                serialPortManager.VCUSendToMCU(sProt);
-//                //Toast.makeText(this, "选择的速度档位是: 3", Toast.LENGTH_SHORT).show();
-//                break;
-//            default:
-//                // 默认选择速度档2
-//                seep_data = (serialPortManager.hb3.getBSG1_BYTE4() & 0xfc) + 1;
-//                sProt = "FFAA550103001510F8A807"
-//                        + String.format("%02x", serialPortManager.hb3.getBSG1_BYTE1())
-//                        + "FF00"
-//                        + String.format("%02x", seep_data)
-//                        + "00000000";
-//                serialPortManager.VCUSendToMCU(sProt);
-//                //Toast.makeText(this, "选择的速度档位是: 2", Toast.LENGTH_SHORT).show();
-//                break;
-//        }
-
-
     public void setNeutralGear() {
 //        int data = 0;
 //        int seep_data = 0;
 //        String sProt = "";
 //        String hexData = "";
 //        String hexSeepData = "";
-        Log.d("sadfgfh", "neutarla entered");
+      //  Log.d("sadfgfh", "neutarla entered");
 //        // 空档
 //        data = (serialPortManager.hb3.getBSG1_BYTE1() & 0xfc) + 0;
 //        seep_data = (serialPortManager.hb3.getBSG1_BYTE4() & 0xfc) + FrameUtils.extractBits(serialPortManager.hb3.getBSG1_BYTE1(), 2, 4);
@@ -1766,73 +1237,6 @@ public void recoNavLeft(View view) {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
-
-    /**
-     * 检查 SIM 卡是否存在，并更新相应的 UI。
-     */
-//    private void checkSimCard() {
-//        // 获取电话管理器
-//        TelephonyManager telephonyManager = getSystemService(TelephonyManager.class);
-//
-//        // 获取 SIM 卡信息，判断是否存在
-//        isSIMCardExist = getSimInfo(telephonyManager);
-//
-//        // 更新 SIM 卡状态 UI
-//        updateSimUI();
-//    }
-
-    /**
-     * 检查 SD 卡是否存在，并更新相应的 UI。
-     */
-//    private void checkSDCard() {
-//        // 判断 SD 卡是否可用
-//        isSDCardExist = FrameUtils.isSdCardAvailable(this);
-//
-//        // 更新 SD 卡状态 UI
-//        updateSDUI();
-//    }
-
-    /**
-     * 更新 SIM 卡状态的 UI 显示。
-     */
-//    private void updateSimUI() {
-//        if (isSIMCardExist) {
-//            // SIM 卡存在，显示正常状态
-//            binding.SIMIV.setImageResource(R.drawable.sim_normal);
-//            binding.SIMTitle.setTextColor(Color.WHITE);
-//            binding.SIMTitle.setText(R.string.tips_SIM_normal);
-//        } else {
-//            // SIM 卡不存在，显示警告状态
-//            binding.SIMIV.setImageResource(R.drawable.sim_warning);
-//            binding.SIMTitle.setTextColor(Color.YELLOW);
-//            binding.SIMTitle.setText(R.string.tips_SIM_exception);
-//        }
-//    }
-
-    /**
-     * 更新 SD 卡状态的 UI 显示。
-     */
-//    private void updateSDUI() {
-//        if (isSDCardExist) {
-//            // SD 卡存在，显示正常状态
-//            binding.SDIV.setImageResource(R.drawable.sd_normal);
-//            binding.SDTitle.setTextColor(Color.WHITE);
-//            binding.SDTitle.setText(R.string.tips_SD_normal);
-//        } else {
-//            // SD 卡不存在，显示警告状态
-//            binding.SDIV.setImageResource(R.drawable.sd_warning);
-//            binding.SDTitle.setTextColor(Color.YELLOW);
-//            binding.SDTitle.setText(R.string.tips_SD_exception);
-//        }
-//    }
-
-    /**
-     * 获取SIM状态
-     *
-     * @param telephonyManager
-     * @param slotIndex
-     * @return
-     */
     private String getSimState(TelephonyManager telephonyManager, int slotIndex) {
         int simState = telephonyManager.getSimState(slotIndex);
         switch (simState) {
@@ -1854,13 +1258,6 @@ public void recoNavLeft(View view) {
                 return "SIM卡状态异常";
         }
     }
-
-    /**
-     * 获取所有插卡的SIM卡信息
-     *
-     * @param telephonyManager
-     * @return 是否存在SIM卡
-     */
     private boolean getSimInfo(TelephonyManager telephonyManager) {
         isSIMCardExist = false;
         SubscriptionManager subscriptionManager = getSystemService(SubscriptionManager.class);
@@ -1885,14 +1282,14 @@ public void recoNavLeft(View view) {
     }
     public void Lockhandle()
     {
-        Log.d("oikujhdagvb","Locking handle");serialPortManager.VCUSendToMCU("FFAA550101000A00");
+      //  Log.d("oikujhdagvb","Locking handle");serialPortManager.VCUSendToMCU("FFAA550101000A00");
     }
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
         //stopSequence();
         InactivityManager.getInstance().onUserInteraction(); // Reset timer on touch or key press
-        Log.d("dsafsd","onUserInteraction() NETER");
+        //Log.d("dsafsd","onUserInteraction() NETER");
     }
 
 //    @Override
@@ -2123,20 +1520,10 @@ public void recoNavLeft(View view) {
                         serialPortManager.VCUSendToMCU("FFAA550107000A01");
                         }, 300);
                 }
-
-
                 BatteryArcView batteryView = binding.batteryArc;
-
-                // 🚫 STOP ANY OLD DRAW
                 batteryView.blockInitialDraw(true);
-
-                // ✅ Reset BEFORE showing
                 batteryView.setBatteryLevel(0);
-
-                // ✅ Now allow drawing again
                 batteryView.blockInitialDraw(false);
-
-                // 🚀 continue flow
                 runPostLoginInit();
             });
         }
@@ -2154,7 +1541,7 @@ public void recoNavLeft(View view) {
         {
             InactivityManager.getInstance().startTimer(1);
         }
-        Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
+     //   Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
 //         If you need to restart anything like timers here, do so
 //         mHandlerTime.postDelayed(mRunnableTime, 0);
 
@@ -2184,7 +1571,7 @@ public void recoNavLeft(View view) {
         super.onPause();
         LoginisActive = false;
         isVisible = false;
-        Log.d("MainActivity", "PAUSE OF MAINACTIVTY ");
+        //Log.d("MainActivity", "PAUSE OF MAINACTIVTY ");
 
 //        MainisActive = false;
 
@@ -2217,7 +1604,7 @@ public void recoNavLeft(View view) {
 
         if (delayedUnlockRunnable != null) {
             delayedUnlockHandler.removeCallbacks(delayedUnlockRunnable);
-            Log.d("MainActivity", "Delayed unlock cancelled");
+           // Log.d("MainActivity", "Delayed unlock cancelled");
         }
 //        if (isReceiverRegistered) {
 //            LocalBroadcastManager.getInstance(this).unregisterReceiver(frameReceiver);
@@ -2255,7 +1642,7 @@ public void recoNavLeft(View view) {
 
         if (delayedUnlockRunnable != null) {
             delayedUnlockHandler.removeCallbacks(delayedUnlockRunnable);
-            Log.d("MainActivity", "Delayed unlock cancelled");
+           // Log.d("MainActivity", "Delayed unlock cancelled");
         }
         // Release other resources if necessary
         // cameraHandler.stop();
@@ -2404,7 +1791,6 @@ public void runPostLoginInit() {
                     batteryView.setBatteryLevel((float) a.getAnimatedValue())
             );
 
-            // 🔥 Chain animations
             up.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -2420,7 +1806,7 @@ public void runPostLoginInit() {
 
                         float lastBattery = UIUpdater.getInstance().getLastKnownBattery();
 
-                        batteryView.setIntroMode(false); // ✅ back to real color logic
+                        batteryView.setIntroMode(false);
                         batteryView.setBatteryLevel(lastBattery);
 
                         UIUpdater.getInstance().setBatteryIntroRunning(false);
@@ -2428,10 +1814,8 @@ public void runPostLoginInit() {
                     }, 300);
                 }
             });
-
             up.start();
-
-        }); // ✅ END UI THREAD
+        });
     }
     private void runSpeedIntroAnimation() {
 
@@ -2439,13 +1823,10 @@ public void runPostLoginInit() {
 
             SpeedArcView speedView = binding.speedArc;
 
-            speedView.setIntroMode(true); // 🔥 FORCE BLUE
-
-            // 🔥 0 → 150 (or your max speed)
+            speedView.setIntroMode(true);
             ValueAnimator up = ValueAnimator.ofFloat(0, 100);
             up.setDuration(870);
 
-            // 🔥 150 → 0
             ValueAnimator down = ValueAnimator.ofFloat(100, 0);
             down.setDuration(930);
 
@@ -2723,25 +2104,21 @@ public void runPostLoginInit() {
         boolean open;
 
         float currentY = qsView.getTranslationY();
-
-        // ✅ PRIMARY decision → position based (natural UX)
         if (currentY > -qsHeight * 0.5f) {
             open = true;
         } else {
             open = false;
         }
-
-        // ✅ SECONDARY decision → velocity ONLY if real swipe happened
-        if (Math.abs(dragDistance) > 50) {   // intentional drag threshold
-            if (Math.abs(velocityY) > 600) { // real fling threshold
-                open = velocityY > 0;         // down = open, up = close
+        if (Math.abs(dragDistance) > 50) {
+            if (Math.abs(velocityY) > 600) {
+                open = velocityY > 0;
             }
         }
 
         if (open) {
-            qsView.open();          // smooth open animation
+            qsView.open();
         } else {
-            qsView.smoothClose();   // smooth close animation
+            qsView.smoothClose();
         }
     }
 
@@ -2760,7 +2137,6 @@ public void runPostLoginInit() {
         InactivityManager.getInstance().stopTimer();
         Intent intent = new Intent(MainActivity.this, Maps.class);
         startActivity(intent);
-        // No animation
     }
 
     private void openQuickSettings() {
@@ -2812,92 +2188,11 @@ public void runPostLoginInit() {
             velocityTracker = null;
         }
     }
-
     public static int extractBits(int value, int startBit, int endBit) {
-        // int value = Integer.parseInt(hexString, 16); // 将十六进制字符串转换为整数
-
-        int mask = ((1 << (endBit - startBit + 1)) - 1) << startBit; // 生成位掩码
-
-        int extractedBits = (value & mask) >> startBit; // 提取指定位
-
+        int mask = ((1 << (endBit - startBit + 1)) - 1) << startBit;
+        int extractedBits = (value & mask) >> startBit;
         return extractedBits;
     }
-
-
-//    private void initMqtt() {
-//        String vin = "WHITEBOARD";
-//
-//        ScooterMqttManager.getInstance().init(
-//                this,
-//                "tcp://192.168.1.134:1883",
-//                "SCOOTER_DASHBOARD_" + vin
-//        );
-//
-//        ScooterMqttManager.getInstance().connect(() -> {
-//            Log.d("MQTT", "Connected. Subscribing...");
-//
-//            try {
-//                ScooterMqttManager.getInstance().getClient().subscribe(
-//                        "scooter/" + vin + "/command",
-//                        1,
-//                        new CommandListener(commandHandler)
-//                );
-//
-//
-//                Log.d("MQTT", "Subscribed to command topic");
-//
-//            } catch (Exception e) {
-//                Log.e("MQTT", "Subscribe failed", e);
-//            }
-//        });
-//    }
-
-//    private void onCommandReceived(String json) {
-//        Log.d("CMD", "Received command: " + json);
-//
-//        try {
-//            JSONObject obj = new JSONObject(json);
-//
-//            String commandType = obj.getString("commandType");
-//            int value = obj.getInt("value");
-//            String clientId = obj.optString("clientId", "ANDROID_APP");
-//            String vin = "WHITEBOARD"; // TODO: replace with real VIN later
-//
-//            Log.d("CMD_EXEC", "Executing: " + commandType + " | Value: " + value);
-//
-//            // TODO: Send to UART here
-//            // serialPortManager.sendCommandToMcu(commandType, value);
-//
-//            // Send success ACK back to Spring Boot
-//            sendAckToServer(vin, commandType, value, "success", clientId);
-//
-//        } catch (Exception e) {
-//            Log.e("CMD", "JSON parse failed", e);
-//        }
-//    }
-
-//    private void sendAckToServer(String vin, String commandType, int value, String status, String clientId) {
-//        try {
-//            JSONObject ack = new JSONObject();
-//            ack.put("vin", vin);
-//            ack.put("commandType", commandType);
-//            ack.put("value", value);
-//            ack.put("status", status);
-//            ack.put("clientId", clientId);
-//
-//            // FIXED: send ACK to status topic using VIN
-//            String topic = "scooter/status/" + vin;
-//
-//            ScooterMqttManager.getInstance().publish(topic, ack.toString());
-//
-//            Log.d("ACK", "Sent ACK to backend on: " + topic + " → " + ack.toString());
-//
-//        } catch (Exception e) {
-//            Log.e("ACK", "ACK send failed", e);
-//        }
-//    }
-
-
     public void showRecoInfo() {
         FrameLayout overlay = findViewById(R.id.overlayContainer);
         overlay.setVisibility(View.VISIBLE);
@@ -2944,13 +2239,13 @@ public void runPostLoginInit() {
         if (liveVersion > 0) {
             // ✅ MCU responded correctly → store it
             saveLastMcuVersion(liveVersion);
-            Log.d("OTA", "Using LIVE MCU version: " + liveVersion);
+           // Log.d("OTA", "Using LIVE MCU version: " + liveVersion);
             return liveVersion;
         }
 
         // ⚠️ MCU failed → fallback
         int storedVersion = getLastSavedMcuVersion();
-        Log.w("OTA", "MCU version invalid, fallback to stored: " + storedVersion);
+       // Log.w("OTA", "MCU version invalid, fallback to stored: " + storedVersion);
         return storedVersion;
     }
 
@@ -2966,7 +2261,7 @@ public void runPostLoginInit() {
             connection.setReadTimeout(5000);
 
             if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                Log.e("OTA", "HTTP error: " + connection.getResponseCode());
+                //Log.e("OTA", "HTTP error: " + connection.getResponseCode());
                 return -1;
             }
 
@@ -2984,7 +2279,7 @@ public void runPostLoginInit() {
             return obj.getInt("version");
 
         } catch (Exception e) {
-            Log.e("OTA", "Failed to fetch version", e);
+            //Log.e("OTA", "Failed to fetch version", e);
             return -1;
         } finally {
             try {
@@ -3005,6 +2300,4 @@ public void runPostLoginInit() {
         toast.setView(layout);
         toast.show();
     }
-
 }
-

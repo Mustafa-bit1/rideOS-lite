@@ -578,7 +578,7 @@ public class TelemetryService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String vinNumber = intent != null ? intent.getStringExtra("VIN_NUMBER") : null;
-        Log.d("xfcgvhbjnm","TELEMETRY SERVICE STARTED");
+       // Log.d("xfcgvhbjnm","TELEMETRY SERVICE STARTED");
         this.context = this;
         startTelemetry(vinNumber != null ? vinNumber : "UNKNOWN");
         return START_STICKY;
@@ -689,7 +689,7 @@ public class TelemetryService extends Service {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager != null) {
             simInfo = telephonyManager.getSimOperatorName()+"-"+telephonyManager.getSimSerialNumber();
-            Log.d("SIM_INFO", "SIM Information: " + simInfo);
+           // Log.d("SIM_INFO", "SIM Information: " + simInfo);
         }
         else {
             simInfo=null;
@@ -749,7 +749,7 @@ public class TelemetryService extends Service {
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) { }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("Telemetry", "Faileddd to send vehicle data", t);
+              //  Log.e("Telemetry", "Faileddd to send vehicle data", t);
             }
         });
     }
@@ -778,9 +778,6 @@ public class TelemetryService extends Service {
             if (TelemetryStagingManager.getInstance(getApplicationContext()).hasData()) {
                 flushStagedData();
             }
-
-
-
             // Send current data
             //DataUsageTracker tracker = new DataUsageTracker();
             //tracker.startTracking();
@@ -833,8 +830,10 @@ public class TelemetryService extends Service {
         if(SerialPortManager.getInstance().getHb3()!=null){
             data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+", ChargingCurrent="+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+", ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff()+
                     " AllCells 1to3="+SerialPortManager.getInstance().getHb3().getcell1TO3()+",cell4to6="+SerialPortManager.getInstance().getHb3().getcell4TO6()+",cell7to9="+SerialPortManager.getInstance().getHb3().getcell7TO9()+",cell10to12="+SerialPortManager.getInstance().getHb3().getcell10TO12()+",cell13to15="+SerialPortManager.getInstance().getHb3().getcell13TO15()+",cell16to18="+SerialPortManager.getInstance().getHb3().getcell16TO18()+",cell19to21="+SerialPortManager.getInstance().getHb3().getcell19TO21()+",cell22to23="+SerialPortManager.getInstance().getHb3().getcell22TO23();
-        Log.d("dsafgs","ddddddddddddddd "+data.ntc);
-        }else Log.d("dsafgs","ddddddddddddddddeeeeeeeeeeeeeeeeeeeeeedddddddd "+data.ntc);
+     //   Log.d("dsafgs","ddddddddddddddd "+data.ntc);
+        }else{
+            //Log.d("dsafgs","ddddddddddddddddeeeeeeeeeeeeeeeeeeeeeedddddddd "+data.ntc);
+        }
 
         data.currentconsumption = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleCurrentConsumption());
         data.batvoltage = roundTo1Decimal(TelemetryDataManager.getInstance().getTeleBatVoltage());
@@ -846,7 +845,7 @@ public class TelemetryService extends Service {
         data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ",uptime=" + UptimeManager.getUptime()+",CurrentGear="+MainActivity.currentgear;
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
-        Log.d("sdafd","TELETIREPRESUURE2222 IS "+data.tirepressure);
+        //Log.d("sdafd","TELETIREPRESUURE2222 IS "+data.tirepressure);
 
         data.soc = TelemetryDataManager.getInstance().getTeleSOC();
         data.apuSoc = TelemetryDataManager.getInstance().getTeleAPUSOC();
@@ -911,7 +910,7 @@ public class TelemetryService extends Service {
                         .getInstance(getApplicationContext())
                         .addData(data);
 
-                Log.e("TelemetryService", "Failed, re-staged", t);
+                //Log.e("TelemetryService", "Failed, re-staged", t);
             }
         });
     }
@@ -1051,7 +1050,7 @@ public class TelemetryService extends Service {
             }
             //else //Log.d("asfdg","ELSEOFNULLSEERIAL ");
         } catch (Exception e) {
-            Log.e("OTA", "MCU version read failed", e);
+           // Log.e("OTA", "MCU version read failed", e);
         }
 
         if (liveVersion > 0) {
@@ -1061,12 +1060,12 @@ public class TelemetryService extends Service {
                     .putInt(KEY_LAST_MCU_VERSION, liveVersion)
                     .apply();
 
-            Log.d("OTA", "Telemetry using LIVE MCU version: " + liveVersion);
+           // Log.d("OTA", "Telemetry using LIVE MCU version: " + liveVersion);
             return liveVersion;
         }
 
         int stored = getLastSavedMcuVersion();
-        Log.w("OTA", "Telemetry using STORED MCU version: " + stored);
+       // Log.w("OTA", "Telemetry using STORED MCU version: " + stored);
         return stored;
     }
 

@@ -139,7 +139,7 @@ public class debugPage extends AppCompatActivity {
             isRunning = false;
             handler.removeCallbacks(screenToggleRunnable);
             backbtn.setEnabled(true); // enable back button after stopping
-            Log.d("ScreenTest", "Sequence stopped.");
+          //  Log.d("ScreenTest", "Sequence stopped.");
         }
     }
     private int ledOnCount = 0, handleOpenCount = 0, handleCloseCount = 0, seatLockCount = 0, ledOffCount = 0;
@@ -159,7 +159,7 @@ public class debugPage extends AppCompatActivity {
                 if (commandStep == 0 && !screenJustTurnedOn) {
                     if (!wakeLock.isHeld()) {
                         wakeLock.acquire(2000); // Screen ON
-                        Log.d("ScreenTest", "Screen turned ON");
+                       // Log.d("ScreenTest", "Screen turned ON");
                     }
                     screenJustTurnedOn = true;
                     handler.postDelayed(this, 2000); // Wait 2s before LED ON
@@ -190,7 +190,7 @@ public class debugPage extends AppCompatActivity {
                 }
 
                 updateCounterViews();
-                Log.d("ScreenTest", "Sent command step: " + commandStep);
+               // Log.d("ScreenTest", "Sent command step: " + commandStep);
 
                 commandStep++;
                 if (commandStep > 4) {
@@ -202,9 +202,9 @@ public class debugPage extends AppCompatActivity {
                         try {
                             Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
                             goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-                            Log.d("ScreenTest", "Screen turned OFF");
+                           // Log.d("ScreenTest", "Screen turned OFF");
                         } catch (Exception e) {
-                            Log.e("ScreenTest", "Failed to turn off screen", e);
+                           // Log.e("ScreenTest", "Failed to turn off screen", e);
                         }
 
                         handler.postDelayed(self, 2000);

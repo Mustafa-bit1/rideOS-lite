@@ -1033,7 +1033,4 @@ public class aosp_mainActivity extends AppCompatActivity {
 
         return url;
     }
-
-
-
 }
