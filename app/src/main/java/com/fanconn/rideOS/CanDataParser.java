@@ -43,7 +43,9 @@ public class CanDataParser {
         hb3.setBMS_MOS_Temp(FrameUtils.getByteValue(canData,7)-40);//offset is 40
     }
 
-
+    public static  void parseCanData16078001(Heartbeat3 hb3, String canData) {
+        hb3.setBattery_size(FrameUtils.getByteSubstringAsInt(canData,0,3)/1000);
+    }
 
 
     public static  void parseCanData18964001(Heartbeat3 hb3, String canData) {

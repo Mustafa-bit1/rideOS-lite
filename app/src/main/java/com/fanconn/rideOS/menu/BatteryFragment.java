@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class BatteryFragment extends Fragment {
     private SerialPortManager serialPortManager;
     // Main Battery Views
     private TextView mainBatteryVoltage, mainRemainingAh,maincurrentcon;
-    private TextView BMSMosTemp,NTC1, NTC2, NTC3, NTC4;
+    private TextView BMSMosTemp,Main_Battry_Size,NTC1, NTC2, NTC3, NTC4;
     // Aux / APU Battery Views
     private TextView apuBatteryVoltage, apuRemainingAh,apucurrentcon;
     private TextView AuxNTC1, AuxNTC2, AuxNTC3, AuxNTC4;
@@ -119,6 +120,8 @@ public class BatteryFragment extends Fragment {
 
                         int BMS_Mos_Temp = hb3.getBMS_MOS_Temp();
                         BMSMosTemp.setText(BMS_Mos_Temp + "°C");
+
+
 
                         int ntc1 = hb3.getNTC1();
                         NTC1.setText(ntc1 < 40 ? "--" : (ntc1 - 40) + "°C");
@@ -216,6 +219,23 @@ public class BatteryFragment extends Fragment {
                 return 60f; // fallback
         }
     }
+    private float getBatterykWh() {
+        String model = MetadataManager.get().getModel();
+
+        if (model == null) return 4.41f; // default safety
+
+        switch (model) {
+            case "nx100 Pro":
+                return 4.41f;
+
+            case "nx100 Max":
+                return 6.62f;
+
+            default:
+                return 4.41f; // fallback
+        }
+    }
+    float Battery_Size;
     private double roundTo2Decimal(double value) {
         return Math.round(value * 100.0) / 100.0;
     }
@@ -246,6 +266,7 @@ public class BatteryFragment extends Fragment {
         maincurrentcon = view.findViewById(R.id.maincurrentconsumption);
         mainRemainingAh = view.findViewById(R.id.mainBatteryCapacity);
         BMSMosTemp = view.findViewById(R.id.BMSMosTemp);
+        Main_Battry_Size= view.findViewById(R.id.Main_Battry_Size);
         NTC1 = view.findViewById(R.id.NTC1);
         NTC2 = view.findViewById(R.id.NTC2);
         NTC3 = view.findViewById(R.id.NTC3);
@@ -291,6 +312,8 @@ public class BatteryFragment extends Fragment {
         });
 
         uiHandler.postDelayed(updateRunnable, 1000);
+        Battery_Size = getBatterykWh();
+        Main_Battry_Size.setText("Battery : "+Battery_Size + "kWh");
         return view;
     }
 
