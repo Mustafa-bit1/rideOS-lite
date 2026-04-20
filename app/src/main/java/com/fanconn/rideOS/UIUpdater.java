@@ -2151,13 +2151,23 @@ public class UIUpdater  {
                 if (!startReasySound) {
                     startReasySound = true;
                     ReadystartBeeping();
-//                    Log.d("CAN", " Ready sound START");
+               //     Log.d("CANhome", " Ready sound START");
                 }
             } else {
                 if (startReasySound) {
                     startReasySound = false;
                     ReadystopBeeping();
-//                    Log.d("CAN", " Ready sound STOP");
+                   // Log.d("CANhome", " Ready sound STOP");
+                    if (!MainActivity.isVisible && !MainActivity.isrideOSOTA) {
+                        //Log.d("UIUPDATER", "TAKEMEHOME2222");
+
+                        Intent intent = new Intent(activity, MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+                        activity.startActivity(intent);
+                        activity.overridePendingTransition(R.anim.zoom_in_enter, R.anim.zoom_out_exit);
+
+                    }
                 }
             }
 
@@ -2170,8 +2180,8 @@ public class UIUpdater  {
                 if (startReasySound) {
                     startReasySound = false;
                     ReadystopBeeping();
+               //     Log.d("CANhome", " Ready sound STOP 2");
                 }
-
                 if (activity != null) {
                     (activity).closeRecoIfOpen();
                     (activity).closeQuickSettingsIfOpen();
