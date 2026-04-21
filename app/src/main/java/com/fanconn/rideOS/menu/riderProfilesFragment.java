@@ -383,6 +383,7 @@ public class riderProfilesFragment extends Fragment {
                 settingsParent.setVisibility(View.GONE);
                 initialContainer.setVisibility(View.VISIBLE);
                 softResetFields();
+                etUsername.setEnabled(true);
                 btnBack.setVisibility(View.GONE);
                 btnNext.setVisibility(View.GONE);
             }
@@ -508,10 +509,37 @@ public class riderProfilesFragment extends Fragment {
         View card = LayoutInflater.from(ctx).inflate(R.layout.rider_card, ridersContainer, false);
 
         TextView nameText = card.findViewById(R.id.riderName);
+        TextView tvMaxSpeed = card.findViewById(R.id.tvMaxSpeed);
+        TextView tvTorque = card.findViewById(R.id.tvTorque);
         ImageButton deleteBtn = card.findViewById(R.id.deleteBtn);
+        ImageButton editBtn = card.findViewById(R.id.editBtn);
+
         nameText.setText(username);
+        String maxSpeed = sharedPreferences.getString("user_" + username + "_maxspeed", "60");
+        String torque = sharedPreferences.getString("user_" + username + "_torque", "Easy");
+        tvMaxSpeed.setText("Max speed : " + maxSpeed + " Kmph");
+        tvTorque.setText("Torque level : " + torque);
+
+        String currentRider = getCurrentRider();
+
+        //  HIGHLIGHT LOGGED-IN RIDER
+        if (username.equals(currentRider)) {
+            card.setAlpha(1.0f); // FULL VISIBLE
+            deleteBtn.setEnabled(true);
+            editBtn.setEnabled(true);
+        } else {
+            card.setAlpha(0.3f); // DIM
+            deleteBtn.setEnabled(false);
+            editBtn.setEnabled(false);
+        }
 
         deleteBtn.setOnClickListener(v -> {
+
+            if (!username.equals(getCurrentRider())) {
+                showCustomToasterror("You are not allowed to delete this rider");
+                return;
+            }
+
             if (getRegisteredRiderCount() <= 1) {
                 showCustomToasterror("At least one rider must remain");
                 return;
@@ -539,10 +567,61 @@ public class riderProfilesFragment extends Fragment {
             no.setOnClickListener(b -> dialog.dismiss());
             dialog.show();
         });
+        editBtn.setOnClickListener(v -> {
 
+            if (!username.equals(getCurrentRider())) {
+                showCustomToasterror("Only current rider can be edited");
+                return;
+            }
+
+            startEditFlow(username);
+        });
         ridersContainer.addView(card);
     }
+    private boolean isEditMode = false;
+    private String editingUsername = "";
+    private void startEditFlow(String username) {
 
+        // Switch UI to registration flow
+        etUsername.setEnabled(false); // prevent rename bug
+        initialContainer.setVisibility(View.GONE);
+        settingsParent.setVisibility(View.VISIBLE);
+
+        btnBack.setVisibility(View.VISIBLE);
+        btnNext.setVisibility(View.VISIBLE);
+
+        currentStep = 0;
+        showBasicTab();
+
+        // 🔥 PREFILL BASIC DATA
+        String age = sharedPreferences.getString("user_" + username + "_age", "");
+        String maxSpeed = sharedPreferences.getString("user_" + username + "_maxspeed", "60");
+        String torque = sharedPreferences.getString("user_" + username + "_torque", "Easy");
+
+        etUsername.setText(username);
+        etAge.setText(age);
+
+        // 🔥 PREFILL ADVANCED
+        int speed = Integer.parseInt(maxSpeed);
+        seekBarMaxSpeed.setProgress(speed - 20);
+        tvMaxspeedValue.setText(speed + " Kmph");
+
+        // Torque mapping
+        switch (torque) {
+            case "Minimum": seekBarTorque.setProgress(0); break;
+            case "Easy": seekBarTorque.setProgress(1); break;
+            case "Medium": seekBarTorque.setProgress(2); break;
+            case "Rush": seekBarTorque.setProgress(3); break;
+            case "Insane": seekBarTorque.setProgress(4); break;
+        }
+
+        selectedTorqueLevel = torque;
+        tvTorqueLevel.setText(torque);
+
+        // 🔥 IMPORTANT: EDIT MODE FLAG
+        isEditMode = true;
+        editingUsername = username;
+    }
     private int getRegisteredRiderCount() {
         Set<String> usernames = new HashSet<>();
         for (Map.Entry<String, ?> entry : sharedPreferences.getAll().entrySet()) {
@@ -581,6 +660,8 @@ public class riderProfilesFragment extends Fragment {
     // Save/Register logic (from RegisterActivity)
     // --------------------------
     private void handleRegisterSave() {
+
+        etUsername.setEnabled(true);
 
         String username = etUsername.getText().toString().trim();
         String age = etAge.getText().toString().trim();
@@ -632,9 +713,10 @@ public class riderProfilesFragment extends Fragment {
         try {
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
-            editor.putString("user_" + username + "_age", age);
-            editor.putString("user_" + username + "_maxspeed", maxspeed);
-            editor.putString("user_" + username + "_torque", torque);
+            String finalUsername = isEditMode ? editingUsername : username;
+            editor.putString("user_" + finalUsername + "_age", age);
+            editor.putString("user_" + finalUsername + "_maxspeed", maxspeed);
+            editor.putString("user_" + finalUsername + "_torque", torque);
 
             // Save PIN
             String salt = generateSalt();
@@ -648,7 +730,8 @@ public class riderProfilesFragment extends Fragment {
                     TextUtils.join("", selectedPattern));
 
             editor.apply();
-
+            isEditMode = false;
+            editingUsername = "";
             SoundPlayer.playOnce(ctx, R.raw.locksound2);
             showCustomToast("Registered Successfully");
 
@@ -672,6 +755,7 @@ public class riderProfilesFragment extends Fragment {
     private void softResetFields() {
 
         // Basic
+        etUsername.setEnabled(true);
         etUsername.setText("");
         etAge.setText("");
 
@@ -935,5 +1019,9 @@ public class riderProfilesFragment extends Fragment {
     }
     private class AppCompatRadioGroup {
 
+    }
+    private String getCurrentRider() {
+        SharedPreferences prefs = requireContext().getSharedPreferences("app_session", Context.MODE_PRIVATE);
+        return prefs.getString("current_rider", "");
     }
 }

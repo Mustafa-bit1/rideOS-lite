@@ -26,7 +26,7 @@ public class CanDataParser {
         hb3.setbatvoltage(FrameUtils.getByteSubstringAsInt(canData,0,1)); //voltage
         hb3.setRealCurrent(FrameUtils.getByteSubstringAsInt(canData,4,5));//Real Time Current
         hb3.setBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //SOC
-
+        hb3.setFloatBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //Float SOC
     }
 
     public static  void parseCanData18914001(Heartbeat3 hb3, String canData) {

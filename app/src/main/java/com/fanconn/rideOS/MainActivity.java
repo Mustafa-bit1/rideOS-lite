@@ -756,7 +756,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                         if (level[0] < 0) {
                             handler.postDelayed(() -> {
                                 ReloggedIn=true;
-                                uiUpdater.updateBatteryAnimation((int)AhTrackerManager.getInstance(instance).getSOC());   // <-- your method
+//                                uiUpdater.updateBatteryAnimation((int)AhTrackerManager.getInstance(instance).getSOC());
+                                if(serialPortManager.getHb3()!=null){
+                                    uiUpdater.updateBatteryAnimation(serialPortManager.getHb3().getBatteryLevel() /10);
+                                }
                             }, 1000);
                             handler.postDelayed(() -> {
                                 batteryAnimationCompleted = true;

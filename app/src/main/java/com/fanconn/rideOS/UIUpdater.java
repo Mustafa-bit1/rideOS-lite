@@ -459,18 +459,20 @@ public class UIUpdater  {
 
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
-//        int batteryLevel1= hb3.getBatteryLevel() / 10;
+        int batteryLevel= hb3.getBatteryLevel();
+        Log.d("asf","SOCOFTODAY IS "+batteryLevel);
 //        int batteryLevel = get10LessSOC(batteryLevel1);//BMS SOC BUT 10 LESS
 
 //        int batteryLevel= hb3.getBatteryLevel() / 10; //BMS SOC AND NO 10 LESS
-        int batteryLevel = (int) ahTrackerManager.getSOC();//AH BASED SOC , TO MAKE AH BASED OR 10 LESS GO TO ahTrackerManager class
+//        int batteryLevel = (int) ahTrackerManager.getSOC();//AH BASED SOC , TO MAKE AH BASED OR 10 LESS GO TO ahTrackerManager class
 
 //        Log.d("SOC10LESS", "Actual SOC = " + batteryLevel1);
 //        Log.d("SOC10LESS", "Display SOC = " + batteryLevel);
        // Log.d("adsfg","THISISAHSOC="+batteryLevel);
 
-        tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
-        tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
+//        tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
+                tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
+                tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
 
 //        int batteryLevel = Math.max(0, Math.min(100, (int) ahTrackerManager.getSOC()));
 
@@ -494,7 +496,7 @@ public class UIUpdater  {
         int range= (int) Math.floor(batteryLevel * RANGE_km_PER_SOC);
         if(batteryLevel>=0 && batteryLevel<=100){
             tm.setTeleSOC(batteryLevel);
-            tm.setBMSTeleSOC((float) hb3.getBatteryLevel() /10);
+            tm.setBMSTeleSOC(hb3.getNoLess10BMSBatteryLevel() /10);
             tm.setTeleRange(range);
             binding.batteryTV.setText("Battery "+sBatteryLevel + "%   |  ~ "+range+" km");
         }
@@ -814,16 +816,16 @@ public class UIUpdater  {
         binding.LowBatmsg.setVisibility(View.INVISIBLE);
         //----------------------------
         float chargingbit = hb3.getChargingbit();
-        tm.setTeleChargingCurrentValue(chargingbit);
+        if(chargingbit<200){
+            tm.setTeleChargingCurrentValue(chargingbit);
+        }
 //        Log.d("ChargingDebug", "Charging bitKKK: " + chargingbit);
         if (chargingUI == null) {
             //Log.d("UIUpdater", "chargingUI is null — cannot reset timeout");
         } else {
             chargingUI.resetChargingTimeout();
         }
-
     }
-
 
     public void updateCanData18934001(Heartbeat3 hb3) {
         // 更新电池电量
@@ -1329,8 +1331,8 @@ public class UIUpdater  {
             }
         }
 
-//        int batteryLevel = hb3.getBatteryLevel() / 10;
-        float batteryLevel = ahTrackerManager.getSOC();
+        int batteryLevel = hb3.getBatteryLevel();
+//        float batteryLevel = ahTrackerManager.getSOC();
         String sBatteryLevel;
         if(batteryLevel>=0 && batteryLevel<=100){ sBatteryLevel = String.valueOf(batteryLevel);}
         else sBatteryLevel="Analysing";

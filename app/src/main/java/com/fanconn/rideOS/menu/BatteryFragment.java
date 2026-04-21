@@ -68,8 +68,8 @@ public class BatteryFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     if (currentBattery == BatteryType.MAIN) {
                         // ----------------- MAIN BATTERY -----------------
-//                        int battery = hb3.getBatteryLevel() / 10;
-                        double battery = roundTo2Decimal(ahTrackerManager.getSOC());
+                        int battery = hb3.getBatteryLevel();
+//                        double battery = roundTo2Decimal(ahTrackerManager.getSOC());
 
                         double range = battery * RANGE_km_PER_SOC;
 

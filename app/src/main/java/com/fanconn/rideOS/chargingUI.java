@@ -176,31 +176,36 @@ public class chargingUI extends AppCompatActivity {
     private boolean isChargingAnimationRunning = false;
     AhTrackerManager ahTrackerManager;
     private void startUpdatingSOC() {
-        //InactivityManager.getInstance().startTimer(4);
+
         socUpdateRunnable = new Runnable() {
             @Override
             public void run() {
-//                actualSOC = serialPortManager.getHb3().getBatteryLevel() / 10;
-                actualSOC = ahTrackerManager.getSOC();
+                float rawSOC = serialPortManager.getHb3().getNoLess10BMSBatteryLevel() / 10.0f;
+                actualSOC = scaleSOCtoLess10(rawSOC);
 
-                Log.d("SOC", "BatteryCHARGINGUI SOC: " + actualSOC);
+
                 APUsoc = serialPortManager.hb3.getAPUBatteryLevel() / 10;
 
-
                 runOnUiThread(() -> {
+
                     if (lastUpdateTime == 0) {
-                        initializeRangeFromSOC((int)actualSOC);
+                        initializeRangeFromSOC((int) actualSOC);
                         lastUpdateTime = System.currentTimeMillis();
                     }
+
                     Heartbeat3 hb3 = serialPortManager.getHb3();
                     float chargingbit = hb3.getChargingbit();
-                    BATTERY_CAPACITY_AH=getBatteryCapacity();
+
+                    BATTERY_CAPACITY_AH = getBatteryCapacity();
+
                     float socRange = ((actualSOC / 100f) * BATTERY_CAPACITY_AH) * KM_PER_AH;
                     if (socRange > currentRangeKm) {
                         currentRangeKm = socRange;
                     }
 
+                    // ================== NOT CHARGING ==================
                     if (chargingbit == 0) {
+
                         binding.chargingBatteryArc.setPulseMode(false);
                         binding.socText.setVisibility(View.INVISIBLE);
                         binding.rangeAddedText.setVisibility(View.INVISIBLE);
@@ -208,21 +213,30 @@ public class chargingUI extends AppCompatActivity {
                         binding.etaText.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.INVISIBLE);
                         binding.plugged.setVisibility(View.VISIBLE);
+
                         stopBatteryPulseAnimation();
                         isChargingAnimationRunning = false;
-                        binding.chargingBatteryArc.setBatteryLevel(actualSOC);
 
-                    } else if (chargingbit > 0) {
+                        binding.chargingBatteryArc.setBatteryLevel(actualSOC);
+                    }
+
+                    // ================== CHARGING ==================
+                    else if (chargingbit > 0) {
+
                         binding.socText.setVisibility(View.VISIBLE);
                         binding.rangeAddedText.setVisibility(View.VISIBLE);
                         binding.etaText.setVisibility(View.VISIBLE);
                         binding.linearLayout2.setVisibility(View.VISIBLE);
                         binding.plugged.setVisibility(View.INVISIBLE);
                         binding.chagingstartedicon.setVisibility(View.VISIBLE);
+
                         updateChargingRange(chargingbit);
-                        updateChargingETA((int)actualSOC, chargingbit);
-                        // Update SOC text
+                        updateChargingETA((int) actualSOC, chargingbit);
+
+                        //  Directly use scaled SOC (already decimal)
                         if (actualSOC >= 0 && actualSOC <= 100) {
+                            Log.d("SOC", "BatteryCHARGINGUI SCALED SOC: " + actualSOC);
+
                             String socValue = String.format("%.2f%%", actualSOC);
 
                             SpannableString spannable = new SpannableString(socValue);
@@ -234,12 +248,10 @@ public class chargingUI extends AppCompatActivity {
                             binding.socText.setText(spannable);
                         }
 
-                        //  Dynamically set correct charging icon
                         int icon = getChargingIcon(chargingbit);
                         if (icon != 0) {
                             binding.chagingstartedicon.setImageResource(icon);
                         }
-
 
                         if (!isChargingAnimationRunning) {
                             isChargingAnimationRunning = true;
@@ -247,53 +259,49 @@ public class chargingUI extends AppCompatActivity {
                         }
                     }
 
-                    if(actualSOC==100 && chargingbit==0){
-                        binding.batfullmsg.setText("Battery Full, Disconnect the charger"); //
+                    // ================== FULL / PLUGGED ==================
+                    if (actualSOC == 100 && chargingbit == 0) {
+                        binding.batfullmsg.setText("Battery Full, Disconnect the charger");
                         binding.batfullmsg.setVisibility(View.VISIBLE);
 
-                    }
-                    else if(actualSOC<100 && chargingbit==0){
-                        binding.batfullmsg.setText("Plugged In"); //
+                    } else if (actualSOC < 100 && chargingbit == 0) {
+                        binding.batfullmsg.setText("Plugged In");
                         binding.batfullmsg.setVisibility(View.VISIBLE);
 
+                    } else {
+                        binding.batfullmsg.setVisibility(View.INVISIBLE);
                     }
-                    else binding.batfullmsg.setVisibility(View.INVISIBLE);
 
+                    // ================== APU ==================
                     if (APUsoc >= 0 && APUsoc <= 100 && UIUpdater.isAPUPresent) {
-                        binding.APUbatTV.setVisibility(View.VISIBLE);
-                        binding.APUbatTV.setText("APU "+APUsoc + "%");
-                    }
 
-                    if (UIUpdater.isAPUPresent){
+                        binding.APUbatTV.setVisibility(View.VISIBLE);
+                        binding.APUbatTV.setText("APU " + APUsoc + "%");
 
                         int batteryImageResId = getBatteryImageResource(APUsoc);
-                        //binding.apubaticon.setVisibility(View.VISIBLE);
                         binding.APUbatteryImageView.setVisibility(View.VISIBLE);
                         binding.apubaticon.setImageResource(batteryImageResId);
+
                         try {
-                            if (APUsoc>=0 && APUsoc<=100) { // ✅ Only update if animation is done
-                                APUupdateBatteryAnimation(APUsoc);
-                            }
-                        } catch (NumberFormatException e) {
+                            APUupdateBatteryAnimation(APUsoc);
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                    else {
+
+                    } else {
                         binding.APUbatteryImageView.setVisibility(View.INVISIBLE);
                         binding.apubaticon.setVisibility(View.INVISIBLE);
                         binding.APUbatTV.setVisibility(View.INVISIBLE);
                     }
 
-                    // Start animation loop only once
-
                 });
-                socUpdateHandler.postDelayed(this, 50); // update actual SOC
+
+                socUpdateHandler.postDelayed(this, 50);
             }
         };
 
         socUpdateHandler.post(socUpdateRunnable);
     }
-
     private int getChargingIcon(float chargingbit) {
         if (chargingbit > 0 && chargingbit < 25) {
             return R.drawable.normal_charging;
@@ -304,6 +312,16 @@ public class chargingUI extends AppCompatActivity {
         } else {
             return 0; // no icon
         }
+    }
+    private float scaleSOCtoLess10(float actualSOC) {
+
+        float minActual = 15f;
+        float maxActual = 100f;
+
+        if (actualSOC <= minActual) return 0f;
+        if (actualSOC >= maxActual) return 100f;
+
+        return (actualSOC - minActual) * 100f / (maxActual - minActual);
     }
 
 

@@ -65,6 +65,7 @@ import com.fanconn.rideOS.chargingUI;
 import com.fanconn.rideOS.databinding.ActivityLoginBinding;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
 import com.fanconn.rideOS.mcuupdate.YMode;
+import com.fanconn.rideOS.menu.SecurePrefs;
 import com.fanconn.rideOS.serialApplication;
 //import com.fanconn.rideOS.ScreenController;
 
@@ -261,8 +262,11 @@ public class LoginActivity extends AppCompatActivity{
             //Log.d("CAN_DEBUG", "Parsed frame segment: " + dataSegment);
 
 //            int soc = FrameUtils.getByteSubstringAsInt(dataSegment, 6, 7) / 10;
-            int socInt = (int) ahTrackerManager.getSOC();   // removes decimal part
-
+//            int socInt = (int) ahTrackerManager.getSOC();   // removes decimal part
+            int socInt=0;
+            if(serialPortManager.getHb3()!=null){
+                 socInt = serialPortManager.getHb3().getBatteryLevel();   // removes decimal part
+            }
             if (socInt <= 100) {
                 binding.loginSoc.setText("Battery " + socInt + "%");
             }
@@ -744,6 +748,10 @@ public class LoginActivity extends AppCompatActivity{
     private final double Speed_ratio_Value = 1.412404;//// 0% high
     public void loginSuccess(String username) {
 
+        SharedPreferences sessionPrefs = getSharedPreferences("app_session", MODE_PRIVATE);
+        SharedPreferences userPrefs = SecurePrefs.get();
+
+        sessionPrefs.edit().putString("current_rider", username).apply();
         showCustomToast("Welcome " + username + " !");
         //Log.d("adfsd","WELCOMETOAST "+username);
         resetInvalidAttemptCounter();
@@ -782,17 +790,21 @@ public class LoginActivity extends AppCompatActivity{
 //                MainActivity.instance.runPostLoginInit();
 //            }
 
-            SharedPreferences.Editor editor = prefs.edit();
-
-            String prevRider = prefs.getString("last_logged_in_user", null);
+            SharedPreferences.Editor editor = sessionPrefs.edit();
+            String prevRider = sessionPrefs.getString("last_logged_in_user", null);
             boolean isSameRider = username.equals(prevRider);
 
             if (!isSameRider && !username.equals("Key Rider")) {
                 // Fetch user data
-                String age = prefs.getString("user_" + username + "_age", "N/A");
-//                String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
-                String maxSpeedStr = prefs.getString("user_" + username + "_maxspeed", "100");
+//                String age = prefs.getString("user_" + username + "_age", "N/A");
 
+//                String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
+//                String maxSpeedStr = prefs.getString("user_" + username + "_maxspeed", "100");
+                String age = userPrefs.getString("user_" + username + "_age", "N/A");
+
+                String maxSpeedStr = userPrefs.getString(
+                        "user_" + username + "_maxspeed", "100"
+                );
 //
 //                Log.d("UserData", "Username: " + username);
 //                Log.d("UserData", "Age: " + age);
@@ -866,14 +878,16 @@ public class LoginActivity extends AppCompatActivity{
                 }
             }//END OF SAME USER
 
-            String maxTorque = prefs.getString("user_" + username + "_torque", "Insane");
-           // Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
+//            String maxTorque = prefs.getString("user_" + username + "_torque", "Rush");
+            String maxTorque = userPrefs.getString("user_" + username + "_torque", "Easy");
+
+           //Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
             int lineCurrent;
             switch (maxTorque) {
+                case "Easy":   lineCurrent = Level1_Line_Current; break;
                 case "Medium": lineCurrent = Level2_Line_Current; break;
                 case "Rush":   lineCurrent = Level3_Line_Current; break;
                 case "Insane": lineCurrent = Level4_Line_Current; break;
-                case "Easy":   lineCurrent = Level1_Line_Current; break;
                 case "Minimum":   lineCurrent = Level0_Line_Current; break;
 
                 default:       lineCurrent = Level4_Line_Current; break;
@@ -889,8 +903,8 @@ public class LoginActivity extends AppCompatActivity{
 //                            ? "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400"//to set regen currents as 30A(7800) and 40A(A000)- 35A(8C00),45A(B400)
 //                            : "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";//to set regen currents as 6A(1800) and 8A(2000)
             String torqueFrame;
-//            int batteryLevel = serialPortManager.getHb3().getBatteryLevel() / 10;
-            float batteryLevel = ahTrackerManager.getSOC();
+            int batteryLevel = serialPortManager.getHb3().getBatteryLevel();
+//            float batteryLevel = ahTrackerManager.getSOC();
 
 
             if (batteryLevel ==0) { // phase max , all normal
@@ -1022,8 +1036,6 @@ public class LoginActivity extends AppCompatActivity{
         toast.setView(layout);
         toast.show();
     }
-
-
     public void onKeypadButtonClick(View view) {
         if (isInputLocked) return;
         playTapSound();
@@ -1160,8 +1172,8 @@ public class LoginActivity extends AppCompatActivity{
             UIUpdater.getInstance().stopBlinking();
         }
 
-//        int batteryLevel=serialPortManager.getHb3().getBatteryLevel() / 10;
-        int batteryLevel=(int)ahTrackerManager.getSOC();
+        int batteryLevel=serialPortManager.getHb3().getBatteryLevel();
+//        int batteryLevel=(int)ahTrackerManager.getSOC();
 
         String sBatteryLevel = String.valueOf(batteryLevel);
         if(batteryLevel>=0 && batteryLevel<=100){

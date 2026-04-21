@@ -18,10 +18,10 @@
         <!-- Add Rider Button -->
         <ImageButton
             android:id="@+id/btnRegister"
-            android:layout_width="178dp"
-            android:layout_height="217dp"
+            android:layout_width="198dp"
+            android:layout_height="240dp"
             android:layout_marginStart="40dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginTop="26dp"
             android:layout_marginEnd="30dp"
             android:background="@android:color/transparent"
             android:scaleType="fitXY"
