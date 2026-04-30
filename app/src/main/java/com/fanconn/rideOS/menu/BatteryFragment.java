@@ -51,7 +51,7 @@ public class BatteryFragment extends Fragment {
     // Radio buttons
     private RadioButton btnBattery, btnAuxillary;
     private Handler uiHandler = new Handler(Looper.getMainLooper());
-    private double RANGE_km_PER_SOC =1.5;
+    private double RANGE_km_PER_SOC =1.7;
     // Enum to track selected battery
     private enum BatteryType { MAIN, AUX }
     private BatteryType currentBattery = BatteryType.MAIN;
@@ -68,7 +68,7 @@ public class BatteryFragment extends Fragment {
                 requireActivity().runOnUiThread(() -> {
                     if (currentBattery == BatteryType.MAIN) {
                         // ----------------- MAIN BATTERY -----------------
-                        int battery = hb3.getBatteryLevel();
+                        float battery = hb3.getBatteryLevel();
 //                        double battery = roundTo2Decimal(ahTrackerManager.getSOC());
 
                         double range = battery * RANGE_km_PER_SOC;

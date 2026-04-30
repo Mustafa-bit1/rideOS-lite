@@ -39,6 +39,7 @@ import com.fanconn.rideOS.authen.LoginActivity;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
 
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 //=========================
 
@@ -406,14 +407,17 @@ public class UIUpdater  {
             case "18954001":
                 updateCanData18954001(hb3);
                 break;
+            case "18FF50E5":
+                updateCanData18FF50E5(hb3);
+                break;
+            case "1806E5F4":
+                updateCanData1806E5F4(hb3);
+                break;
             case "160B8001":
                 updateCanData160B8001(hb3);
                 break;
             case "160D8001":
                 updateCanData160D8001(hb3);
-                break;
-            case "18FF50E5":
-                updateCanData18FF50E5(hb3);
                 break;
             case "10F807A8":
                 updateCanData10F807A8(hb3);
@@ -453,14 +457,14 @@ public class UIUpdater  {
 
     private static int UniversalAPUbatteryLevel;
 //    public static boolean resetParamtersAfterLowbat=false;
-    private double RANGE_km_PER_SOC =1.5;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
+    private double RANGE_km_PER_SOC =1.7;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
     private float lastKnownBattery = 0;
     private boolean isBatteryIntroRunning = false;
 
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
-        int batteryLevel= hb3.getBatteryLevel();
-        Log.d("asf","SOCOFTODAY IS "+batteryLevel);
+        float batteryLevel= hb3.getBatteryLevel();
+       /// Log.d("asf","SOCOFTODAY IS "+batteryLevel);
 //        int batteryLevel = get10LessSOC(batteryLevel1);//BMS SOC BUT 10 LESS
 
 //        int batteryLevel= hb3.getBatteryLevel() / 10; //BMS SOC AND NO 10 LESS
@@ -471,8 +475,10 @@ public class UIUpdater  {
        // Log.d("adsfg","THISISAHSOC="+batteryLevel);
 
 //        tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
-                tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
-                tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
+        if(hb3.getreamainingAH()/1000<500){// ignore noise values
+            tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
+            tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
+        }
 
 //        int batteryLevel = Math.max(0, Math.min(100, (int) ahTrackerManager.getSOC()));
 
@@ -493,20 +499,29 @@ public class UIUpdater  {
         }
 
         tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
-        int range= (int) Math.floor(batteryLevel * RANGE_km_PER_SOC);
+        float range= (float) (batteryLevel * RANGE_km_PER_SOC);
         if(batteryLevel>=0 && batteryLevel<=100){
             tm.setTeleSOC(batteryLevel);
             tm.setBMSTeleSOC(hb3.getNoLess10BMSBatteryLevel() /10);
             tm.setTeleRange(range);
-            binding.batteryTV.setText("Battery "+sBatteryLevel + "%   |  ~ "+range+" km");
-        }
+            binding.batteryTV.setText(
+                    String.format(
+                            Locale.US,
+                            "Battery %.1f%%   |  ~ %.1f km",
+                            batteryLevel,
+                            range
+                    )
+            );        }
 
-        if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18)  && tm.getTeleChargingState()==0) {
+        if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18 ||  batteryLevel==17)  && tm.getTeleChargingState()==0) {
 
             if(serialPortManager!=null){
               //  Log.d("SOCWHATACTOION","ENTER 20");
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000");//line current 15A, max phase current 300A ,regen 30-40
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B004A000"), 800);
+//                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C00F000B0044001");//line current 15A, max phase current 300A ,regen 60(F000)-80(4001)
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001");//line current 10A, max phase current 300A ,regen 60(F000)-80(4001)
+
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001"), 800);
 //                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
             // Start alert
@@ -528,12 +543,12 @@ public class UIUpdater  {
             }, 15_000);
         }
 
-        if (batteryLevel >= 21 && batteryLevel<90 && Lowbatflag) {
+        if (batteryLevel >= 21 && batteryLevel<95 && Lowbatflag) {
 //            resetParamtersAfterLowbat=true;
             Lowbatflag = false;
             updateTransportModeWarning();
             if(serialPortManager!=null){
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8018C00B004B400"); //max all phase 300, line 100 , regen 35-45
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801F000B0044001"); //max all phase 300, line 100 , regen 60(F000)-80(4001)
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             }
             binding.yellowalert.clearAnimation();
@@ -564,7 +579,7 @@ public class UIUpdater  {
 //            }
 //        }
 
-        if(!atSOC10Lowbatflag && (batteryLevel==5 || batteryLevel==4) && tm.getTeleChargingState()==0){
+        if(!atSOC10Lowbatflag && (batteryLevel==5 || batteryLevel==4 || batteryLevel==3) && tm.getTeleChargingState()==0){
             atSOC10Lowbatflag=true;
             startBeeping(2);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -579,25 +594,25 @@ public class UIUpdater  {
             } else if  (!isAPUPresent) {
                // Log.d("SOCWHATACTOION","ENTER 10 AND DO 10AMPS");
                 StopInactivtyTimerDuringPopUp=false;
-                showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728008C00B004B400");//line current 10A(2800), phase current max, regen currents as 35A(8C00) to make 6 (1800) and 45A(B400) to make 8 (2000)
+                showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");//regen 60(F000)-80(4001)
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001");//line current 10A(2800), phase current max, regen currents as 40A(A000) to make 6 (1800) and 50A(C800) to make 8 (2000)
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
          //       Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
 
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA807280078000000A000");//STOP SCOOTER, phase zero
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//STOP SCOOTER, phase zero
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
             }
         }
 
-        if((batteryLevel>=65 && batteryLevel<=90) && Dynamic80SOCRegencurrent) {
+        if((batteryLevel>=65 && batteryLevel<=95) && Dynamic80SOCRegencurrent) {
             Dynamic80SOCRegencurrent=false;
-            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800");//35 - 45 regen(8C00-B400)40A(A000) 50A(C800) , phase cur 300A(B004) , line current 110A(B801) ,
-            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801A000B004C800"), 500);
+            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807C800F000B0044001");//regen 60(F000)-80(4001),,35 - 45 regen(8C00-B400)40A(A000) 50A(C800) , phase cur 300A(B004) , line current 110A(B801)or 50amps C800 ,
+            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807C800F000B0044001"), 500);
         }
-        if(batteryLevel>=91) {
+        if(batteryLevel>=96) {
             Dynamic80SOCRegencurrent=true;
         }
 
@@ -614,7 +629,7 @@ public class UIUpdater  {
         if(!atSOC7Lowbatflag && (batteryLevel==0) && !apuflag  && tm.getTeleChargingState()==0){
             atSOC7Lowbatflag=true;
             if(serialPortManager!=null){
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8070000000088040000");
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
                 new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
             InactivityManager.getInstance().stopTimer();
@@ -634,7 +649,7 @@ public class UIUpdater  {
 //        } catch (NumberFormatException e) {
 //            e.printStackTrace();
 //        }
-        lastKnownBattery = batteryLevel; // ✅ store latest
+        lastKnownBattery = batteryLevel;
 
         if (!isBatteryIntroRunning) {
             activity.runOnUiThread(() -> {
@@ -1331,7 +1346,7 @@ public class UIUpdater  {
             }
         }
 
-        int batteryLevel = hb3.getBatteryLevel();
+        int batteryLevel = (int)hb3.getBatteryLevel();
 //        float batteryLevel = ahTrackerManager.getSOC();
         String sBatteryLevel;
         if(batteryLevel>=0 && batteryLevel<=100){ sBatteryLevel = String.valueOf(batteryLevel);}
@@ -2405,12 +2420,12 @@ public class UIUpdater  {
             binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
             binding.CurrentConsumptionValue.setText(current + "A");
             updateRegenAnimation(0);   // reset animation
-            setSpeedColor(false);
+            //setSpeedColor(false);
         } else {
             binding.RegenCurrentValue.setVisibility(View.VISIBLE);
             binding.RegenCurrentValue.setText(current + "A");
             updateRegenAnimation(current);  //  animation trigger
-            setSpeedColor(true);
+            //setSpeedColor(true);
         }
         //Log.d("fdsadg", "THIS IS REGEN CURRENT = " + current);
     }
@@ -2523,6 +2538,10 @@ public class UIUpdater  {
     }
     private void updateCanData18954001(Heartbeat3 hb3) {
        // tm.setcell1TO3(hb3.getcell1TO3());
+    }
+    private void updateCanData1806E5F4(Heartbeat3 hb3) {
+         tm.setMax_voltage_value(hb3.getTotal_max_voltage_limit());
+        tm.setAlowable_charging_current_value(hb3.getAllowable_Charging_currentValue());
     }
 
     /**
@@ -2945,8 +2964,8 @@ public class UIUpdater  {
     private boolean frontWarning = false;
     private boolean rearWarning  = false;
 
-    private static final double MIN_PRESSURE_PSI = 30.0;
-    private static final int MAX_TEMP_C = 60;
+    private static final double MIN_PRESSURE_PSI = 27.0;
+    private static final int MAX_TEMP_C = 40;
 
     private MetadataManager metadata = MetadataManager.get();
 
@@ -3056,6 +3075,7 @@ public class UIUpdater  {
     public void playLowTireSound() {
 
         if (istireSoundPlaying) return;
+        if(!MainActivity.MainisActive) return;
 
         if (tirePlayer == null) {
             tirePlayer = MediaPlayer.create(

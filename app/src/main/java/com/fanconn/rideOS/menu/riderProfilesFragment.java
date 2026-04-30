@@ -34,25 +34,34 @@ import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
 
 import com.fanconn.rideOS.InactivityManager;
+import com.fanconn.rideOS.MetadataManager;
+import com.fanconn.rideOS.NetworkUtil;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SoundPlayer;
 import com.fanconn.rideOS.authen.SecureStorageUtil;
 import com.fanconn.rideOS.authen.PatternViewRegister;
+import com.fanconn.rideOS.network.ApiService;
+import com.fanconn.rideOS.network.RetrofitClient;
+import com.google.gson.Gson;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+
 public class riderProfilesFragment extends Fragment {
 
     // Shared prefs
     private SharedPreferences sharedPreferences;
-
+    private Button btnClearPattern;
     // Containers & UI
     private View initialContainer;
     private View settingsParent;
@@ -63,8 +72,7 @@ public class riderProfilesFragment extends Fragment {
     private LinearLayout basicContainer, advancedContainer, securityContainer;
 
     // BASIC
-    private EditText etUsername, etAge;
-
+    private EditText etUsername, etPhone, etAge;
     // ADVANCED
     private SeekBar seekBarMaxSpeed, seekBarTorque;
     private TextView tvMaxspeedValue, tvTorqueLevel;
@@ -131,6 +139,53 @@ public class riderProfilesFragment extends Fragment {
 
         // ----- BIND FIELDS -----
         etUsername = view.findViewById(R.id.etUsername);
+        etPhone = view.findViewById(R.id.etPhone);
+        etPhone.addTextChangedListener(new TextWatcher() {
+
+            private boolean isUpdating = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (isUpdating) return;
+
+                isUpdating = true;
+
+                String input = s.toString();
+
+                String digitsOnly = input.replaceAll("[^\\d]", "");
+
+                if (digitsOnly.length() > 10) {
+                    digitsOnly = digitsOnly.substring(0, 10);
+                }
+
+
+                if (!digitsOnly.equals(input)) {
+
+                    etPhone.setText(digitsOnly);
+                    etPhone.setSelection(digitsOnly.length());
+
+                    isUpdating = false;
+                    return;
+                }
+
+                if (digitsOnly.length() == 10) {
+
+                    hideKeyboard();
+
+                    etAge.requestFocus();
+                }
+
+                isUpdating = false;
+            }
+        });
+
         etAge = view.findViewById(R.id.etAge);
 
         seekBarMaxSpeed = view.findViewById(R.id.seekBarMaxSpeed);
@@ -148,13 +203,14 @@ public class riderProfilesFragment extends Fragment {
         TVconfirmpat = view.findViewById(R.id.TVconfirmpat);
         patternViewRegister = view.findViewById(R.id.patternViewRegister);
         patternViewConfirm = view.findViewById(R.id.patternViewConfirm);
-
+        btnClearPattern = view.findViewById(R.id.btnClearPattern);
         btnRegister = view.findViewById(R.id.btnsave);
         btnRegister.setVisibility(View.GONE);
 
         basicContainer.setVisibility(View.GONE);
         advancedContainer.setVisibility(View.GONE);
         securityContainer.setVisibility(View.GONE);
+
 
         // --- SECURE STORAGE ---
         new Thread(() -> {
@@ -239,9 +295,32 @@ public class riderProfilesFragment extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
         });
-
+//        btnAddRider.setOnClickListener(v -> {
+//
+//            if (getRegisteredRiderCount() >= 4)
+//            { showCustomToasterror("Maximum 4 Riders");
+//                return;
+//            }
+//            initialContainer.setVisibility(View.GONE);
+//            settingsParent.setVisibility(View.VISIBLE);
+//            currentStep = 0;
+//            showBasicTab();
+//            basicBtn.setChecked(true);
+//            btnBack.setVisibility(View.VISIBLE);
+//            btnNext.setVisibility(View.VISIBLE);
+//            clearEntryFields();
+//            InactivityManager.getInstance().stopTimer();
+//        });
         // ----- ADD RIDER BUTTON -----
         btnAddRider.setOnClickListener(v -> {
+
+            String vin = MetadataManager.get().getVin();
+
+            if (vin == null || vin.equals("UNKNOWN_VIN") || vin.trim().isEmpty()) {
+                showCustomToasterror("Empty VIN");
+                return;
+            }
+
             if (getRegisteredRiderCount() >= 4) {
                 showCustomToasterror("Maximum 4 Riders");
                 return;
@@ -279,43 +358,122 @@ public class riderProfilesFragment extends Fragment {
 
         setupFocusListeners();
         setPatternListeners();
+        btnClearPattern.setOnClickListener(v -> {
 
+            resetPatterns();
+
+            // hide confirm pattern
+            patternViewConfirm.setVisibility(View.GONE);
+            TVconfirmpat.setVisibility(View.GONE);
+
+            // show first pattern again
+            patternViewRegister.setVisibility(View.VISIBLE);
+            TVdrawpat.setVisibility(View.VISIBLE);
+
+            TVdrawpat.setText("Draw Pattern");
+            TVdrawpat.setTextColor(Color.parseColor("#9D9D9D"));
+
+            btnClearPattern.setVisibility(View.GONE);
+
+            showCustomToast("Pattern cleared");
+        });
         // PIN watcher
         etPin.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-            @Override public void afterTextChanged(Editable editable) {
-                if (editable.length() == 4) etPinConfirm.requestFocus();
+
+            private boolean isUpdating = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (isUpdating) return;
+
+                isUpdating = true;
+
+                String pin = editable.toString();
+
+                if (pin.length() > 4) {
+
+                    pin = pin.substring(0, 4);
+
+                    etPin.setText(pin);
+                    etPin.setSelection(pin.length());
+                }
+
+                if (pin.length() == 4) {
+                    etPinConfirm.requestFocus();
+                }
+
+                isUpdating = false;
             }
         });
 
-        // PIN CONFIRM watcher
+// PIN CONFIRM watcher
         etPinConfirm.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
-            @Override public void afterTextChanged(Editable editable) {
-                if (editable.length() == 4) {
+            private boolean isUpdating = false;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                if (isUpdating) return;
+
+                isUpdating = true;
+
+                String pinConfirm = editable.toString();
+
+                if (pinConfirm.length() > 4) {
+
+                    pinConfirm = pinConfirm.substring(0, 4);
+
+                    etPinConfirm.setText(pinConfirm);
+                    etPinConfirm.setSelection(pinConfirm.length());
+                }
+
+                if (pinConfirm.length() == 4) {
 
                     String pin = etPin.getText().toString().trim();
-                    String pinConfirm = etPinConfirm.getText().toString().trim();
 
-                    if (!pin.equals(pinConfirm)) {
-                        etPin.setText("");
-                        etPinConfirm.setText("");
-                        etPin.requestFocus();
-                        playErrorSound();
-                        showCustomToasterror("PINs do not match.");
+                    // extra safety
+                    if (pin.length() != 4) {
+                        isUpdating = false;
                         return;
                     }
 
-                    // PIN SUCCESS
+                    if (!pin.equals(pinConfirm)) {
+
+                        etPin.setText("");
+                        etPinConfirm.setText("");
+
+                        etPin.requestFocus();
+
+                        playErrorSound();
+                        showCustomToasterror("PINs do not match.");
+
+                        isUpdating = false;
+                        return;
+                    }
+
                     hideKeyboard();
+
                     pinMatched = true;
 
                     // show pattern setup
                     patternViewRegister.setVisibility(View.VISIBLE);
                     TVdrawpat.setVisibility(View.VISIBLE);
+
+                    btnClearPattern.setVisibility(View.VISIBLE);
 
                     patternViewConfirm.setVisibility(View.GONE);
                     TVconfirmpat.setVisibility(View.GONE);
@@ -323,26 +481,42 @@ public class riderProfilesFragment extends Fragment {
                     // hide PIN inputs
                     etPin.setVisibility(View.GONE);
                     etPinConfirm.setVisibility(View.GONE);
+
                     tvEnterPin.setVisibility(View.GONE);
                     tvConfirmPin.setVisibility(View.GONE);
 
                     resetPatterns();
                 }
+
+                isUpdating = false;
             }
         });
 
         // NEXT BUTTON
         btnNext.setOnClickListener(v -> {
+
             hideKeyboard();
 
+            // STEP 0 -> BASIC TO ADVANCED
             if (currentStep == 0) {
 
                 String name = etUsername.getText().toString().trim();
+                String phone = etPhone.getText().toString().trim();
                 String ageStr = etAge.getText().toString().trim();
 
-                // ---- Validation ----
+                // ---- VALIDATION ----
                 if (name.isEmpty()) {
                     showCustomToasterror("Please enter your name");
+                    return;
+                }
+
+                if (phone.isEmpty()) {
+                    showCustomToasterror("Please enter phone number");
+                    return;
+                }
+
+                if (!phone.matches("\\d{10}")) {
+                    showCustomToasterror("Phone number must be exactly 10 digits");
                     return;
                 }
 
@@ -352,29 +526,44 @@ public class riderProfilesFragment extends Fragment {
                 }
 
                 int age = Integer.parseInt(ageStr);
+
                 if (age < 18 || age > 110) {
                     showCustomToasterror("Invalid age");
                     return;
                 }
 
-                // If all good -> go to next step
+                if (isActiveRiderNameExists(name)) {
+
+                    if (!(isEditMode && name.equals(editingUsername))) {
+
+                        playErrorSound();
+                        showCustomToasterror("Rider name already exists");
+
+                        showBasicTab();
+                        basicBtn.setChecked(true);
+
+                        return;
+                    }
+                }
+
                 currentStep = 1;
                 showAdvancedTab();
                 advancedBtn.setChecked(true);
+
                 return;
             }
 
-            // Step 1 -> Step 2
             if (currentStep == 1) {
+
                 currentStep = 2;
                 showSecurityTab();
                 securityBtn.setChecked(true);
+
                 return;
             }
 
         });
 
-        // BACK BUTTON
         btnBack.setOnClickListener(v -> {
             hideKeyboard();
 
@@ -398,14 +587,12 @@ public class riderProfilesFragment extends Fragment {
             }
 
             else if (currentStep == 2) {
-                // Go back to SPEED/TORQUE tab
                 currentStep = 1;
                 advancedBtn.setChecked(true);
                 showAdvancedTab();
 
                 btnNext.setVisibility(View.VISIBLE);
 
-                // IMPORTANT FIX → MUST NOT RESET PIN OR PATTERN WHEN GOING BACK
             }
 
         });
@@ -466,6 +653,7 @@ public class riderProfilesFragment extends Fragment {
 
     private void clearEntryFields() {
         etUsername.setText("");
+        etPhone.setText("");
         etAge.setText("");
         seekBarMaxSpeed.setProgress(40);
         seekBarTorque.setProgress(1);
@@ -593,15 +781,15 @@ public class riderProfilesFragment extends Fragment {
         currentStep = 0;
         showBasicTab();
 
-        // 🔥 PREFILL BASIC DATA
         String age = sharedPreferences.getString("user_" + username + "_age", "");
+        String phone = sharedPreferences.getString("user_" + username + "_phone", "");
         String maxSpeed = sharedPreferences.getString("user_" + username + "_maxspeed", "60");
         String torque = sharedPreferences.getString("user_" + username + "_torque", "Easy");
 
         etUsername.setText(username);
+        etPhone.setText(phone);
         etAge.setText(age);
 
-        // 🔥 PREFILL ADVANCED
         int speed = Integer.parseInt(maxSpeed);
         seekBarMaxSpeed.setProgress(speed - 20);
         tvMaxspeedValue.setText(speed + " Kmph");
@@ -618,7 +806,6 @@ public class riderProfilesFragment extends Fragment {
         selectedTorqueLevel = torque;
         tvTorqueLevel.setText(torque);
 
-        // 🔥 IMPORTANT: EDIT MODE FLAG
         isEditMode = true;
         editingUsername = username;
     }
@@ -637,6 +824,7 @@ public class riderProfilesFragment extends Fragment {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             String[] keys = {
                     "user_" + username + "_age",
+                    "user_" + username + "_phone",
                     "user_" + username + "_lucky",
                     "user_" + username + "_maxspeed",
                     "user_" + username + "_torque",
@@ -646,6 +834,7 @@ public class riderProfilesFragment extends Fragment {
             };
             for (String key : keys) editor.remove(key);
             editor.apply();
+            deleteRiderFromBackend(username);
             SoundPlayer.playOnce(ctx, R.raw.deletesound);
             loadUsers();
             showCustomToast("Rider Deleted " + username);
@@ -665,6 +854,7 @@ public class riderProfilesFragment extends Fragment {
 
         String username = etUsername.getText().toString().trim();
         String age = etAge.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
         String maxspeed = String.valueOf(maxSpeedValue);
         String torque = selectedTorqueLevel;
 
@@ -675,12 +865,16 @@ public class riderProfilesFragment extends Fragment {
 //        currentStep = 0;
 
         // -------- BASIC VALIDATION --------
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(age)) {
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(phone) || TextUtils.isEmpty(age)) {
             playErrorSound();
             showCustomToasterror("Please enter name and age");
             return;
         }
-
+        if (!phone.matches("\\d{10}")) {
+            playErrorSound();
+            showCustomToasterror("Invalid phone number");
+            return;
+        }
         if (TextUtils.isEmpty(maxspeed) || TextUtils.isEmpty(torque)) {
             playErrorSound();
             showCustomToasterror("Please set speed and torque");
@@ -715,6 +909,7 @@ public class riderProfilesFragment extends Fragment {
 
             String finalUsername = isEditMode ? editingUsername : username;
             editor.putString("user_" + finalUsername + "_age", age);
+            editor.putString("user_" + finalUsername + "_phone", phone);
             editor.putString("user_" + finalUsername + "_maxspeed", maxspeed);
             editor.putString("user_" + finalUsername + "_torque", torque);
 
@@ -722,16 +917,26 @@ public class riderProfilesFragment extends Fragment {
             String salt = generateSalt();
             String hashedPin = hashWithSalt(pin, salt);
 
-            editor.putString("user_" + username + "_salt", salt);
-            editor.putString("user_" + username + "_pin", hashedPin);
-
-            // Save Pattern
-            editor.putString("user_" + username + "_pattern",
+            editor.putString("user_" + finalUsername + "_salt", salt);
+            editor.putString("user_" + finalUsername + "_pin", hashedPin);
+            editor.putString("user_" + finalUsername + "_pattern",
                     TextUtils.join("", selectedPattern));
 
             editor.apply();
+            if (isEditMode) {
+
+                android.util.Log.d("API_FLOW", "EDIT MODE → calling UPDATE");
+
+                updateRiderToBackend(finalUsername, phone, age, maxspeed, torque);
+            } else {
+
+                android.util.Log.d("API_FLOW", "NEW MODE → calling ADD");
+
+                sendRiderToBackend(finalUsername, phone, age, maxspeed, torque);
+            }
             isEditMode = false;
             editingUsername = "";
+
             SoundPlayer.playOnce(ctx, R.raw.locksound2);
             showCustomToast("Registered Successfully");
 
@@ -752,11 +957,230 @@ public class riderProfilesFragment extends Fragment {
             showCustomToasterror("Error saving user");
         }
     }
+
+    private ApiService apiService;
+
+
+    private void sendRiderToBackend(String name,
+                                    String phone,
+                                    String age,
+                                    String maxspeed,
+                                    String torque) {
+
+
+        android.util.Log.d("API_DEBUG", "sendRiderToBackend CALLED");
+
+        String vin = MetadataManager.get().getVin();
+
+        if (vin == null || vin.equals("UNKNOWN_VIN") || vin.trim().isEmpty()) {
+            android.util.Log.e("API", "VIN missing, skipping backend call");
+            return;
+        }
+
+        Map<String, Object> data = new java.util.HashMap<>();
+        data.put("vin_number", vin);
+        data.put("name", name);
+        data.put("age", Integer.parseInt(age));
+        data.put("phone", phone);
+        data.put("top_speed", Float.parseFloat(maxspeed));
+        data.put("top_torque", torque);
+
+        android.util.Log.d("API_DEBUG", "Prepared data: " + data.toString());
+
+        if (!NetworkUtil.isInternetAvailable(ctx)) {
+
+            android.util.Log.e("API_OFFLINE", "No internet → storing in local queue");
+
+            stageRider("ADD", data);
+
+            return;
+        }
+
+        apiService.addRider(data).enqueue(new retrofit2.Callback<okhttp3.ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<okhttp3.ResponseBody> call,
+                                   retrofit2.Response<okhttp3.ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+
+                    try {
+                        String res = response.body().string();
+
+                        org.json.JSONObject json = new org.json.JSONObject(res);
+                        int riderId = json.getInt("id");
+
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("user_" + name + "_backend_id", riderId);
+                        editor.apply();
+
+                        android.util.Log.d("API_SUCCESS", "Rider added, ID = " + riderId);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        android.util.Log.e("API", "Parsing error");
+                    }
+
+                } else {
+
+                    android.util.Log.e("API_FAIL", "Response failed → staging data");
+
+                    stageRider("ADD", data);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                android.util.Log.e("API_ERROR", "Network/API error → " + t.getMessage());
+
+                stageRider("ADD", data);
+            }
+        });
+    }
+
+    private void stageRider(String operation, Map<String, Object> data) {
+        try {
+            String json = new Gson().toJson(data);
+
+            RiderSyncManager
+                    .getInstance(ctx)
+                    .store(operation, json);
+
+            android.util.Log.d("API_STAGE", "Stored in queue → " + operation);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        RiderSyncWorker.sync(ctx, apiService);
+    }
+
+    private void updateRiderToBackend(String name,
+                                      String phone,
+                                      String age,
+                                      String maxspeed,
+                                      String torque) {
+
+        int id = sharedPreferences.getInt("user_" + name + "_backend_id", -1);
+
+        if (id == -1) {
+
+            android.util.Log.e("API_BUG", "Missing backend_id → cannot UPDATE");
+
+            RiderSyncWorker.sync(ctx, apiService);
+
+            showCustomToasterror("Syncing... please retry");
+
+            return;
+        }
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", name);
+        data.put("phone", phone);
+        data.put("age", Integer.parseInt(age));
+        data.put("top_speed", Float.parseFloat(maxspeed));
+        data.put("top_torque", torque);
+
+        if (!NetworkUtil.isInternetAvailable(ctx)) {
+
+            android.util.Log.e("API_OFFLINE", "UPDATE → storing in queue");
+
+            data.put("id", id);
+
+            stageRider("UPDATE", data);
+
+            return;
+        }
+
+        apiService.updateRider(id, data).enqueue(new retrofit2.Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call,
+                                   retrofit2.Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+                    android.util.Log.d("API", "Rider updated successfully");
+                } else {
+
+                    android.util.Log.e("API_FAIL", "Update failed → storing in queue");
+
+                    data.put("id", id);
+                    stageRider("UPDATE", data);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                android.util.Log.e("API_ERROR", "Update failed → " + t.getMessage());
+
+                data.put("id", id);
+                stageRider("UPDATE", data);
+            }
+        });
+    }
+    private void deleteRiderFromBackend(String username) {
+
+        int id = sharedPreferences.getInt("user_" + username + "_backend_id", -1);
+
+        if (id == -1) {
+            android.util.Log.e("API", "No backend ID found");
+            return;
+        }
+
+        if (!NetworkUtil.isInternetAvailable(ctx)) {
+
+            android.util.Log.e("API_OFFLINE", "DELETE → storing in queue");
+
+            Map<String, Object> data = new HashMap<>();
+            data.put("id", id);
+
+            stageRider("DELETE", data);
+
+            return;
+        }
+
+        apiService.deleteRider(id).enqueue(new retrofit2.Callback<ResponseBody>() {
+
+            @Override
+            public void onResponse(Call<ResponseBody> call,
+                                   retrofit2.Response<ResponseBody> response) {
+
+                if (response.isSuccessful()) {
+                    android.util.Log.d("API", "Rider deleted successfully");
+                } else {
+
+                    android.util.Log.e("API_FAIL", "Delete failed → storing in queue");
+
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("id", id);
+
+                    stageRider("DELETE", data);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                android.util.Log.e("API_ERROR", "Delete failed → " + t.getMessage());
+
+                Map<String, Object> data = new HashMap<>();
+                data.put("id", id);
+
+                stageRider("DELETE", data);
+            }
+        });
+    }
     private void softResetFields() {
 
         // Basic
         etUsername.setEnabled(true);
         etUsername.setText("");
+        etPhone.setText("");
         etAge.setText("");
 
         // Advanced
@@ -787,7 +1211,7 @@ public class riderProfilesFragment extends Fragment {
         patternViewConfirm.setVisibility(View.GONE);
         TVdrawpat.setVisibility(View.GONE);
         TVconfirmpat.setVisibility(View.GONE);
-
+        btnClearPattern.setVisibility(View.GONE);
         // Re-enable PIN UI
         etPin.setVisibility(View.VISIBLE);
         etPinConfirm.setVisibility(View.VISIBLE);
@@ -801,13 +1225,19 @@ public class riderProfilesFragment extends Fragment {
     private void security() {
         String ageText = etAge.getText().toString().trim();
         String newUsername = etUsername.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
 
-        if (ageText.isEmpty() || newUsername.isEmpty()) {
+
+        if (ageText.isEmpty() || newUsername.isEmpty() || phone.isEmpty()) {
             showCustomToasterror("Please enter all details");
             playErrorSound();
             return;
         }
-
+        if (!phone.matches("\\d{10}")) {
+            showCustomToasterror("Invalid phone number");
+            playErrorSound();
+            return;
+        }
         try {
             int ageValue = Integer.parseInt(ageText);
             if (ageValue < 18) {
@@ -821,18 +1251,7 @@ public class riderProfilesFragment extends Fragment {
             return;
         }
 
-        boolean exists = false;
-        for (String key : sharedPreferences.getAll().keySet()) {
-            if (key.startsWith("user_") && key.endsWith("_age")) {
-                String existingName = key.substring(5, key.length() - 4);
-                if (existingName.equalsIgnoreCase(newUsername)) {
-                    exists = true;
-                    break;
-                }
-            }
-        }
-
-        if (exists) {
+        if (isActiveRiderNameExists(newUsername)) {
             showCustomToasterror("Rider name already exists");
             playErrorSound();
             return;
@@ -892,6 +1311,10 @@ public class riderProfilesFragment extends Fragment {
 
                 patternViewConfirm.setVisibility(View.VISIBLE);
                 TVconfirmpat.setVisibility(View.VISIBLE);
+
+                if (TVconfirmpat.getVisibility() == View.VISIBLE) {
+                    btnClearPattern.setVisibility(View.VISIBLE);
+                }
             });
 
         }
@@ -903,9 +1326,21 @@ public class riderProfilesFragment extends Fragment {
                 confirmPattern.addAll(pattern);
 
                 if (!confirmPattern.equals(firstPattern)) {
-                    patternViewConfirm.clearPattern();
+
                     playErrorSound();
+
                     showCustomToasterror("Patterns do not match");
+
+                    resetPatterns();
+
+                    patternViewConfirm.setVisibility(View.GONE);
+                    TVconfirmpat.setVisibility(View.GONE);
+
+                    patternViewRegister.setVisibility(View.VISIBLE);
+                    TVdrawpat.setVisibility(View.VISIBLE);
+
+                    TVdrawpat.setText("Draw Pattern Again");
+
                     return;
                 }
 
@@ -917,16 +1352,16 @@ public class riderProfilesFragment extends Fragment {
                 // Hide both pattern views
                 patternViewConfirm.setVisibility(View.GONE);
                 TVconfirmpat.setVisibility(View.GONE);
-
+                btnClearPattern.setVisibility(View.GONE);
                 // Show Verified tick text
                 TVdrawpat.setVisibility(View.VISIBLE);
                 TVdrawpat.setText("Verified Successfully, Please save your profile");
                 TVdrawpat.setTextColor(getResources().getColor(android.R.color.holo_blue_bright));
 
                 // Show save button
+
                 btnRegister.setVisibility(View.VISIBLE);
             });
-
         }
     }
 
@@ -937,6 +1372,7 @@ public class riderProfilesFragment extends Fragment {
         isPatternConfirmed = false;
         if (patternViewRegister != null) patternViewRegister.clearPattern();
         if (patternViewConfirm != null) patternViewConfirm.clearPattern();
+        if (btnClearPattern != null) btnClearPattern.setVisibility(View.GONE);
     }
 
     // --------------------------
@@ -951,6 +1387,7 @@ public class riderProfilesFragment extends Fragment {
         etPin.setOnFocusChangeListener(focusListener);
         etPinConfirm.setOnFocusChangeListener(focusListener);
         etAge.setOnFocusChangeListener(focusListener);
+        etPhone.setOnFocusChangeListener(focusListener);
         etUsername.setOnFocusChangeListener(focusListener);
     }
 
@@ -1016,12 +1453,54 @@ public class riderProfilesFragment extends Fragment {
         sharedPreferences = SecurePrefs.get();
 
         SecureStorageUtil.init(requireContext());
+        apiService = RetrofitClient.getClient().create(ApiService.class);
     }
     private class AppCompatRadioGroup {
 
     }
     private String getCurrentRider() {
-        SharedPreferences prefs = requireContext().getSharedPreferences("app_session", Context.MODE_PRIVATE);
+        if (getContext() == null) {
+            return "";
+        }
+
+        SharedPreferences prefs = getContext()
+                .getSharedPreferences("app_session", Context.MODE_PRIVATE);
+
         return prefs.getString("current_rider", "");
     }
+    private boolean isActiveRiderNameExists(String newUsername) {
+
+        if (ridersContainer == null) {
+            return false;
+        }
+
+        int childCount = ridersContainer.getChildCount();
+
+        for (int i = 0; i < childCount; i++) {
+
+            View card = ridersContainer.getChildAt(i);
+
+            TextView riderName = card.findViewById(R.id.riderName);
+
+            if (riderName == null) {
+                continue;
+            }
+
+            String existingName = riderName.getText().toString().trim();
+
+            // CASE-SENSITIVE CHECK
+            if (existingName.equals(newUsername)) {
+
+                // allow same rider during edit
+                if (isEditMode && existingName.equals(editingUsername)) {
+                    continue;
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

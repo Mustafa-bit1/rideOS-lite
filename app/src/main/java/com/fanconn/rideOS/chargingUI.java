@@ -40,7 +40,7 @@ public class chargingUI extends AppCompatActivity {
     private Runnable socUpdateRunnable;
     // Battery constants
     private static  float BATTERY_CAPACITY_AH;
-    private static final float RANGE_km_PER_SOC = 1.5f;
+    private static final float RANGE_km_PER_SOC = 1.7f;
     private static final float KM_PER_AH = RANGE_km_PER_SOC * 1.666f;
     private static final float MAX_RANGE_KM = RANGE_km_PER_SOC * 100f;
     // Runtime variables
@@ -600,7 +600,7 @@ public class chargingUI extends AppCompatActivity {
         Log.d("asdfsdgfd","THISISESTIMATED "+remainingAh+"  cc "+chargingCurrent);
         // Add 20% buffer (real-world charging slowdown)
         timeHours *= 1.2f;
-
+        ETADataManager.getInstance().setEtaTime(timeHours);
         int hours = (int) timeHours;
         int minutes = (int) ((timeHours - hours) * 60);
 

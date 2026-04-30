@@ -6,9 +6,10 @@ package com.fanconn.rideOS;
 public class Heartbeat3 {
     private String canId; // CAN ID
     private String canData; // CAN 数据
-    private int batteryLevel,APUbatteryLevel;
+    private float batteryLevel;
+    private int APUbatteryLevel;
     private int mainChargingMosState,mainDisMosState,apuChargingMosState,apuDisMosState;
-    private float chargingbit,floatbatteryLevel;// 单片机心跳包 电池电量
+    private float chargingbit,floatbatteryLevel,Total_max_voltage_limit,Allowable_Charging_currentValue;// 单片机心跳包 电池电量
     private String chargingErrorbitHex;// 单片机心跳包 电池电量
     private int mainChargeMosState,MainDisMosState,ApuChargeMosState,ApuDisMosState;
     private float realCurrent;
@@ -77,29 +78,48 @@ public class Heartbeat3 {
         this.canData = canData;
     }
 
-    public int getBatteryLevel() {
-        return get10LessSOC(batteryLevel/10);
+//    public float getBatteryLevel() {//This is giving SOC but scaling
+//        return get10LessSOC(batteryLevel/10);
+//    }
+//
+//    private float get10LessSOC(float actualSOC) {
+//
+//        int minActual = 15;
+//        int maxActual = 100;
+//
+//        if (actualSOC <= minActual) {
+//            return 0;
+//        }
+//
+//        if (actualSOC >= maxActual) {
+//            return 100;
+//        }
+//
+//        return (actualSOC - minActual) * 100 / (maxActual - minActual);
+//    }
+       public float getBatteryLevel() { // scaled SOC with 1 decimal
+            float soc = get10LessSOC(batteryLevel / 10.0f);
+            return Math.round(soc * 10f) / 10f;
     }
-    public float getNoLess10BMSBatteryLevel() {
-        return floatbatteryLevel;
-    }
-    private int get10LessSOC(int actualSOC) {
 
-        int minActual = 15;
-        int maxActual = 100;
+    private float get10LessSOC(float actualSOC) {
 
+        float minActual = 16f;
+        float cutoff = 90f;   // scaling ends here
         if (actualSOC <= minActual) {
-            return 0;
+            return 0f;
         }
-
-        if (actualSOC >= maxActual) {
-            return 100;
+        if (actualSOC < cutoff) {
+            return (actualSOC - minActual) * 90f / (cutoff - minActual);
         }
-
-        return (actualSOC - minActual) * 100 / (maxActual - minActual);
+        return actualSOC;
     }
     public void setBatteryLevel(int batteryLevel) {
         this.batteryLevel = batteryLevel;
+
+    }
+    public float getNoLess10BMSBatteryLevel() {// Gives actual SOC without scaling
+        return floatbatteryLevel;
     }
     public void setFloatBatteryLevel(float floatbatteryLevel) {
         this.floatbatteryLevel = floatbatteryLevel;
@@ -136,6 +156,26 @@ public class Heartbeat3 {
     public void setChargingErrorbit(String chargingErrorbitHex) {
         this.chargingErrorbitHex = chargingErrorbitHex;
     }
+
+    //===================
+
+    public float getTotal_max_voltage_limit() {
+        return Total_max_voltage_limit;
+    }
+
+    public void setTotal_max_voltage_limit(float Total_max_voltage_limit) {
+        this.Total_max_voltage_limit = Total_max_voltage_limit;
+    }
+
+    public float getAllowable_Charging_currentValue() {
+        return Allowable_Charging_currentValue;
+    }
+
+    public void setAllowable_Charging_currentValue(float Allowable_Charging_currentValue) {
+        this.Allowable_Charging_currentValue = Allowable_Charging_currentValue;
+    }
+
+    //===================
     public float getreamainingAH() {
         return remainingAH;
     }

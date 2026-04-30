@@ -154,7 +154,7 @@ public class batteryPackSwitcher {
         //Log.d("CommandSequence", "MainCharge oFF sent");
 
         handler.postDelayed(() -> {
-            Heartbeat3 hb3 = serialPortManager.getHb3(); // ✅ Fetch latest heartbeat now
+            Heartbeat3 hb3 = serialPortManager.getHb3(); // Fetch latest heartbeat now
             if (hb3 != null) {
                 //Log.d("CommandSequence", "MainChargeState " + hb3.getMainChargeMosState());
             }

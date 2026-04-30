@@ -531,7 +531,6 @@ public class SerialPortManager {
             case "16078001"://Mos States
                 CanDataParser.parseCanData16078001(hb3, hb3.getCanData());
                 break;
-
             case "18934002"://APU Mos States
                 CanDataParser.parseCanData18934002(hb3, hb3.getCanData());
                 break;
@@ -541,8 +540,11 @@ public class SerialPortManager {
             case "18964002":// APU NTC
                 CanDataParser.parseCanData18964002(hb3, hb3.getCanData());
                 break;
-            case "18954001":// APU NTC
+            case "18954001":
                 CanDataParser.parseCanData18954001(hb3, hb3.getCanData());
+                break;
+            case "1806E5F4":
+                CanDataParser.parseCanData1806E5F4(hb3, hb3.getCanData());
                 break;
             case "160B8001":// Charge AH
                 CanDataParser.parseCanData160B8001(hb3, hb3.getCanData());

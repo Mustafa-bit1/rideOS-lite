@@ -20,6 +20,12 @@ public class CanDataParser {
         hb3.setChargingErrorbit(FrameUtils.getByteSubstring(canData,4,4));
     }
 
+    public static  void parseCanData1806E5F4(Heartbeat3 hb3, String canData) {
+        hb3.setTotal_max_voltage_limit(FrameUtils.getByteSubstringAsInt(canData,0,1)/10f); //Total voltage high limit
+        hb3.setAllowable_Charging_currentValue(FrameUtils.getByteSubstringAsInt(canData,2,3)/10f);//Allowable charging current value
+        Log.d("asdf","THISIS NEW CHARGING VALUES "+FrameUtils.getByteSubstringAsInt(canData,2,3)/10f);
+    }
+
     public static  void parseCanData18904001(Heartbeat3 hb3, String canData) {
         // 实现 18904001 CAN 数据的解析逻辑
         // 提取心跳包 电池电量 值

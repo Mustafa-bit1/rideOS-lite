@@ -169,9 +169,9 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 Log.d("FRAME", "Received FRAME 6666666 " + frame);
             //Log.d("kdfsg","SERIAL FRAME : "+frame);
 //            if(frame.length()>22){
-//            if(frame.startsWith("FFAA77030300151890400"))
+//            if(frame.startsWith("FFAA77030300151806E5"))
 //                Log.d("FRAME", "Received inNNNNNNNN " + getClass().getSimpleName() + ": " + frame);
-//            }
+////            }
 
             // Do something with frame
             parseFrame(frame);
@@ -758,7 +758,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                                 ReloggedIn=true;
 //                                uiUpdater.updateBatteryAnimation((int)AhTrackerManager.getInstance(instance).getSOC());
                                 if(serialPortManager.getHb3()!=null){
-                                    uiUpdater.updateBatteryAnimation(serialPortManager.getHb3().getBatteryLevel() /10);
+                                    uiUpdater.updateBatteryAnimation((int)serialPortManager.getHb3().getBatteryLevel() /10);
                                 }
                             }, 1000);
                             handler.postDelayed(() -> {
@@ -1700,7 +1700,7 @@ public void recoNavLeft(View view) {
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            Log.d("MainActivity", "Starting CameraService recording...");
 //            Intent i = new Intent(MainActivity.this, CameraService.class);
-//            i.setAction("START_REC");   // ✅ match service action name
+//            i.setAction("START_REC");   //  match service action name
 //            startService(i);
 //        }, 8000); // 8 seconds
 
@@ -1717,22 +1717,22 @@ public void recoNavLeft(View view) {
 //    }
 public void runPostLoginInit() {
 
-    // ✅ ALWAYS run UI work on UI thread
+    //  ALWAYS run UI work on UI thread
     runOnUiThread(() -> {
 
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
 
         currentgear = 'O';
 
-        // 🔓 Start unlock (no change)
+        //  Start unlock (no change)
         EVLockService.getInstance().startUnlockSequence();
 
-        // ✅ Slight delay for UI stability (IMPORTANT)
+        //  Slight delay for UI stability (IMPORTANT)
         binding.getRoot().post(() -> {
 
-            // 🔋 Reset battery instantly
+            //  Reset battery instantly
 
-            // 🔥 Start intro AFTER UI is ready (smooth now)
+            //  Start intro AFTER UI is ready (smooth now)
             binding.batteryArc.setBatteryLevel(0);
             binding.batteryArc.setIntroMode(true);
             runBatteryIntroAnimation();
@@ -1749,7 +1749,7 @@ public void runPostLoginInit() {
             }
         }, 2100);
 
-        // 🚗 Trip reset (unchanged)
+        //Trip reset (unchanged)
         uiUpdater.onTripReset();
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {

@@ -258,7 +258,7 @@
 
     <Button
         android:id="@+id/wifiOffBtn"
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="50dp"
         android:layout_marginStart="532dp"
         android:layout_marginTop="44dp"
@@ -281,7 +281,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/ResetAll"
+        android:layout_width="170dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="772dp"
+        android:layout_marginTop="120dp"
+        android:backgroundTint="#0878C1"
+        android:textColor="@color/white"
 
+        android:foreground="@drawable/btn_click_effect"
+        android:text="Reset ALL"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <Button
         android:id="@+id/btnmetadata"
         android:layout_width="170dp"
@@ -326,8 +338,8 @@
 
     <ImageButton
         android:id="@+id/rebootbtn"
-        android:layout_width="256dp"
-        android:layout_height="48dp"
+        android:layout_width="182dp"
+        android:layout_height="24dp"
         android:layout_marginStart="712dp"
         android:layout_marginTop="44dp"
         android:adjustViewBounds="true"
@@ -341,10 +353,10 @@
 
     <ImageButton
         android:id="@+id/shutdownbtn"
-        android:layout_width="276dp"
-        android:layout_height="48dp"
+        android:layout_width="152dp"
+        android:layout_height="36dp"
         android:layout_marginStart="712dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="76dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:foreground="@drawable/btn_click_effect"

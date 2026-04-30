@@ -99,9 +99,12 @@ import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.util.Log;
 
+import com.fanconn.rideOS.ETADataManager;
 import com.fanconn.rideOS.TelemetryDataManager;
+import com.fanconn.rideOS.UIUpdater;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
 
 import okhttp3.Call;
@@ -309,10 +312,9 @@ public class RideOSTelemetrySender {
         }
 
         if (t.getTeleNTC() != null) {
-            data.ntc = t.getTeleNTC();
+            data.ntc = "NTC="+t.getTeleNTC()+",ChargingTime="+ ETADataManager.getInstance().getEtaTime()+",ChargingCurrent="+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+",VCUtemp="+getCpu1Temp()+",Range="+TelemetryDataManager.getInstance().getTeleRange()+"recoEngine="+ UIUpdater.getInstance().getrecoEngineParams();
         }
 
-        // ✅ CURRENT RIDER (CRITICAL FIX)
         if (t.getTeleCurrentRider() != null && !t.getTeleCurrentRider().isEmpty()) {
             data.currentRider = t.getTeleCurrentRider();
         }
@@ -368,6 +370,65 @@ public class RideOSTelemetrySender {
         });
     }
 
+
+    public static String getCpu1Temp() {
+
+        String cpu1 = "NA";
+
+        try {
+            File thermalDir = new File("/sys/class/thermal/");
+            File[] zones = thermalDir.listFiles();
+
+            if (zones != null) {
+
+                for (File zone : zones) {
+
+                    if (zone.getName().startsWith("thermal_zone")) {
+
+                        File typeFile = new File(zone, "type");
+                        File tempFile = new File(zone, "temp");
+
+                        if (typeFile.exists() && tempFile.exists()) {
+
+                            String type = readLine(typeFile);
+                            String tempRaw = readLine(tempFile);
+
+                            if (type == null || tempRaw == null) {
+                                continue;
+                            }
+
+                            if (type.equals("cpuss-1-usr")) {
+
+                                float tempC = Float.parseFloat(tempRaw) / 1000f;
+                                cpu1 = String.format("%.1f", tempC);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return cpu1;
+    }
+    private static String readLine(File file) {
+
+        try (java.io.BufferedReader br =
+                     new java.io.BufferedReader(
+                             new java.io.FileReader(file))) {
+
+            return br.readLine();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 //    private static String getRideOSVersion(Context context) {
 //        try {
 //            PackageInfo pInfo =

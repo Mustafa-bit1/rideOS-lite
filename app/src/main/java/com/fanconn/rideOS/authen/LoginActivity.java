@@ -181,7 +181,7 @@ public class LoginActivity extends AppCompatActivity{
                     }
                 }
 //                if (frame.startsWith("FFAA660107")) {
-//                    serialPortManager.parseLEDControlResponse(frame);
+//                    serialPortManager.parseLEDControlResponse(frame);//              18FF50E5
 //                }18FF50E5
             }
             if (frame.length() >= 38 && frame.startsWith("FFAA770303001518FF50E5")) {
@@ -263,7 +263,7 @@ public class LoginActivity extends AppCompatActivity{
 
 //            int soc = FrameUtils.getByteSubstringAsInt(dataSegment, 6, 7) / 10;
 //            int socInt = (int) ahTrackerManager.getSOC();   // removes decimal part
-            int socInt=0;
+            float socInt=0;
             if(serialPortManager.getHb3()!=null){
                  socInt = serialPortManager.getHb3().getBatteryLevel();   // removes decimal part
             }
@@ -456,9 +456,10 @@ public class LoginActivity extends AppCompatActivity{
         // Pattern login listener
         patternView.setOnPatternCompleteListener(pattern -> {
 
-            // 🚫 Completely block input during timer
+            // Completely block input during timer
             if (isInputLocked) {
                 patternView.clearPattern();
+                SoundPlayer.playOnce(this, R.raw.failedattemptssound);
                 return;
             }
 
@@ -739,7 +740,7 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
     int Level0_Line_Current = 15;
-    int Level1_Line_Current = 25;
+    int Level1_Line_Current = 20;
     int Level2_Line_Current = 50;
     int Level3_Line_Current = 75;
     int Level4_Line_Current = 110;
@@ -903,32 +904,33 @@ public class LoginActivity extends AppCompatActivity{
 //                            ? "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400"//to set regen currents as 30A(7800) and 40A(A000)- 35A(8C00),45A(B400)
 //                            : "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";//to set regen currents as 6A(1800) and 8A(2000)
             String torqueFrame;
-            int batteryLevel = serialPortManager.getHb3().getBatteryLevel();
+            float batteryLevel = serialPortManager.getHb3().getBatteryLevel();
 //            float batteryLevel = ahTrackerManager.getSOC();
 
 
             if (batteryLevel ==0) { // phase max , all normal
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";//Phase 0 all normal
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "F00000004001";//Phase 0 all normal,,regen 60(F000)-80(4001)
                // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
             }
             else if (batteryLevel <= 5 && !UIUpdater.apuflag) { // phase 0 , all normal
                 //torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
-                torqueFrame = "FFAA550103001510FBA8072800A000B004C800";//line current 10amps(2800)
+                torqueFrame = "FFAA550103001510FBA8072800F000B0044001";//line current 10amps(2800),,regen 60(F000)-80(4001)
                // Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
             }
-            else if (batteryLevel <= 20) { //  line 15A, phase max, all normal
-                torqueFrame = "FFAA550103001510FBA8073C00A000B004C800";
-              //  Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
-            } else if (batteryLevel <= 90) { // phase max, all normal  A000(45A regen) - C800(50A)
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
+            else if (batteryLevel <= 20) {
+//                torqueFrame = "FFAA550103001510FBA8073C00F000B0044001";//  line 15A, phase max, all normal
+                torqueFrame = "FFAA550103001510FBA8072800F000B0044001";//  line 10A, phase max, all normal
+                //  Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
+            } else if (batteryLevel <= 95) { // phase max, all normal  A000(45A regen) - C800(50A),regen 60(F000)-80(4001)
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "F000B0044001";
               //  Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
             } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
               //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
             }
             else{//all max
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "F000B0044001";
               //  Log.d("SEDINGSOCFRAMEAS","else "+torqueFrame);
             }
 
@@ -1172,7 +1174,7 @@ public class LoginActivity extends AppCompatActivity{
             UIUpdater.getInstance().stopBlinking();
         }
 
-        int batteryLevel=serialPortManager.getHb3().getBatteryLevel();
+        float batteryLevel=serialPortManager.getHb3().getBatteryLevel();
 //        int batteryLevel=(int)ahTrackerManager.getSOC();
 
         String sBatteryLevel = String.valueOf(batteryLevel);

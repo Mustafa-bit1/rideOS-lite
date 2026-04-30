@@ -49,7 +49,7 @@ import java.util.Locale;
 public class DiagnosticsFragment extends Fragment {
     private AhTrackerManager ahTrackerManager;
     private TextView ipTV;
-    private Button resetRecoBtn, resetChargerRegenBtn;
+    private Button resetRecoBtn, resetChargerRegenBtn,ResetAll;
     private Button resetOdoBtn;
     private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON,In60,In90,out0, LEDOFF, debugbtn,lowtorue,highTorque;
     private ImageButton  rebootbtn, shutdownbtn;
@@ -112,6 +112,7 @@ public class DiagnosticsFragment extends Fragment {
         tireDimensionDisplay = view.findViewById(R.id.tireDimensionDisplay);
         ipTV = view.findViewById(R.id.ipTV);
         resetRecoBtn = view.findViewById(R.id.resetRecoBtn);
+        ResetAll = view.findViewById(R.id.ResetAll);
         resetChargerRegenBtn = view.findViewById(R.id.resetChargerRegenBtn);
         resetOdoBtn = view.findViewById(R.id.resetOdoBtn);
     }
@@ -154,6 +155,26 @@ public class DiagnosticsFragment extends Fragment {
         });
 
         resetRecoBtn.setOnClickListener(v -> {
+            View dialogView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.popupdialog, null);
+
+            AlertDialog dialog = createDialog(
+                    dialogView,
+                    "Reset recoEngine",
+                    "Are you sure you want to reset all recoEngine parameters?",
+                    "Reset",
+                    () -> {
+                        if (UIUpdater.getInstance() != null) {
+                            UIUpdater.getInstance().resetAllRecoEngineParameters();
+                            showCustomToast("All recoEngine params reset");
+                        }
+                    }
+            );
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+        });
+
+        ResetAll.setOnClickListener(v -> {
             View dialogView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.popupdialog, null);
 
@@ -217,6 +238,62 @@ public class DiagnosticsFragment extends Fragment {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             dialog.show();
         });
+
+        ResetAll.setOnClickListener(v -> {
+
+            View dialogView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.popupdialog, null);
+
+            AlertDialog dialog = createDialog(
+                    dialogView,
+                    "Reset All",
+                    "Are you sure you want to reset EVERYTHING?",
+                    "Reset",
+                    () -> {
+
+                        // IN60
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            // ================= IN60 FIRST TIME =================
+                            serialPortManager.VCUSendToMCU(
+                                    "FFAA5501030015160A01800000EA6000000000");
+                            // ================= IN60 SECOND TIME =================
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                serialPortManager.VCUSendToMCU(
+                                        "FFAA5501030015160A01800000EA6000000000");
+                            }, 300); // 300ms delay
+                            // ================= OUT0 FIRST TIME =================
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                serialPortManager.VCUSendToMCU(
+                                        "FFAA5501030015160C01800000000000000000");
+                            }, 700);
+                            // ================= OUT0 SECOND TIME =================
+                            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                serialPortManager.VCUSendToMCU("FFAA5501030015160C01800000000000000000"
+                                );
+                            }, 1000);
+                        }, 0);
+
+                        if (UIUpdater.getInstance() != null &&
+                                UIUpdater.getInstance().tripManager != null) {
+
+                            // Reset AH
+                            UIUpdater.getInstance().resetChargerAndTotalRegenAh();
+
+                            // Reset ODO
+                            UIUpdater.getInstance().tripManager.resetOdo();
+
+                            // Reset TRIP
+                            UIUpdater.getInstance().tripManager.resetTrip();
+                        }
+
+                        showCustomToast("All data reset");
+                    }
+            );
+
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.show();
+        });
+
 //        highTorque.setOnClickListener(v -> {
 //            serialPortManager.VCUSendToMCU("FFAA5501030015189040010000000000000064");//FFAA550103001510FBA807B8018C000000B400 35 - 45 regen(8C00-B400 , phase cur 300A(B004) , line current 110A(B801) ,
 //            new Handler(Looper.getMainLooper()).postDelayed(

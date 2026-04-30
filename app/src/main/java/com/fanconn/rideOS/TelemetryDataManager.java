@@ -17,7 +17,7 @@ public class TelemetryDataManager {
     private String teleTirePressure;
     private String teleFTirePressureVoltage;
     private String teleRTirePressureVoltage;
-
+    private float Max_voltage_value,Alowable_charging_current_value;
     private float teleTrip;
     private String teleRider;
     private String teleCurrentRider;
@@ -271,6 +271,23 @@ public class TelemetryDataManager {
     public void setTeleControllerAbruptOff(int teleControllerOffabrupt) {
         this.teleControllerOffabrupt = teleControllerOffabrupt;
     }
+    public float getMax_voltage_value() {
+        return Max_voltage_value;
+    }
+
+    public void setMax_voltage_value(float Max_voltage_value) {
+        this.Max_voltage_value = Max_voltage_value;
+    }
+
+    public float getAlowable_charging_current_value() {
+        return Alowable_charging_current_value;
+    }
+
+    public void setAlowable_charging_current_value(float Alowable_charging_current_value) {
+        this.Alowable_charging_current_value = Alowable_charging_current_value;
+    }
+
+
 
     public float getTeleTrip() {
         return teleTrip;
@@ -305,6 +322,9 @@ public class TelemetryDataManager {
     }
 
     public String getTeleNTC() {
+        return teleNTC;
+    }
+    public String getTeleNTCandChargingdata() {
         return teleNTC;
     }
 
