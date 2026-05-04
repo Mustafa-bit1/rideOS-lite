@@ -1742,7 +1742,7 @@ public void runPostLoginInit() {
 //            runSpeedIntroAnimation();
         });
 
-        // 🔊 TPMS sound (unchanged)
+        // TPMS sound (unchanged)
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (uiUpdater != null && uiUpdater.Play_tpmsSound_on_loggin) {
                 uiUpdater.playLowTireSound();

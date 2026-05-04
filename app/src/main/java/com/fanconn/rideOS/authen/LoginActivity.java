@@ -216,15 +216,16 @@ public class LoginActivity extends AppCompatActivity{
 
                 long currentTime = System.currentTimeMillis();
                 boolean canLaunchUI = !isChargingUIActive && !ChargingUiClosedByUserFlag;
-//                    Log.d("sdfdgfh","flague  "+isChargingUIActive);
-                    //Log.d("sdfdgfh","bugsofcharging  "+(currentTime - lastChargingUILaunchTime));
+                    Log.d("sdfdgfh","flague  "+isChargingUIActive);
+                Log.d("sdfdgfh","flague  "+ChargingUiClosedByUserFlag);
+                    Log.d("sdfdgfh","bugsofcharging flague "+(currentTime - lastChargingUILaunchTime));
 
                 if (canLaunchUI && (currentTime - lastChargingUILaunchTime > 1000)) {
                     isChargingUIActive = true;
 
                     lastChargingUILaunchTime = currentTime;
                     TelemetryDataManager.getInstance().setTeleChargingState(1);
-
+                    Log.d("asdfdg","ENTEREDSTARTCHARGINGUI ");
 
                     Intent intent0 = new Intent(context, chargingUI.class);
                     intent0.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -237,7 +238,7 @@ public class LoginActivity extends AppCompatActivity{
                     //Log.d("Frame", "Charging frame timeout — closing UI");
 
                     isChargingUIActive = false;
-                    ChargingUiClosedByUserFlag=false;
+//                    ChargingUiClosedByUserFlag=false;
 //                    shouldshowchargingicononmainonot = false;
                     UIUpdater.shouldshowchargingicononmainonot=false;
 

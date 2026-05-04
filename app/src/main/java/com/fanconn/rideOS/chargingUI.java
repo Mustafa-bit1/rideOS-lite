@@ -125,6 +125,8 @@ public class chargingUI extends AppCompatActivity {
 
         binding.chargingtologinbtn.setOnClickListener(v -> {
             isChargingAnimationRunning = false;
+            LoginActivity.ChargingUiClosedByUserFlag = true;
+
             Intent intent = new Intent(chargingUI.this, LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
@@ -170,7 +172,6 @@ public class chargingUI extends AppCompatActivity {
             wakeLock.acquire(3000); // keep screen on for 3 seconds
         }
     }
-
     private float actualSOC = 0; // store real SOC from hardware
     private int APUsoc = 0;
     private boolean isChargingAnimationRunning = false;
@@ -181,7 +182,7 @@ public class chargingUI extends AppCompatActivity {
             @Override
             public void run() {
                 float rawSOC = serialPortManager.getHb3().getNoLess10BMSBatteryLevel() / 10.0f;
-                actualSOC = scaleSOCtoLess10(rawSOC);
+                actualSOC = serialPortManager.getHb3().getBatteryLevel();
 
 
                 APUsoc = serialPortManager.hb3.getAPUBatteryLevel() / 10;
@@ -315,7 +316,7 @@ public class chargingUI extends AppCompatActivity {
     }
     private float scaleSOCtoLess10(float actualSOC) {
 
-        float minActual = 15f;
+        float minActual = 16f;
         float maxActual = 100f;
 
         if (actualSOC <= minActual) return 0f;
@@ -412,11 +413,13 @@ public class chargingUI extends AppCompatActivity {
                 wakeLock.acquire(3000);
             }
             TelemetryDataManager.getInstance().setTeleChargingState(0);
+            LoginActivity.ChargingUiClosedByUserFlag = false;
+            LoginActivity.isChargingUIActive= false;
             finish();
 //            UIUpdater.telechargingstate=0;
 
 
-            Log.d("sdafgd","CANCLINGCHARGING");
+            Log.d("sdafgd","CANCLINGCHARGING flague");
         };
         timeoutHandler.postDelayed(timeoutRunnable, 7000);
     }
@@ -426,7 +429,7 @@ public class chargingUI extends AppCompatActivity {
         super.onDestroy();
 
         //  Start EV lock sequence
-        EVLockService.getInstance().startLockSequence();
+        //EVLockService.getInstance().startLockSequence();
 
         //  Stop charging pulse animation safely
         stopBatteryPulseAnimation();
@@ -451,7 +454,7 @@ public class chargingUI extends AppCompatActivity {
             isReceiverRegistered = false;
         }
 
-        // 🔊 Release MediaPlayer
+        //  Release MediaPlayer
         if (mediaPlayer != null) {
             try {
                 if (mediaPlayer.isPlaying()) {
@@ -464,14 +467,13 @@ public class chargingUI extends AppCompatActivity {
         }
 
         //  Flag for LoginActivity
-        LoginActivity.ChargingUiClosedByUserFlag = true;
 
         //  Navigate to LoginActivity
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
+//        Intent intent = new Intent(this, LoginActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+//                | Intent.FLAG_ACTIVITY_CLEAR_TOP
+//                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//        startActivity(intent);
     }
 
     @Override

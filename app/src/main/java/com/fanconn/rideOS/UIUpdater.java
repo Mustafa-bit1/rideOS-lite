@@ -278,11 +278,9 @@ public class UIUpdater  {
     public void updateHeartbeat1UI(Heartbeat1 hb1) {
 
         int currentSignal = hb1.getTurnSignal();
-//        Log.d("fcgvhbjnk","THIS IS INDICOTORSIGNAL FOR NOW "+currentSignal);
         if (currentSignal != lastTurnSignalState) {
             indicators(currentSignal);  // only call if changed
             lastTurnSignalState = currentSignal; // update tracker
-
         }
         if(hb1.getHeadlights() == 1)
         {
@@ -460,7 +458,7 @@ public class UIUpdater  {
     private double RANGE_km_PER_SOC =1.7;//This value in refrence to km per AH is RANGE_km_PER_SOC=km_per_AH/1.6666666
     private float lastKnownBattery = 0;
     private boolean isBatteryIntroRunning = false;
-
+    private boolean canDataInitialized = false;
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
         float batteryLevel= hb3.getBatteryLevel();
@@ -626,7 +624,10 @@ public class UIUpdater  {
 //            InactivityManager.getInstance().stopTimer();
 //            showCustomPopup("Alert","Your Battery is Low, Switch to APU for Extra Range");
 //        }
-        if(!atSOC7Lowbatflag && (batteryLevel==0) && !apuflag  && tm.getTeleChargingState()==0){
+        if (batteryLevel > 0) {
+            canDataInitialized = true;
+        }
+        if(canDataInitialized && !atSOC7Lowbatflag && (batteryLevel==0) && !apuflag  && tm.getTeleChargingState()==0){
             atSOC7Lowbatflag=true;
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
@@ -638,7 +639,7 @@ public class UIUpdater  {
             StopInactivtyTimerDuringPopUp=false;
           //  Log.d("SOCWHATACTOION","ENTER 5 AND DO 0000AMPS");
 
-            showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
+            showCustomPopupatSOC7("Alert","Battery toodddd low, deep discharge may damage your scooter battery, Please charge your scooter");
         }
         //BatPackSwitcher.startSwitchingToAPU();
 //
@@ -1881,15 +1882,16 @@ public class UIUpdater  {
 
     private final Handler blinkHandler = new Handler(Looper.getMainLooper());
     private final Handler stopDelayHandler = new Handler(Looper.getMainLooper());
-    private final Handler soundHandler = new Handler(Looper.getMainLooper());
+//    private final Handler soundHandler = new Handler(Looper.getMainLooper());
 
     private final int BLINK_INTERVAL_MS = 400;
-    private final int SOUND_INTERVAL_MS = 1000;
+//    private final int SOUND_INTERVAL_MS = 1000;
     private final int ZERO_HOLD_DURATION_MS = 2500;
 
     private Runnable blinkRunnable;
     private Runnable stopBlinkingRunnable;
-    private Runnable soundRunnable;
+//    private Runnable soundRunnable;
+private int streamId = 0;
     private SoundPool soundPool;
     private int soundId;
     private boolean soundLoaded = false;
@@ -1931,14 +1933,14 @@ public class UIUpdater  {
             // Log.d("Indicator", "⛔ Stopped due to sustained 0");
         };
 
-        soundRunnable = () -> {
-            if (isBlinking && soundLoaded && directionalGears != 2  && !ignorefirstblink) {
-                soundPool.play(soundId, 1, 1, 0, 0, 1);
-                soundHandler.postDelayed(soundRunnable, SOUND_INTERVAL_MS);
-            } else {
-                isSoundPlaying = false; // Stop loop if in reverse
-            }
-        };
+//        soundRunnable = () -> {
+//            if (isBlinking && soundLoaded && directionalGears != 2  && !ignorefirstblink) {
+//                soundPool.play(soundId, 1, 1, 0, 0, 1);
+//                soundHandler.postDelayed(soundRunnable, SOUND_INTERVAL_MS);
+//            } else {
+//                isSoundPlaying = false; // Stop loop if in reverse
+//            }
+//        };
     }
 
     public void indicators(int newSignal) {
@@ -1957,6 +1959,7 @@ public class UIUpdater  {
         }
 
         stopDelayHandler.removeCallbacks(stopBlinkingRunnable);
+        Log.d("fcgvhbjnk","THIS IS INDICOTORSIGNAL FOR NOW 3-----"+newSignal);
 
         currentState = newSignal;
         lastActiveState = newSignal;
@@ -1987,10 +1990,9 @@ public class UIUpdater  {
 
         blinkHandler.postDelayed(blinkRunnable, BLINK_INTERVAL_MS);
 
-        // ✅ Only start sound if not in reverse and not already playing
-        if (directionalGears != 2 && !isSoundPlaying && soundLoaded) {
+        if (directionalGears != 2 && !isSoundPlaying && soundLoaded && !ignorefirstblink) {
             isSoundPlaying = true;
-            soundHandler.post(soundRunnable);
+            streamId = soundPool.play(soundId, 1, 1, 1, -1, 1);
         }
     }
 
@@ -2000,7 +2002,10 @@ public class UIUpdater  {
         isSoundPlaying = false;
 
         blinkHandler.removeCallbacks(blinkRunnable);
-        soundHandler.removeCallbacks(soundRunnable);
+        if (streamId != 0) {
+            soundPool.stop(streamId);
+            streamId = 0;
+        }
         stopDelayHandler.removeCallbacks(stopBlinkingRunnable);
 
         binding.leftOn.setVisibility(View.INVISIBLE);
@@ -2162,7 +2167,7 @@ public class UIUpdater  {
                 e.printStackTrace();
             }
             boolean shouldPlayReadySound =
-                    directionalGears == 1 && speed == 0;
+                    directionalGears == 1 && speed == 0 && !isStand ;
 
             if (shouldPlayReadySound) {
                 if (!startReasySound) {
@@ -2416,7 +2421,7 @@ public class UIUpdater  {
         tm.setTeleCurrentConsumption(current);
 
         currentComsForSpeed=(int)current;
-        if(current <= 0.4){
+        if(current <= 1){
             binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
             binding.CurrentConsumptionValue.setText(current + "A");
             updateRegenAnimation(0);   // reset animation
@@ -2914,7 +2919,7 @@ public class UIUpdater  {
         warningHandler.removeCallbacksAndMessages(null);
         blinkHandler.removeCallbacksAndMessages(null);
         stopDelayHandler.removeCallbacksAndMessages(null);
-        soundHandler.removeCallbacksAndMessages(null);
+//        soundHandler.removeCallbacksAndMessages(null);
         reverseBeepHandler.removeCallbacksAndMessages(null);
 
         stopBeeping();
