@@ -32,7 +32,7 @@ public class chargingUI extends AppCompatActivity {
     private ActivityChargingUiBinding binding;
     private boolean isReceiverRegistered = false;
     private SerialPortManager serialPortManager;
-
+    public static chargingUI instance;
     private Handler timeoutHandler = new Handler(Looper.getMainLooper());
     private Runnable timeoutRunnable;
 
@@ -87,7 +87,7 @@ public class chargingUI extends AppCompatActivity {
         //Log.d("sdsfg","CHARGINGUI CLASS OPENED");
         binding = ActivityChargingUiBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        instance = this;
         serialPortManager = serialApplication.getSerialPortManager();
 
         // Full screen immersive mode
@@ -439,7 +439,7 @@ public class chargingUI extends AppCompatActivity {
             mHandlerTime.removeCallbacks(mRunnableTime);
             mRunnableTime = null;
         }
-
+        instance = null;
         //  Stop timeout & SOC update handlers
         timeoutHandler.removeCallbacksAndMessages(null);
         socUpdateHandler.removeCallbacksAndMessages(null);

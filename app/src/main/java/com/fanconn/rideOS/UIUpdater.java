@@ -67,6 +67,7 @@ public class UIUpdater  {
     private BroadcastReceiver tpmsReceiver;
     AhTrackerManager ahTrackerManager;
 
+
     public UIUpdater(ActivityMainBinding binding, Context ctx) {
         this.binding = binding;
 

@@ -119,38 +119,75 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                 }
                 break;
 
-            case 4://from charging to locking
-               // Log.d("InactivityTimeout", "SSSSSSSSSSSSSSSSSSSS: Starting lock and screen-off sequence.");
-               // Log.d("MainActivity", "Case......4");
-                // Start EV lock
+//            case 4://from charging to locking
+//               // Log.d("InactivityTimeout", "SSSSSSSSSSSSSSSSSSSS: Starting lock and screen-off sequence.");
+//               // Log.d("MainActivity", "Case......4");
+//                // Start EV lock
+//                EVLockService.getInstance().startLockSequence();
+//
+////                Context context3 = MainActivity.instance;
+////                if (context3 != null) {
+////                    Intent intent = new Intent(context, LoginActivity.class);
+////                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+////// ⚠️ DO NOT use CLEAR_TOP here, or ChargingUI might be cleared
+////                    context.startActivity(intent);
+////                }
+//
+//                //below is b47/7
+////                if (MainActivity.instance != null) {
+////                    MainActivity.instance.finish();
+////                }
+//                //-----------------
+//                // Delay screen off slightly to allow lock to complete
+//                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//                    try {
+//                        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+//                        Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
+//
+//                      //  Log.d("PowerAction", "Calling goToSleep()");
+//                        goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
+//                       // Log.d("PowerAction", "goToSleep() invoked.");
+//                    } catch (Exception e) {
+//                       // Log.e("PowerAction", "Failed to initiate goToSleep:", e);
+//                    }
+//                }, 1000); // Wait 1 seconds after lock before sleeping
+//                break;
+
+            case 4:
                 EVLockService.getInstance().startLockSequence();
 
-//                Context context3 = MainActivity.instance;
-//                if (context3 != null) {
-//                    Intent intent = new Intent(context, LoginActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//// ⚠️ DO NOT use CLEAR_TOP here, or ChargingUI might be cleared
-//                    context.startActivity(intent);
-//                }
-
-                //below is b47/7
-//                if (MainActivity.instance != null) {
-//                    MainActivity.instance.finish();
-//                }
-                //-----------------
-                // Delay screen off slightly to allow lock to complete
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                    try {
-                        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                        Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
 
-                      //  Log.d("PowerAction", "Calling goToSleep()");
-                        goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-                       // Log.d("PowerAction", "goToSleep() invoked.");
-                    } catch (Exception e) {
-                       // Log.e("PowerAction", "Failed to initiate goToSleep:", e);
+                    // ✅ Finish ChargingUI
+                    if (chargingUI.instance != null) {
+                        chargingUI.instance.finish();
                     }
-                }, 1000); // Wait 1 seconds after lock before sleeping
+
+                    // ✅ Launch LoginActivity FIRST
+                    Context ctx = MainActivity.instance;
+                    if (ctx != null) {
+                        Intent intent = new Intent(ctx, LoginActivity.class);
+                        intent.setFlags(
+                                Intent.FLAG_ACTIVITY_NEW_TASK |
+                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                        );
+                        ctx.startActivity(intent);
+                    }
+
+                    // ✅ THEN turn screen OFF (after small delay)
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                        try {
+                            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                            Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
+                            goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }, 300); // small delay so activity settles
+
+                }, 2000);
+
                 break;
 
             case 5:
