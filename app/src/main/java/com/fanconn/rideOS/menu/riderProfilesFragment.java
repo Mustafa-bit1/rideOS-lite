@@ -247,7 +247,7 @@ public class riderProfilesFragment extends Fragment {
         }).start();
         // ----- SEEKBARS -----
         seekBarMaxSpeed.setMax(80);
-        seekBarMaxSpeed.setProgress(40);
+        seekBarMaxSpeed.setProgress(80);
         maxSpeedValue = 20 + seekBarMaxSpeed.getProgress();
         tvMaxspeedValue.setText(maxSpeedValue + " Kmph");
 
@@ -655,10 +655,11 @@ public class riderProfilesFragment extends Fragment {
         etUsername.setText("");
         etPhone.setText("");
         etAge.setText("");
-        seekBarMaxSpeed.setProgress(40);
-        seekBarTorque.setProgress(1);
-        selectedTorqueLevel = "Easy";
-        tvTorqueLevel.setText("Easy");
+        seekBarMaxSpeed.setProgress(80);
+        tvMaxspeedValue.setText("100 Kmph");
+        seekBarTorque.setProgress(4);    // Insane
+        selectedTorqueLevel = "Insane";
+        tvTorqueLevel.setText("Insane");
         etPin.setText("");
         etPinConfirm.setText("");
         resetPatterns();
@@ -1184,8 +1185,8 @@ public class riderProfilesFragment extends Fragment {
         etAge.setText("");
 
         // Advanced
-        seekBarMaxSpeed.setProgress(40);
-        tvMaxspeedValue.setText((20 + 40) + " Kmph");
+        seekBarMaxSpeed.setProgress(80);
+        tvMaxspeedValue.setText((60 + 40) + " Kmph");
         seekBarTorque.setProgress(1);
         selectedTorqueLevel = "Easy";
         tvTorqueLevel.setText("Easy");

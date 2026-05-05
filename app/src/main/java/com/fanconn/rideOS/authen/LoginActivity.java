@@ -881,7 +881,7 @@ public class LoginActivity extends AppCompatActivity{
             }//END OF SAME USER
 
 //            String maxTorque = prefs.getString("user_" + username + "_torque", "Rush");
-            String maxTorque = userPrefs.getString("user_" + username + "_torque", "Easy");
+            String maxTorque = userPrefs.getString("user_" + username + "_torque", "Insane");
 
            //Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
             int lineCurrent;
