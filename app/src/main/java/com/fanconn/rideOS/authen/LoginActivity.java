@@ -618,12 +618,16 @@ public class LoginActivity extends AppCompatActivity{
     }
     private void onLoginDoubleTap() {
         try {
+            Log.d("TAG", "Doubletappednow");
+
             LoginActivity.markScreenJustOff();
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
             Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
             goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
 //      InactivityManager.getInstance().startTimer(2);
         } catch (Exception e) {
+            Log.d("TAG", "Doubletappednow NOTR");
+
             e.printStackTrace();
         }
     }

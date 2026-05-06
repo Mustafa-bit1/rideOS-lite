@@ -53,6 +53,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 public class UIUpdater  {
 
     private final ActivityMainBinding binding;
+    private View recoDot1, recoDot2, recoDot3;
+
     private final Handler handlerTurnSignal;
     private final Context context;
     MainActivity mainActivity;
@@ -156,7 +158,7 @@ public class UIUpdater  {
         runOnUiThreadSafe(() -> {
             setRecoKmText(finalKm);
             binding.recoLabelText.setText(finalLabel);
-            updateRecoDotImage();
+            updateRecoDots();
         });
     }
     public void resetAllRecoEngineParameters() {
@@ -235,15 +237,26 @@ public class UIUpdater  {
         binding.recoKmText.setText(spannable);
     }
 
-    private void updateRecoDotImage() {
-        if (recoMode == 0) {
-            binding.recoDotIV.setImageResource(R.drawable.recodot_trip);
-        }
-        else if (recoMode == 1) {
-            binding.recoDotIV.setImageResource(R.drawable.recodot_total);
-        }
-        else {
-            binding.recoDotIV.setImageResource(R.drawable.recodot_last);
+    private void updateRecoDots() {
+
+        // Reset all dots
+        binding.recoDot1.setBackgroundResource(R.drawable.dot_unselected);
+        binding.recoDot2.setBackgroundResource(R.drawable.dot_unselected);
+        binding.recoDot3.setBackgroundResource(R.drawable.dot_unselected);
+
+        // Activate current
+        switch (recoMode) {
+            case 0:
+                binding.recoDot1.setBackgroundResource(R.drawable.dot_selected);
+                break;
+
+            case 1:
+                binding.recoDot2.setBackgroundResource(R.drawable.dot_selected);
+                break;
+
+            case 2:
+                binding.recoDot3.setBackgroundResource(R.drawable.dot_selected);
+                break;
         }
     }
 
@@ -910,9 +923,9 @@ public class UIUpdater  {
                 continue;
             }
 
-            if (temp >= 60 && temp < 66)anyIs45 = true;
-            if (temp >= 66) anyIs50OrAbove = true;
-            if (temp >= 60) allBelow45 = false;
+            if (temp >= 80 && temp < 86)anyIs45 = true;
+            if (temp >= 86) anyIs50OrAbove = true;
+            if (temp >= 80) allBelow45 = false;
         }
 
         //  Reset 45-warning ONLY when all temps are below 45

@@ -674,7 +674,6 @@
             android:textColor="#868686"
             android:textSize="24dp"
             android:visibility="gone"
-
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -700,6 +699,7 @@
             android:background="@android:color/transparent"
             android:onClick="navLeft"
             android:visibility="gone"
+
             android:src="@drawable/navleft"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -714,7 +714,6 @@
             android:onClick="navRight"
             android:src="@drawable/navright"
             android:visibility="gone"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -732,9 +731,101 @@
             android:onClick="Trip_Reset"
             android:scaleType="fitXY"
             android:visibility="gone"
+
             android:src="@drawable/tripresetbtn"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
+
+<!--        =================================================-->
+
+        <LinearLayout
+            android:id="@+id/statsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="95dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- LEFT BUTTON -->
+            <ImageButton
+                android:id="@+id/statsNavLeft"
+                android:layout_width="50dp"
+                android:layout_height="150dp"
+                android:background="@android:color/transparent"
+                android:onClick="statsNavLeft"
+                android:src="@drawable/navleft" />
+
+            <!-- TEXT -->
+
+            <!-- RIGHT BUTTON -->
+            <TextView
+                android:id="@+id/statsTextView"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/kanit"
+                android:text="statistics"
+                android:textAlignment="center"
+                android:textColor="#868686"
+                android:textSize="22sp" />
+
+            <ImageButton
+                android:id="@+id/statsNavRight"
+                android:layout_width="50dp"
+                android:layout_height="150dp"
+                android:background="@android:color/transparent"
+                android:onClick="statsNavRight"
+                android:src="@drawable/navright" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/statsDotsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="264dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.082"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <View
+                android:id="@+id/dot1"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/dot_selected" />
+
+            <View
+                android:id="@+id/dot2"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/dot_unselected" />
+
+            <View
+                android:id="@+id/dot3"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/dot_unselected" />
+
+            <View
+                android:id="@+id/dot4"
+                android:layout_width="7dp"
+                android:layout_height="7dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/dot_unselected" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/CurrentConsumptionValue"
@@ -817,17 +908,39 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/recoKmText" />
 
-            <ImageView
-                android:id="@+id/recoDotIV"
-                android:layout_width="30dp"
-                android:layout_height="15dp"
+            <LinearLayout
+                android:id="@+id/recoDotsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/recodot1"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/recoLabelText"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recoLabelText" />
+                app:layout_constraintEnd_toEndOf="parent">
 
+                <View
+                    android:id="@+id/recoDot1"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_selected" />
+
+                <View
+                    android:id="@+id/recoDot2"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_unselected" />
+
+                <View
+                    android:id="@+id/recoDot3"
+                    android:layout_width="7dp"
+                    android:layout_height="7dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/dot_unselected" />
+
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

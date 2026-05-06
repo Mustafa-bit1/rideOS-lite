@@ -47,6 +47,7 @@ import android.telephony.SubscriptionManager;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.MetricAffectingSpan;
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     public static char currentgear;
     private VelocityTracker velocityTracker;
     private SpeedArcView speedArc;
+    private View dot1, dot2, dot3, dot4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -245,6 +247,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         TemperatureLogger.logImportantThermals();
 
         setFullScreen();
+        statsTextView = findViewById(R.id.statsTextView);
+        dot1 = findViewById(R.id.dot1);
+        dot2 = findViewById(R.id.dot2);
+        dot3 = findViewById(R.id.dot3);
+        dot4 = findViewById(R.id.dot4);
 //        inactivityManager = new InactivityManager(this);
 //        inactivityManager.stopTimer();
         // 初始化class
@@ -902,6 +909,184 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
     }
 
+    //petrol meter
+    private TextView statsTextView;
+    private int statsIndex = 0; // 0 to 3
+
+    public void statsNavLeft(View view) {
+        statsIndex--;
+        if (statsIndex < 0) statsIndex = 3;
+        updateStatsDisplay();
+        updateStatsDots();
+    }
+
+    public void statsNavRight(View view) {
+        statsIndex++;
+        if (statsIndex > 3) statsIndex = 0;
+        updateStatsDisplay();
+        updateStatsDots();
+    }
+    private void updateStatsDisplay() {
+
+        if (uiUpdater == null || uiUpdater.tripManager == null) return;
+
+        double odo = uiUpdater.tripManager.getOdoDistance();
+        double regenKm = UIUpdater.getInstance().getTotalRecoKm();
+        double trip = uiUpdater.tripManager.getTripDistance();
+
+        switch (statsIndex) {
+
+            case 3:
+
+                String odoValue = String.format("%.2f", odo);
+                String tripValue = String.format("%.2f", trip);
+
+                SpannableStringBuilder builder = new SpannableStringBuilder();
+
+                // ---- ODO LINE ----
+                String odoLabel = "Odo\n";
+                String odoUnit = " km\n";
+
+                int start = 0;
+                builder.append(odoLabel).append(odoValue).append(odoUnit);
+
+                // Label small
+                builder.setSpan(
+                        new android.text.style.RelativeSizeSpan(1.0f),
+                        start,
+                        start + odoLabel.length(),
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                // Value big
+                builder.setSpan(
+                        new android.text.style.RelativeSizeSpan(1.5f),
+                        start + odoLabel.length(),
+                        start + odoLabel.length() + odoValue.length(),
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                // Unit small
+                builder.setSpan(
+                        new android.text.style.RelativeSizeSpan(1.0f),
+                        start + odoLabel.length() + odoValue.length(),
+                        builder.length(),
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                // ---- TRIP LINE ----
+                start = builder.length();
+
+                String tripLabel = "Trip\n";
+                String tripUnit = " km";
+
+                builder.append(tripLabel).append(tripValue).append(tripUnit);
+
+                // Label small
+                builder.setSpan(
+                        new android.text.style.RelativeSizeSpan(1.0f),
+                        start,
+                        start + tripLabel.length(),
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                // Value big
+                builder.setSpan(
+                        new android.text.style.RelativeSizeSpan(1.5f),
+                        start + tripLabel.length(),
+                        start + tripLabel.length() + tripValue.length(),
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                // Unit small
+                builder.setSpan(
+                        new android.text.style.RelativeSizeSpan(1.f),
+                        start + tripLabel.length() + tripValue.length(),
+                        builder.length(),
+                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                statsTextView.setText(builder);
+                return;
+            // 🔹 PETROL SAVED
+            case 0:
+                double litres = PetrolCostManager.getPetrolSavedLitres(odo);
+                statsTextView.setText(
+                        formatStat("Petrol saved", String.format("%.2f", litres), "Litres")
+                );
+                break;
+
+            // 🔹 CHARGING COST
+            case 1:
+                double cost = PetrolCostManager.getChargingCost(odo, regenKm);
+                statsTextView.setText(
+                        formatStat("nx100 charging cost", String.format("₹ %.2f", cost), "")
+                );
+                break;
+
+            // 🔹 MONEY SAVED
+            case 2:
+                double saved = PetrolCostManager.getMoneySaved(odo, regenKm);
+                statsTextView.setText(
+                        formatStat("You saved", String.format("₹ %.2f", saved), "")
+                );
+                break;
+        }
+    }
+    private void updateStatsDots() {
+
+        dot1.setBackgroundResource(R.drawable.dot_unselected);
+        dot2.setBackgroundResource(R.drawable.dot_unselected);
+        dot3.setBackgroundResource(R.drawable.dot_unselected);
+        dot4.setBackgroundResource(R.drawable.dot_unselected);
+
+        switch (statsIndex) {
+            case 0: dot1.setBackgroundResource(R.drawable.dot_selected); break;
+            case 1: dot2.setBackgroundResource(R.drawable.dot_selected); break;
+            case 2: dot3.setBackgroundResource(R.drawable.dot_selected); break;
+            case 3: dot4.setBackgroundResource(R.drawable.dot_selected); break;
+        }
+    }
+
+    public void refreshStats() {
+        runOnUiThread(this::updateStatsDisplay);
+    }
+    private SpannableString formatStat(String label, String value, String unit) {
+
+        String fullText = label + "\n" + value + " " + unit;
+
+        SpannableString spannable = new SpannableString(fullText);
+
+        // Make VALUE big
+        int valueStart = label.length() + 1;
+        int valueEnd = valueStart + value.length();
+
+        spannable.setSpan(
+                new android.text.style.RelativeSizeSpan(1.5f), // BIG
+                valueStart,
+                valueEnd,
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        // Make LABEL small
+        spannable.setSpan(
+                new android.text.style.RelativeSizeSpan(1.0f),
+                0,
+                label.length(),
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        // Make UNIT small
+        int unitStart = valueEnd + 1;
+        spannable.setSpan(
+                new android.text.style.RelativeSizeSpan(0.8f),
+                unitStart,
+                fullText.length(),
+                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        return spannable;
+    }
 ///reco logic
 public void recoNavLeft(View view) {
     UIUpdater.getInstance().toggleRecoMode();
@@ -1726,7 +1911,7 @@ public void runPostLoginInit() {
 
         //  Start unlock (no change)
         EVLockService.getInstance().startUnlockSequence();
-
+        refreshStats();
         //  Slight delay for UI stability (IMPORTANT)
         binding.getRoot().post(() -> {
 
