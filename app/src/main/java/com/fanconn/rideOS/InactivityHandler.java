@@ -47,7 +47,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 //                    serialPortManager.getHb3().sethandleLockresponse(1);
                 int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
                 if(rpm==0 && UIUpdater.directionalGears==0){
-                    Log.d("sdafgf","ELSEOF TOUCHTIMER IFTIMER");
+                   // Log.d("sdafgf","ELSEOF TOUCHTIMER IFTIMER");
                     EVLockService.getInstance().startLockSequence();    // Start lock
                     Context context2 = MainActivity.instance;
                     if (context2 != null) {

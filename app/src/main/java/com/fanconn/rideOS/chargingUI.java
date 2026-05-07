@@ -196,7 +196,7 @@ public class chargingUI extends AppCompatActivity {
 
                     Heartbeat3 hb3 = serialPortManager.getHb3();
                     float chargingbit = hb3.getChargingbit();
-
+Log.d("asf","HARHINGCURRETVALYE----"+chargingbit);
                     BATTERY_CAPACITY_AH = getBatteryCapacity();
 
                     float socRange = ((actualSOC / 100f) * BATTERY_CAPACITY_AH) * KM_PER_AH;

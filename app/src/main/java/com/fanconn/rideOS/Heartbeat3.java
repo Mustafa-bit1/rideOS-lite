@@ -1,5 +1,7 @@
 package com.fanconn.rideOS;
 
+import android.util.Log;
+
 /**
  * 心跳包3数据模型
  */
@@ -141,14 +143,69 @@ public class Heartbeat3 {
         this.APUbatteryLevel = apubatterylevel;
     }
 
+
+    private float pendingChargingValue = -999f;
+    private long pendingChargingSince = 0;
+
+    private static final long CHARGING_STABLE_TIME_MS = 3000;
+
     public float getChargingbit() {
         return chargingbit;
     }
 
-    public void setChargingbit(float chargingbit) {
-        this.chargingbit = chargingbit;
-    }
+    public void setChargingbit(float newValue) {
 
+        long now = System.currentTimeMillis();
+//
+//        Log.d("CHARGE_FILTER",
+//                "RAW=" + newValue +
+//                        " CURRENT=" + chargingbit +
+//                        " PENDING=" + pendingChargingValue);
+
+        // First initialization
+        if (pendingChargingValue == -999f) {
+
+            pendingChargingValue = newValue;
+            pendingChargingSince = now;
+            chargingbit = newValue;
+
+//            Log.d("CHARGE_FILTER", "FIRST ACCEPTED=" + chargingbit);
+            return;
+        }
+
+        // VERY SMALL tolerance only
+        boolean sameValue = Math.abs(newValue - pendingChargingValue) < 0.5f;
+
+        if (sameValue) {
+
+            long stableTime = now - pendingChargingSince;
+
+//            Log.d("CHARGE_FILTER",
+//                    "STABLE value=" + newValue +
+//                            " stableFor=" + stableTime);
+
+            // Accept after stable duration
+            if (stableTime >= CHARGING_STABLE_TIME_MS) {
+
+                if (chargingbit != pendingChargingValue) {
+
+                    chargingbit = pendingChargingValue;
+
+                    Log.d("CHARGE_FILTER",
+                            "FINAL ACCEPTED=" + chargingbit);
+                }
+            }
+
+        } else {
+
+//            // New value detected
+//            Log.d("CHARGE_FILTER",
+//                    "NEW PENDING=" + newValue);
+
+            pendingChargingValue = newValue;
+            pendingChargingSince = now;
+        }
+    }
     public String getChargingErrorbit() {
         return chargingErrorbitHex;
     }
