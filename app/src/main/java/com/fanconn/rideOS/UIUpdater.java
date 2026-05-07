@@ -3068,12 +3068,12 @@ private int streamId = 0;
                 if (frontWarning || rearWarning) {
 //                    binding.tpmsicon.setVisibility(View.VISIBLE);
                     binding.tpmsicon.setImageResource(R.drawable.tpmsicon);
-                    binding.lowTireWarning.setVisibility(View.VISIBLE);
+//                    binding.lowTireWarning.setVisibility(View.VISIBLE);
                     Play_tpmsSound_on_loggin=true;
                 } else {
 //                    binding.tpmsicon.setVisibility(View.GONE);
                     binding.tpmsicon.setImageResource(R.drawable.tpmsicon_greyout);
-                    binding.lowTireWarning.setVisibility(View.INVISIBLE);
+//                    binding.lowTireWarning.setVisibility(View.INVISIBLE);
                     Play_tpmsSound_on_loggin=false;
                 }
             }

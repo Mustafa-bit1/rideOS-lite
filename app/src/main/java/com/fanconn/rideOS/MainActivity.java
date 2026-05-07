@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private ApiService apiService;
     final private String VINNUMBER = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
     static EVWebSocketClient evClient;
-    ImageButton mapbtn,menubtn,lowtire_preesure_button;
+    ImageButton mapbtn,menubtn;//,lowtire_pressure_button;
     TripDistanceManager tripManager;
     GestureDetector gestureDetector;
     private Handler delayedUnlockHandler  = new Handler(Looper.getMainLooper());
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     public static char currentgear;
     private VelocityTracker velocityTracker;
     private SpeedArcView speedArc;
-    private View dot1, dot2, dot3, dot4;
+    private View dot1, dot2;//, dot3, dot4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,11 +247,14 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         TemperatureLogger.logImportantThermals();
 
         setFullScreen();
-        statsTextView = findViewById(R.id.statsTextView);
         dot1 = findViewById(R.id.dot1);
         dot2 = findViewById(R.id.dot2);
-        dot3 = findViewById(R.id.dot3);
-        dot4 = findViewById(R.id.dot4);
+//        dot3 = findViewById(R.id.dot3);
+//        dot4 = findViewById(R.id.dot4);
+
+        statsValueText = findViewById(R.id.statsValueText);
+        statsLabelText = findViewById(R.id.statsLabelText);
+        statsIcon = findViewById(R.id.statsIcon);
 //        inactivityManager = new InactivityManager(this);
 //        inactivityManager.stopTimer();
         // 初始化class
@@ -332,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         //This is what start sending telemetry data
 //        if(!MetadataManager.get().getVin().startsWith("UNKNOWN_VIN"))
 //        {
-//            Log.d("MainActivity", "🚀 Starting Telemetry for VIN: " + VINNUMBER);
+//            Log.d("MainActivity", " Starting Telemetry for VIN: " + VINNUMBER);
 //            Intent intent = new Intent(this, TelemetryService.class);
 //            intent.putExtra("VIN_NUMBER", VINNUMBER);
 //            startService(intent);
@@ -349,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         mapbtn  = findViewById(R.id.mapbtn);
         menubtn = findViewById(R.id.menubtn);
-        lowtire_preesure_button= findViewById(R.id.low_tire_warning);
+//        lowtire_pressure_button= findViewById(R.id.low_tire_warning);
         mapbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -380,28 +383,28 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         });
 
-        lowtire_preesure_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, TPMS_activity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            }
-        });
+//        lowtire_pressure_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(MainActivity.this, TPMS_activity.class);
+//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                startActivity(intent);
+//            }
+//        });
         gestureDetector = new GestureDetector(this, new GestureListener());
 
-        // 1️⃣ Create QuickSettingsView
+        // 1️ Create QuickSettingsView
         qsView = new QuickSettingsView(this);
 
-        // 2️⃣ HIDE IT IMMEDIATELY (IMPORTANT)
+        // 2️ HIDE IT IMMEDIATELY (IMPORTANT)
         qsView.setTranslationY(-10000f);   // push off-screen BEFORE draw
 
-        // 3️⃣ Add to root layout
+        // 3️ Add to root layout
         FrameLayout root = findViewById(R.id.root);
         root.addView(qsView);
         qsView.bringToFront();
 
-        // 4️⃣ After layout, set correct hidden position
+        // 4️ After layout, set correct hidden position
         qsView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -912,17 +915,19 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     //petrol meter
     private TextView statsTextView;
     private int statsIndex = 0; // 0 to 3
-
+    private TextView statsValueText;
+    private TextView statsLabelText;
+    private ImageView statsIcon;
     public void statsNavLeft(View view) {
         statsIndex--;
-        if (statsIndex < 0) statsIndex = 3;
+        if (statsIndex < 0) statsIndex = 1;
         updateStatsDisplay();
         updateStatsDots();
     }
 
     public void statsNavRight(View view) {
         statsIndex++;
-        if (statsIndex > 3) statsIndex = 0;
+        if (statsIndex > 1) statsIndex = 0;
         updateStatsDisplay();
         updateStatsDots();
     }
@@ -932,104 +937,71 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         double odo = uiUpdater.tripManager.getOdoDistance();
         double regenKm = UIUpdater.getInstance().getTotalRecoKm();
-        double trip = uiUpdater.tripManager.getTripDistance();
 
         switch (statsIndex) {
 
-            case 3:
-
-                String odoValue = String.format("%.2f", odo);
-                String tripValue = String.format("%.2f", trip);
-
-                SpannableStringBuilder builder = new SpannableStringBuilder();
-
-                // ---- ODO LINE ----
-                String odoLabel = "Odo\n";
-                String odoUnit = " km\n";
-
-                int start = 0;
-                builder.append(odoLabel).append(odoValue).append(odoUnit);
-
-                // Label small
-                builder.setSpan(
-                        new android.text.style.RelativeSizeSpan(1.0f),
-                        start,
-                        start + odoLabel.length(),
-                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                // Value big
-                builder.setSpan(
-                        new android.text.style.RelativeSizeSpan(1.5f),
-                        start + odoLabel.length(),
-                        start + odoLabel.length() + odoValue.length(),
-                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                // Unit small
-                builder.setSpan(
-                        new android.text.style.RelativeSizeSpan(1.0f),
-                        start + odoLabel.length() + odoValue.length(),
-                        builder.length(),
-                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                // ---- TRIP LINE ----
-                start = builder.length();
-
-                String tripLabel = "Trip\n";
-                String tripUnit = " km";
-
-                builder.append(tripLabel).append(tripValue).append(tripUnit);
-
-                // Label small
-                builder.setSpan(
-                        new android.text.style.RelativeSizeSpan(1.0f),
-                        start,
-                        start + tripLabel.length(),
-                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                // Value big
-                builder.setSpan(
-                        new android.text.style.RelativeSizeSpan(1.5f),
-                        start + tripLabel.length(),
-                        start + tripLabel.length() + tripValue.length(),
-                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                // Unit small
-                builder.setSpan(
-                        new android.text.style.RelativeSizeSpan(1.f),
-                        start + tripLabel.length() + tripValue.length(),
-                        builder.length(),
-                        android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                );
-
-                statsTextView.setText(builder);
-                return;
-            // 🔹 PETROL SAVED
-            case 0:
-                double litres = PetrolCostManager.getPetrolSavedLitres(odo);
-                statsTextView.setText(
-                        formatStat("Petrol saved", String.format("%.2f", litres), "Litres")
-                );
-                break;
-
-            // 🔹 CHARGING COST
+            // ================= ODO =================
             case 1:
-                double cost = PetrolCostManager.getChargingCost(odo, regenKm);
-                statsTextView.setText(
-                        formatStat("nx100 charging cost", String.format("₹ %.2f", cost), "")
+
+                statsIcon.setImageResource(R.drawable.odo_icon);
+
+                statsValueText.setText(
+                        String.format("%.2f km", odo)
                 );
+
+                statsLabelText.setText("Odo");
+
                 break;
 
-            // 🔹 MONEY SAVED
-            case 2:
-                double saved = PetrolCostManager.getMoneySaved(odo, regenKm);
-                statsTextView.setText(
-                        formatStat("You saved", String.format("₹ %.2f", saved), "")
+
+            // ================= PETROL SAVED =================
+//            case 1:
+//
+//                double litres =
+//                        PetrolCostManager.getPetrolSavedLitres(odo);
+//
+//                statsIcon.setImageResource(R.drawable.ic_money_saved);
+//
+//                statsValueText.setText(
+//                        String.format("%.2f L", litres)
+//                );
+//
+//                statsLabelText.setText("Petrol saved");
+//
+//                break;
+//
+//
+//            // ================= CHARGING COST =================
+//            case 2:
+//
+//                double cost =
+//                        PetrolCostManager.getChargingCost(odo, regenKm);
+//
+//                statsIcon.setImageResource(R.drawable.ic_money_saved);
+//
+//                statsValueText.setText(
+//                        String.format("₹ %.2f", cost)
+//                );
+//
+//                statsLabelText.setText("nx100 charging cost");
+//
+//                break;
+
+
+            // ================= MONEY SAVED =================
+            case 0:
+
+                double saved =
+                        PetrolCostManager.getMoneySaved(odo, regenKm);
+
+                statsIcon.setImageResource(R.drawable.ic_money_saved);
+
+                statsValueText.setText(
+                        String.format("₹%.2f", saved)
                 );
+
+                statsLabelText.setText("You saved");
+
                 break;
         }
     }
@@ -1037,56 +1009,21 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         dot1.setBackgroundResource(R.drawable.dot_unselected);
         dot2.setBackgroundResource(R.drawable.dot_unselected);
-        dot3.setBackgroundResource(R.drawable.dot_unselected);
-        dot4.setBackgroundResource(R.drawable.dot_unselected);
+//        dot3.setBackgroundResource(R.drawable.dot_unselected);
+//        dot4.setBackgroundResource(R.drawable.dot_unselected);
 
         switch (statsIndex) {
             case 0: dot1.setBackgroundResource(R.drawable.dot_selected); break;
             case 1: dot2.setBackgroundResource(R.drawable.dot_selected); break;
-            case 2: dot3.setBackgroundResource(R.drawable.dot_selected); break;
-            case 3: dot4.setBackgroundResource(R.drawable.dot_selected); break;
+//            case 2: dot3.setBackgroundResource(R.drawable.dot_selected); break;
+//            case 3: dot4.setBackgroundResource(R.drawable.dot_selected); break;
         }
     }
 
     public void refreshStats() {
         runOnUiThread(this::updateStatsDisplay);
     }
-    private SpannableString formatStat(String label, String value, String unit) {
 
-        String fullText = label + "\n" + value + " " + unit;
-
-        SpannableString spannable = new SpannableString(fullText);
-
-        // Make VALUE big
-        int valueStart = label.length() + 1;
-        int valueEnd = valueStart + value.length();
-
-        spannable.setSpan(
-                new android.text.style.RelativeSizeSpan(1.5f), // BIG
-                valueStart,
-                valueEnd,
-                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        );
-
-        // Make LABEL small
-        spannable.setSpan(
-                new android.text.style.RelativeSizeSpan(1.0f),
-                0,
-                label.length(),
-                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        );
-
-        // Make UNIT small
-        int unitStart = valueEnd + 1;
-        spannable.setSpan(
-                new android.text.style.RelativeSizeSpan(0.8f),
-                unitStart,
-                fullText.length(),
-                android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-        );
-
-        return spannable;
-    }
 ///reco logic
 public void recoNavLeft(View view) {
     UIUpdater.getInstance().toggleRecoMode();

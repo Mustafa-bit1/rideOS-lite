@@ -389,7 +389,7 @@ public class LoginActivity extends AppCompatActivity{
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
-        InactivityManager.getInstance().startTimer(3,10000);
+        InactivityManager.getInstance().startTimer(3,15000);
 
         etCredential = findViewById(R.id.etCredential);
         patternView = findViewById(R.id.patternView);
@@ -1172,6 +1172,9 @@ public class LoginActivity extends AppCompatActivity{
         super.onResume();
         MainActivity.MainisActive = false;
         MainActivity.isVisible = true;
+Log.d("asdfd","RESUME OF LOGIN ");
+
+//        TelemetryDataManager.getInstance().getTeleChargingState();
 
         if(UIUpdater.getInstance()!=null){
             UIUpdater.getInstance().ReadystopBeeping();
@@ -1219,7 +1222,7 @@ public class LoginActivity extends AppCompatActivity{
 //        mHandlerTime.postDelayed(mRunnableTime, 0);
         // Re-assign the callback and restart the timer when coming back to LoginActivity
 
-        InactivityManager.getInstance().startTimer(3,10000);
+        InactivityManager.getInstance().startTimer(3,15000);
         // Cancel any previous delayed task to avoid overlap
 
 
@@ -1242,7 +1245,7 @@ public class LoginActivity extends AppCompatActivity{
         };
 
         //this was bcz when user comes back from chargingUI on login then wait on login for 15 seconds then start again chargingUI
-        chargingUIFlagHandler.postDelayed(chargingUIFlagRunnable, 15000);
+        chargingUIFlagHandler.postDelayed(chargingUIFlagRunnable, 7000);
 
 //        delayedLockRunnable = () -> {
 //            Heartbeat1 hb1 = serialPortManager.getHb1();

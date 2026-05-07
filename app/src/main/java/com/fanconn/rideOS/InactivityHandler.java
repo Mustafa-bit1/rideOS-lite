@@ -158,33 +158,42 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
 
-                    // ✅ Finish ChargingUI
-                    if (chargingUI.instance != null) {
-                        chargingUI.instance.finish();
-                    }
+                    boolean isLoginActive = (LoginActivity.getInstance() != null);
 
-                    // ✅ Launch LoginActivity FIRST
-                    Context ctx = MainActivity.instance;
-                    if (ctx != null) {
-                        Intent intent = new Intent(ctx, LoginActivity.class);
-                        intent.setFlags(
-                                Intent.FLAG_ACTIVITY_NEW_TASK |
-                                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                                        Intent.FLAG_ACTIVITY_SINGLE_TOP
-                        );
-                        ctx.startActivity(intent);
-                    }
+                    if (!isLoginActive) {
+                        // ✅ Case A → Login NOT in stack
 
-                    // ✅ THEN turn screen OFF (after small delay)
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                        try {
-                            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                            Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
-                            goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                        // Close Charging UI
+                        if (chargingUI.instance != null) {
+                            chargingUI.instance.finish();
                         }
-                    }, 300); // small delay so activity settles
+
+                        // Launch Login
+                        Context ctx = MainActivity.instance;
+                        if (ctx != null) {
+                            Intent intent = new Intent(ctx, LoginActivity.class);
+                            intent.setFlags(
+                                    Intent.FLAG_ACTIVITY_NEW_TASK |
+                                            Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                            Intent.FLAG_ACTIVITY_SINGLE_TOP
+                            );
+                            ctx.startActivity(intent);
+                        }
+
+                        // Turn screen OFF (after delay)
+                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                            turnScreenOff(context);
+                        }, 300);
+
+                    } else {
+                        // ✅ Case B → Login already exists
+
+                        // ❌ DO NOT close charging UI
+                        // ❌ DO NOT launch login again
+
+                        // Just turn OFF screen
+                        turnScreenOff(context);
+                    }
 
                 }, 2000);
 
@@ -223,4 +232,14 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                 break;
         }
     }
+    private void turnScreenOff(Context context) {
+        try {
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
+            goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

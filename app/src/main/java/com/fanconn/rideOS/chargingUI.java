@@ -304,11 +304,11 @@ public class chargingUI extends AppCompatActivity {
         socUpdateHandler.post(socUpdateRunnable);
     }
     private int getChargingIcon(float chargingbit) {
-        if (chargingbit > 0 && chargingbit < 25) {
+        if (chargingbit > 0 && chargingbit < 11) {
             return R.drawable.normal_charging;
-        } else if (chargingbit >= 25 && chargingbit < 40) {
+        } else if (chargingbit >= 11 && chargingbit < 26) {
             return R.drawable.fast_charging;
-        } else if (chargingbit >= 40) {
+        } else if (chargingbit >= 26) {
             return R.drawable.flash_charging;
         } else {
             return 0; // no icon
@@ -391,7 +391,7 @@ public class chargingUI extends AppCompatActivity {
     }
     private void stopBatteryPulseAnimation() {
         if (pulseRunnable != null) {
-            pulseHandler.removeCallbacks(pulseRunnable); // ✅ instead of removeCallbacksAndMessages
+            pulseHandler.removeCallbacks(pulseRunnable);
             pulseRunnable = null;
         }
 
@@ -404,14 +404,17 @@ public class chargingUI extends AppCompatActivity {
         timeoutRunnable = () -> {
             //Log.d("chargingUI", "No FFAA770303001514028001 frame received in 3 seconds — finishing");
 //            InactivityManager.getInstance().stopTimer();
-            PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            if (powerManager != null && !powerManager.isInteractive()) {
-                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
-                        PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,
-                        "MyApp:WakeLockTag"
-                );
-                wakeLock.acquire(3000);
-            }
+
+            //To wake after chargingstop
+//            PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+//            if (powerManager != null && !powerManager.isInteractive()) {
+//                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
+//                        PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,
+//                        "MyApp:WakeLockTag"
+//                );
+//                wakeLock.acquire(3000);
+//            }
+            //=======================================
             TelemetryDataManager.getInstance().setTeleChargingState(0);
             LoginActivity.ChargingUiClosedByUserFlag = false;
             LoginActivity.isChargingUIActive= false;

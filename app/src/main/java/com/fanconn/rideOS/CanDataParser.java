@@ -23,7 +23,6 @@ public class CanDataParser {
     public static  void parseCanData1806E5F4(Heartbeat3 hb3, String canData) {
         hb3.setTotal_max_voltage_limit(FrameUtils.getByteSubstringAsInt(canData,0,1)/10f); //Total voltage high limit
         hb3.setAllowable_Charging_currentValue(FrameUtils.getByteSubstringAsInt(canData,2,3)/10f);//Allowable charging current value
-        Log.d("asdf","THISIS NEW CHARGING VALUES "+FrameUtils.getByteSubstringAsInt(canData,2,3)/10f);
     }
 
     public static  void parseCanData18904001(Heartbeat3 hb3, String canData) {
@@ -70,7 +69,7 @@ public class CanDataParser {
         {
             case "01":
                 hb3.setcell1TO3(FrameUtils.getByteSubstring(canData,1,7));
-             //   Log.d("CELLVOLATGE","kELL 1 to 3 --"+FrameUtils.getByteSubstring(canData,1,6));
+             //   Log.d("CELLVOLATGE","CELL 1 to 3 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "02":
                 hb3.setcell4TO6(FrameUtils.getByteSubstring(canData,1,7));
@@ -107,32 +106,23 @@ public class CanDataParser {
     }
 
     public static  void parseCanData160B8001(Heartbeat3 hb3, String canData) {
-
         hb3.setChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//charge AH
-        //Log.d("TROBLESHOOTINGCOLOUMB","SETTINGCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
-
     }
     public static  void parseCanData160D8001(Heartbeat3 hb3, String canData) {
-
         hb3.setDisChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//discharge AH
-        //Log.d("TROBLESHOOTINGCOLOUMB","SETTINGDISCHARGE "+FrameUtils.getByteSubstringAsInt(canData,2,3));
     }
-
     public static  void parseCanData18934002(Heartbeat3 hb3, String canData) {
         hb3.setApuChargeMosState(FrameUtils.getByteValue(canData,1));
         hb3.setApuDisChargeMosState(FrameUtils.getByteValue(canData,2));
         hb3.setAPUremainingAH(FrameUtils.getByteSubstringAsInt(canData,4,7));
     }
-
     public static  void parseCanData18964002(Heartbeat3 hb3, String canData) {
         //NTC VALUES
         hb3.setNTC5(FrameUtils.getByteValue(canData,1));
         hb3.setNTC6(FrameUtils.getByteValue(canData,2));
         hb3.setNTC7(FrameUtils.getByteValue(canData,3));
         hb3.setNTC8(FrameUtils.getByteValue(canData,4));
-
     }
-
     public static  void parseCanData18904002(Heartbeat3 hb3, String canData) {
         hb3.setAPUbatvoltage(FrameUtils.getByteSubstringAsInt(canData,0,1)); //voltage
         hb3.setAPURealCurrent(FrameUtils.getByteSubstringAsInt(canData,4,5));//Real Time Current
@@ -176,10 +166,11 @@ public class CanDataParser {
      * @param hb3 Heartbeat3 对象，用于存储解析后的数据
      * @param canData CAN 数据字符串
      */
+
     public static void parseCanData10FA07A8(Heartbeat3 hb3, String canData) {
         // 实现 10FA07A8 CAN 数据的解析逻辑
-        hb3.setBSG3_BYTE12(FrameUtils.getByteSubstringAsInt(canData,0,1));    // 提取心跳包 当前母线电压 值
-        hb3.setBSG3_BYTE34(FrameUtils.getByteSubstring(canData,3,2));    // 提取心跳包 当前母线电流 值
+        hb3.setBSG3_BYTE12(FrameUtils.getByteSubstringAsInt(canData,0,1));
+        hb3.setBSG3_BYTE34(FrameUtils.getByteSubstring(canData,3,2));
 //        Log.d("fdsadg","CANDATA HEX ----  "+FrameUtils.getByteSubstring(canData,3,2));
 
 
