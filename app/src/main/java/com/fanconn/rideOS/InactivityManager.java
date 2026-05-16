@@ -38,8 +38,8 @@ public class InactivityManager {
         int timeoutSec = prefs.getInt("inactivity_timeout_sec", 30); // default 20s
         timeoutMillis = timeoutSec * 1000L;
 
-//        Log.d("InactivityManager",
-//                "Loaded inactivity timeout = " + timeoutSec + " seconds");
+        Log.d("TOUCHTIMER",
+                "Loaded inactivity timeout = " + timeoutSec + " seconds");
     }
     public void setTimeoutSeconds(Context context, int timeoutSec) {
 
@@ -52,8 +52,8 @@ public class InactivityManager {
                 .putInt("inactivity_timeout_sec", timeoutSec)
                 .apply();
 
-//        Log.d("InactivityManager",
-//                "Timeout updated & saved = " + timeoutSec + " seconds");
+        Log.d("TOUCHTIMER",
+                "Timeout updated & saved = " + timeoutSec + " seconds");
 
         // Restart timer if active
         if (isRunning && currentCode != -1) {
@@ -70,7 +70,7 @@ public class InactivityManager {
         isRunning = true;
 
         timeoutRunnable = () -> {
-//           Log.d("InactivityManager", " Timeout TOUCHTIMER triggered for code: " + currentCode);
+           Log.d("TOUCHTIMER", " Timeout TOUCHTIMER triggered for code: " + currentCode);
             isRunning = false;
             if (callback != null) {
                 callback.onInactivityTimeout(currentCode);
@@ -90,7 +90,7 @@ public class InactivityManager {
         isRunning = true;
 
         timeoutRunnable = () -> {
-//            Log.d("InactivityManager", " Timeout TOUCHTIMER triggered for code: " + currentCode);
+            Log.d("TOUCHTIMER", " Timeout TOUCHTIMER triggered for code: " + currentCode);
             isRunning = false;
             if (callback != null) {
                 callback.onInactivityTimeout(currentCode);
@@ -108,15 +108,15 @@ public class InactivityManager {
         countdownRunnable = new Runnable() {
             @Override
             public void run() {
-//                Log.d("sdafd","TOUCHTIMER Entered startcountdown");
+                Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown");
                 if (!isRunning) return; // Stop if timer stopped
-//                Log.d("sdafd","TOUCHTIMER Entered startcountdown and not resturnd");
+                Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown and not resturnd");
 
-//                Log.d("InactivityCountdown", " " + secondsRemaining + "s TOUCHTIMER remaining");
+                Log.d("TOUCHTIMER", " " + secondsRemaining + "s TOUCHTIMER remaining");
                 secondsRemaining--;
 
                 if (secondsRemaining >= 0) {
-//                    Log.d("sdafd","TOUCHTIMER Entered startcountdown and Entered cundownhandler");
+                    Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown and Entered cundownhandler");
 
                     countdownHandler.postDelayed(this, 1000);
                 }
@@ -127,25 +127,25 @@ public class InactivityManager {
 
     public void resetTimer() {
         if (currentCode != -1) {
-//            Log.d("InactivityManager", " TOUCHTIMER Interaction detected — timer reset");
+            Log.d("TOUCHTIMER", " TOUCHTIMER Interaction detected — timer reset");
             startTimer(currentCode);
         }
         else{
-//            Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF RESTTIMER");
+            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF RESTTIMER");
         }
     }
     public void ShortresetTimer(int code) {
         if (code != -1) {
-//            Log.d("InactivityManager", " TOUCHTIMER Short timer reset");
+            Log.d("TOUCHTIMER", " TOUCHTIMER Short timer reset");
             startTimer(code,15000);
         }
         else{
-//            Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF SHort RESTTIMER");
+            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF SHort RESTTIMER");
         }
     }
 
     public void stopTimer() {
-//        Log.d("sadfgf","onUserInteraction() TOUCHTIMER NETER STOOPEDTIMER");
+        Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER NETER STOOPEDTIMER");
         isRunning = false;
         handler.removeCallbacksAndMessages(null);
         countdownHandler.removeCallbacksAndMessages(null);

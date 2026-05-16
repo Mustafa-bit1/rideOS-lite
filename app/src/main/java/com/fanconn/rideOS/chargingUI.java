@@ -181,6 +181,8 @@ public class chargingUI extends AppCompatActivity {
         socUpdateRunnable = new Runnable() {
             @Override
             public void run() {
+
+                long animationDelay;
                 float rawSOC = serialPortManager.getHb3().getNoLess10BMSBatteryLevel() / 10.0f;
                 actualSOC = serialPortManager.getHb3().getBatteryLevel();
 
@@ -196,7 +198,7 @@ public class chargingUI extends AppCompatActivity {
 
                     Heartbeat3 hb3 = serialPortManager.getHb3();
                     float chargingbit = hb3.getChargingbit();
-Log.d("asf","HARHINGCURRETVALYE----"+chargingbit);
+                    Log.d("asf","CHARHINGCURRENTVALYE----"+chargingbit);
                     BATTERY_CAPACITY_AH = getBatteryCapacity();
 
                     float socRange = ((actualSOC / 100f) * BATTERY_CAPACITY_AH) * KM_PER_AH;
@@ -254,9 +256,26 @@ Log.d("asf","HARHINGCURRETVALYE----"+chargingbit);
                             binding.chagingstartedicon.setImageResource(icon);
                         }
 
-                        if (!isChargingAnimationRunning) {
-                            isChargingAnimationRunning = true;
-                            startBatteryPulseAnimation();
+                        // ================= PULSE ONLY BELOW 94% =================
+                        if (actualSOC < 94f) {
+
+                            if (!isChargingAnimationRunning) {
+
+                                isChargingAnimationRunning = true;
+                                startBatteryPulseAnimation();
+                            }
+
+                        } else {
+
+                            // Stop pulse animation
+                            if (isChargingAnimationRunning) {
+
+                                stopBatteryPulseAnimation();
+                                isChargingAnimationRunning = false;
+                            }
+
+                            // Keep battery stable
+                            binding.chargingBatteryArc.setBatteryLevel(actualSOC);
                         }
                     }
 
@@ -362,6 +381,18 @@ Log.d("asf","HARHINGCURRETVALYE----"+chargingbit);
             @Override
             public void run() {
 
+                // ================= STOP AFTER 94% =================
+                if (actualSOC >= 94f) {
+
+                    binding.chargingBatteryArc.setBatteryLevel(actualSOC);
+
+                    pulseHandler.removeCallbacks(this);
+
+                    isChargingAnimationRunning = false;
+
+                    return;
+                }
+
                 if (pulseHandler == null || isFinishing() || isDestroyed()) {
                     return;
                 }
@@ -380,10 +411,34 @@ Log.d("asf","HARHINGCURRETVALYE----"+chargingbit);
                     }
                 }
 
-                // ✅ THIS is the key change
+                //  THIS is the key change
+                // Update battery UI
                 binding.chargingBatteryArc.setBatteryLevel(displaySOC);
 
-                pulseHandler.postDelayed(this, 10); // smooth speed
+// ================= SPEED CONTROL =================
+
+                long animationDelay;
+
+// Fast below 85
+                if (actualSOC < 85f) {
+
+                    animationDelay = 10;
+
+                }
+// Medium 85-90
+                else if (actualSOC >= 85f && actualSOC < 90f) {
+
+                    animationDelay = 30;
+
+                }
+// Slow 90-94
+                else {
+
+                    animationDelay = 40;
+                }
+
+// Apply delay
+                pulseHandler.postDelayed(this, animationDelay);
             }
         };
 
@@ -586,7 +641,7 @@ Log.d("asf","HARHINGCURRETVALYE----"+chargingbit);
 
         currentRangeKm = presentAh * KM_PER_AH;
 
-        // ✅ Clamp to max range
+        //  Clamp to max range
         if (currentRangeKm > MAX_RANGE_KM) {
             currentRangeKm = MAX_RANGE_KM;
         }
@@ -624,7 +679,7 @@ Log.d("asf","HARHINGCURRETVALYE----"+chargingbit);
 
         currentRangeKm += kmAdded;
 
-        // ✅ Clamp to max range
+        //  Clamp to max range
         if (currentRangeKm >= MAX_RANGE_KM) {
             currentRangeKm = MAX_RANGE_KM;
 

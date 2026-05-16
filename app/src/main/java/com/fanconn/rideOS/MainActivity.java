@@ -93,6 +93,8 @@ import com.fanconn.rideOS.network.ApiService;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
 import tp.xmaihh.serialport.BuildConfig;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements FrameDataListener {
     public  SerialPortManager serialPortManager;  // 串口管理类
@@ -946,10 +948,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 statsIcon.setImageResource(R.drawable.odo_icon);
 
                 statsValueText.setText(
-                        String.format("%.2f km", odo)
+                        String.format("%.1f km", odo)
                 );
 
-                statsLabelText.setText("Odo");
+                statsLabelText.setText("Odometer");
 
                 break;
 
@@ -991,19 +993,25 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             // ================= MONEY SAVED =================
             case 0:
 
-                double saved =
-                        PetrolCostManager.getMoneySaved(odo, regenKm);
-
+                double saved = PetrolCostManager.getMoneySaved(odo, regenKm);
                 statsIcon.setImageResource(R.drawable.ic_money_saved);
-
                 statsValueText.setText(
-                        String.format("₹%.2f", saved)
+                        "₹" + formatMoney(saved)
                 );
-
-                statsLabelText.setText("You saved");
-
+                statsLabelText.setText("Saved");
                 break;
         }
+    }
+
+    private String formatMoney(double amount) {
+
+        NumberFormat formatter =
+                NumberFormat.getNumberInstance(new Locale("en", "IN"));
+
+        formatter.setMaximumFractionDigits(0);
+        formatter.setMinimumFractionDigits(0);
+
+        return formatter.format(amount);
     }
     private void updateStatsDots() {
 

@@ -124,8 +124,6 @@ public class LoginActivity extends AppCompatActivity{
     public static boolean isChargingUIActive = false;
 //    public static boolean shouldshowchargingicononmainonot = false;
     public static boolean forceStandUIDUEToCharging=false;
-
-
     public static Handler chargingFrameTimeoutHandler = new Handler(Looper.getMainLooper());
     public static Runnable chargingFrameTimeoutRunnable;
     private static long lastChargingUILaunchTime = 0;

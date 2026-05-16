@@ -10,8 +10,8 @@ android {
         applicationId "com.fanconn.rideOS"
         minSdk 26
         targetSdk 35
-        versionCode 4
-        versionName "5.2.3"
+        versionCode 5
+        versionName "5.2.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

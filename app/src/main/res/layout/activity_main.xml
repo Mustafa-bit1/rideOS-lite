@@ -126,8 +126,8 @@
             android:id="@+id/speedArc"
             android:layout_width="1000dp"
             android:layout_height="295dp"
-            android:visibility="gone"
             android:layout_centerInParent="true"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/enginestartIV"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -189,8 +189,6 @@
             app:srcCompat="@drawable/blueth" />
 
 
-
-
         <!--    <ImageView-->
         <!--        android:id="@+id/levelView"-->
         <!--        android:layout_width="0dp"-->
@@ -233,21 +231,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-<!--        <ImageView-->
-<!--            android:id="@+id/batterry_bar"-->
-<!--            android:layout_width="835dp"-->
-<!--            android:layout_height="150dp"-->
-<!--            android:layout_alignParentStart="true"-->
-<!--            android:layout_alignParentTop="true"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginStart="222.5dp"-->
-<!--            android:layout_marginEnd="222.5dp"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.0"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:srcCompat="@drawable/a_batbar" />-->
+        <!--        <ImageView-->
+        <!--            android:id="@+id/batterry_bar"-->
+        <!--            android:layout_width="835dp"-->
+        <!--            android:layout_height="150dp"-->
+        <!--            android:layout_alignParentStart="true"-->
+        <!--            android:layout_alignParentTop="true"-->
+        <!--            android:layout_alignParentEnd="true"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_marginStart="222.5dp"-->
+        <!--            android:layout_marginEnd="222.5dp"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="0.0"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:srcCompat="@drawable/a_batbar" />-->
 
 
         <ImageView
@@ -316,8 +314,6 @@
 
 
         <!-- 歌曲播放进度控制条 -->
-
-
 
 
         <!--    <Button-->
@@ -546,17 +542,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="173dp"
             android:fontFamily="@font/kanitlite"
+            android:letterSpacing="0.03"
             android:shadowColor="#000000"
             android:shadowDx="5"
             android:shadowDy="3"
             android:shadowRadius="5"
+            android:text=""
             android:textColor="#C4C4C4"
             android:textSize="23dp"
-            android:letterSpacing="0.03"
-            android:text=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <ImageView
@@ -581,7 +577,6 @@
             app:srcCompat="@drawable/arrow_3" />
 
 
-
         <!--    <EditText-->
         <!--        android:id="@+id/inputSpeed"-->
         <!--        android:layout_width="wrap_content"-->
@@ -604,8 +599,6 @@
         <!--        android:text="Button"-->
         <!--        app:layout_constraintStart_toStartOf="parent"-->
         <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-
 
 
         <ImageView
@@ -686,9 +679,9 @@
             android:layout_marginBottom="30dp"
             android:background="@android:color/transparent"
             android:onClick="navLeft"
-            android:visibility="gone"
-
             android:src="@drawable/navleft"
+
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -718,13 +711,13 @@
             android:background="@android:color/transparent"
             android:onClick="Trip_Reset"
             android:scaleType="fitXY"
-            android:visibility="gone"
-
             android:src="@drawable/tripresetbtn"
+
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-<!--        =================================================-->
+        <!--        =================================================-->
 
 
         <LinearLayout
@@ -734,7 +727,6 @@
             android:gravity="center"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.015"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -743,7 +735,7 @@
             <!-- LEFT BUTTON -->
             <ImageButton
                 android:id="@+id/statsNavLeft"
-                android:layout_width="50dp"
+                android:layout_width="40dp"
                 android:layout_height="186dp"
                 android:background="@android:color/transparent"
                 android:onClick="statsNavLeft"
@@ -755,18 +747,18 @@
 
             <LinearLayout
                 android:id="@+id/statsContentContainer"
-                android:layout_width="150dp"
+                android:layout_width="186dp"
                 android:layout_height="190dp"
                 android:gravity="center"
-                android:paddingBottom="27dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingBottom="30dp">
 
                 <!-- ICON -->
                 <ImageView
                     android:id="@+id/statsIcon"
                     android:layout_width="58dp"
                     android:layout_height="38dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="13dp"
                     android:src="@drawable/ic_money_saved"
                     android:tint="#00FF66" />
 
@@ -776,7 +768,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kanit"
-                    android:text="0.00 km"
+                    android:text="00.0 km"
                     android:textAlignment="center"
                     android:textColor="#00FF66"
                     android:textSize="34sp" />
@@ -796,7 +788,7 @@
 
             <ImageButton
                 android:id="@+id/statsNavRight"
-                android:layout_width="50dp"
+                android:layout_width="40dp"
                 android:layout_height="186dp"
                 android:background="@android:color/transparent"
                 android:onClick="statsNavRight"
@@ -808,9 +800,9 @@
             android:id="@+id/statsDotsContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="119dp"
             android:layout_marginTop="250dp"
             android:gravity="center"
-            android:layout_marginStart="125dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -829,19 +821,19 @@
                 android:layout_margin="4dp"
                 android:background="@drawable/dot_unselected" />
 
-<!--            <View-->
-<!--                android:id="@+id/dot3"-->
-<!--                android:layout_width="7dp"-->
-<!--                android:layout_height="7dp"-->
-<!--                android:layout_margin="4dp"-->
-<!--                android:background="@drawable/dot_unselected" />-->
+            <!--            <View-->
+            <!--                android:id="@+id/dot3"-->
+            <!--                android:layout_width="7dp"-->
+            <!--                android:layout_height="7dp"-->
+            <!--                android:layout_margin="4dp"-->
+            <!--                android:background="@drawable/dot_unselected" />-->
 
-<!--            <View-->
-<!--                android:id="@+id/dot4"-->
-<!--                android:layout_width="7dp"-->
-<!--                android:layout_height="7dp"-->
-<!--                android:layout_margin="4dp"-->
-<!--                android:background="@drawable/dot_unselected" />-->
+            <!--            <View-->
+            <!--                android:id="@+id/dot4"-->
+            <!--                android:layout_width="7dp"-->
+            <!--                android:layout_height="7dp"-->
+            <!--                android:layout_margin="4dp"-->
+            <!--                android:background="@drawable/dot_unselected" />-->
 
         </LinearLayout>
 
@@ -851,10 +843,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="52dp"
             android:layout_marginTop="16dp"
+            android:layout_marginEnd="20dp"
             android:fontFamily="@font/kanit"
             android:text="0.0A"
             android:textColor="#FFFFFF"
-            android:layout_marginEnd="20dp"
             android:textSize="24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -876,9 +868,9 @@
                 android:id="@+id/recoLeaf"
                 android:layout_width="40dp"
                 android:layout_height="60dp"
+                android:layout_marginTop="8dp"
                 android:scaleType="fitCenter"
                 android:src="@drawable/recoleave"
-                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -892,9 +884,9 @@
                 android:layout_marginStart="4dp"
                 android:fontFamily="@font/kanit"
                 android:text="0.0"
-                android:visibility="gone"
                 android:textColor="#00FF66"
                 android:textSize="24dp"
+                android:visibility="gone"
                 app:layout_constraintStart_toEndOf="@+id/recoLeaf"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -931,11 +923,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="22dp"
-                android:orientation="horizontal"
                 android:gravity="center"
-                app:layout_constraintTop_toBottomOf="@id/recoLabelText"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/recoLabelText">
 
                 <View
                     android:id="@+id/recoDot1"
@@ -1022,7 +1014,6 @@
             app:srcCompat="@drawable/redalert" />
 
 
-
         <!--    <ImageView-->
         <!--        android:id="@+id/percenticon"-->
         <!--        android:layout_width="56dp"-->
@@ -1070,8 +1061,6 @@
             app:srcCompat="@drawable/chargingicon" />
 
 
-
-
         <ImageView
             android:id="@+id/battempmsg"
             android:layout_width="163dp"
@@ -1104,126 +1093,126 @@
             app:srcCompat="@drawable/transportmodewarning" />
 
         <!--        <LinearLayout-->
-<!--            android:id="@+id/topBarRow"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="110dp"-->
-<!--            android:gravity="center"-->
-<!--            android:orientation="horizontal"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintHorizontal_bias="0.0"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintVertical_bias="0.0">-->
+        <!--            android:id="@+id/topBarRow"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="110dp"-->
+        <!--            android:gravity="center"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintHorizontal_bias="0.0"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"-->
+        <!--            app:layout_constraintVertical_bias="0.0">-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/left_on"-->
-<!--                android:layout_width="121dp"-->
-<!--                android:layout_height="115dp"-->
-<!--                android:layout_marginEnd="-40dp"-->
-<!--                android:visibility="gone"-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/left_on"-->
+        <!--                android:layout_width="121dp"-->
+        <!--                android:layout_height="115dp"-->
+        <!--                android:layout_marginEnd="-40dp"-->
+        <!--                android:visibility="gone"-->
 
-<!--                android:src="@drawable/left_on" />-->
+        <!--                android:src="@drawable/left_on" />-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/tempalerticon"-->
-<!--                android:layout_width="32dp"-->
-<!--                android:layout_height="44dp"-->
-<!--                android:layout_marginStart="12dp"-->
-<!--                android:visibility="gone"-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/tempalerticon"-->
+        <!--                android:layout_width="32dp"-->
+        <!--                android:layout_height="44dp"-->
+        <!--                android:layout_marginStart="12dp"-->
+        <!--                android:visibility="gone"-->
 
-<!--                android:src="@drawable/tempicon"-->
-<!--                />-->
-
-
-<!--            <ImageView-->
-<!--                android:id="@+id/network"-->
-<!--                android:layout_width="22dp"-->
-<!--                android:layout_height="22dp"-->
-<!--                android:layout_marginStart="12dp"-->
-<!--                android:src="@drawable/network" />-->
-
-<!--            <ImageView-->
-<!--                android:id="@+id/wifi"-->
-<!--                android:layout_width="28dp"-->
-<!--                android:layout_height="28dp"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:src="@drawable/wifioffimg" />-->
-
-<!--            <TextView-->
-<!--                android:id="@+id/timeTextView"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="16dp"-->
-<!--                android:fontFamily="@font/kanit"-->
-<!--                android:text="02:59 PM"-->
-<!--                android:textColor="#FFFFFF"-->
-<!--                android:textSize="19sp" />-->
+        <!--                android:src="@drawable/tempicon"-->
+        <!--                />-->
 
 
-<!--            <ImageView-->
-<!--                android:id="@+id/keyOutImage"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="28dp"-->
-<!--                android:layout_marginStart="11dp"-->
-<!--                android:src="@drawable/keyout" />-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/network"-->
+        <!--                android:layout_width="22dp"-->
+        <!--                android:layout_height="22dp"-->
+        <!--                android:layout_marginStart="12dp"-->
+        <!--                android:src="@drawable/network" />-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/tpmsicon"-->
-<!--                android:layout_width="32dp"-->
-<!--                android:layout_height="44dp"-->
-<!--                android:layout_marginStart="2dp"-->
-<!--                android:visibility="gone"-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/wifi"-->
+        <!--                android:layout_width="28dp"-->
+        <!--                android:layout_height="28dp"-->
+        <!--                android:layout_marginStart="16dp"-->
+        <!--                android:src="@drawable/wifioffimg" />-->
 
-<!--                android:src="@drawable/tpmsicon"-->
-<!--              />-->
+        <!--            <TextView-->
+        <!--                android:id="@+id/timeTextView"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="16dp"-->
+        <!--                android:fontFamily="@font/kanit"-->
+        <!--                android:text="02:59 PM"-->
+        <!--                android:textColor="#FFFFFF"-->
+        <!--                android:textSize="19sp" />-->
 
 
-<!--            <ImageView-->
-<!--                android:id="@+id/apubaticon"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="12dp"-->
-<!--                android:src="@drawable/battery_level_1"-->
-<!--                android:visibility="gone"-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/keyOutImage"-->
+        <!--                android:layout_width="40dp"-->
+        <!--                android:layout_height="28dp"-->
+        <!--                android:layout_marginStart="11dp"-->
+        <!--                android:src="@drawable/keyout" />-->
 
-<!--                />-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/tpmsicon"-->
+        <!--                android:layout_width="32dp"-->
+        <!--                android:layout_height="44dp"-->
+        <!--                android:layout_marginStart="2dp"-->
+        <!--                android:visibility="gone"-->
 
-<!--            <TextView-->
-<!--                android:id="@+id/APUbatteryTV"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginStart="8dp"-->
-<!--                android:fontFamily="@font/kanit"-->
-<!--                android:text="APU 100%"-->
-<!--                android:textColor="#FFFFFF"-->
-<!--                android:visibility="gone"-->
-<!--                android:textSize="18sp"-->
-<!--                 />-->
+        <!--                android:src="@drawable/tpmsicon"-->
+        <!--              />-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/highBeam_IVon"-->
-<!--                android:layout_width="117dp"-->
-<!--                android:layout_height="117dp"-->
-<!--                android:layout_marginStart="-32dp"-->
-<!--                android:src="@drawable/high_beam2" />-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/highBeam_IVoff"-->
-<!--                android:layout_width="40dp"-->
-<!--                android:layout_height="40dp"-->
-<!--                android:layout_marginBottom="2dp"-->
-<!--                android:layout_marginStart="-77dp"-->
-<!--                android:src="@drawable/headlamp" />-->
+        <!--            <ImageView-->
+        <!--                android:id="@+id/apubaticon"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="12dp"-->
+        <!--                android:src="@drawable/battery_level_1"-->
+        <!--                android:visibility="gone"-->
 
-<!--            <ImageView-->
-<!--                android:id="@+id/right_on"-->
-<!--                android:layout_width="121dp"-->
-<!--                android:layout_height="115dp"-->
-<!--                android:visibility="gone"-->
-<!--                android:layout_marginStart="-30dp"-->
-<!--                android:src="@drawable/right_on" />-->
-<!--        </LinearLayout>-->
+        <!--                />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/APUbatteryTV"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="8dp"-->
+        <!--                android:fontFamily="@font/kanit"-->
+        <!--                android:text="APU 100%"-->
+        <!--                android:textColor="#FFFFFF"-->
+        <!--                android:visibility="gone"-->
+        <!--                android:textSize="18sp"-->
+        <!--                 />-->
+
+        <!--            <ImageView-->
+        <!--                android:id="@+id/highBeam_IVon"-->
+        <!--                android:layout_width="117dp"-->
+        <!--                android:layout_height="117dp"-->
+        <!--                android:layout_marginStart="-32dp"-->
+        <!--                android:src="@drawable/high_beam2" />-->
+
+        <!--            <ImageView-->
+        <!--                android:id="@+id/highBeam_IVoff"-->
+        <!--                android:layout_width="40dp"-->
+        <!--                android:layout_height="40dp"-->
+        <!--                android:layout_marginBottom="2dp"-->
+        <!--                android:layout_marginStart="-77dp"-->
+        <!--                android:src="@drawable/headlamp" />-->
+
+        <!--            <ImageView-->
+        <!--                android:id="@+id/right_on"-->
+        <!--                android:layout_width="121dp"-->
+        <!--                android:layout_height="115dp"-->
+        <!--                android:visibility="gone"-->
+        <!--                android:layout_marginStart="-30dp"-->
+        <!--                android:src="@drawable/right_on" />-->
+        <!--        </LinearLayout>-->
 
         <ImageView
             android:id="@+id/batteryImageView"
@@ -1234,6 +1223,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/bat_0" />
+
         <ImageView
 
             android:id="@+id/introbatteryImageView"
@@ -1279,9 +1269,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-
-
-        <ImageView android:id="@+id/left_on"
+        <ImageView
+            android:id="@+id/left_on"
             android:layout_width="121dp"
             android:layout_height="115dp"
             android:layout_alignParentStart="true"
@@ -1295,16 +1284,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-<!--        <ImageView android:id="@+id/tempalerticon"-->
-<!--            android:layout_width="32dp"-->
-<!--            android:layout_height="44dp"-->
-<!--            android:layout_marginStart="398dp" -->
-<!--            android:layout_marginTop="17dp" -->
-<!--            app:layout_constraintStart_toStartOf="parent" -->
-<!--            app:layout_constraintTop_toTopOf="parent" -->
-<!--            app:srcCompat="@drawable/tempicon" /> -->
+        <!--        <ImageView android:id="@+id/tempalerticon"-->
+        <!--            android:layout_width="32dp"-->
+        <!--            android:layout_height="44dp"-->
+        <!--            android:layout_marginStart="398dp" -->
+        <!--            android:layout_marginTop="17dp" -->
+        <!--            app:layout_constraintStart_toStartOf="parent" -->
+        <!--            app:layout_constraintTop_toTopOf="parent" -->
+        <!--            app:srcCompat="@drawable/tempicon" /> -->
 
-        <TextView android:id="@+id/timeTextView"
+        <TextView
+            android:id="@+id/timeTextView"
             android:layout_width="94dp"
             android:layout_height="30dp"
             android:layout_marginTop="33dp"
@@ -1318,7 +1308,8 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlCompat" />
 
-        <ImageView android:id="@+id/network"
+        <ImageView
+            android:id="@+id/network"
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_marginTop="33dp"
@@ -1327,7 +1318,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/network" />
 
-        <ImageView android:id="@+id/wifi"
+        <ImageView
+            android:id="@+id/wifi"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginTop="31dp"
@@ -1336,7 +1328,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/wifioffimg" />
 
-        <ImageView android:id="@+id/keyOutImage"
+        <ImageView
+            android:id="@+id/keyOutImage"
             android:layout_width="40dp"
             android:layout_height="28dp"
             android:layout_marginStart="664dp"
@@ -1345,7 +1338,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/keyout" />
 
-        <ImageView android:id="@+id/tpmsicon"
+        <ImageView
+            android:id="@+id/tpmsicon"
             android:layout_width="32dp"
             android:layout_height="44dp"
             android:layout_marginStart="710dp"
@@ -1354,7 +1348,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/tpmsicon_greyout" />
 
-        <ImageView android:id="@+id/apubaticon"
+        <ImageView
+            android:id="@+id/apubaticon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="36dp"
@@ -1364,7 +1359,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/battery_level_1" />
 
-        <TextView android:id="@+id/APUbatteryTV"
+        <TextView
+            android:id="@+id/APUbatteryTV"
             android:layout_width="82dp"
             android:layout_height="22dp"
             android:layout_alignParentStart="true"
@@ -1376,7 +1372,6 @@
             android:fontFamily="@font/kanit"
             android:shadowColor="#80000000"
             android:shadowDx="5"
-            android:visibility="gone"
             android:shadowDy="3"
             android:shadowRadius="5"
             android:text="APU 100%"
@@ -1384,10 +1379,12 @@
             android:textColor="#FFFFFFFF"
             android:textSize="17dp"
             android:translationY="-10dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView android:id="@+id/highBeam_IVon"
+        <ImageView
+            android:id="@+id/highBeam_IVon"
             android:layout_width="117dp"
             android:layout_height="117dp"
             android:layout_alignParentStart="true"
@@ -1403,7 +1400,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/high_beam" />
 
-        <ImageView android:id="@+id/right_on"
+        <ImageView
+            android:id="@+id/right_on"
             android:layout_width="121dp"
             android:layout_height="115dp"
             android:layout_alignParentStart="true"
@@ -1414,7 +1412,7 @@
             android:layout_marginBottom="364dp"
             android:src="@drawable/right_on"
             android:translationY="-10dp"
-android:visibility="gone"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -1439,10 +1437,10 @@ android:visibility="gone"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="401dp"
-            android:visibility="gone"
             android:layout_marginBottom="110dp"
             android:src="@drawable/indicators"
             android:translationY="-10dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -1455,10 +1453,10 @@ android:visibility="gone"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="401dp"
-            android:visibility="gone"
             android:layout_marginBottom="110dp"
             android:src="@drawable/indicatorsr"
             android:translationY="-10dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 

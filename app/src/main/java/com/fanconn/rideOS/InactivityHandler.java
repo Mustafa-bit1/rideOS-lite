@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 
 public class InactivityHandler implements InactivityManager.InactivityCallback {
     private final Context context;
-
+    private static final String TAG = "TOUCHTIMER";
     public InactivityHandler(Context context) {
         this.context = context.getApplicationContext(); // To avoid leaks
         InactivityManager.getInstance().setCallback(this); // Set this class as the callback
@@ -23,7 +23,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 
     @Override
     public void onInactivityTimeout(int code) {
-      //  Log.d("InactivityHandler", "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
+        Log.d(TAG, "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
 
         switch (code) {
             case 1:
@@ -46,8 +46,11 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 //                    serialPortManager.getHb3().setLEDresponse(1);
 //                    serialPortManager.getHb3().sethandleLockresponse(1);
                 int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
-                if(rpm==0 && UIUpdater.directionalGears==0){
-                   // Log.d("sdafgf","ELSEOF TOUCHTIMER IFTIMER");
+                Log.d(TAG,"code 1 TOUCHTIMER GEAR  "+UIUpdater.directionalGears);
+                Log.d(TAG,"code 1 TOUCHTIMER STAND  "+UIUpdater.getInstance().isStand);
+
+                if(rpm==0 && (UIUpdater.directionalGears==0 || UIUpdater.getInstance().isStand)){
+                    Log.d("TOUCHTIMER","IF OF code 1 TOUCHTIMER IFTIMER");
                     EVLockService.getInstance().startLockSequence();    // Start lock
                     Context context2 = MainActivity.instance;
                     if (context2 != null) {
@@ -60,16 +63,16 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                             PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                             Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
 
-                          //  Log.d("PowerAction", "Calling goToSleep()");
+                            Log.d("PowerAction", "Calling goToSleep()");
                             goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-                          //  Log.d("PowerAction", "goToSleep() invoked.");
+                            Log.d("PowerAction", "goToSleep() invoked.");
                         } catch (Exception e) {
-                           // Log.e("PowerAction", "Failed to initiate goToSleep:", e);
+                            Log.e("PowerAction", "Failed to initiate goToSleep:", e);
                         }
                     }, 1000); // Wait 1 seconds after lock before sleeping
                 }
                 else {
-                    //Log.d("sdafgf","ELSEOF TOUCHTIMER TIMER");
+                    Log.d("TOUCHTIMER","ELSEOF TOUCHTIMER TIMER");
                 }
 
                 //below is b4 7/7
@@ -106,8 +109,8 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
               //  Log.d("SHIFT", "DRIVE - NEUTRAL");
                 break;
 
-            case 3:   Log.d("LoginActivity", "Timeout in login screen. Turning screen off...");
-            //    Log.d("MainActivity", "Case......3");
+            case 3:   Log.d("TOUCHTIMER", "Timeout in login screen. Turning screen off...");
+                Log.d("TOUCHTIMER", "Case......3");
                 try {
                     LoginActivity.markScreenJustOff();
                     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);

@@ -297,6 +297,8 @@ public class UIUpdater  {
             lastTurnSignalState = currentSignal; // update tracker
         }
         if(hb1.getHeadlights() == 1)
+
+
         {
             binding.highBeamIVon.setVisibility(View.VISIBLE);
             binding.highBeamIVoff.setVisibility(View.INVISIBLE);
@@ -318,9 +320,6 @@ public class UIUpdater  {
 //                }
         }
         // 更新转向灯状态
-
-
-
     }
 
     /**
@@ -653,7 +652,7 @@ public class UIUpdater  {
             StopInactivtyTimerDuringPopUp=false;
           //  Log.d("SOCWHATACTOION","ENTER 5 AND DO 0000AMPS");
 
-            showCustomPopupatSOC7("Alert","Battery toodddd low, deep discharge may damage your scooter battery, Please charge your scooter");
+            showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
         }
         //BatPackSwitcher.startSwitchingToAPU();
 //
@@ -1276,7 +1275,7 @@ public class UIUpdater  {
 //            return R.drawable.battery_level_5;
 //        }
 //    }
-    private boolean isStand=false;
+    public boolean isStand=false;
     //private boolean isReady=false;
 
     /**
@@ -1377,7 +1376,8 @@ public class UIUpdater  {
             LoginActivity.forceStandUIDUEToCharging=false;
             InactivityManager.getInstance().startTimer(1);
             if(serialPortManager!=null){
-                serialPortManager.VCUSendToMCU("FFAA550101000A01");}
+                serialPortManager.VCUSendToMCU("FFAA550101000A01");
+            }
             standui();
             return;
         }

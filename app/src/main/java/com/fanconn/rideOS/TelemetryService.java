@@ -826,7 +826,7 @@ public class TelemetryService extends Service {
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
         if(SerialPortManager.getInstance().getHb3()!=null){
-            data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+", ChargingCurrent="+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+",ChargingTime="+ ETADataManager.getInstance().getEtaTime()+", ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff()+
+            data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+", ChgCur="+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+",ChgTime="+ ETADataManager.getInstance().getEtaTime()+", ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff()+
                     " AllCells 1to3="+SerialPortManager.getInstance().getHb3().getcell1TO3()+",cell4to6="+SerialPortManager.getInstance().getHb3().getcell4TO6()+",cell7to9="+SerialPortManager.getInstance().getHb3().getcell7TO9()+",cell10to12="+SerialPortManager.getInstance().getHb3().getcell10TO12()+",cell13to15="+SerialPortManager.getInstance().getHb3().getcell13TO15()+",cell16to18="+SerialPortManager.getInstance().getHb3().getcell16TO18()+",cell19to21="+SerialPortManager.getInstance().getHb3().getcell19TO21()+",cell22to23="+SerialPortManager.getInstance().getHb3().getcell22TO23();
      //   Log.d("dsafgs","ddddddddddddddd "+data.ntc);
         }else{
@@ -840,7 +840,7 @@ public class TelemetryService extends Service {
         data.inAH_by_charger = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleChargerAH());
         data.inAH_by_regen = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRegenAH());
         data.outAH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleDischargeAH());
-        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ",uptime=" + UptimeManager.getUptime()+",CurrentGear="+MainActivity.currentgear;
+        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ",uptime=" + UptimeManager.getUptime()+",Gear="+MainActivity.currentgear;
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
         //Log.d("sdafd","TELETIREPRESUURE2222 IS "+data.tirepressure);
@@ -856,13 +856,12 @@ public class TelemetryService extends Service {
         String temps = getCriticalTemps();
         UIUpdater uiUpdater = UIUpdater.getInstance();
         if (uiUpdater!=null) {
-            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
-                    +", recoEngine="+uiUpdater.getrecoEngineParams()+",Max_voltage_set="+TelemetryDataManager.getInstance().getMax_voltage_value()+", Allowable_charging_current_value="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+                    +", recoEngine="+uiUpdater.getrecoEngineParams()+",MaxVolt="+TelemetryDataManager.getInstance().getMax_voltage_value()+", AlwedchgCur="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }else{
-            data.data = "maps="+Maps.getRequestStatus(context) +",FrontTPMSVoltage="+ TelemetryDataManager.getInstance().getFTeleTirePressureVoltage()+",RearTPMSVoltage="+ TelemetryDataManager.getInstance().getRTeleTirePressureVoltage()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
-                    +", recoEngine=N/A"+",Max_voltage_set="+TelemetryDataManager.getInstance().getMax_voltage_value()+", Allowable_charging_current_value="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+                    +", recoEngine=N/A"+",MaxVolt="+TelemetryDataManager.getInstance().getMax_voltage_value()+", AlwedchgCur="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }
-
         //Log.d("QUALCOMTHERMAL  ", temps);
         return data;
     }
@@ -1160,10 +1159,9 @@ public class TelemetryService extends Service {
 
     public String getCriticalTemps() {
 
-        String cpu0 = "NA";
+
         String cpu1 = "NA";
-        String pmic = "NA";
-        String skin = "NA";
+
 
         try {
             File thermalDir = new File("/sys/class/thermal/");
@@ -1185,29 +1183,19 @@ public class TelemetryService extends Service {
                             if (type == null || tempRaw == null) continue;
 
                             float tempC = Float.parseFloat(tempRaw) / 1000f;
-
-                            if (type.equals("cpuss-0-usr")) {
-                                cpu0 = String.format("%.1f", tempC);
-                            } else if (type.equals("cpuss-1-usr")) {
                                 cpu1 = String.format("%.1f", tempC);
-                            } else if (type.equals("pm2250-tz")) {
-                                pmic = String.format("%.1f", tempC);
-                            } else if (type.equals("chg-skin-therm-usr")) {
-                                skin = String.format("%.1f", tempC);
                             }
                         }
                     }
                 }
-            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "cpu0=" + cpu0 +
-                ",cpu1=" + cpu1 +
-                ",pmic=" + pmic +
-                ",skin=" + skin;
+        return
+                ",cpu1=" + cpu1;
     }
 
     private String readLine(File file) {
