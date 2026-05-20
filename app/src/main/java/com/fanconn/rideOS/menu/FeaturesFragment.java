@@ -38,7 +38,7 @@ import java.util.Locale;
 public class FeaturesFragment extends Fragment {
 
 //    private SwitchCompat cruiseControlSwitch, boostSwitch, rollProtectSwitch;
-    private SwitchCompat   rollProtectSwitch;
+    //private SwitchCompat   rollProtectSwitch;
 
     private SharedPreferences sharedPreferences;
     private SerialPortManager serialPortManager;
@@ -47,9 +47,9 @@ public class FeaturesFragment extends Fragment {
     private AudioManager audioManager;
     private SharedPreferences prefs;
     private boolean isMuted;
-    private static final int MIN_SEC = 30;
-    private static final int MAX_SEC = 120;
-    private static final int STEP_SEC = 10;
+    private static final int MIN_SEC = 15;
+    private static final int MAX_SEC = 60;
+    private static final int STEP_SEC = 15;
     private SeekBar rssiSeekBar;
     private TextView rssiValueText;
     private Context ctx;
@@ -72,13 +72,13 @@ public class FeaturesFragment extends Fragment {
         // Initialize switches
 //        cruiseControlSwitch = view.findViewById(R.id.cruisecontrolSwitch);
 //        boostSwitch = view.findViewById(R.id.boostSwitch);
-        rollProtectSwitch = view.findViewById(R.id.rollprotectSwitch);
+        //rollProtectSwitch = view.findViewById(R.id.rollprotectSwitch);
 
         // Load stored state
         sharedPreferences = requireContext().getSharedPreferences("feature_prefs", Context.MODE_PRIVATE);
 //        cruiseControlSwitch.setChecked(sharedPreferences.getBoolean("cruise_enabled", false));
 //        boostSwitch.setChecked(sharedPreferences.getBoolean("boost_enabled", false));
-        rollProtectSwitch.setChecked(sharedPreferences.getBoolean("roll_enabled", false));
+       // rollProtectSwitch.setChecked(sharedPreferences.getBoolean("roll_enabled", false));
 
         // Set custom styling for all switches
 //        Drawable thumbDrawable1 = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_thumb).mutate();
@@ -162,13 +162,13 @@ public class FeaturesFragment extends Fragment {
                     @Override public void onStopTrackingTouch(SeekBar seekBar) {showSavedToast();}
                 });
 
-        rollProtectSwitch.setThumbDrawable(thumbDrawable3);
-        rollProtectSwitch.setTrackDrawable(trackDrawable3);
+        //rollProtectSwitch.setThumbDrawable(thumbDrawable3);
+        //rollProtectSwitch.setTrackDrawable(trackDrawable3);
 
         // Reflect state on label
 //        cruiseControlSwitch.setText(cruiseControlSwitch.isChecked() ? "Enabled" : "Disabled");
 //        boostSwitch.setText(boostSwitch.isChecked() ? "Enabled" : "Disabled");
-        rollProtectSwitch.setText(rollProtectSwitch.isChecked() ? "Enabled" : "Disabled");
+        //rollProtectSwitch.setText(rollProtectSwitch.isChecked() ? "Enabled" : "Disabled");
 
         // Cruise control toggle logic
 //        cruiseControlSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -208,16 +208,16 @@ public class FeaturesFragment extends Fragment {
 //        });
 
         // Roll Protect toggle logic
-        rollProtectSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            sharedPreferences.edit().putBoolean("roll_enabled", isChecked).apply();
-            rollProtectSwitch.setText(isChecked ? "Enabled" : "Disabled");
-            showSavedToast();
-            if (isChecked) {
-                // TODO: Add logic to enable roll protection
-            } else {
-                // TODO: Add logic to disable roll protection
-            }
-        });
+        //rollProtectSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            sharedPreferences.edit().putBoolean("roll_enabled", isChecked).apply();
+//            rollProtectSwitch.setText(isChecked ? "Enabled" : "Disabled");
+//            showSavedToast();
+//            if (isChecked) {
+//                // TODO: Add logic to enable roll protection
+//            } else {
+//                // TODO: Add logic to disable roll protection
+//            }
+//        });
 
         SeekBar seekBar = view.findViewById(R.id.seekBar);
         TextView valueText = view.findViewById(R.id.valueText);
@@ -252,7 +252,6 @@ public class FeaturesFragment extends Fragment {
 // Log and send
                 Log.d("SeekBarStable", "SeekBar=" + seekBarValue + ", x=" + xRounded + ", Hex=" + mm + " " + nn);
                 Log.d("SeekBarStable", "Final Frame: " + finalFrame);
-
 
                 if (serialPortManager != null) {
                     serialPortManager.VCUSendToMCU(finalFrame);

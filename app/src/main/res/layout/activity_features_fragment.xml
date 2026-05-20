@@ -217,7 +217,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="10dp"
-                        android:text="Set auto scooter lock time"
+                        android:text="Set scooter auto lock time"
                         android:textColor="#7D7D7D"
                         android:fontFamily="@font/kanit"
                         android:textSize="17sp" />
@@ -232,7 +232,7 @@
                     android:paddingStart="40dp"
                     android:paddingEnd="30dp"
                     android:layout_marginEnd="10dp"
-                    android:max="9"
+                    android:max="3"
                     android:progressTint="#0283FF"
                     android:progressBackgroundTint="#FFFFFF"
                     android:thumb="@drawable/reverse_speed_seekbarthumb"
@@ -496,56 +496,56 @@
                     />
             </LinearLayout>
             <!-- ROLL PROTECT Row -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp"
-                android:paddingVertical="8dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_marginBottom="24dp"-->
+<!--                android:paddingVertical="8dp">-->
 
-                <!-- Text Column -->
+<!--                &lt;!&ndash; Text Column &ndash;&gt;-->
 
-                <!-- Switch aligned right -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+<!--                &lt;!&ndash; Switch aligned right &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:orientation="vertical">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/kanitlite"
-                        android:paddingEnd="15dp"
-                        android:text="rollProtect"
-                        android:textColor="#FFFFFF"
-                        android:textSize="32sp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/kanitlite"-->
+<!--                        android:paddingEnd="15dp"-->
+<!--                        android:text="rollProtect"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textSize="32sp" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/kanit"
-                        android:paddingTop="10dp"
-                        android:text="Prevent rolling backward on slopes, Recommended to keep this ON everytime"
-                        android:textColor="#7D7D7D"
-                        android:textSize="17sp" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:fontFamily="@font/kanit"-->
+<!--                        android:paddingTop="10dp"-->
+<!--                        android:text="Prevent rolling backward on slopes, Recommended to keep this ON everytime"-->
+<!--                        android:textColor="#7D7D7D"-->
+<!--                        android:textSize="17sp" />-->
+<!--                </LinearLayout>-->
 
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/rollprotectSwitch"
-                    android:layout_width="174dp"
-                    android:layout_height="58dp"
-                    android:layout_marginEnd="8dp"
-                    android:fontFamily="@font/kanitlite"
-                    android:textSize="16sp"
-                    android:gravity="center"
-                    android:paddingEnd="20dp"
-                    android:scaleX="1.4"
-                    android:scaleY="1.4"
-                    android:text="Roll: ON"
-                    android:textColor="@color/white"
-                     />
-            </LinearLayout>
+<!--                <androidx.appcompat.widget.SwitchCompat-->
+<!--                    android:id="@+id/rollprotectSwitch"-->
+<!--                    android:layout_width="174dp"-->
+<!--                    android:layout_height="58dp"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    android:fontFamily="@font/kanitlite"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:gravity="center"-->
+<!--                    android:paddingEnd="20dp"-->
+<!--                    android:scaleX="1.4"-->
+<!--                    android:scaleY="1.4"-->
+<!--                    android:text="Roll: ON"-->
+<!--                    android:textColor="@color/white"-->
+<!--                     />-->
+<!--            </LinearLayout>-->
 <!--            <TextView-->
 <!--                android:id="@+id/tv_inactivity_time"-->
 <!--                android:layout_width="wrap_content"-->
