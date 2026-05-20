@@ -21,7 +21,6 @@ public class RecoInfoFragment extends Fragment {
     private TextView totalRecoKmTv;
     private TextView lastRecokmTv;
 
-
     @Nullable
     @Override
     public View onCreateView(
@@ -48,8 +47,6 @@ public class RecoInfoFragment extends Fragment {
                 .start();
 
         updateRecoValues();
-        InactivityManager.getInstance().stopTimer();
-        Log.d("dsfsg","ENTERED RECOENGINE");
         return view;
     }
 

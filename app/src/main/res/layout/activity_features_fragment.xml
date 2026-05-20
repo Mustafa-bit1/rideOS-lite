@@ -128,66 +128,66 @@
 <!--                    android:textColor="@color/white"-->
 <!--                    />-->
 <!--            </LinearLayout>-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="24dp"
-                android:paddingVertical="8dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_marginBottom="24dp"-->
+<!--                android:paddingVertical="8dp">-->
 
-                <!-- Text Column -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+<!--                &lt;!&ndash; Text Column &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:orientation="vertical">-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Volume"
-                        android:textColor="#FFFFFF"
-                        android:fontFamily="@font/kanitlite"
-                        android:textSize="32sp"
-                        android:paddingEnd="15dp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:text="Volume"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:fontFamily="@font/kanitlite"-->
+<!--                        android:textSize="32sp"-->
+<!--                        android:paddingEnd="15dp" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
-                        android:text="Controls the entire device sounds"
-                        android:textColor="#7D7D7D"
-                        android:fontFamily="@font/kanit"
-                        android:textSize="17sp" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:paddingTop="10dp"-->
+<!--                        android:text="Controls the entire device sounds"-->
+<!--                        android:textColor="#7D7D7D"-->
+<!--                        android:fontFamily="@font/kanit"-->
+<!--                        android:textSize="17sp" />-->
+<!--                </LinearLayout>-->
 
-                <ImageButton
-                    android:id="@+id/muteButton"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/unmutted"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginTop="17dp"
-                    android:contentDescription="Mute toggle"
-                    android:scaleType="centerInside"
-                    android:adjustViewBounds="true" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/muteButton"-->
+<!--                    android:layout_width="56dp"-->
+<!--                    android:layout_height="56dp"-->
+<!--                    android:background="@android:color/transparent"-->
+<!--                    android:src="@drawable/unmutted"-->
+<!--                    android:layout_marginStart="40dp"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:layout_marginTop="17dp"-->
+<!--                    android:contentDescription="Mute toggle"-->
+<!--                    android:scaleType="centerInside"-->
+<!--                    android:adjustViewBounds="true" />-->
 
 
-                <SeekBar
-                    android:id="@+id/volumeSlider"
-                    android:layout_width="0dp"
-                    android:layout_height="90dp"
-                    android:layout_marginStart="4dp"
-                    android:paddingEnd="15dp"
-                    android:layout_weight="1"
-                    android:progressDrawable="@drawable/custom_seekbar"
-                    android:thumb="@drawable/volumebar_thumb"
-                    android:thumbTint="@null"
-                    android:splitTrack="false"/>
+<!--                <SeekBar-->
+<!--                    android:id="@+id/volumeSlider"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="90dp"-->
+<!--                    android:layout_marginStart="4dp"-->
+<!--                    android:paddingEnd="15dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:progressDrawable="@drawable/custom_seekbar"-->
+<!--                    android:thumb="@drawable/volumebar_thumb"-->
+<!--                    android:thumbTint="@null"-->
+<!--                    android:splitTrack="false"/>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
 
             <LinearLayout

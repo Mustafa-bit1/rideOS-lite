@@ -25,7 +25,7 @@ public class BrightnessManager {
 
     private AudioManager audioManager;
     private boolean isMuted = false;
-
+    private int lastVolumeBeforeMute = 0;
     public BrightnessManager(Context context) {
         this.context = context;
         this.prefs = context.getSharedPreferences("menu", Context.MODE_PRIVATE);
@@ -124,11 +124,17 @@ public class BrightnessManager {
         int systemVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
 
         int savedVolume = volumePrefs.getInt("volume_level", systemVolume);
+
+        lastVolumeBeforeMute = volumePrefs.getInt(
+                "last_volume_before_mute",
+                savedVolume
+        );
+
         isMuted = volumePrefs.getBoolean("is_muted", false);
 
         volumeSlider.setMax(maxVolume);
 
-        // ✅ UI sync only (NO system change here)
+        //  UI sync only (NO system change here)
         volumeSlider.setProgress(isMuted ? 0 : systemVolume);
         updateMuteIcon(muteButton, isMuted);
 
@@ -143,10 +149,18 @@ public class BrightnessManager {
 
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
 
-                volumePrefs.edit()
-                        .putInt("volume_level", progress)
-                        .putBoolean("is_muted", muted)
-                        .apply();
+                SharedPreferences.Editor editor = volumePrefs.edit();
+
+                editor.putInt("volume_level", progress);
+                editor.putBoolean("is_muted", muted);
+
+// save non-zero volume as last good volume
+                if (progress > 0) {
+                    lastVolumeBeforeMute = progress;
+                    editor.putInt("last_volume_before_mute", progress);
+                }
+
+                editor.apply();
 
                 updateMuteIcon(muteButton, muted);
                 isMuted = muted;
@@ -167,28 +181,63 @@ public class BrightnessManager {
         muteButton.setOnClickListener(v -> {
 
             if (isMuted) {
-                // restore from system, not prefs
-                int restoreVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                if (restoreVolume == 0) restoreVolume = maxVolume / 3; // safe minimal audible
 
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, restoreVolume, 0);
+                // RESTORE OLD VOLUME
+                int restoreVolume = lastVolumeBeforeMute;
+
+                // safety
+                if (restoreVolume <= 0) {
+                    restoreVolume = maxVolume / 3;
+                }
+
+                audioManager.setStreamVolume(
+                        AudioManager.STREAM_MUSIC,
+                        restoreVolume,
+                        0
+                );
+
                 volumeSlider.setProgress(restoreVolume);
 
-                volumePrefs.edit().putBoolean("is_muted", false).apply();
+                volumePrefs.edit()
+                        .putBoolean("is_muted", false)
+                        .apply();
+
                 isMuted = false;
 
             } else {
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+
+                // SAVE CURRENT VOLUME BEFORE MUTING
+                int currentVolume =
+                        audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+
+                if (currentVolume > 0) {
+
+                    lastVolumeBeforeMute = currentVolume;
+
+                    volumePrefs.edit()
+                            .putInt("last_volume_before_mute", currentVolume)
+                            .apply();
+                }
+
+                // MUTE
+                audioManager.setStreamVolume(
+                        AudioManager.STREAM_MUSIC,
+                        0,
+                        0
+                );
+
                 volumeSlider.setProgress(0);
 
-                volumePrefs.edit().putBoolean("is_muted", true).apply();
+                volumePrefs.edit()
+                        .putBoolean("is_muted", true)
+                        .apply();
+
                 isMuted = true;
             }
 
             updateMuteIcon(muteButton, isMuted);
         });
     }
-
 
     private void updateMuteIcon(ImageButton muteButton, boolean muted) {
         if (muteButton != null) {

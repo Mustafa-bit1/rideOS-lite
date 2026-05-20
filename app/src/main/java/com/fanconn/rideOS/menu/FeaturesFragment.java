@@ -42,8 +42,8 @@ public class FeaturesFragment extends Fragment {
 
     private SharedPreferences sharedPreferences;
     private SerialPortManager serialPortManager;
-    private SeekBar volumeSlider;
-    private ImageButton muteButton;
+    //private SeekBar volumeSlider;
+    //private ImageButton muteButton;
     private AudioManager audioManager;
     private SharedPreferences prefs;
     private boolean isMuted;
@@ -380,12 +380,12 @@ public class FeaturesFragment extends Fragment {
 
 //===============================================================================
 // At the top of onCreateView()
-        volumeSlider = view.findViewById(R.id.volumeSlider);
-        muteButton = view.findViewById(R.id.muteButton);
+//        volumeSlider = view.findViewById(R.id.volumeSlider);
+//        muteButton = view.findViewById(R.id.muteButton);
 
 // Reuse BrightnessManager for volume
-        BrightnessManager manager = new BrightnessManager(requireContext());
-        manager.applyToVolumeSlider(volumeSlider, muteButton);
+//        BrightnessManager manager = new BrightnessManager(requireContext());
+//        manager.applyToVolumeSlider(volumeSlider, muteButton);
 
 //=============================================================================
         handleLockSwitch = view.findViewById(R.id.transportMode_Switch);
