@@ -24,12 +24,12 @@ public class batteryPackSwitcher {
         this.statusTextView = null; // explicitly set to null
     }
 
-    // ✅ Overloaded constructor that also initializes the superclass fields
+    //  Overloaded constructor that also initializes the superclass fields
     public batteryPackSwitcher(TextView statusTextView) {
-        this(); // 👈 Calls the no-arg constructor to initialize serialPortManager and handler
+        this(); //  Calls the no-arg constructor to initialize serialPortManager and handler
         this.statusTextView = statusTextView;
     }
-    // ✅ Safe method to update text
+    //  Safe method to update text
     private void updateStatusText(String message) {
         if (statusTextView != null) {
             statusTextView.setText(message);
@@ -53,7 +53,7 @@ public class batteryPackSwitcher {
         //Log.d("CommandSequence", "APU Dis On cmd sent");
 
         handler.postDelayed(() -> {
-            Heartbeat3 hb3 = serialPortManager.getHb3(); // ✅ Fetch fresh state now
+            Heartbeat3 hb3 = serialPortManager.getHb3();
             if (hb3 != null) {
                 //Log.d("CommandSequence", "APU DIs MosState " + hb3.getApuDisChargeMosState());
             }

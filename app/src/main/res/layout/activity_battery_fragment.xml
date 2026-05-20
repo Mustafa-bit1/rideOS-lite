@@ -472,30 +472,53 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_weight="1"
-                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="2dp"
-                android:gravity="center">
+                android:gravity="center_vertical"
+                android:padding="8dp">
+
                 <TextView
                     android:id="@+id/Main_Battry_Size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0Ah"
-                    android:layout_marginStart="30dp"
+                    android:layout_marginStart="20dp"
                     android:fontFamily="@font/kanitlite"
                     android:textColor="#FFFFFF"
                     android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/mainMosState"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:text="Charge Switch : - |  Discharge Switch : -"
+                    android:layout_marginStart="30dp"
+                    android:text="Charge Switch : - | Discharge Switch : -"
                     android:fontFamily="@font/kanitlite"
                     android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/MainChargeMOSOFF"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="20dp"
+                    android:backgroundTint="#0878C1"
+                    android:text="ChargeMOS OFF"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:foreground="@drawable/btn_click_effect" />
+
+                <Button
+                    android:id="@+id/MainChargeMOSON"
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="20dp"
+                    android:backgroundTint="#0878C1"
+                    android:text="ChargeMOS ON"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:foreground="@drawable/btn_click_effect" />
 
             </LinearLayout>
         </LinearLayout>

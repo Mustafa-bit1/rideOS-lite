@@ -1297,6 +1297,7 @@ public class UIUpdater  {
         return activity != null && activity instanceof MainActivity;
     }
     private Animation reverseArrowAnimation;
+    public static boolean isChargingUIVisible = false;
     public void updateCanData10F807A8(Heartbeat3 hb3) {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
@@ -1374,7 +1375,12 @@ public class UIUpdater  {
 // Priority 2: Stand UI (when unplugged and stand is open)
         if (STAND == 1 && (standChanged || LoginActivity.forceStandUIDUEToCharging)) {
             LoginActivity.forceStandUIDUEToCharging=false;
-            InactivityManager.getInstance().startTimer(1);
+            if (!isChargingUIVisible)
+            {
+                InactivityManager.getInstance().startTimer(1);
+                Log.d("TOUCHTIMER", " Timeout TOUCHTIMER ENTER Side STAND");
+            }
+
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550101000A01");
             }
@@ -2152,7 +2158,7 @@ private int streamId = 0;
         canPopupShown = false;
         tm.setTeleControllerAbruptOff(0);
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
-        double speed = (hb3.getBSG2_BYTE78() * 60.0 * Speed_ratio_Value) / 3.3125 * 1 / 1000; // 10% high
+        int speed = (int)((hb3.getBSG2_BYTE78() * 60.0 * Speed_ratio_Value) / 3.3125 * 1 / 1000); // 10% high
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.48331442) / 3.3125 * 1 / 1000;//5 % high
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.412404) / 3.3125 * 1 / 1000;// 0% high
 
@@ -2182,18 +2188,19 @@ private int streamId = 0;
             }
             boolean shouldPlayReadySound =
                     directionalGears == 1 && speed == 0 && !isStand ;
+            Log.d("CANhome", " THIS IS SPEED    "+speed);
 
             if (shouldPlayReadySound) {
                 if (!startReasySound) {
                     startReasySound = true;
                     ReadystartBeeping();
-               //     Log.d("CANhome", " Ready sound START");
+                    Log.d("CANhome", " Ready sound START");
                 }
             } else {
                 if (startReasySound) {
                     startReasySound = false;
                     ReadystopBeeping();
-                   // Log.d("CANhome", " Ready sound STOP");
+                    Log.d("CANhome", " Ready sound STOP");
                     if (!MainActivity.isVisible && !MainActivity.isrideOSOTA) {
                         //Log.d("UIUPDATER", "TAKEMEHOME2222");
 
@@ -2207,7 +2214,7 @@ private int streamId = 0;
                 }
             }
 
-            boolean isMoving = directionalGears == 1 && speed > 0;
+            boolean isMoving = directionalGears == 1 && speed >= 1;
 
             // Ride started transition
             if (isMoving && !wasMoving) {
@@ -2271,7 +2278,7 @@ private int streamId = 0;
                 binding.regentab.setVisibility(View.GONE);
             }
 
-            // ✅ Play sound only on upward mode transition
+            //  Play sound only on upward mode transition
 //            if (
 //                    (previousMode.equals("eco") && currentMode.equals("city")) ||
 //                            (previousMode.equals("city") && currentMode.equals("sport"))
@@ -2279,7 +2286,7 @@ private int streamId = 0;
 //                playModeChangeSound(); // play sound
 //            }
 
-            // ✅ Update previousMode
+            // Update previousMode
             if (!currentMode.equals("")) {
                 previousMode = currentMode;
             }
@@ -2991,7 +2998,6 @@ private int streamId = 0;
     private Double frontPsi = null, frontTemp = null;
     private Double rearPsi  = null, rearTemp  = null;
 
-    /* 🧠 Last PSI memory */
     private Integer lastFrontPsi = null;
     private Integer lastRearPsi  = null;
 

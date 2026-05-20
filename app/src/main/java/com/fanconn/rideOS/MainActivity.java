@@ -54,6 +54,7 @@ import android.text.style.MetricAffectingSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -355,34 +356,96 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         mapbtn  = findViewById(R.id.mapbtn);
         menubtn = findViewById(R.id.menubtn);
 //        lowtire_pressure_button= findViewById(R.id.low_tire_warning);
-        mapbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mapbtn.setOnTouchListener((v, event) -> {
 
-                if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
-                    Intent intent = new Intent(MainActivity.this, Maps.class);
-                    startActivity(intent);
-                }
+            switch (event.getAction()) {
+
+                case MotionEvent.ACTION_DOWN:
+
+                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+
+                    v.setScaleX(0.94f);
+                    v.setScaleY(0.94f);
+                    v.setAlpha(0.85f);
+
+                    return false;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+
+                    v.setScaleX(1f);
+                    v.setScaleY(1f);
+                    v.setAlpha(1f);
+
+                    return false;
             }
+
+            return false;
+        });
+
+        mapbtn.setOnClickListener(v -> {
+
+            if (serialPortManager != null &&
+                    serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
+
+                Intent intent =
+                        new Intent(MainActivity.this, Maps.class);
+
+                startActivity(intent);
+
+                overridePendingTransition(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                );
+            }
+        });
+        menubtn.setOnTouchListener((v, event) -> {
+
+            switch (event.getAction()) {
+
+                case MotionEvent.ACTION_DOWN:
+
+                    // Instant tactile feedback
+                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+
+                    // Quick visual feedback
+                    v.setScaleX(0.94f);
+                    v.setScaleY(0.94f);
+                    v.setAlpha(0.85f);
+
+                    return false;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+
+                    // Restore instantly
+                    v.setScaleX(1f);
+                    v.setScaleY(1f);
+                    v.setAlpha(1f);
+
+                    return false;
+            }
+
+            return false;
         });
 
         menubtn.setOnClickListener(v -> {
-//            Log.d("MainActivity", "Menu button clicked");
-//            Log.d("MainActivity", "Menu OTA MCUVERSION "+serialPortManager.mad.getMcuVersions());
-//            Log.d("MainActivity", "THIS IS VIN_ON_CAN "+VIN_On_CAN);
-//            serialPortManager.VCUSendToMCU("FFAA550103001518FF50A5"+VIN_On_CAN);
-//            serialPortManager.VCUSendToMCU("FFAA5501030015189501400001020304050607");//+VIN_On_CAN);
 
-
-            if (serialPortManager!=null && serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
-               // Log.d("MainActivity", "BSG2_BYTE78 < 10 → sending VCU command + opening menu");
+            if (serialPortManager != null &&
+                    serialPortManager.getHb3().getBSG2_BYTE78() < 10) {
 
                 serialPortManager.VCUSendToMCU("FFAA550107000A01");
-                Intent intent = new Intent(MainActivity.this, menu.class);
-//                InactivityManager.getInstance().stopTimer();
-                startActivity(intent);
-            }
 
+                Intent intent =
+                        new Intent(MainActivity.this, menu.class);
+
+                startActivity(intent);
+
+                overridePendingTransition(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                );
+            }
         });
 
 //        lowtire_pressure_button.setOnClickListener(new View.OnClickListener() {

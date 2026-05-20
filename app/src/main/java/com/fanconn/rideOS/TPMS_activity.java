@@ -189,7 +189,6 @@ public class TPMS_activity extends AppCompatActivity {
                 int minor = intent.getIntExtra(TpmsScanService.EXTRA_MINOR, -1);
                 if (mac == null || minor < 0) return;
 
-                // ✅ FINAL values (NO conversion here)
                 int psi = (minor >> 8) & 0xFF;
                 int temp = minor & 0xFF;
 
@@ -202,7 +201,7 @@ public class TPMS_activity extends AppCompatActivity {
                     lastFrontUpdate = now;
                     frontPressure = psi;
                     frontTemp = temp;
-                    frontLow = psi < 30;
+                    frontLow = psi < 27;
 
                     frontPressureView.setText(psi + " psi");
                     frontTempView.setText(temp + "°C");
@@ -213,7 +212,7 @@ public class TPMS_activity extends AppCompatActivity {
                     lastRearUpdate = now;
                     rearPressure = psi;
                     rearTemp = temp;
-                    rearLow = psi < 30;
+                    rearLow = psi < 27;
 
                     rearPressureView.setText(psi + " psi");
                     rearTempView.setText(temp + "°C");

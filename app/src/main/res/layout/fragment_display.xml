@@ -144,7 +144,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kanitlite"
                     android:paddingEnd="15dp"
-                    android:text="Boost duration"
+                    android:text="Theme"
                     android:textColor="#FFFFFF"
                     android:textSize="32sp" />
 
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/kanit"
                     android:paddingTop="10dp"
-                    android:text="Boost duration"
+                    android:text="Set rideOS theme"
                     android:textColor="#7D7D7D"
                     android:textSize="17sp" />
             </LinearLayout>

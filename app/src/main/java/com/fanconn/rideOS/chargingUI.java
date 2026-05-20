@@ -88,6 +88,7 @@ public class chargingUI extends AppCompatActivity {
         binding = ActivityChargingUiBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         instance = this;
+        UIUpdater.isChargingUIVisible = true;
         serialPortManager = serialApplication.getSerialPortManager();
 
         // Full screen immersive mode
@@ -382,16 +383,16 @@ public class chargingUI extends AppCompatActivity {
             public void run() {
 
                 // ================= STOP AFTER 94% =================
-                if (actualSOC >= 94f) {
-
-                    binding.chargingBatteryArc.setBatteryLevel(actualSOC);
-
-                    pulseHandler.removeCallbacks(this);
-
-                    isChargingAnimationRunning = false;
-
-                    return;
-                }
+//                if (actualSOC >= 94f) {
+//
+//                    binding.chargingBatteryArc.setBatteryLevel(actualSOC);
+//
+//                    pulseHandler.removeCallbacks(this);
+//
+//                    isChargingAnimationRunning = false;
+//
+//                    return;
+//                }
 
                 if (pulseHandler == null || isFinishing() || isDestroyed()) {
                     return;
@@ -490,6 +491,7 @@ public class chargingUI extends AppCompatActivity {
         //EVLockService.getInstance().startLockSequence();
 
         //  Stop charging pulse animation safely
+        UIUpdater.isChargingUIVisible = false;
         stopBatteryPulseAnimation();
 
         //  Stop time update runnable

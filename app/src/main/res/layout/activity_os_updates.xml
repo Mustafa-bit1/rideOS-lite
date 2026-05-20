@@ -233,6 +233,7 @@
                     android:paddingEnd="1dp"
                     android:text="0d 00:00"
                     android:textColor="#FFFFFF"
+                    android:textAlignment="textStart"
                     android:textSize="25sp" />
             </LinearLayout>
 

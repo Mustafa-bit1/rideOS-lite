@@ -140,12 +140,12 @@ public class InactivityManager {
             startTimer(code,15000);
         }
         else{
-            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF SHort RESTTIMER");
+            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER ENTER ELSEPARTOF SHORTRESET");
         }
     }
 
     public void stopTimer() {
-        Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER NETER STOOPEDTIMER");
+        Log.d("TOUCHTIMER","TOUCHTIMER ENTER STOPTIMER");
         isRunning = false;
         handler.removeCallbacksAndMessages(null);
         countdownHandler.removeCallbacksAndMessages(null);
