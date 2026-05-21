@@ -145,7 +145,7 @@ public class chargingUI extends AppCompatActivity {
 
     private void acquisitionTime() {
 
-        if (mRunnableTime != null) return; // 🔒 PREVENT DUPLICATES
+        if (mRunnableTime != null) return;
 
         TimeManager timeManager = TimeManager.getInstance(this);
 
@@ -253,8 +253,15 @@ public class chargingUI extends AppCompatActivity {
                         }
 
                         int icon = getChargingIcon(chargingbit);
+
                         if (icon != 0) {
+
+                            binding.chagingstartedicon.setVisibility(View.VISIBLE);
                             binding.chagingstartedicon.setImageResource(icon);
+
+                        } else {
+
+                            binding.chagingstartedicon.setVisibility(View.INVISIBLE);
                         }
 
                         // ================= PULSE ONLY BELOW 94% =================
@@ -282,7 +289,7 @@ public class chargingUI extends AppCompatActivity {
 
                     // ================== FULL / PLUGGED ==================
                     if (actualSOC == 100 && chargingbit == 0) {
-                        binding.batfullmsg.setText("Battery Full, Disconnect the charger");
+                        binding.batfullmsg.setText("Battery full, disconnect the charger");
                         binding.batfullmsg.setVisibility(View.VISIBLE);
 
                     } else if (actualSOC < 100 && chargingbit == 0) {
@@ -324,15 +331,26 @@ public class chargingUI extends AppCompatActivity {
         socUpdateHandler.post(socUpdateRunnable);
     }
     private int getChargingIcon(float chargingbit) {
+
+        Log.d("asdfg", "ACTUALSOCINCHARGINGMODE IS -- " + actualSOC);
+
+        // FIRST PRIORITY
+        if (chargingbit>0 && actualSOC >= 100) {
+            return R.drawable.battery_full_unplug;
+        }
+
+        // NORMAL LOGIC
         if (chargingbit > 0 && chargingbit < 11) {
             return R.drawable.normal_charging;
+
         } else if (chargingbit >= 11 && chargingbit < 26) {
             return R.drawable.fast_charging;
+
         } else if (chargingbit >= 26) {
             return R.drawable.flash_charging;
-        } else {
-            return 0; // no icon
         }
+
+        return 0;
     }
     private float scaleSOCtoLess10(float actualSOC) {
 

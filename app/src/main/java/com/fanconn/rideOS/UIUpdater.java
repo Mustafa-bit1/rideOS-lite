@@ -296,10 +296,7 @@ public class UIUpdater  {
             indicators(currentSignal);  // only call if changed
             lastTurnSignalState = currentSignal; // update tracker
         }
-        if(hb1.getHeadlights() == 1)
-
-
-        {
+        if(hb1.getHeadlights() == 1) {
             binding.highBeamIVon.setVisibility(View.VISIBLE);
             binding.highBeamIVoff.setVisibility(View.INVISIBLE);
             if(reset_Auto_lock_inHighbeam_flag){
@@ -1979,7 +1976,13 @@ private int streamId = 0;
         }
 
         stopDelayHandler.removeCallbacks(stopBlinkingRunnable);
+
         Log.d("fcgvhbjnk","THIS IS INDICOTORSIGNAL FOR NOW 3-----"+newSignal);
+
+// LEFT/RIGHT -> HAZARD
+        if ((currentState == 1 || currentState == 2) && newSignal == 3) {
+            stopIndicatorSound();
+        }
 
         currentState = newSignal;
         lastActiveState = newSignal;
@@ -2010,7 +2013,7 @@ private int streamId = 0;
 
         blinkHandler.postDelayed(blinkRunnable, BLINK_INTERVAL_MS);
 
-        if (directionalGears != 2 && !isSoundPlaying && soundLoaded && !ignorefirstblink) {
+        if (currentState != 3 && directionalGears != 2 && !isSoundPlaying && soundLoaded && !ignorefirstblink) {
             isSoundPlaying = true;
             streamId = soundPool.play(soundId, 1, 1, 1, -1, 1);
         }
@@ -2031,7 +2034,14 @@ private int streamId = 0;
         binding.leftOn.setVisibility(View.INVISIBLE);
         binding.rightOn.setVisibility(View.INVISIBLE);
     }
+    private void stopIndicatorSound() {
+        isSoundPlaying = false;
 
+        if (streamId != 0) {
+            soundPool.stop(streamId);
+            streamId = 0;
+        }
+    }
 
 //    private void playIndicatorSound() {
 //        if (indicatorPlayer != null) {

@@ -147,7 +147,7 @@ public class Heartbeat3 {
     private float pendingChargingValue = -999f;
     private long pendingChargingSince = 0;
 
-    private static final long CHARGING_STABLE_TIME_MS = 3000;
+    private static final long CHARGING_STABLE_TIME_MS = 2000;
 
     public float getChargingbit() {
         return chargingbit;
