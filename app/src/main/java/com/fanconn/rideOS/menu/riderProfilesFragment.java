@@ -187,6 +187,25 @@ public class riderProfilesFragment extends Fragment {
         });
 
         etAge = view.findViewById(R.id.etAge);
+        etAge.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                if (s.length() == 2) {
+
+                    hideKeyboard();
+
+                    etAge.clearFocus();   // optional
+                }
+            }
+        });
 
         seekBarMaxSpeed = view.findViewById(R.id.seekBarMaxSpeed);
         seekBarTorque = view.findViewById(R.id.seekBarTorque);
@@ -622,12 +641,18 @@ public class riderProfilesFragment extends Fragment {
         btnNext.setVisibility(View.VISIBLE);
     }
     private void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager)
-                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        if (imm != null && requireActivity().getCurrentFocus() != null) {
-            imm.hideSoftInputFromWindow(requireActivity().getCurrentFocus().getWindowToken(), 0);
+        InputMethodManager imm =
+                (InputMethodManager) requireContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        View view = requireActivity().getCurrentFocus();
+
+        if (view == null) {
+            view = new View(requireContext());
         }
+
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 

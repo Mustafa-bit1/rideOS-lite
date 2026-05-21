@@ -278,6 +278,7 @@
                     android:textColor="@color/white"
                     android:textColorHint="#808080"
                     android:textSize="22sp"
+                    android:maxLength="2"
                     android:paddingStart="30dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

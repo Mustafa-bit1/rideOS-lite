@@ -42,7 +42,7 @@ public class QuickSettingsView extends FrameLayout {
     private boolean dragging;
     private SharedPreferences prefs;
     private ContentObserver brightnessObserver;
-
+    private TextView currentRiderTV;
     /* ================= WIFI RECEIVER ================= */
 
     private final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
@@ -106,7 +106,7 @@ public class QuickSettingsView extends FrameLayout {
         registerObservers(context);
 
         if(new_feature_btn!=null)
-        new_feature_btn.setBackgroundTintList(
+            new_feature_btn.setBackgroundTintList(
                 ColorStateList.valueOf(Color.parseColor("#1C78BE"))
         );
 
@@ -154,6 +154,14 @@ public class QuickSettingsView extends FrameLayout {
 
         volumeSlider = findViewById(R.id.volumeSlider);
         muteButton = findViewById(R.id.muteButton);
+
+        currentRiderTV = findViewById(R.id.currentRiderTV);
+        String riderName = getCurrentRider();
+        if (!riderName.isEmpty()) {
+            currentRiderTV.setText("Current rider: "+riderName);
+        } else {
+            currentRiderTV.setText("No Rider");
+        }
 
         brightnessManager.applyToVolumeSlider(volumeSlider, muteButton);
         syncVolumeUI();
@@ -263,11 +271,9 @@ public class QuickSettingsView extends FrameLayout {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
 
-                // 👇 TAP (no drag)
                 if (!dragging) {
                     smoothClose();   // animate close
                 }
-                // 👇 DRAG RELEASE
                 else {
                     settle();        // animate settle
                 }
@@ -296,6 +302,7 @@ public class QuickSettingsView extends FrameLayout {
         MainActivity.isVisible = false;
         syncBrightnessUI();
         syncVolumeUI();
+        updateCurrentRiderUI();
         animate()
                 .translationY(0)
                 .setDuration(120)
@@ -435,5 +442,25 @@ public class QuickSettingsView extends FrameLayout {
 
         context.getContentResolver()
                 .unregisterContentObserver(brightnessObserver);
+    }
+    private String getCurrentRider() {
+
+        SharedPreferences prefs =
+                getContext().getSharedPreferences(
+                        "app_session",
+                        Context.MODE_PRIVATE
+                );
+
+        return prefs.getString("current_rider", "");
+    }
+    private void updateCurrentRiderUI() {
+
+        String riderName = getCurrentRider();
+
+        if (!riderName.isEmpty()) {
+            currentRiderTV.setText("Current rider: "+riderName);
+        } else {
+            currentRiderTV.setText("No Rider");
+        }
     }
 }
