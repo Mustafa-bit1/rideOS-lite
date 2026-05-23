@@ -494,7 +494,7 @@ public class FeaturesFragment extends Fragment {
 //        }, 1000);
     }
     private void showSavedToast() {
-        showCustomToast("Saved    ");
+        showCustomToast("Saved");
     }
     private Toast currentToast;
     private void showCustomToast(String message) {

@@ -16,6 +16,7 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,7 +30,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 public class TPMS_activity extends AppCompatActivity {
 
     private static final String TAG = "TPMS-Activity";
-
+    private Button btnResync;
     // UI
     private ImageView backbtntpms, tpmsBikeImg;
     private TextView frontPressureView, frontTempView;
@@ -140,7 +141,15 @@ public class TPMS_activity extends AppCompatActivity {
         setupBackButton();
         prepareTpmsReceiver();
 //        InactivityManager.getInstance().stopTimer();
+        btnResync.setOnClickListener(v -> {
 
+            resetTpmsUi();
+
+            LocalBroadcastManager.getInstance(this)
+                    .sendBroadcast(
+                            new Intent(TpmsScanService.ACTION_TPMS_RESYNC)
+                    );
+        });
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(new Intent(TpmsScanService.ACTION_TPMS_REQUEST));
     }
@@ -156,8 +165,33 @@ public class TPMS_activity extends AppCompatActivity {
         rearStatus = findViewById(R.id.reartpmsIdealStatus);
         frontStatus = findViewById(R.id.fronttpmsIdealStatus);
         tpmsBikeImg = findViewById(R.id.tpmsbikeIMG);
+        btnResync = findViewById(R.id.btnResync);
     }
+    private void resetTpmsUi() {
 
+        frontAvailable = false;
+        rearAvailable = false;
+
+        frontLow = false;
+        rearLow = false;
+
+        frontPressure = 0;
+        rearPressure = 0;
+
+        frontTemp = 0;
+        rearTemp = 0;
+
+        lastFrontUpdate = 0;
+        lastRearUpdate = 0;
+
+        frontPressureView.setText("-- psi");
+        rearPressureView.setText("-- psi");
+
+        frontTempView.setText("-- °C");
+        rearTempView.setText("-- °C");
+
+        updateUI();
+    }
     private void setupBackButton() {
         backbtntpms.setOnClickListener(v -> {
             Intent intent = new Intent(this, MainActivity.class);
@@ -283,6 +317,7 @@ public class TPMS_activity extends AppCompatActivity {
             frontStatus.setText("No sensor detected");
             rearStatus.setText("No sensor detected");
             tpmsBikeImg.setImageResource(R.drawable.tpmsgg);
+
         }
     }
 

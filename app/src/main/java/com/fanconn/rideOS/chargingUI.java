@@ -208,7 +208,7 @@ public class chargingUI extends AppCompatActivity {
                     }
 
                     // ================== NOT CHARGING ==================
-                    if (chargingbit == 0) {
+                    if (chargingbit < 1) {
 
                         binding.chargingBatteryArc.setPulseMode(false);
                         binding.socText.setVisibility(View.INVISIBLE);
@@ -225,7 +225,7 @@ public class chargingUI extends AppCompatActivity {
                     }
 
                     // ================== CHARGING ==================
-                    else if (chargingbit > 0) {
+                    else if (chargingbit >= 1) {
 
                         binding.socText.setVisibility(View.VISIBLE);
                         binding.rangeAddedText.setVisibility(View.VISIBLE);
@@ -239,7 +239,7 @@ public class chargingUI extends AppCompatActivity {
 
                         //  Directly use scaled SOC (already decimal)
                         if (actualSOC >= 0 && actualSOC <= 100) {
-                            Log.d("SOC", "BatteryCHARGINGUI SCALED SOC: " + actualSOC);
+//                            Log.d("SOC", "BatteryCHARGINGUI SCALED SOC: " + actualSOC);
 
                             String socValue = String.format("%.2f%%", actualSOC);
 
@@ -496,7 +496,7 @@ public class chargingUI extends AppCompatActivity {
 //            UIUpdater.telechargingstate=0;
 
 
-            Log.d("sdafgd","CANCLINGCHARGING flague");
+            Log.d("sdafgd","FINISHING CHARGINGUIINCHARGINGCLASS=="+serialPortManager.getHb3().getChargingbit());
         };
         timeoutHandler.postDelayed(timeoutRunnable, 7000);
     }

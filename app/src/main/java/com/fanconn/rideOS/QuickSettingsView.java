@@ -18,11 +18,14 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.fanconn.rideOS.menu.BrightnessManager;
 import com.fanconn.rideOS.menu.settings;
@@ -85,7 +88,6 @@ public class QuickSettingsView extends FrameLayout {
     /* ================= INIT ================= */
 
     private void init(Context context) {
-
         LayoutInflater.from(context)
                 .inflate(R.layout.view_quick_settings, this, true);
 
@@ -103,6 +105,7 @@ public class QuickSettingsView extends FrameLayout {
         }
 
         setupUI(context);
+        updateTpmsButtonColor();
         registerObservers(context);
 
         if(new_feature_btn!=null)
@@ -110,12 +113,6 @@ public class QuickSettingsView extends FrameLayout {
                 ColorStateList.valueOf(Color.parseColor("#1C78BE"))
         );
 
-
-        if(blue_tpmsbtn!=null){
-            blue_tpmsbtn.setBackgroundTintList(
-                    ColorStateList.valueOf(Color.parseColor("#1C78BE"))
-            );
-        }
 
         post(() -> setTranslationY(-getHeight()));
     }
@@ -200,20 +197,34 @@ public class QuickSettingsView extends FrameLayout {
         /* ---------- TPMS ---------- */
 
         blue_tpmsbtn = findViewById(R.id.blue_tpmsbtn);
-        blue_tpmsbtn.setOnClickListener(v ->{
+        blue_tpmsbtn = findViewById(R.id.blue_tpmsbtn);
 
-//                v.animate()
-//                        .scaleX(0.92f)
-//                        .scaleY(0.92f)
-//                        .setDuration(70)
-//                        .withEndAction(() -> v.animate()
-//                                .scaleX(1f)
-//                                .scaleY(1f)
-//                                .setDuration(1))
-//                        .start();
+        blue_tpmsbtn.setOnClickListener(v -> {
 
-            context.startActivity(new Intent(context, TPMS_activity.class));
-    } );
+            // Click animation
+            v.animate()
+                    .scaleX(0.92f)
+                    .scaleY(0.92f)
+                    .setDuration(70)
+                    .withEndAction(() -> v.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .setDuration(20))
+                    .start();
+
+            // TPMS not available
+            if (!TpmsState.sensorAvailable) {
+
+                showCustomToast("No TPMS sensor detected");
+
+                return;
+            }
+
+            // Open TPMS screen
+            context.startActivity(
+                    new Intent(context, TPMS_activity.class)
+            );
+        });
 
         new_feature_btn = findViewById(R.id.new_feature_btn);
 
@@ -238,7 +249,22 @@ public class QuickSettingsView extends FrameLayout {
         });
 
     }
+    private void showCustomToast(String message) {
 
+        View layout = LayoutInflater.from(getContext())
+                .inflate(R.layout.toast_custom, null);
+
+        ((ImageView) layout.findViewById(R.id.toast_icon))
+                .setImageResource(R.drawable.toastlogo);
+
+        ((TextView) layout.findViewById(R.id.toast_text))
+                .setText(message);
+
+        Toast toast = new Toast(getContext());
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+        toast.show();
+    }
     /* ================= TOUCH DRAG ================= */
 
     @Override
@@ -286,6 +312,8 @@ public class QuickSettingsView extends FrameLayout {
     }
 
     public void smoothClose() {
+        tpmsHandler.removeCallbacks(tpmsRunnable);
+
         animate()
                 .translationY(-getHeight())
                 .setDuration(180)
@@ -308,6 +336,8 @@ public class QuickSettingsView extends FrameLayout {
                 .setDuration(120)
                 .setInterpolator(new android.view.animation.DecelerateInterpolator())
                 .start();
+        tpmsHandler.post(tpmsRunnable);
+
     }
 
     public void close() {
@@ -463,4 +493,44 @@ public class QuickSettingsView extends FrameLayout {
             currentRiderTV.setText("No Rider");
         }
     }
+    private void updateTpmsButtonColor() {
+
+        boolean tpmsAvailable = TpmsState.sensorAvailable;
+
+//        Log.d("TPMS_STATUS",
+//                "QuickSettings Read = " + tpmsAvailable);
+
+        if (blue_tpmsbtn == null)
+            return;
+
+        if (tpmsAvailable) {
+
+//            Log.d("TPMS_STATUS", "SETTING BLUE");
+
+
+            blue_tpmsbtn.setBackgroundTintList(
+                    ColorStateList.valueOf(Color.parseColor("#1C78BE"))
+            );
+
+        } else {
+
+//            Log.d("TPMS_STATUS", "SETTING GREY");
+
+
+            blue_tpmsbtn.setBackgroundTintList(
+                    ColorStateList.valueOf(Color.parseColor("#555555"))
+            );
+        }
+    }
+    private final Handler tpmsHandler = new Handler(Looper.getMainLooper());
+
+    private final Runnable tpmsRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+            updateTpmsButtonColor();
+
+            tpmsHandler.postDelayed(this, 1000);
+        }
+    };
 }

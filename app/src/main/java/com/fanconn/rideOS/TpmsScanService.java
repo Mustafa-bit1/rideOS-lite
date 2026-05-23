@@ -30,7 +30,8 @@ import java.util.Set;
 public class TpmsScanService extends Service {
 
     private static final String TAG = "TPMS-Service";
-
+    public static final String ACTION_TPMS_RESYNC =
+            "com.fanconn.rideOS.ACTION_TPMS_RESYNC";
     // Broadcast constants
     public static final String ACTION_TPMS_UPDATE  = "com.fanconn.rideOS.ACTION_TPMS_UPDATE";
     public static final String ACTION_TPMS_REQUEST = "com.fanconn.rideOS.ACTION_TPMS_REQUEST";
@@ -74,6 +75,19 @@ public class TpmsScanService extends Service {
                 Log.d(TAG, "🔄 ACTION_TPMS_RESTART → restarting scan");
                 restartScanSafely();
             }
+            else if (ACTION_TPMS_RESYNC.equals(intent.getAction())) {
+
+                Log.d(TAG, "TPMS RESYNC");
+
+                // Forget all old packets
+                latestMinorMap.clear();
+
+                // Reset state
+                TpmsState.sensorAvailable = false;
+
+                // Restart BLE scan
+                restartScanSafely();
+            }
 
         }
     };
@@ -95,6 +109,7 @@ public class TpmsScanService extends Service {
         IntentFilter f = new IntentFilter();
         f.addAction(ACTION_TPMS_REQUEST);
         f.addAction(ACTION_TPMS_RESTART);
+        f.addAction(ACTION_TPMS_RESYNC);
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(tpmsRequestReceiver, f);
         lastScanTime = System.currentTimeMillis();
@@ -161,7 +176,8 @@ public class TpmsScanService extends Service {
     }
 
     private long lastScanTime = 0;
-
+    private long lastTpmsPacketTime = 0;
+    private static final long TPMS_TIMEOUT_MS = 15000; // 15 sec
     private final ScanCallback scanCallback = new ScanCallback() {
 
         @Override
@@ -177,6 +193,11 @@ public class TpmsScanService extends Service {
                     TpmsParser.parse(result.getScanRecord().getBytes());
 
             if (!d.valid) return;
+
+            TpmsState.sensorAvailable = true;
+            lastTpmsPacketTime = System.currentTimeMillis();
+//            Log.d("TPMS_STATUS",
+//                    "SERVICE SET sensorAvailable = true");
 
             int psiInt  = (int) Math.round(d.psi);
             int tempInt = d.temperature;
@@ -229,8 +250,16 @@ public class TpmsScanService extends Service {
         @Override
         public void run() {
 
+
             long now = System.currentTimeMillis();
 
+            if (System.currentTimeMillis() - lastTpmsPacketTime > TPMS_TIMEOUT_MS) {
+
+                TpmsState.sensorAvailable = false;
+
+//                Log.d("TPMS_STATUS",
+//                        "SERVICE SET sensorAvailable = false");
+            }
             if (now - lastScanTime > SCAN_STALL_TIMEOUT_MS
                     && now - lastRestartTime > 30_000) {
 
