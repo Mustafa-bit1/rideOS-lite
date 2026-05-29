@@ -348,7 +348,7 @@ public class TPMS_activity extends AppCompatActivity {
     float[] startY = new float[1];
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        return GestureHelper.handleGesture(this, ev, startY)
+        return GestureHelper.handleGesture(this, ev)
                 || super.dispatchTouchEvent(ev);
     }
 }

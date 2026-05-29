@@ -3,101 +3,140 @@ package com.fanconn.rideOS;
 import android.app.Activity;
 import android.content.Intent;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 
 public class GestureHelper {
 
-    private static final String TAG = "EDGE_GESTURE";
+    // Swipe must START from bottom area
+    private static final int EDGE_ZONE_DP = 22;
 
-    private static final int EDGE_SWIPE_THRESHOLD = 80;    // bottom 80px only
-    private static final int MIN_SWIPE_DISTANCE = 160;     // strong swipe
+    // Required upward swipe distance
+    private static final int MIN_SWIPE_DISTANCE_DP = 180;
 
-    private static boolean gestureEnabledForThisTouch = false;
-    private static float startRawY = -1;
+    // Reject diagonal / horizontal swipes
+    private static final int MAX_HORIZONTAL_MOVEMENT_DP = 70;
 
-    public static boolean handleGesture(Activity activity, MotionEvent event, float[] dummy) {
+    // Swipe must be fast
+    private static final long MAX_GESTURE_TIME = 300;
 
-        DisplayMetrics dm = activity.getResources().getDisplayMetrics();
+    private static boolean gestureValid = false;
+
+    private static float startX;
+    private static float startY;
+
+    private static long downTime;
+
+    public static boolean handleGesture(Activity activity, MotionEvent event) {
+
+        // REAL screen metrics
+        DisplayMetrics dm = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+
+        float density = dm.density;
+
         int screenHeight = dm.heightPixels;
+
+        float EDGE_ZONE = EDGE_ZONE_DP * density;
+        float MIN_SWIPE_DISTANCE = MIN_SWIPE_DISTANCE_DP * density;
+        float MAX_HORIZONTAL_MOVEMENT = MAX_HORIZONTAL_MOVEMENT_DP * density;
 
         switch (event.getActionMasked()) {
 
             case MotionEvent.ACTION_DOWN: {
 
-                float rawY = event.getRawY();
-                startRawY = rawY;
+                startX = event.getRawX();
+                startY = event.getRawY();
 
-                // ✅ DISTANCE FROM BOTTOM (correct logic)
-                float distanceFromBottom = screenHeight - rawY;
+                downTime = System.currentTimeMillis();
 
-                boolean inBottomEdge = distanceFromBottom <= EDGE_SWIPE_THRESHOLD;
+                // Distance from bottom edge
+                float distanceFromBottom = screenHeight - startY;
 
-//               // Log.e(TAG, "DOWN rawY=" + rawY +
-//                        " screenH=" + screenHeight +
-//                        " distFromBottom=" + distanceFromBottom +
-//                        " inEdge=" + inBottomEdge);
-
-                // 🔒 HARD GATE
-                gestureEnabledForThisTouch = inBottomEdge;
+                // Gesture valid ONLY if touch starts from bottom zone
+                gestureValid =
+                        distanceFromBottom >= 0 &&
+                                distanceFromBottom <= EDGE_ZONE;
 
                 return false;
             }
 
-            case MotionEvent.ACTION_MOVE:
-                // ❌ if not enabled at DOWN → ignore forever
+            case MotionEvent.ACTION_MOVE: {
+
+                if (!gestureValid) {
+                    return false;
+                }
+
+                float currentX = event.getRawX();
+
+                float diffX = Math.abs(currentX - startX);
+
+                // Reject if finger moves too much sideways
+                if (diffX > MAX_HORIZONTAL_MOVEMENT) {
+                    gestureValid = false;
+                }
+
                 return false;
+            }
 
             case MotionEvent.ACTION_UP: {
 
-                if (!gestureEnabledForThisTouch) {
+                if (!gestureValid) {
                     reset();
                     return false;
                 }
 
-                float endRawY = event.getRawY();
-                float diffY = endRawY - startRawY;
+                float endY = event.getRawY();
 
-//                Log.e(TAG, "UP rawY=" + endRawY +
-//                        " diffY=" + diffY +
-//                        " enabled=" + gestureEnabledForThisTouch);
+                // Upward swipe distance
+                float diffY = startY - endY;
 
-                // ✅ Only bottom → top swipe
-                if (diffY < -MIN_SWIPE_DISTANCE) {
+                // Gesture duration
+                long gestureDuration =
+                        System.currentTimeMillis() - downTime;
 
-                    //Log.e(TAG, "🔥 EDGE HOME GESTURE");
+                // FINAL CHECK
+                if (diffY > MIN_SWIPE_DISTANCE &&
+                        gestureDuration < MAX_GESTURE_TIME) {
 
-                    Intent intent = new Intent(activity, MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    Intent intent =
+                            new Intent(activity, MainActivity.class);
+
+                    intent.setFlags(
+                            Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                                    Intent.FLAG_ACTIVITY_SINGLE_TOP
+                    );
+
                     activity.startActivity(intent);
+
                     activity.finish();
+
                     activity.overridePendingTransition(
                             R.anim.zoom_in_enter,
                             R.anim.zoom_out_exit
                     );
 
                     reset();
+
                     return true;
                 }
 
                 reset();
-                break;
+                return false;
             }
 
-            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_CANCEL: {
                 reset();
                 break;
+            }
         }
 
         return false;
     }
 
     private static void reset() {
-        gestureEnabledForThisTouch = false;
-        startRawY = -1;
+        gestureValid = false;
     }
 }
-
 
 
 

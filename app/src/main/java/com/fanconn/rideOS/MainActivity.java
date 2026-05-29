@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         @Override
         public void onReceive(Context context, Intent intent) {
             String frame = intent.getStringExtra("frame_data");
-            if(frame.startsWith("FFAA66"))
+//            if(frame.startsWith("FFAA77030300151890"))
                 Log.d("FRAME", "Received FRAME 6666666 " + frame);
             //Log.d("kdfsg","SERIAL FRAME : "+frame);
 //            if(frame.length()>22){
@@ -2198,7 +2198,7 @@ public void runPostLoginInit() {
         public boolean onFling(MotionEvent e1, MotionEvent e2,
                                float velocityX, float velocityY) {
 
-            // 🔒 FIRST: if QS is being dragged → finish it
+            // FIRST: if QS is being dragged → finish it
             if (isDraggingQS) {
                 finishQuickSettings(velocityY);
                 isDraggingQS = false;

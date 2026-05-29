@@ -111,7 +111,7 @@ public class Maps extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (GestureHelper.handleGesture(this, ev, startY)) {
+        if (GestureHelper.handleGesture(this, ev)) {
             return true;
         }
         return super.dispatchTouchEvent(ev);

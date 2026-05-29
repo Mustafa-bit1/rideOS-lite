@@ -3047,7 +3047,7 @@ private int streamId = 0;
 
                     frontWarning = (psi < MIN_PRESSURE_PSI || temp > MAX_TEMP_C);
 
-                    // 🔊 Play sound ONLY if PSI DROPS and BELOW 30
+                    //  Play sound ONLY if PSI DROPS and BELOW 30
                     if (lastFrontPsi != null) {
                         if (psi < lastFrontPsi && psi < MIN_PRESSURE_PSI) {
                             playLowTireSound();
@@ -3081,7 +3081,7 @@ private int streamId = 0;
 
                 /* ================= UI ================= */
 
-                if (frontWarning || rearWarning) {
+                if ((frontWarning || rearWarning) && TpmsState.sensorAvailable) {
 //                    binding.tpmsicon.setVisibility(View.VISIBLE);
                     binding.tpmsicon.setImageResource(R.drawable.tpmsicon);
 //                    binding.lowTireWarning.setVisibility(View.VISIBLE);

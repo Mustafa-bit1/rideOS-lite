@@ -338,6 +338,7 @@ public class QuickSettingsView extends FrameLayout {
                 .start();
         tpmsHandler.post(tpmsRunnable);
 
+
     }
 
     public void close() {
