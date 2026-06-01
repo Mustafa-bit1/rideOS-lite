@@ -587,7 +587,7 @@ public class TelemetryService extends Service {
     private void startTelemetry(String VINNUMBER) {
         evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://sb.rivotmotors.com:8081/ws/ev"));
 //        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.174.148.224:8081/ws/ev"));
-//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.115:8081/ws/ev"));
+//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.134:8081/ws/ev"));
 
         evClient.connect();
 
@@ -716,17 +716,39 @@ public class TelemetryService extends Service {
                         !smartKeyID.equals(prefs.getString("smartKey", "")) ||
                         !model.equals(prefs.getString("model", ""));
 
-        VehicleData data = anyChanged ?
-                new VehicleData(vinNumber, model, ownerName, phoneNumber, controllerID,
-                        motorID, bmsID, chargerID, rideOSversion, smartKeyID,
-                        odo, chargingState, handleLockState, seatLockState,
-                        bmsMosStates, riders, bmslifecycles, lat_long, time)
-
-                :
-                new VehicleData(vinNumber, null, null, null, null,
-                        null, null, null, rideOSversion, null,
-                        odo, chargingState, handleLockState, seatLockState,
-                        bmsMosStates, riders, bmslifecycles, lat_long, time);
+//        VehicleData data = anyChanged ?
+//                new VehicleData(vinNumber, model, ownerName, phoneNumber, controllerID,
+//                        motorID, bmsID, chargerID, rideOSversion, smartKeyID,
+//                        odo, chargingState, handleLockState, seatLockState,
+//                        bmsMosStates, riders, bmslifecycles, lat_long, time)
+//
+//                :
+//                new VehicleData(vinNumber, null, null, null, null,
+//                        null, null, null, rideOSversion, null,
+//                        odo, chargingState, handleLockState, seatLockState,
+//                        bmsMosStates, riders, bmslifecycles, lat_long, time);
+        VehicleData data =
+                new VehicleData(
+                        vinNumber,
+                        null,   // model
+                        null,   // owner
+                        null,   // phone
+                        null,   // controller
+                        null,   // motor
+                        null,   // bms
+                        null,   // charger
+                        rideOSversion,
+                        null,   // smart key
+                        odo,
+                        chargingState,
+                        handleLockState,
+                        seatLockState,
+                        bmsMosStates,
+                        riders,
+                        bmslifecycles,
+                        lat_long,
+                        time
+                );
         Log.d("TelemetryService", "Sending telemetry: " + TelemetryDataManager.getInstance().getTeleLatLong());
 
         if (anyChanged) {
@@ -897,7 +919,7 @@ public class TelemetryService extends Service {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (!response.isSuccessful()) {
-                    Log.e("TelemetryService", "❌ RealTimeData failed: " + response.code());
+                   // Log.e("TelemetryService", "❌ RealTimeData failed: " + response.code());
                 }
             }
 
@@ -907,7 +929,7 @@ public class TelemetryService extends Service {
                         .getInstance(getApplicationContext())
                         .addData(data);
 
-                Log.e("TelemetryService", "Failed, re-staged", t);
+            //    Log.e("TelemetryService", "Failed, re-staged", t);
             }
         });
     }
@@ -997,22 +1019,22 @@ public class TelemetryService extends Service {
 
                         // Save in your TelemetryDataManager so telemetry loop can send it
                         TelemetryDataManager.getInstance().setTeleLatLong(latlong);
-                        Log.d("TelemetryService", "Updated location = " + latlong);
+                     //   Log.d("TelemetryService", "Updated location = " + latlong);
                     }
 
                     @Override
                     public void onProviderDisabled(@NonNull String provider) {
-                        Log.w("TelemetryService", "Provider disabled: " + provider);
+                      //  Log.w("TelemetryService", "Provider disabled: " + provider);
                     }
 
                     @Override
                     public void onProviderEnabled(@NonNull String provider) {
-                        Log.d("TelemetryService", "Provider enabled: " + provider);
+                      //  Log.d("TelemetryService", "Provider enabled: " + provider);
                     }
 
                     @Override
                     public void onStatusChanged(String provider, int status, Bundle extras) {
-                        Log.d("TelemetryService", "Status changed: " + provider + " status=" + status);
+                      //  Log.d("TelemetryService", "Status changed: " + provider + " status=" + status);
                     }
                 }
         );
@@ -1042,12 +1064,12 @@ public class TelemetryService extends Service {
         try {
             if (serialPortManager != null && serialPortManager.mad != null) {
                 liveVersion = serialPortManager.mad.getMcuVersions();
-                Log.d("asfdg","IFOFNULLSEERIAL ");
+             //   Log.d("asfdg","IFOFNULLSEERIAL ");
 
             }
             //else Log.d("asfdg","ELSEOFNULLSEERIAL ");
         } catch (Exception e) {
-            Log.e("OTA", "MCU version read failed", e);
+            //Log.e("OTA", "MCU version read failed", e);
         }
 
         if (liveVersion > 0) {
@@ -1057,7 +1079,7 @@ public class TelemetryService extends Service {
                     .putInt(KEY_LAST_MCU_VERSION, liveVersion)
                     .apply();
 
-            Log.d("OTA", "Telemetry using LIVE MCU version: " + liveVersion);
+           // Log.d("OTA", "Telemetry using LIVE MCU version: " + liveVersion);
             return liveVersion;
         }
 

@@ -337,7 +337,7 @@ public class riderProfilesFragment extends Fragment {
 
             if (vin == null || vin.equals("UNKNOWN_VIN") || vin.trim().isEmpty()) {
                 showCustomToasterror("Empty VIN");
-                return;
+               // return;
             }
 
             if (getRegisteredRiderCount() >= 4) {

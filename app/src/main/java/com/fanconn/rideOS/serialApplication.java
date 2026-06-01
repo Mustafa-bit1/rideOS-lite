@@ -66,7 +66,7 @@ public class serialApplication extends MyApp {
             startService(intent);
         }
 
-        // ✅ Acquire partial wake lock to keep CPU alive
+        //  Acquire partial wake lock to keep CPU alive
 //        PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
 //        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "rideOS::SerialLock");
 //        wakeLock.acquire(); // Now CPU will stay on

@@ -59,7 +59,7 @@ public class TpmsScanService extends Service {
 
             if (ACTION_TPMS_REQUEST.equals(intent.getAction())) {
 
-                Log.d(TAG, "📡 ACTION_TPMS_REQUEST → sending cached values");
+                //Log.d(TAG, " ACTION_TPMS_REQUEST → sending cached values");
 
                 for (Map.Entry<String, Integer> e : latestMinorMap.entrySet()) {
                     Intent update = new Intent(ACTION_TPMS_UPDATE);
@@ -72,12 +72,12 @@ public class TpmsScanService extends Service {
 
             } else if (ACTION_TPMS_RESTART.equals(intent.getAction())) {
 
-                Log.d(TAG, "🔄 ACTION_TPMS_RESTART → restarting scan");
+               // Log.d(TAG, " ACTION_TPMS_RESTART → restarting scan");
                 restartScanSafely();
             }
             else if (ACTION_TPMS_RESYNC.equals(intent.getAction())) {
 
-                Log.d(TAG, "TPMS RESYNC");
+               // Log.d(TAG, "TPMS RESYNC");
 
                 // Forget all old packets
                 latestMinorMap.clear();
@@ -101,7 +101,7 @@ public class TpmsScanService extends Service {
         validMacs.add(metadata.getFrontTPMS());
         validMacs.add(metadata.getRearTPMS());
 
-        Log.d(TAG, "Valid TPMS MACs = " + validMacs);
+       // Log.d(TAG, "Valid TPMS MACs = " + validMacs);
 
         startForegroundService();
         startScanning();
@@ -172,7 +172,7 @@ public class TpmsScanService extends Service {
         isScanning = true;
         lastScanTime = System.currentTimeMillis();
 
-        Log.d(TAG, "BLE scan started");
+     //   Log.d(TAG, "BLE scan started");
     }
 
     private long lastScanTime = 0;
@@ -218,23 +218,23 @@ public class TpmsScanService extends Service {
                     .getInstance(TpmsScanService.this)
                     .sendBroadcast(i);
 
-            Log.d(TAG,
-                    "TPMSBATTAERY | " + mac +
-                            " | PSI=" + String.format("%.1f", d.psi) +
-                            " | TEMP=" + d.temperature +
-                            " | BAT=" + (d.voltage > 0
-                            ? String.format("%.2fV", d.voltage)
-                            : (d.lowBattery ? "LOW" : "OK")) +
-                            " | TYPE=" + d.type
-            );
+//            Log.d(TAG,
+//                    "TPMSBATTAERY | " + mac +
+//                            " | PSI=" + String.format("%.1f", d.psi) +
+//                            " | TEMP=" + d.temperature +
+//                            " | BAT=" + (d.voltage > 0
+//                            ? String.format("%.2fV", d.voltage)
+//                            : (d.lowBattery ? "LOW" : "OK")) +
+//                            " | TYPE=" + d.type
+//            );
             if(d.voltage>0  && Objects.equals(mac, metadata.getFrontTPMS())){
-                Log.d("asfaf","THSIISTPMSBATTERYVOATGE FRONT "+String.format("%.2fV", d.voltage));
+              //  Log.d("asfaf","THSIISTPMSBATTERYVOATGE FRONT "+String.format("%.2fV", d.voltage));
                 TelemetryDataManager.getInstance()
                         .setTeleFTirePressureVoltage(String.format("%.2fV", d.voltage));
 
             }
             else if (d.voltage>0  && Objects.equals(mac, metadata.getRearTPMS())) {
-                Log.d("asfaf","THSIISTPMSBATTERYVOATGE REAR "+String.format("%.2fV", d.voltage));
+              //  Log.d("asfaf","THSIISTPMSBATTERYVOATGE REAR "+String.format("%.2fV", d.voltage));
                 TelemetryDataManager.getInstance()
                         .setTeleRTirePressureVoltage(String.format("%.2fV", d.voltage));
             }

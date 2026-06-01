@@ -10,6 +10,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -31,4 +32,9 @@ public interface ApiService {
 
     @DELETE("api/rider/delete/{id}")
     Call<ResponseBody> deleteRider(@Path("id") int id);
+
+    @GET("api/vehicle/metadata/{vin}")
+    Call<VehicleMetadataResponse> getVehicleMetadata(
+            @Path("vin") String vin
+    );
 }

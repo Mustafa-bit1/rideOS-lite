@@ -265,6 +265,9 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         instance = this;
         startService(new Intent(this, WatchdogService.class));//wacthdog service
 
+
+
+
         IntentFilter lockbtnpressedofsettingclass = new IntentFilter("com.ev.LOCK");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(lockReceiver, lockbtnpressedofsettingclass, Context.RECEIVER_NOT_EXPORTED);
@@ -273,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
 //        menu menu = new menu(this); // 'this' refers to MainActivity
         uiUpdater = new UIUpdater(binding, this);
+
 
 //        ScreenController.init(serialPortManager);///passing serialPoertManager to ScreenController Class
 //        cameraHandler = new CameraHandler(binding, this);
@@ -545,6 +549,14 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         speedArc = findViewById(R.id.speedArc);
 
+
+
+        if (!MetadataManager.get().isMetadataSynced()) {
+
+            startActivity(new Intent(this, MetadataActivity.class));
+            finish();
+            return;
+        }
         //startTestAnimation();
     }//END OF ONCREATE METHOD
     private void startTestAnimation() {

@@ -171,7 +171,7 @@ public class OS_UpdatesFragment extends Fragment {
 
             InactivityManager.getInstance().stopTimer();
 
-            // 1️⃣ Internet check
+            // 1️ Internet check
             if (!FrameUtils.isNetworkAvailable(requireActivity())) {
 //                Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
                 showCustomToast("No internet connection");
@@ -179,10 +179,10 @@ public class OS_UpdatesFragment extends Fragment {
                 return;
             }
 
-            // 2️⃣ Disable button (avoid double clicks)
+            // 2️ Disable button (avoid double clicks)
             otaupdatebtn.setEnabled(false);
 
-            // 3️⃣ Check AOSP version FIRST
+            // 3️ Check AOSP version FIRST
             int localAospVersion = Integer.parseInt(Build.ID);
             String versionUrl = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
 

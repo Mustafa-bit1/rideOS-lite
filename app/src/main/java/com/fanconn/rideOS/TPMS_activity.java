@@ -69,12 +69,12 @@ public class TPMS_activity extends AppCompatActivity {
 
             if (frontAvailable && now - lastFrontUpdate > SENSOR_TIMEOUT_MS) {
                 frontAvailable = false;
-                Log.d(TAG, "Front sensor timed out");
+              //  Log.d(TAG, "Front sensor timed out");
             }
 
             if (rearAvailable && now - lastRearUpdate > SENSOR_TIMEOUT_MS) {
                 rearAvailable = false;
-                Log.d(TAG, "Rear sensor timed out");
+               // Log.d(TAG, "Rear sensor timed out");
             }
 
             updateUI();
@@ -228,7 +228,7 @@ public class TPMS_activity extends AppCompatActivity {
 
                 long now = System.currentTimeMillis();
 
-                Log.d(TAG, "TPMS FINAL | " + mac + " | PSI=" + psi + " | TEMP=" + temp);
+              //  Log.d(TAG, "TPMS FINAL | " + mac + " | PSI=" + psi + " | TEMP=" + temp);
 
                 if (TextUtils.equals(mac, metadata.getFrontTPMS())) {
                     frontAvailable = true;

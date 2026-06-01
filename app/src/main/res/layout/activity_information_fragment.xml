@@ -94,6 +94,62 @@
                     />
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="20dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Owner"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="22sp"
+                    android:paddingStart="15dp"/>
+
+                <TextView
+                    android:id="@+id/OwnerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sample Owner"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="25sp"
+                    android:paddingEnd="15dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="20dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="nx100 Model"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="22sp"
+                    android:paddingStart="15dp"/>
+
+                <TextView
+                    android:id="@+id/nx100Model"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="VINME897YU12GR001"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="25sp"
+                    android:paddingEnd="15dp"
+                    />
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -244,6 +300,62 @@
 
                 <TextView
                     android:id="@+id/smartkeyid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0908070605040302"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:paddingEnd="15dp"
+                    android:textSize="25sp"  />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="20dp"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Front TPMS ID"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="22sp"
+                    android:paddingStart="15dp"/>
+
+                <TextView
+                    android:id="@+id/frontTPMSID"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="09:08:07:06:05"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:paddingEnd="15dp"
+                    android:textSize="25sp"  />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="20dp"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Rear TPMS ID"
+                    android:textColor="#FFFFFF"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="22sp"
+                    android:paddingStart="15dp"/>
+
+                <TextView
+                    android:id="@+id/rearTPMSID"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0908070605040302"

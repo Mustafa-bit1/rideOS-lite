@@ -12,14 +12,13 @@
 
     <ImageButton
         android:id="@+id/menubackbtn"
-        android:layout_width="105dp"
-        android:layout_height="53dp"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
         android:background="@android:color/transparent"
         android:padding="0dp"
-        android:scaleType="fitXY"
         android:src="@drawable/backbtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -44,118 +43,124 @@
             <!-- Common style applied to all -->
             <EditText
                 android:id="@+id/etVin"
-                android:layout_width="match_parent"
+                android:layout_width="380dp"
                 android:layout_height="wrap_content"
-                android:hint="VIN Number"
+                android:background="@drawable/rounded_edittext_border"
+                android:fontFamily="@font/kanit"
+                android:hint="Enter VIN"
+                android:layout_gravity="center"
                 android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151" />
+                android:textColor="@color/white"
+                android:textColorHint="#808080"
+                android:textSize="22sp"
+                android:paddingStart="30dp"/>
 
-            <EditText
-                android:id="@+id/etModel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Vehicle Model"
-                android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151" />
-
-
-            <EditText
-                android:id="@+id/etOwner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Owner Name"
-                android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151"  />
-
-            <EditText
-                android:id="@+id/etPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Phone Number"
-                android:inputType="phone"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151"  />
-
-            <EditText
-                android:id="@+id/etFrontMacAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter front tire TPMS ID (e.g., 08:35:1B:00:09:E1)"
-                android:inputType="textVisiblePassword"
-                android:maxLength="17"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151"
-                android:digits="0123456789ABCDEFabcdef:" />
-
-            <EditText
-                android:id="@+id/etRearMacAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter rear tire TPMS ID (e.g., 08:35:1B:00:09:E1)"
-                android:inputType="textVisiblePassword"
-                android:maxLength="17"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151"
-                android:digits="0123456789ABCDEFabcdef:" />
+<!--            <EditText-->
+<!--                android:id="@+id/etModel"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Vehicle Model"-->
+<!--                android:inputType="text"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151" />-->
 
 
-            <EditText
-                android:id="@+id/etController"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Controller ID"
-                android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151"  />
+<!--            <EditText-->
+<!--                android:id="@+id/etOwner"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Owner Name"-->
+<!--                android:inputType="text"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151"  />-->
 
-            <EditText
-                android:id="@+id/etMotor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Motor ID"
-                android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151" />
+<!--            <EditText-->
+<!--                android:id="@+id/etPhone"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Phone Number"-->
+<!--                android:inputType="phone"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151"  />-->
 
-            <EditText
-                android:id="@+id/etBms"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="BMS ID"
-                android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151"  />
+<!--            <EditText-->
+<!--                android:id="@+id/etFrontMacAddress"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Enter front tire TPMS ID (e.g., 08:35:1B:00:09:E1)"-->
+<!--                android:inputType="textVisiblePassword"-->
+<!--                android:maxLength="17"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151"-->
+<!--                android:digits="0123456789ABCDEFabcdef:" />-->
 
-            <EditText
-                android:id="@+id/etCharger"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Charger ID"
-                android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151" />
+<!--            <EditText-->
+<!--                android:id="@+id/etRearMacAddress"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Enter rear tire TPMS ID (e.g., 08:35:1B:00:09:E1)"-->
+<!--                android:inputType="textVisiblePassword"-->
+<!--                android:maxLength="17"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151"-->
+<!--                android:digits="0123456789ABCDEFabcdef:" />-->
 
-            <EditText
-                android:id="@+id/etSmartKey"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Smart Key ID"
-                android:inputType="text"
-                android:textColor="@android:color/white"
-                android:textColorHint="#515151" />
+
+<!--            <EditText-->
+<!--                android:id="@+id/etController"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Controller ID"-->
+<!--                android:inputType="text"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151"  />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/etMotor"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Motor ID"-->
+<!--                android:inputType="text"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/etBms"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="BMS ID"-->
+<!--                android:inputType="text"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151"  />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/etCharger"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Charger ID"-->
+<!--                android:inputType="text"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151" />-->
+
+<!--            <EditText-->
+<!--                android:id="@+id/etSmartKey"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:hint="Smart Key ID"-->
+<!--                android:inputType="text"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textColorHint="#515151" />-->
 
             <Button
                 android:id="@+id/btnSave"
                 android:layout_width="200dp"
                 android:layout_marginStart="540dp"
                 android:layout_height="wrap_content"
-                android:text="Save and Restart"
+                android:text="Save VIN"
                 android:textColor="@android:color/white"
-                android:backgroundTint="@android:color/holo_blue_light"
+                android:background="@drawable/save_button_bg"
                 android:layout_marginTop="24dp" />
+
 
         </LinearLayout>
     </ScrollView>
