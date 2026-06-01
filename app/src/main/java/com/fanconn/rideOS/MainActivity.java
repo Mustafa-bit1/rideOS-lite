@@ -557,6 +557,13 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             finish();
             return;
         }
+
+        if (VINNUMBER != null && !VINNUMBER.equals("UNKNOWN") && !VINNUMBER.equals("UNKNOWN_VIN") && !VINNUMBER.trim().isEmpty()) {
+            MetadataManager.get().syncMetadataFromServer(VINNUMBER, null);
+//            Log.d("FETCH", "Metadata fetch started for VIN = " + vin);
+        } else {
+//            Log.d("FETCH", "Invalid VIN");
+        }
         //startTestAnimation();
     }//END OF ONCREATE METHOD
     private void startTestAnimation() {

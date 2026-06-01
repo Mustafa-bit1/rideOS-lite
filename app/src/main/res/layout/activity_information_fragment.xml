@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="1001dp"
     android:layout_height="418dp"
-    android:background="@drawable/fragmentbg"
+android:background="@color/black"
     tools:context="com.fanconn.rideOS.menu.informationFragment">
 
     <!-- Fixed Heading -->
@@ -14,9 +14,9 @@
         android:id="@+id/imageView2"
         android:layout_width="948dp"
         android:layout_height="122dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/supportheading"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:src="@drawable/informationheading"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -66,6 +66,7 @@
 <!--            </LinearLayout>-->
 
             <!-- Row 1: Support Line -->
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -411,5 +412,18 @@
 
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/Refreshbtn"
+        android:layout_width="150dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="786dp"
+        android:layout_marginTop="36dp"
+        android:background="@drawable/save_button_bg"
+        android:text="Refresh"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

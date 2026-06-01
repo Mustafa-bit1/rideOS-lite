@@ -29,14 +29,14 @@ import java.util.Set;
 
 public class TpmsScanService extends Service {
 
-    private static final String TAG = "TPMS-Service";
+    private static final String TAG = "TPMS_Service";
     public static final String ACTION_TPMS_RESYNC =
             "com.fanconn.rideOS.ACTION_TPMS_RESYNC";
     // Broadcast constants
     public static final String ACTION_TPMS_UPDATE  = "com.fanconn.rideOS.ACTION_TPMS_UPDATE";
     public static final String ACTION_TPMS_REQUEST = "com.fanconn.rideOS.ACTION_TPMS_REQUEST";
     public static final String ACTION_TPMS_RESTART = "com.fanconn.rideOS.ACTION_TPMS_RESTART";
-
+    public static final String ACTION_TPMS_RELOAD_IDS = "com.fanconn.rideOS.ACTION_TPMS_RELOAD_IDS";
     public static final String EXTRA_MAC    = "extra_mac";
     public static final String EXTRA_MINOR  = "extra_minor";   // legacy
     public static final String EXTRA_PSI    = "extra_psi";
@@ -59,7 +59,7 @@ public class TpmsScanService extends Service {
 
             if (ACTION_TPMS_REQUEST.equals(intent.getAction())) {
 
-                //Log.d(TAG, " ACTION_TPMS_REQUEST → sending cached values");
+//                Log.d(TAG, " ACTION_TPMS_REQUEST → sending cached values");
 
                 for (Map.Entry<String, Integer> e : latestMinorMap.entrySet()) {
                     Intent update = new Intent(ACTION_TPMS_UPDATE);
@@ -87,21 +87,53 @@ public class TpmsScanService extends Service {
 
                 // Restart BLE scan
                 restartScanSafely();
+            }else if (ACTION_TPMS_RELOAD_IDS.equals(intent.getAction())) {
+
+//                Log.d(TAG, "RELOADING TPMS IDS FROM METADATA");
+
+                validMacs.clear();
+
+                addValidTpmsIds();
+
+//                Log.d(TAG, "NEW VALID TPMS MACs = " + validMacs);
+
+                latestMinorMap.clear();
+
+                restartScanSafely();
             }
 
         }
     };
+    private void addValidTpmsIds() {
 
+        String front = metadata.getFrontTPMS();
+        String rear = metadata.getRearTPMS();
+
+        if (front != null
+                && !front.trim().isEmpty()
+                && !front.equalsIgnoreCase("UNKNOWN")) {
+
+            validMacs.add(front.trim());
+        }
+
+        if (rear != null
+                && !rear.trim().isEmpty()
+                && !rear.equalsIgnoreCase("UNKNOWN")) {
+
+            validMacs.add(rear.trim());
+        }
+
+//        Log.d(TAG, "Valid TPMS MACs = " + validMacs);
+    }
     /* ================= SERVICE LIFECYCLE ================= */
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        validMacs.add(metadata.getFrontTPMS());
-        validMacs.add(metadata.getRearTPMS());
+        addValidTpmsIds();
 
-       // Log.d(TAG, "Valid TPMS MACs = " + validMacs);
+//        Log.d(TAG, "Valid TPMS MACs = " + validMacs);
 
         startForegroundService();
         startScanning();
@@ -110,6 +142,7 @@ public class TpmsScanService extends Service {
         f.addAction(ACTION_TPMS_REQUEST);
         f.addAction(ACTION_TPMS_RESTART);
         f.addAction(ACTION_TPMS_RESYNC);
+        f.addAction(ACTION_TPMS_RELOAD_IDS);
         LocalBroadcastManager.getInstance(this)
                 .registerReceiver(tpmsRequestReceiver, f);
         lastScanTime = System.currentTimeMillis();
@@ -153,13 +186,13 @@ public class TpmsScanService extends Service {
 
         BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
         if (adapter == null || !adapter.isEnabled()) {
-            Log.e(TAG, "Bluetooth unavailable");
+//            Log.e(TAG, "Bluetooth unavailable");
             return;
         }
 
         scanner = adapter.getBluetoothLeScanner();
         if (scanner == null) {
-            Log.e(TAG, "BLE scanner unavailable");
+//            Log.e(TAG, "BLE scanner unavailable");
             return;
         }
 
@@ -172,7 +205,7 @@ public class TpmsScanService extends Service {
         isScanning = true;
         lastScanTime = System.currentTimeMillis();
 
-     //   Log.d(TAG, "BLE scan started");
+//        Log.d(TAG, "BLE scan started");
     }
 
     private long lastScanTime = 0;
@@ -184,11 +217,19 @@ public class TpmsScanService extends Service {
         public void onScanResult(int callbackType, ScanResult result) {
 
             if (result == null || result.getScanRecord() == null) return;
+
+//            Log.d(TAG, "BLE DEVICE FOUND = "
+//                    + result.getDevice().getAddress());
             lastScanTime = System.currentTimeMillis();
 
             String mac = result.getDevice().getAddress();
-            if (!validMacs.contains(mac)) return;
+            if (!validMacs.contains(mac)) {
 
+//                Log.d(TAG,
+//                        "IGNORED DEVICE = " + mac);
+
+                return;
+            }
             TpmsParsedData d =
                     TpmsParser.parse(result.getScanRecord().getBytes());
 
@@ -228,7 +269,7 @@ public class TpmsScanService extends Service {
 //                            " | TYPE=" + d.type
 //            );
             if(d.voltage>0  && Objects.equals(mac, metadata.getFrontTPMS())){
-              //  Log.d("asfaf","THSIISTPMSBATTERYVOATGE FRONT "+String.format("%.2fV", d.voltage));
+//                Log.d("asfaf","THSIISTPMSBATTERYVOATGE FRONT "+String.format("%.2fV", d.voltage));
                 TelemetryDataManager.getInstance()
                         .setTeleFTirePressureVoltage(String.format("%.2fV", d.voltage));
 
