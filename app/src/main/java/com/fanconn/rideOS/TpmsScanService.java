@@ -291,7 +291,6 @@ public class TpmsScanService extends Service {
         @Override
         public void run() {
 
-
             long now = System.currentTimeMillis();
 
             if (System.currentTimeMillis() - lastTpmsPacketTime > TPMS_TIMEOUT_MS) {
@@ -307,8 +306,6 @@ public class TpmsScanService extends Service {
                 lastRestartTime = now;
                 restartScanSafely();
             }
-
-
             scanWatchdog.postDelayed(this, 5000);
         }
     };

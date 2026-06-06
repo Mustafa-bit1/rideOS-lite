@@ -10,7 +10,7 @@ public class batteryPackSwitcher {
 
     private final SerialPortManager serialPortManager;
     private final Handler handler;
-    private final int MAX_RETRIES = 20;
+    private final int MAX_RETRIES = 13;
     private final int MAX_RETRIES2 = 10;
     private int retryCount1 = 0;
     private int retryCount2 = 0;
@@ -242,6 +242,7 @@ public class batteryPackSwitcher {
                 mainChargeON();
             } else {
                 //Log.e("CommandSequence", "Command 1 failed after max retries");
+                mainChargeON();
             }
         }, 800); // adjust delay as needed
     }

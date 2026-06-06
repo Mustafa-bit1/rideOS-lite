@@ -332,7 +332,6 @@ public class chargingUI extends AppCompatActivity {
     }
     private int getChargingIcon(float chargingbit) {
 
-        Log.d("asdfg", "ACTUALSOCINCHARGINGMODE IS -- " + actualSOC);
 
         // FIRST PRIORITY
         if (chargingbit>0 && actualSOC >= 100) {
@@ -677,7 +676,6 @@ public class chargingUI extends AppCompatActivity {
         float remainingAh = BATTERY_CAPACITY_AH - (soc * BATTERY_CAPACITY_AH/100f);
 
         float timeHours = remainingAh / chargingCurrent;
-        Log.d("asdfsdgfd","THISISESTIMATED "+remainingAh+"  cc "+chargingCurrent);
         // Add 20% buffer (real-world charging slowdown)
         timeHours *= 1.2f;
         ETADataManager.getInstance().setEtaTime(timeHours);

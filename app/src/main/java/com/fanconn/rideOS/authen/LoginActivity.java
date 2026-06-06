@@ -223,7 +223,6 @@ public class LoginActivity extends AppCompatActivity{
 
                     lastChargingUILaunchTime = currentTime;
                     TelemetryDataManager.getInstance().setTeleChargingState(1);
-                    Log.d("asdfdg","ENTEREDSTARTCHARGINGUI ");
 
                     Intent intent0 = new Intent(context, chargingUI.class);
                     intent0.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -870,7 +869,7 @@ public class LoginActivity extends AppCompatActivity{
                 // Send frames
                 if (serialPortManager != null) {
                     serialPortManager.VCUSendToMCU(finalSpeedFrame);
-                    Log.d("asdfdg","ENTER Succes Login cmd snet  "+finalSpeedFrame);
+//                    Log.d("asdfdg","ENTER Succes Login cmd snet  "+finalSpeedFrame);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 1000);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 2000);
 //                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2500);
@@ -910,13 +909,15 @@ public class LoginActivity extends AppCompatActivity{
             float batteryLevel = serialPortManager.getHb3().getBatteryLevel();
 //            float batteryLevel = ahTrackerManager.getSOC();
 
-
-            if (batteryLevel ==0) { // phase max , all normal
+            if (UIUpdater.apuflag) { // phase max , all normal
+                torqueFrame = "FFAA550103001510FBA8073C007800B0047800";//  line 15A, phase max,regen 30 -30 (7800)
+            }
+            else if (batteryLevel ==0) { // phase max , all normal
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "F00000004001";//Phase 0 all normal,,regen 60(F000)-80(4001)
                // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
             }
-            else if (batteryLevel <= 5 && !UIUpdater.apuflag) { // phase 0 , all normal
+            else if (batteryLevel <= 5) { // phase 0 , all normal
                 //torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
                 torqueFrame = "FFAA550103001510FBA8072800F000B0044001";//line current 10amps(2800),,regen 60(F000)-80(4001)
                // Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);

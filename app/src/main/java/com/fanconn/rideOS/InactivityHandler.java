@@ -23,7 +23,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 
     @Override
     public void onInactivityTimeout(int code) {
-        Log.d(TAG, "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
+//        Log.d(TAG, "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
 
         switch (code) {
             case 1:
@@ -46,11 +46,11 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 //                    serialPortManager.getHb3().setLEDresponse(1);
 //                    serialPortManager.getHb3().sethandleLockresponse(1);
                 int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
-                Log.d(TAG,"code 1 TOUCHTIMER GEAR  "+UIUpdater.directionalGears);
-                Log.d(TAG,"code 1 TOUCHTIMER STAND  "+UIUpdater.getInstance().isStand);
+              //  Log.d(TAG,"code 1 TOUCHTIMER GEAR  "+UIUpdater.directionalGears);
+              //  Log.d(TAG,"code 1 TOUCHTIMER STAND  "+UIUpdater.getInstance().isStand);
 
                 if(rpm==0 && (UIUpdater.directionalGears==0 || UIUpdater.getInstance().isStand)){
-                    Log.d("TOUCHTIMER","IF OF code 1 TOUCHTIMER IFTIMER");
+               //     Log.d("TOUCHTIMER","IF OF code 1 TOUCHTIMER IFTIMER");
                     EVLockService.getInstance().startLockSequence();    // Start lock
                     Context context2 = MainActivity.instance;
                     if (context2 != null) {
@@ -63,16 +63,16 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                             PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                             Method goToSleep = PowerManager.class.getMethod("goToSleep", long.class);
 
-                            Log.d("PowerAction", "Calling goToSleep()");
+                      //      Log.d("PowerAction", "Calling goToSleep()");
                             goToSleep.invoke(powerManager, SystemClock.uptimeMillis());
-                            Log.d("PowerAction", "goToSleep() invoked.");
+                      //      Log.d("PowerAction", "goToSleep() invoked.");
                         } catch (Exception e) {
-                            Log.e("PowerAction", "Failed to initiate goToSleep:", e);
+                      //      Log.e("PowerAction", "Failed to initiate goToSleep:", e);
                         }
                     }, 1000); // Wait 1 seconds after lock before sleeping
                 }
                 else {
-                    Log.d("TOUCHTIMER","ELSEOF TOUCHTIMER TIMER");
+                 //   Log.d("TOUCHTIMER","ELSEOF TOUCHTIMER TIMER");
                 }
 
                 //below is b4 7/7
@@ -109,8 +109,8 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
               //  Log.d("SHIFT", "DRIVE - NEUTRAL");
                 break;
 
-            case 3:   Log.d("TOUCHTIMER", "Timeout in login screen. Turning screen off...");
-                Log.d("TOUCHTIMER", "Case......3");
+            case 3: //  Log.d("TOUCHTIMER", "Timeout in login screen. Turning screen off...");
+               // Log.d("TOUCHTIMER", "Case......3");
                 try {
                     LoginActivity.markScreenJustOff();
                     PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -132,7 +132,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 ////                if (context3 != null) {
 ////                    Intent intent = new Intent(context, LoginActivity.class);
 ////                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-////// ⚠️ DO NOT use CLEAR_TOP here, or ChargingUI might be cleared
+//////  DO NOT use CLEAR_TOP here, or ChargingUI might be cleared
 ////                    context.startActivity(intent);
 ////                }
 //
@@ -164,7 +164,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                     boolean isLoginActive = (LoginActivity.getInstance() != null);
 
                     if (!isLoginActive) {
-                        // ✅ Case A → Login NOT in stack
+                        //  Case A → Login NOT in stack
 
                         // Close Charging UI
                         if (chargingUI.instance != null) {
@@ -189,10 +189,10 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                         }, 300);
 
                     } else {
-                        // ✅ Case B → Login already exists
+                        //  Case B → Login already exists
 
-                        // ❌ DO NOT close charging UI
-                        // ❌ DO NOT launch login again
+                        //  DO NOT close charging UI
+                        //  DO NOT launch login again
 
                         // Just turn OFF screen
                         turnScreenOff(context);

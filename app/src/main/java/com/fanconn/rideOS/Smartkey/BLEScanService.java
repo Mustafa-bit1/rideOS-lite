@@ -81,7 +81,7 @@ public class BLEScanService extends Service {
                     unlock(TARGET_NAME, deviceName, rssi);
                 }
                 else {
-                    Log.d(TAG, "❌ Weak RSSI ignored (" + rssi + ")");
+                    Log.d(TAG, " Weak RSSI ignored (" + rssi + ")");
                 }
 
                 return;
@@ -101,7 +101,7 @@ public class BLEScanService extends Service {
                 missedScanCount = 0;
                 lastSeenTime = now;
 
-                 Log.d(TAG, "✅ " + unlockedBy +
+                 Log.d(TAG, "" + unlockedBy +
                       " STRONG RSSI (" + rssi + " dBm) → counters reset");
 
                 return;
@@ -114,7 +114,7 @@ public class BLEScanService extends Service {
                 missedScanCount = 0;
                 lastSeenTime = now;
 
-                 Log.d(TAG, "➖ " + unlockedBy +
+                 Log.d(TAG, " " + unlockedBy +
                         " MID RSSI (" + rssi + " dBm) → keep unlocked");
 
                 return;
@@ -124,12 +124,12 @@ public class BLEScanService extends Service {
             weakSignalCount++;
             missedScanCount = 0;
 
-             Log.w(TAG, "⚠️ " + unlockedBy +
+             Log.w(TAG, "️ " + unlockedBy +
                 " BELOW LOCK RSSI (" + rssi + " dBm) (" +
                  weakSignalCount + "/" + NUMBER_OF_MISSED_SCANS + ")");
 
             if (weakSignalCount >= NUMBER_OF_MISSED_SCANS) {
-                  Log.e(TAG, "🔴 " + unlockedBy +
+                  Log.e(TAG, " " + unlockedBy +
                      " " + NUMBER_OF_MISSED_SCANS +
                       " consecutive BELOW LOCK RSSI → OUT OF RANGE");
 
@@ -148,7 +148,7 @@ public class BLEScanService extends Service {
         weakSignalCount = 0;
         missedScanCount = 0;
         signalSeenThisScan = false;
-        Log.i(TAG, "🟢 " + keyType + " detected → UNLOCK (RSSI " + rssi + ")");
+        Log.i(TAG, "" + keyType + " detected → UNLOCK (RSSI " + rssi + ")");
 
         if (MainActivity.instance != null)
             MainActivity.instance.updateKeyImage(true);
@@ -204,7 +204,7 @@ public class BLEScanService extends Service {
     // ---------------- Out-of-range ----------------
     private void handleOutOfRange() {
 
-         Log.e(TAG, "🔴 " + unlockedBy + " OUT OF RANGE");
+         Log.e(TAG, " " + unlockedBy + " OUT OF RANGE");
         keyInRange = false;
         consecutiveOutOfRangeCount = 0;
 
@@ -264,7 +264,7 @@ public class BLEScanService extends Service {
             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 
             if (adapter == null || !adapter.isEnabled()) {
-                  Log.w(TAG, "⚠️ Bluetooth disabled, skipping scan");
+                  Log.w(TAG, " Bluetooth disabled, skipping scan");
                 handler.postDelayed(this, 1000);
                 return;
             }
@@ -279,10 +279,10 @@ public class BLEScanService extends Service {
                 if (!isScanning) {
                     scanner.startScan(null, buildScanSettings(), scanCallback);
                     isScanning = true;
-                    Log.d(TAG, "▶️ BLE scan started");
+                    Log.d(TAG, " BLE scan started");
                 }
             } catch (IllegalStateException e) {
-                  Log.w(TAG, "⚠️ startScan failed (BT state change)");
+                  Log.w(TAG, " startScan failed (BT state change)");
             }
 
 
@@ -302,7 +302,7 @@ public class BLEScanService extends Service {
             int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1);
 
             if (state == BluetoothAdapter.STATE_OFF) {
-                  Log.w(TAG, "🔴 Bluetooth OFF → stopping BLE scan");
+                  Log.w(TAG, " Bluetooth OFF → stopping BLE scan");
 
                 handler.removeCallbacks(scanRunnable);
                 safeStopScan();
@@ -314,7 +314,7 @@ public class BLEScanService extends Service {
             }
 
             else if (state == BluetoothAdapter.STATE_ON) {
-                 Log.i(TAG, "🔵 Bluetooth ON → restarting BLE scan");
+                 Log.i(TAG, " Bluetooth ON → restarting BLE scan");
                 handler.removeCallbacks(scanRunnable);
                 handler.post(scanRunnable);
             }
@@ -329,13 +329,13 @@ public class BLEScanService extends Service {
 
             missedScanCount++;
 
-            Log.w(TAG, "⚠️ " + unlockedBy +
+            Log.w(TAG, "" + unlockedBy +
                     " NO SIGNAL this scan (" +
                     missedScanCount + "/"+NUMBER_OF_MISSED_SCANS+")");
 
             if (missedScanCount >= NUMBER_OF_MISSED_SCANS) {
 
-                    Log.e(TAG, "🔴 " + unlockedBy +
+                    Log.e(TAG, " " + unlockedBy +
                          NUMBER_OF_MISSED_SCANS+" consecutive MISSED SCANS → OUT OF RANGE");
 
                 handleOutOfRange();
@@ -376,7 +376,6 @@ public class BLEScanService extends Service {
 
 
 
-        // ✅ Prevent duplicate scan loops
         handler.removeCallbacks(scanRunnable);
         handler.post(scanRunnable);
 
@@ -385,7 +384,7 @@ public class BLEScanService extends Service {
         registerReceiver(btReceiver,
                 new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         loadRSSIThreshold();
-         Log.i(TAG, "⏳ BLEScanService started");
+         Log.i(TAG, " BLEScanService started");
     }
 
 
@@ -401,7 +400,7 @@ public class BLEScanService extends Service {
             unregisterReceiver(btReceiver);
         } catch (Exception ignored) {}
 
-         Log.i(TAG, "🛑 BLEScanService stopped");
+         Log.i(TAG, " BLEScanService stopped");
     }
 
     private void startForegroundNotification() {
@@ -429,10 +428,10 @@ public class BLEScanService extends Service {
             if (adapter != null && adapter.isEnabled() && scanner != null && isScanning) {
                 scanner.stopScan(scanCallback);
                 isScanning = false;
-                Log.d(TAG, "⏹️ BLE scan stopped");
+                Log.d(TAG, " BLE scan stopped");
             }
         } catch (IllegalStateException e) {
-            Log.w(TAG, "⚠️ stopScan ignored (Bluetooth OFF)");
+            Log.w(TAG, " stopScan ignored (Bluetooth OFF)");
         }
     }
 

@@ -31,6 +31,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +85,7 @@ public class UIUpdater  {
 
         this.handlerTurnSignal = new Handler();
         this.BatPackSwitcher = new batteryPackSwitcher();
+        handler = new Handler(Looper.getMainLooper());
 
         reverseArrowAnimation = AnimationUtils.loadAnimation(ctx, R.anim.reverse_arrow_blink_down);
 
@@ -557,7 +559,7 @@ public class UIUpdater  {
             updateTransportModeWarning();
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801F000B0044001"); //max all phase 300, line 100 , regen 60(F000)-80(4001)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
             }
             binding.yellowalert.clearAnimation();
             binding.LowBatmsg.clearAnimation();
@@ -604,14 +606,14 @@ public class UIUpdater  {
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");//regen 60(F000)-80(4001)
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001");//line current 10A(2800), phase current max, regen currents as 40A(A000) to make 6 (1800) and 50A(C800) to make 8 (2000)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
          //       Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
 
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//STOP SCOOTER, phase zero
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
             }
         }
 
@@ -721,7 +723,7 @@ public class UIUpdater  {
     private boolean apuWatcherRunning = false;
 
 
-    public void updateCanData18904002(Heartbeat3 hb3) {
+    public void updateCanData18904002(Heartbeat3 hb3) {// when CAN data of apu is detected on CAN line
 
         lastApuFrameTime = System.currentTimeMillis();
 
@@ -729,10 +731,10 @@ public class UIUpdater  {
         if (!isApuConnected && !apuflag) {
             isApuConnected = true;
            // Log.d("APU", "APU Connected");
+            InactivityManager.getInstance().stopTimer();
             showCustomPopupAPUdetected("Assistance", "APU detected. Do you want to switch to APU?");
         }
         tm.setTeleAPUBatVoltage(hb3.getAPUbatvoltage()/10);
-
         // Ensure the disconnect watcher is running only once
         if (!apuWatcherRunning) {
             startApuDisconnectWatcher();
@@ -790,6 +792,21 @@ public class UIUpdater  {
                     isApuConnected = false;
                 //    Log.d("APU", "APU Disconnected");
 
+                    Heartbeat3 hb3 = serialPortManager.getHb3();
+                    boolean mainChargeAlreadyON =
+                            hb3 != null && hb3.getMainChargeMosState() == 1;
+                    if (!mainChargeAlreadyON) {
+                        if (apuPopupDialog != null &&
+                                apuPopupDialog.isShowing()) {
+                            restoreMotorState();
+                            apuPopupDialog.dismiss();
+                            apuPopupDialog = null;
+                        }
+                        InactivityManager.getInstance().stopTimer();
+                        showAPUDetachedPopup();
+                        Log.d("sadfsgdg","APUDETAHC POPUP");
+                    }
+
                     binding.APUbatteryTV.setVisibility(View.GONE);
                     binding.apubaticon.setVisibility(View.GONE);
                     binding.APUbatteryImageView.setVisibility(View.INVISIBLE);
@@ -815,11 +832,11 @@ public class UIUpdater  {
                     }
 
                     // 🔹 Dismiss popup if showing
-                    if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
-                        apuPopupDialog.dismiss();
-                        apuPopupDialog = null;
-                       // Log.d("APU", "Popup dismissed on disconnect");
-                    }
+//                    if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+//                        apuPopupDialog.dismiss();
+//                        apuPopupDialog = null;
+//                       // Log.d("APU", "Popup dismissed on disconnect");
+//                    }
                 }
 
                 // Continue checking
@@ -858,20 +875,11 @@ public class UIUpdater  {
         int mainChargingMosState= hb3.getMainChargeMosState();
         int mainDisMosState= hb3.getMainDisChargeMosState();
 //        tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
-        tm.setTeleBmsLifeCycles(hb3.getBMSlifecycles());
-        tm.setTeleBMSMosStates(hb3.getMainChargeMosState()+","+hb3.getMainDisChargeMosState()+","+hb3.getApuChargeMosState()+","+hb3.getApuDisChargeMosState());
-    }
-    public void updateCanData18944001(Heartbeat3 hb3) {
-        int BMS_Mos_Temp=hb3.getBMS_MOS_Temp();
-        tm.setTeleBMSMosTemp(BMS_Mos_Temp);
-    }
-    public void updateCanData18934002(Heartbeat3 hb3) {
-        // 更新电池电量
 
         int apuChargingMosState= hb3.getApuChargeMosState();
         int apuDisMosState= hb3.getApuDisChargeMosState();
         int mainChargeMos=hb3.getMainChargeMosState();
-      // Log.d("dfsgdfh","MOSSSSSSSSSOOOOOSSSFET"+mainChargeMos);
+        // Log.d("dfsgdfh","MOSSSSSSSSSOOOOOSSSFET"+mainChargeMos);
 //        Log.d("sadfgd","MOSSSSSSSSSOOOOOSSSFETAPUDISCG"+apuDisMosState);
         if( apuDisMosState==1 && mainChargeMos==0 ){
             binding.RunningOnAPU.setVisibility(View.VISIBLE);
@@ -883,6 +891,32 @@ public class UIUpdater  {
             binding.redalert.setVisibility(View.INVISIBLE);
             apuflag=false;
         }
+
+        tm.setTeleBmsLifeCycles(hb3.getBMSlifecycles());
+        tm.setTeleBMSMosStates(hb3.getMainChargeMosState()+","+hb3.getMainDisChargeMosState()+","+hb3.getApuChargeMosState()+","+hb3.getApuDisChargeMosState());
+    }
+    public void updateCanData18944001(Heartbeat3 hb3) {
+        int BMS_Mos_Temp=hb3.getBMS_MOS_Temp();
+        tm.setTeleBMSMosTemp(BMS_Mos_Temp);
+    }
+    public void updateCanData18934002(Heartbeat3 hb3) {
+        // 更新电池电量
+
+//        int apuChargingMosState= hb3.getApuChargeMosState();
+//        int apuDisMosState= hb3.getApuDisChargeMosState();
+//        int mainChargeMos=hb3.getMainChargeMosState();
+//      // Log.d("dfsgdfh","MOSSSSSSSSSOOOOOSSSFET"+mainChargeMos);
+////        Log.d("sadfgd","MOSSSSSSSSSOOOOOSSSFETAPUDISCG"+apuDisMosState);
+//        if( apuDisMosState==1 && mainChargeMos==0 ){
+//            binding.RunningOnAPU.setVisibility(View.VISIBLE);
+//            binding.redalert.setVisibility(View.VISIBLE);
+//            apuflag=true;
+//        }
+//        else{
+//            binding.RunningOnAPU.setVisibility(View.INVISIBLE);
+//            binding.redalert.setVisibility(View.INVISIBLE);
+//            apuflag=false;
+//        }
     }
 
     int NTC1,NTC2,NTC3,NTC4,NTC5,NTC6,NTC7,NTC8;
@@ -2180,8 +2214,6 @@ private int streamId = 0;
         double odoKm = tripManager.getOdoDistance();
         tm.setTeleTrip((float) roundTo2Decimal(tripKm));
         tm.setTeleODO((float) roundTo2Decimal(odoKm));
-//        Log.d("dafsgd","ODO is "+odoKm);
-//        Log.d("dafsgd","ODOTRIP is "+tripKm);
 
         if (activity != null) {
             activity.refreshDistance();
@@ -2198,21 +2230,17 @@ private int streamId = 0;
             }
             boolean shouldPlayReadySound =
                     directionalGears == 1 && speed == 0 && !isStand ;
-            Log.d("CANhome", " THIS IS SPEED    "+speed);
 
             if (shouldPlayReadySound) {
                 if (!startReasySound) {
                     startReasySound = true;
                     ReadystartBeeping();
-                    Log.d("CANhome", " Ready sound START");
                 }
             } else {
                 if (startReasySound) {
                     startReasySound = false;
                     ReadystopBeeping();
-                    Log.d("CANhome", " Ready sound STOP");
                     if (!MainActivity.isVisible && !MainActivity.isrideOSOTA) {
-                        //Log.d("UIUPDATER", "TAKEMEHOME2222");
 
                         Intent intent = new Intent(activity, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -2233,7 +2261,6 @@ private int streamId = 0;
                 if (startReasySound) {
                     startReasySound = false;
                     ReadystopBeeping();
-               //     Log.d("CANhome", " Ready sound STOP 2");
                 }
                 if (activity != null) {
                     (activity).closeRecoIfOpen();
@@ -2639,7 +2666,7 @@ private int streamId = 0;
     public void showCustomPopup(String title, String message) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        View dialogView = inflater.inflate(R.layout.popupdialog, null);
+        View dialogView = inflater.inflate(R.layout.apupopupdialog, null);
 
         Dialog dialog = new Dialog(activity);
         dialog.setContentView(dialogView);
@@ -2652,7 +2679,7 @@ private int streamId = 0;
             window.setBackgroundDrawableResource(android.R.color.transparent);
 
             WindowManager.LayoutParams params = window.getAttributes();
-            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.width = 700;
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.CENTER;
             window.setAttributes(params);
@@ -2668,21 +2695,85 @@ private int streamId = 0;
         Button btnNo = dialogView.findViewById(R.id.btnNo);
 
         btnYes.setOnClickListener(v -> {
-            StopInactivtyTimerDuringPopUp = true;
-            batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
-            switcher.startSwitchingToAPU();
-//            apuflag=true;
-//            BatPackSwitcher.startSwitchingToAPU();
-            dialog.dismiss();
-        });
 
+            btnYes.setVisibility(View.GONE);
+            btnNo.setVisibility(View.GONE);
+
+            ProgressBar progressBar =
+                    dialogView.findViewById(R.id.progressBar);
+
+            progressBar.setVisibility(View.VISIBLE);
+
+            final BatteryPackSwitchHelper[] helper = new BatteryPackSwitchHelper[1];
+
+            helper[0] = new BatteryPackSwitchHelper(
+                            new SwitchCallback() {
+
+                                @Override
+                                public void onProgress(String message) {
+
+                                    dialogMessage.setText(message);
+                                }
+
+                                @Override
+                                public void onSuccess(String message) {
+
+                                    progressBar.setVisibility(View.GONE);
+
+                                    dialogMessage.setText(message);
+
+                                    btnYes.setText("OK");
+
+                                    btnYes.setVisibility(View.VISIBLE);
+
+                                    btnYes.setOnClickListener(v1 -> {
+                                            InactivityManager.getInstance().startTimer(1);
+
+                                        restoreMotorState();
+                                        handler.postDelayed(() -> {
+                                            if (serialPortManager != null) {
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                            }
+                                        }, 1000);
+                                        apuPopupDialog.dismiss();
+                                        apuPopupDialog = null;
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
+                                    progressBar.setVisibility(View.GONE);
+
+                                    dialogMessage.setText(message);
+
+                                    btnYes.setText("REVERT BACK");
+
+                                    btnYes.setVisibility(View.VISIBLE);
+
+                                    btnYes.setOnClickListener(v2 -> {
+
+                                        progressBar.setVisibility(View.VISIBLE);
+
+                                        btnYes.setVisibility(View.GONE);
+
+                                        helper[0].startRevertToMainBattery();
+                                    });
+                                }
+                            });
+
+            helper[0].startSwitchToAPU();
+        });
         btnNo.setOnClickListener(v -> {
             StopInactivtyTimerDuringPopUp = true;
 //            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
+            if (directionalGears == 0) {
+                InactivityManager.getInstance().startTimer(1);
+            }
             dialog.dismiss();
             serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
             new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"),
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"),
                     1200
             );
         });
@@ -2691,6 +2782,8 @@ private int streamId = 0;
     }
 
     private Dialog apuPopupDialog = null;
+    private final Handler handler;
+
     public void showCustomPopupAPUdetected(String title, String message) {
 
         // Prevent multiple popups
@@ -2699,7 +2792,7 @@ private int streamId = 0;
         }
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        View dialogView = inflater.inflate(R.layout.popupdialog, null);
+        View dialogView = inflater.inflate(R.layout.apupopupdialog, null);
 
         apuPopupDialog = new Dialog(activity);
         apuPopupDialog.setContentView(dialogView);
@@ -2712,7 +2805,7 @@ private int streamId = 0;
             window.setBackgroundDrawableResource(android.R.color.transparent);
 
             WindowManager.LayoutParams params = window.getAttributes();
-            params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+            params.width = 700;
             params.height = WindowManager.LayoutParams.WRAP_CONTENT;
             params.gravity = Gravity.CENTER;
             window.setAttributes(params);
@@ -2727,22 +2820,86 @@ private int streamId = 0;
         Button btnNo = dialogView.findViewById(R.id.btnNo);
 
         btnYes.setOnClickListener(v -> {
-            StopInactivtyTimerDuringPopUp = true;
-            batteryPackSwitcher switcher = new batteryPackSwitcher(binding.textstatus);
-            switcher.startSwitchingToAPU();
-//            apuflag = true;
 
-            if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
-                apuPopupDialog.dismiss();
-                apuPopupDialog = null;
-            }
+            btnYes.setVisibility(View.GONE);
+            btnNo.setVisibility(View.GONE);
+
+            ProgressBar progressBar =
+                    dialogView.findViewById(R.id.progressBar);
+
+            progressBar.setVisibility(View.VISIBLE);
+
+            final BatteryPackSwitchHelper[] helper = new BatteryPackSwitchHelper[1];
+
+            helper[0] =
+                    new BatteryPackSwitchHelper(
+                            new SwitchCallback() {
+
+                                @Override
+                                public void onProgress(String message) {
+
+                                    dialogMessage.setText(message);
+                                }
+
+                                @Override
+                                public void onSuccess(String message) {
+
+                                    progressBar.setVisibility(View.GONE);
+
+                                    dialogMessage.setText(message);
+
+                                    btnYes.setText("OK");
+
+                                    btnYes.setVisibility(View.VISIBLE);
+
+                                    btnYes.setOnClickListener(v1 -> {
+                                        InactivityManager.getInstance().startTimer(1);
+                                        restoreMotorState();
+
+                                        handler.postDelayed(() -> {
+                                            if (serialPortManager != null) {
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                            }
+                                        }, 1000);
+
+                                        apuPopupDialog.dismiss();
+
+                                        apuPopupDialog = null;
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
+                                    progressBar.setVisibility(View.GONE);
+
+                                    dialogMessage.setText(message);
+
+                                    btnYes.setText("REVERT BACK");
+
+                                    btnYes.setVisibility(View.VISIBLE);
+
+                                    btnYes.setOnClickListener(v2 -> {
+
+                                        progressBar.setVisibility(View.VISIBLE);
+
+                                        btnYes.setVisibility(View.GONE);
+
+                                        helper[0].startRevertToMainBattery();
+                                    });
+                                }
+                            });
+
+            helper[0].startSwitchToAPU();
         });
 
         btnNo.setOnClickListener(v -> {
             StopInactivtyTimerDuringPopUp = true;
 //            Log.d("CustomPopup", "USER DECLINE TO SWITCH TO APU");
+                InactivityManager.getInstance().startTimer(1);
 
             if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+                restoreMotorState();
                 apuPopupDialog.dismiss();
                 apuPopupDialog = null;
             }
@@ -2751,10 +2908,154 @@ private int streamId = 0;
         apuPopupDialog.show();
     }
 
+    public void showAPUDetachedPopup() {
+
+        activity.runOnUiThread(() -> {
+
+            if (apuPopupDialog != null &&
+                    apuPopupDialog.isShowing()) {
+                return;
+            }
+
+            LayoutInflater inflater =
+                    LayoutInflater.from(context);
+
+            View dialogView =
+                    inflater.inflate(
+                            R.layout.apupopupdialog,
+                            null
+                    );
+
+            apuPopupDialog = new Dialog(activity);
+
+            apuPopupDialog.setContentView(dialogView);
+
+            apuPopupDialog.setCancelable(false);
+            apuPopupDialog.setCanceledOnTouchOutside(false);
+
+            Window window = apuPopupDialog.getWindow();
+
+            if (window != null) {
+
+                window.setBackgroundDrawableResource(
+                        android.R.color.transparent
+                );
+                WindowManager.LayoutParams params =
+                        window.getAttributes();
+                params.width = 700;
+                params.height =
+                        WindowManager.LayoutParams.WRAP_CONTENT;
+                params.gravity = Gravity.CENTER;
+                window.setAttributes(params);
+            }
+
+            TextView dialogTitle =
+                    dialogView.findViewById(R.id.dialogTitle);
+
+            TextView dialogMessage =
+                    dialogView.findViewById(R.id.dialogMessage);
+
+            ProgressBar progressBar =
+                    dialogView.findViewById(R.id.progressBar);
+
+            Button btnYes =
+                    dialogView.findViewById(R.id.btnYes);
+
+            Button btnNo =
+                    dialogView.findViewById(R.id.btnNo);
+
+            dialogTitle.setText("APU Detached");
+
+            dialogMessage.setText(
+                    "The auxilary battery is removed from scooter.\nRollback to main battery"
+            );
+
+            btnYes.setText("ROLLBACK");
+
+            btnNo.setVisibility(View.GONE);
+
+            final BatteryPackSwitchHelper[] helper =
+                    new BatteryPackSwitchHelper[1];
+
+            helper[0] =
+                    new BatteryPackSwitchHelper(
+                            new SwitchCallback() {
+
+                                @Override
+                                public void onProgress(String message) {
+
+                                    dialogMessage.setText(message);
+                                }
+
+                                @Override
+                                public void onSuccess(String message) {
+
+                                    progressBar.setVisibility(View.GONE);
+
+                                    dialogMessage.setText(message);
+
+                                    btnYes.setText("OK");
+
+                                    btnYes.setVisibility(View.VISIBLE);
+
+                                    btnYes.setOnClickListener(v -> {
+
+                                            InactivityManager.getInstance().startTimer(1);
+
+                                        if (apuPopupDialog != null) {
+                                            restoreMotorState();
+                                            apuPopupDialog.dismiss();
+
+                                            apuPopupDialog = null;
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onFailure(String message) {
+
+                                    progressBar.setVisibility(View.GONE);
+
+                                    dialogMessage.setText(message);
+
+                                    btnYes.setText("OK");
+
+                                    btnYes.setVisibility(View.VISIBLE);
+
+                                        InactivityManager.getInstance().startTimer(1);
+
+                                    btnYes.setOnClickListener(v -> {
+
+                                        if (apuPopupDialog != null) {
+                                            restoreMotorState();
+                                            apuPopupDialog.dismiss();
+
+                                            apuPopupDialog = null;
+                                        }
+                                    });
+                                }
+                            });
+
+            btnYes.setOnClickListener(v -> {
+
+                btnYes.setVisibility(View.GONE);
+
+                progressBar.setVisibility(View.VISIBLE);
+
+                helper[0].startEmergencyMainBatteryRestore();
+            });
+
+            Log.d("APU_POPUP", "SHOWING DETACHED POPUP");
+
+            apuPopupDialog.show();
+
+        });
+    }
+
     public void showCustomPopupatSOC7(String title, String message) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
-        View dialogView = inflater.inflate(R.layout.popupdialog, null); // ✅ same layout
+        View dialogView = inflater.inflate(R.layout.popupdialog, null);
 
         Dialog dialog = new Dialog(activity);
         dialog.setContentView(dialogView);
@@ -2991,6 +3292,7 @@ private int streamId = 0;
 
         // Dismiss popup if activity closes
         if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
+            restoreMotorState();
             apuPopupDialog.dismiss();
             apuPopupDialog = null;
         }
@@ -3190,6 +3492,17 @@ private int streamId = 0;
             binding.transportModeYellowWarning.setVisibility(View.VISIBLE);
         } else {
             binding.transportModeYellowWarning.setVisibility(View.GONE);
+        }
+    }
+    private void restoreMotorState() {//After APU swicthing ON LED
+
+        if (serialPortManager != null) {
+
+            serialPortManager.VCUSendToMCU(
+                    "FFAA550107000A01"
+            );
+
+            Log.d("MOTOR", "MOTOR RESTORED");
         }
     }
 }

@@ -287,8 +287,6 @@ public class TelemetryDataManager {
         this.Alowable_charging_current_value = Alowable_charging_current_value;
     }
 
-
-
     public float getTeleTrip() {
         return teleTrip;
     }

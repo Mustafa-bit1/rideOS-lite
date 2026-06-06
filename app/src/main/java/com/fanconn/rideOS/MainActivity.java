@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         public void onReceive(Context context, Intent intent) {
             String frame = intent.getStringExtra("frame_data");
 //            if(frame.startsWith("FFAA77030300151890"))
-                Log.d("FRAME", "Received FRAME 6666666 " + frame);
+             //   Log.d("FRAME", "Received FRAME 6666666 " + frame);
             //Log.d("kdfsg","SERIAL FRAME : "+frame);
 //            if(frame.length()>22){
 //            if(frame.startsWith("FFAA77030300151806E5"))

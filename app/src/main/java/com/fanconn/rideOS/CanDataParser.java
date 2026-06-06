@@ -23,6 +23,7 @@ public class CanDataParser {
     public static  void parseCanData1806E5F4(Heartbeat3 hb3, String canData) {
         hb3.setTotal_max_voltage_limit(FrameUtils.getByteSubstringAsInt(canData,0,1)/10f); //Total voltage high limit
         hb3.setAllowable_Charging_currentValue(FrameUtils.getByteSubstringAsInt(canData,2,3)/10f);//Allowable charging current value
+       // hb3.setBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,5,6)); //SOC
     }
 
     public static  void parseCanData18904001(Heartbeat3 hb3, String canData) {

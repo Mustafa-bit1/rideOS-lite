@@ -329,7 +329,8 @@ public class DiagnosticsFragment extends Fragment {
 
         LEDON.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550107000A01"));
         LEDOFF.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550107000A00"));
-        In60.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160A01800000EA6000000000"));
+        In60.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550103001518FF50E50000000000000000"));
+//        In60.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160A01800000EA6000000000"));
         In90.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160A018000015F9000000000"));
         out0.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160C01800000000000000000"));
         wifiBtn.setOnClickListener(v -> {

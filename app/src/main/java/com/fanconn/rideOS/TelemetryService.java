@@ -878,10 +878,10 @@ public class TelemetryService extends Service {
         String temps = getCriticalTemps();
         UIUpdater uiUpdater = UIUpdater.getInstance();
         if (uiUpdater!=null) {
-            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSAclCap="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
                     +", recoEngine="+uiUpdater.getrecoEngineParams()+",MaxVolt="+TelemetryDataManager.getInstance().getMax_voltage_value()+", AlwedchgCur="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }else{
-            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActualSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSActualCapacity="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSAclCap="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
                     +", recoEngine=N/A"+",MaxVolt="+TelemetryDataManager.getInstance().getMax_voltage_value()+", AlwedchgCur="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }
         //Log.d("QUALCOMTHERMAL  ", temps);
