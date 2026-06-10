@@ -23,7 +23,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 
     @Override
     public void onInactivityTimeout(int code) {
-//        Log.d(TAG, "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
+        Log.d(TAG, "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
 
         switch (code) {
             case 1:
@@ -132,7 +132,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 ////                if (context3 != null) {
 ////                    Intent intent = new Intent(context, LoginActivity.class);
 ////                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//////  DO NOT use CLEAR_TOP here, or ChargingUI might be cleared
+////// ⚠ DO NOT use CLEAR_TOP here, or ChargingUI might be cleared
 ////                    context.startActivity(intent);
 ////                }
 //

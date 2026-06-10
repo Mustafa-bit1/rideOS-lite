@@ -1,5 +1,6 @@
 package com.fanconn.rideOS;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +37,7 @@ public class QuickSettingsView extends FrameLayout {
     private BrightnessManager brightnessManager;
     private AudioManager audioManager;
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private ImageButton allSetbtn;
+    private Button allSetbtn;
     private Button wifiToggle, autoBrightnessToggle, blue_tpmsbtn,new_feature_btn;
     private TextView autoBrightnessText;
     private SeekBar brightnessSlider, volumeSlider;
@@ -122,15 +123,25 @@ public class QuickSettingsView extends FrameLayout {
     private void setupUI(Context context) {
 
         allSetbtn = findViewById(R.id.allSetbtn);
+
+//        allSetbtn.setOnClickListener(v -> {
+//            Intent intent = new Intent(context, settings.class);
+//            context.startActivity(intent);
+//
+//            if (context instanceof android.app.Activity) {
+//                ((android.app.Activity) context).overridePendingTransition(0,0);
+//            }
+//        });
         allSetbtn.setOnClickListener(v -> {
+
             Intent intent = new Intent(context, settings.class);
             context.startActivity(intent);
 
-            if (context instanceof android.app.Activity) {
-                ((android.app.Activity) context).overridePendingTransition(0,0);
+            if (context instanceof Activity) {
+                ((Activity) context).overridePendingTransition(0, 0);
             }
-        });
 
+        });
         /* ---------- BRIGHTNESS ---------- */
 
         brightnessSlider = findViewById(R.id.brightnessSlider);
@@ -248,6 +259,18 @@ public class QuickSettingsView extends FrameLayout {
             }
         });
 
+    }
+
+    private void animateButton(View v) {
+        v.animate()
+                .scaleX(0.92f)
+                .scaleY(0.92f)
+                .setDuration(70)
+                .withEndAction(() -> v.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(80))
+                .start();
     }
     private void showCustomToast(String message) {
 

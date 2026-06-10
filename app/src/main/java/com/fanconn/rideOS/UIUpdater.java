@@ -643,7 +643,8 @@ public class UIUpdater  {
             atSOC7Lowbatflag=true;
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() ->  serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001"), 1000);//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1500);
             }
             InactivityManager.getInstance().stopTimer();
 
@@ -656,7 +657,7 @@ public class UIUpdater  {
         //BatPackSwitcher.startSwitchingToAPU();
 //
 //        try {
-//            if (batteryLevel>=0 && batteryLevel<=100  && MainActivity.MainisActive) { // ✅ Only update if animation is done
+//            if (batteryLevel>=0 && batteryLevel<=100  && MainActivity.MainisActive) { // Only update if animation is done
 //                updateBatteryAnimation(batteryLevel);
 //            }
 //        } catch (NumberFormatException e) {
@@ -1358,6 +1359,7 @@ public class UIUpdater  {
             if(chargingbit>0){
                 binding.chargingredtab.setImageResource(R.drawable.chargingredtab);
                 TelemetryDataManager.getInstance().setTeleChargingState(1);
+                UIUpdater.isChargingUIVisible = true;
             }
             else {
                 binding.chargingredtab.setImageResource(R.drawable.yellowpluggedtab);
@@ -1367,7 +1369,7 @@ public class UIUpdater  {
 //            binding.chargingredtab.setVisibility(View.VISIBLE);
         }
         else {
-
+            UIUpdater.isChargingUIVisible = false;
 //            binding.chargingicononmainactivty.setVisibility(View.INVISIBLE);
             binding.chargingredtab.setVisibility(View.INVISIBLE);
             if(directionalGears==0 && !isStand){
@@ -2735,6 +2737,11 @@ private int streamId = 0;
                                                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
                                             }
                                         }, 1000);
+                                        handler.postDelayed(() -> {
+                                            if (serialPortManager != null) {
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                            }
+                                        }, 2000);
                                         apuPopupDialog.dismiss();
                                         apuPopupDialog = null;
                                     });
@@ -2861,6 +2868,11 @@ private int streamId = 0;
                                                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
                                             }
                                         }, 1000);
+                                        handler.postDelayed(() -> {
+                                            if (serialPortManager != null) {
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                            }
+                                        }, 2000);
 
                                         apuPopupDialog.dismiss();
 
@@ -3497,12 +3509,12 @@ private int streamId = 0;
     private void restoreMotorState() {//After APU swicthing ON LED
 
         if (serialPortManager != null) {
-
             serialPortManager.VCUSendToMCU(
                     "FFAA550107000A01"
             );
-
-            Log.d("MOTOR", "MOTOR RESTORED");
+            handler.postDelayed(() -> {
+                serialPortManager.VCUSendToMCU("FFAA550107000A01");
+                }, 500);
         }
     }
 }

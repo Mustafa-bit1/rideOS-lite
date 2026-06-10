@@ -498,27 +498,27 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp" />
 
-                <Button
-                    android:id="@+id/MainChargeMOSOFF"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="20dp"
-                    android:backgroundTint="#0878C1"
-                    android:text="ChargeMOS OFF"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:foreground="@drawable/btn_click_effect" />
+<!--                <Button-->
+<!--                    android:id="@+id/MainChargeMOSOFF"-->
+<!--                    android:layout_width="150dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:backgroundTint="#0878C1"-->
+<!--                    android:text="ChargeMOS OFF"-->
+<!--                    android:textColor="#FFFFFF"-->
+<!--                    android:textSize="15sp"-->
+<!--                    android:foreground="@drawable/btn_click_effect" />-->
 
-                <Button
-                    android:id="@+id/MainChargeMOSON"
-                    android:layout_width="150dp"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="20dp"
-                    android:backgroundTint="#0878C1"
-                    android:text="ChargeMOS ON"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:foreground="@drawable/btn_click_effect" />
+<!--                <Button-->
+<!--                    android:id="@+id/MainChargeMOSON"-->
+<!--                    android:layout_width="150dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:layout_marginStart="20dp"-->
+<!--                    android:backgroundTint="#0878C1"-->
+<!--                    android:text="ChargeMOS ON"-->
+<!--                    android:textColor="#FFFFFF"-->
+<!--                    android:textSize="15sp"-->
+<!--                    android:foreground="@drawable/btn_click_effect" />-->
 
             </LinearLayout>
         </LinearLayout>

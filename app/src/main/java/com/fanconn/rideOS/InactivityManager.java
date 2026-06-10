@@ -37,8 +37,8 @@ public class InactivityManager {
 
         int timeoutSec = prefs.getInt("inactivity_timeout_sec", 30); // default 20s
         timeoutMillis = timeoutSec * 1000L;
-//        Log.d("TOUCHTIMER",
-//               "Loaded inactivity timeout = " + timeoutSec + " seconds");
+        Log.d("TOUCHTIMER",
+               "Loaded inactivity timeout = " + timeoutSec + " seconds");
     }
     public void setTimeoutSeconds(Context context, int timeoutSec) {
 
@@ -50,8 +50,8 @@ public class InactivityManager {
         prefs.edit()
                 .putInt("inactivity_timeout_sec", timeoutSec)
                 .apply();
-//        Log.d("TOUCHTIMER",
-//                "Timeout updated & saved = " + timeoutSec + " seconds");
+        Log.d("TOUCHTIMER",
+                "Timeout updated & saved = " + timeoutSec + " seconds");
 
         // Restart timer if active
         if (isRunning && currentCode != -1) {
@@ -68,7 +68,7 @@ public class InactivityManager {
         isRunning = true;
 
         timeoutRunnable = () -> {
-//           Log.d("TOUCHTIMER", " Timeout TOUCHTIMER triggered for code: " + currentCode);
+           Log.d("TOUCHTIMER", " Timeout TOUCHTIMER triggered for code: " + currentCode);
             isRunning = false;
             if (callback != null) {
                 callback.onInactivityTimeout(currentCode);
@@ -88,7 +88,7 @@ public class InactivityManager {
         isRunning = true;
 
         timeoutRunnable = () -> {
-//            Log.d("TOUCHTIMER", " Timeout TOUCHTIMER triggered for code: " + currentCode);
+            Log.d("TOUCHTIMER", " Timeout TOUCHTIMER triggered for code: " + currentCode);
             isRunning = false;
             if (callback != null) {
                 callback.onInactivityTimeout(currentCode);
@@ -106,15 +106,15 @@ public class InactivityManager {
         countdownRunnable = new Runnable() {
             @Override
             public void run() {
-//                Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown");
+                Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown");
                 if (!isRunning) return; // Stop if timer stopped
               //  Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown and not resturnd");
 
-//                Log.d("TOUCHTIMER", " " + secondsRemaining + "s TOUCHTIMER remaining");
+                Log.d("TOUCHTIMER", " " + secondsRemaining + "s TOUCHTIMER remaining");
                 secondsRemaining--;
 
                 if (secondsRemaining >= 0) {
-//                   Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown and Entered cundownhandler");
+                   Log.d("TOUCHTIMER","TOUCHTIMER Entered startcountdown and Entered cundownhandler");
 
                     countdownHandler.postDelayed(this, 1000);
                 }
@@ -125,25 +125,25 @@ public class InactivityManager {
 
     public void resetTimer() {
         if (currentCode != -1) {
-//            Log.d("TOUCHTIMER", " TOUCHTIMER Interaction detected — timer reset");
+            Log.d("TOUCHTIMER", " TOUCHTIMER Interaction detected — timer reset");
             startTimer(currentCode);
         }
         else{
-//            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF RESTTIMER");
+            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER NETER ELSEPARTOF RESTTIMER");
         }
     }
     public void ShortresetTimer(int code) {
         if (code != -1) {
-//            Log.d("TOUCHTIMER", " TOUCHTIMER Short timer reset");
+            Log.d("TOUCHTIMER", " TOUCHTIMER Short timer reset");
             startTimer(code,15000);
         }
         else{
-//            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER ENTER ELSEPARTOF SHORTRESET");
+            Log.d("TOUCHTIMER","onUserInteraction() TOUCHTIMER ENTER ELSEPARTOF SHORTRESET");
         }
     }
 
     public void stopTimer() {
-//        Log.d("TOUCHTIMER","TOUCHTIMER ENTER STOPTIMER");
+        Log.d("TOUCHTIMER","TOUCHTIMER ENTER STOPTIMER");
         isRunning = false;
         handler.removeCallbacksAndMessages(null);
         countdownHandler.removeCallbacksAndMessages(null);

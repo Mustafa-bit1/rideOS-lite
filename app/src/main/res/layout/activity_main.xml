@@ -747,7 +747,7 @@
 
             <LinearLayout
                 android:id="@+id/statsContentContainer"
-                android:layout_width="186dp"
+                android:layout_width="182dp"
                 android:layout_height="190dp"
                 android:gravity="center"
                 android:orientation="vertical"

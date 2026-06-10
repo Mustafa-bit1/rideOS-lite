@@ -33,7 +33,7 @@ import java.util.Locale;
 public class BatteryFragment extends Fragment {
 
     private SerialPortManager serialPortManager;
-    private Button ChargeMOS_ON, ChargeMOS_OFF;
+//    private Button ChargeMOS_ON, ChargeMOS_OFF;
     // Main Battery Views
     private TextView mainBatteryVoltage, mainRemainingAh,maincurrentcon;
     private TextView BMSMosTemp,Main_Battry_Size,NTC1, NTC2, NTC3, NTC4;
@@ -262,10 +262,10 @@ public class BatteryFragment extends Fragment {
         topAuxRangeText = view.findViewById(R.id.topAuxRangeText);
         topAuxRangeValue = view.findViewById(R.id.topAuxRangeValue);
         topAuxBatteryText = view.findViewById(R.id.topAuxBatteryText);
-        ChargeMOS_OFF = view.findViewById(R.id.MainChargeMOSOFF);
-        ChargeMOS_ON = view.findViewById(R.id.MainChargeMOSON);
-        ChargeMOS_OFF.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015162A01800001020304050607"));
-        ChargeMOS_ON.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015162A01800101020304050607"));
+//        ChargeMOS_OFF = view.findViewById(R.id.MainChargeMOSOFF);
+//        ChargeMOS_ON = view.findViewById(R.id.MainChargeMOSON);
+//        ChargeMOS_OFF.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015162A01800001020304050607"));
+//        ChargeMOS_ON.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015162A01800101020304050607"));
 
         // Main Battery
         mainBatteryVoltage = view.findViewById(R.id.mainBatteryVoltage);

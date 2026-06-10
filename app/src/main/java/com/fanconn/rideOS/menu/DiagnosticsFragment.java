@@ -393,7 +393,6 @@ public class DiagnosticsFragment extends Fragment {
         return "IP Not Found";
     }
 
-    // ------------------ HELPER: SEND CMD TWICE THEN CALLBACK ------------------
     private void sendCommandTwiceThen(Runnable afterTask) {
 
         if (serialPortManager == null) {

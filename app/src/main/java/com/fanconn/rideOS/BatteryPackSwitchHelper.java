@@ -15,7 +15,7 @@ public class BatteryPackSwitchHelper {
 
     private int retryCount = 0;
 
-    private final int MAX_RETRIES = 13;
+    private final int MAX_RETRIES = 15;
 
     public BatteryPackSwitchHelper(SwitchCallback callback) {
 
@@ -32,6 +32,9 @@ public class BatteryPackSwitchHelper {
             serialPortManager.VCUSendToMCU(
                     "FFAA550107000A00"
             );
+            handler.postDelayed(() -> {
+                serialPortManager.VCUSendToMCU("FFAA550107000A00");
+            }, 1000);
         }
     }
 
@@ -55,7 +58,7 @@ public class BatteryPackSwitchHelper {
 
         handler.postDelayed(() -> {
             mainChargeOFF();
-        }, 1000);
+        }, 2000);
     }
     private void mainChargeOFF() {
 
@@ -199,7 +202,7 @@ public class BatteryPackSwitchHelper {
         );
         handler.postDelayed(() -> {
             apuDischargeOFF();
-        }, 1000);
+        }, 2000);
     }
     private void apuDischargeOFF() {
 
@@ -296,7 +299,7 @@ public class BatteryPackSwitchHelper {
         );
         handler.postDelayed(() -> {
             emergencyMainChargeON();
-        }, 1000);
+        }, 2000);
     }
     private void emergencyMainChargeON() {
 
