@@ -17,10 +17,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +32,7 @@ import androidx.fragment.app.Fragment;
 import com.fanconn.rideOS.FrameUtils;
 import com.fanconn.rideOS.InactivityManager;
 import com.fanconn.rideOS.MainActivity;
+import com.fanconn.rideOS.OtaBranchManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UpdateService;
@@ -278,21 +281,27 @@ public class OS_UpdatesFragment extends Fragment {
         isExpanded = false;
         arrowImg.setOnClickListener(v -> toggleReleaseNotes());
 
+
         return view;
     }
 
     private void checkAppUpdate() {
 
-        // Enable button back (app OTA may open popup)
         otaupdatebtn.setEnabled(true);
 
-        showupdatepopup = true;
+        Intent intent =
+                new Intent(
+                        getContext(),
+                        UpdateService.class
+                );
 
-        Intent intent = new Intent(getContext(), UpdateService.class);
-        intent.putExtra("manual_check", true);
+        intent.putExtra(
+                "manual_check",
+                true
+        );
+
         requireContext().startService(intent);
     }
-
 
     private void forceStopSelfAndLaunchOther() {
 
@@ -368,11 +377,25 @@ public class OS_UpdatesFragment extends Fragment {
 
         new Thread(() -> {
             try {
-                URL url = new URL(
-                        "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json"
-                );
 
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                String savedBranch =
+                        OtaBranchManager.getBranch(requireContext());
+
+                final String branch =
+                        savedBranch == null
+                                ? UpdateService.BRANCH_PRODUCTION
+                                : savedBranch;
+
+                String jsonUrl =
+                        UpdateService.BRANCH_RND.equals(branch)
+                                ? UpdateService.BETA_UPDATE_URL
+                                : UpdateService.PROD_UPDATE_URL;
+
+                URL url = new URL(jsonUrl);
+
+                HttpURLConnection conn =
+                        (HttpURLConnection) url.openConnection();
+
                 conn.setRequestMethod("GET");
                 conn.connect();
 
@@ -409,7 +432,14 @@ public class OS_UpdatesFragment extends Fragment {
 
                 if (isAdded()) {
                     requireActivity().runOnUiThread(() -> {
-                        serverVersionTV.setText("Latest Version " + latestVersion);
+                        String label =
+                                UpdateService.BRANCH_RND.equals(branch)
+                                        ? "Latest beta version "
+                                        : "Latest production version ";
+
+                        serverVersionTV.setText(
+                                label + latestVersion
+                        );
                         serverReleaseDateTV.setText("Release Date: " + releaseDate);
                     });
                 }
@@ -599,7 +629,6 @@ public class OS_UpdatesFragment extends Fragment {
         super.onDestroyView();
         uptimeHandler.removeCallbacks(uptimeRunnable);
     }
-
     private static final String PREFS_OTA = "ota_prefs";
     private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
 

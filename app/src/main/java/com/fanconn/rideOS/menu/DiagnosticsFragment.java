@@ -61,6 +61,7 @@ public class DiagnosticsFragment extends Fragment {
     private File mFirmwareFile;
     private String version_URL = "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/version.json";
     private String saveDir = "/sdcard";
+    private Spinner branchSpinner;
 
     @Nullable
     @Override
@@ -74,7 +75,7 @@ public class DiagnosticsFragment extends Fragment {
         initViews(view);
         initListeners(view);
         updateDisplay(view);
-        updateVersionInfo(view);
+//        updateVersionInfo(view);
         String ip = getDeviceIpAddress();
         ipTV.setText("Board ID: " + ip);
 
@@ -85,6 +86,64 @@ public class DiagnosticsFragment extends Fragment {
         ahTrackerManager = AhTrackerManager.getInstance(requireContext());
         InactivityManager.getInstance().stopTimer();
 
+        branchSpinner = view.findViewById(R.id.branchSpinner);
+
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(
+                        requireContext(),
+                        R.layout.spinner_item_white,
+                        new String[]{
+                                "Production",
+                                "R&D"
+                        }
+                );
+
+        adapter.setDropDownViewResource(
+                R.layout.spinner_dropdown_white
+        );
+
+        branchSpinner.setAdapter(adapter);
+
+        branchSpinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(
+                            AdapterView<?> parent,
+                            View view,
+                            int position,
+                            long id) {
+
+                        String branch =
+                                position == 1
+                                        ? UpdateService.BRANCH_RND
+                                        : UpdateService.BRANCH_PRODUCTION;
+
+                        OtaBranchManager.saveBranch(
+                                requireContext(),
+                                branch
+                        );
+
+                        Log.d(
+                                "OTA_BRANCH",
+                                "Selected branch = " + branch
+                        );
+                    }
+
+                    @Override
+                    public void onNothingSelected(
+                            AdapterView<?> parent) {
+                    }
+                });
+
+        String savedBranch =
+                OtaBranchManager.getBranch(requireContext());
+
+        branchSpinner.setSelection(
+                UpdateService.BRANCH_RND.equals(savedBranch)
+                        ? 1
+                        : 0
+        );
         return view;
 
     }
@@ -525,22 +584,22 @@ public class DiagnosticsFragment extends Fragment {
         tireDimensionDisplay.setText(String.format(Locale.US, "%.3f", UIUpdater.tiredimensions));
     }
 
-    private void updateVersionInfo(View view) {
-        TextView versionText = view.findViewById(R.id.rideOS_version);
-        String versionName = "N/A";
-        long updateTime = 0;
-        try {
-            PackageInfo pInfo = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), 0);
-            versionName = pInfo.versionName;
-            updateTime = pInfo.lastUpdateTime;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        String installDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date(updateTime));
-        String buildNumber = Build.DISPLAY;
-        String versionInfo = "rideOS " + versionName + "   " + installDate + "\nBuild : " + buildNumber;
-        versionText.setText(versionInfo);
-    }
+//    private void updateVersionInfo(View view) {
+//        TextView versionText = view.findViewById(R.id.rideOS_version);
+//        String versionName = "N/A";
+//        long updateTime = 0;
+//        try {
+//            PackageInfo pInfo = requireContext().getPackageManager().getPackageInfo(requireContext().getPackageName(), 0);
+//            versionName = pInfo.versionName;
+//            updateTime = pInfo.lastUpdateTime;
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        String installDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(new Date(updateTime));
+//        String buildNumber = Build.DISPLAY;
+//        String versionInfo = "rideOS " + versionName + "   " + installDate + "\nBuild : " + buildNumber;
+//        versionText.setText(versionInfo);
+//    }
 
     private void showCustomToast(String message) {
         View layout = getLayoutInflater().inflate(R.layout.toast_custom, null);

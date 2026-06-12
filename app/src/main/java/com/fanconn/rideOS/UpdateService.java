@@ -30,8 +30,17 @@ public class UpdateService extends Service {
 
     private static final String TAG = "UpdateService";
 
-    private static final String UPDATE_URL =
+    public static final String PROD_UPDATE_URL =
             "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/production_OTA/prod_update.json";
+
+    public static final String BETA_UPDATE_URL =
+            "http://ota.rivotmotors.com/OTA/sc126/ElectricBike/rideOS/beta_OTA/beta_update.json";
+    public static final String EXTRA_BRANCH = "ota_branch";
+
+    public static final String BRANCH_PRODUCTION = "production";
+
+    public static final String BRANCH_RND = "rnd";
+
 
     /* ================= ACTIONS ================= */
 
@@ -67,102 +76,291 @@ public class UpdateService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         boolean manualCheck =
-                intent != null && intent.getBooleanExtra("manual_check", false);
+                intent != null
+                        && intent.getBooleanExtra("manual_check", false);
 
         boolean remoteSilent =
-                intent != null && intent.getBooleanExtra(EXTRA_REMOTE_SILENT, false);
+                intent != null
+                        && intent.getBooleanExtra(EXTRA_REMOTE_SILENT, false);
 
-        Log.i(TAG, "UpdateService start | manual=" + manualCheck + " | remoteSilent=" + remoteSilent);
+        String branch =
+                intent != null
+                        ? intent.getStringExtra(EXTRA_BRANCH)
+                        : null;
+
+        // Fallback to saved preference
+        if (branch == null) {
+            branch = OtaBranchManager.getBranch(this);
+        }
+
+        // Final fallback
+        if (branch == null) {
+            branch = BRANCH_PRODUCTION;
+        }
+
+        // R&D branch = NO automatic checks
+        if (BRANCH_RND.equals(branch)
+                && !manualCheck
+                && !remoteSilent) {
+
+            Log.i(TAG,
+                    "R&D branch selected - skipping automatic OTA check");
+
+            stopSelf(startId);
+            return START_NOT_STICKY;
+        }
+
+        Log.i(TAG,
+                "UpdateService start | manual="
+                        + manualCheck
+                        + " | remoteSilent="
+                        + remoteSilent
+                        + " | branch="
+                        + branch);
 
         if (manualCheck || remoteSilent || canCheckNow()) {
-            checkForUpdate(manualCheck, remoteSilent);
-        }
-        else {
-            Log.i(TAG, "OTA check skipped (remind-later active)");
+
+            checkForUpdate(
+                    manualCheck,
+                    remoteSilent,
+                    branch
+            );
+
+        } else {
+
+            Log.i(TAG,
+                    "OTA check skipped (remind-later active)");
         }
 
         return START_STICKY;
     }
-
     /* ================= UPDATE CHECK ================= */
 
     private boolean canCheckNow() {
         return System.currentTimeMillis() >= nextAllowedCheckTime;
     }
 
-    private void checkForUpdate(boolean manualCheck, boolean remoteSilent) {
+    private void checkForUpdate(boolean manualCheck,
+                                boolean remoteSilent,
+                                String branch) {
+
         new Thread(() -> {
             try {
-                Log.i(TAG, "Checking OTA JSON | manual=" + manualCheck + " | remoteSilent=" + remoteSilent);
 
-                // 1️⃣ Internet
+                Log.i(TAG,
+                        "Checking OTA JSON | manual="
+                                + manualCheck
+                                + " | remoteSilent="
+                                + remoteSilent
+                                + " | branch="
+                                + branch);
+
+                // Select JSON based on branch
+                String updateUrl =
+                        BRANCH_RND.equals(branch)
+                                ? BETA_UPDATE_URL
+                                : PROD_UPDATE_URL;
+
+                // Internet
                 HttpURLConnection conn =
-                        (HttpURLConnection) new URL(UPDATE_URL).openConnection();
+                        (HttpURLConnection) new URL(updateUrl).openConnection();
+
                 conn.setConnectTimeout(8000);
                 conn.setReadTimeout(8000);
                 conn.connect();
 
                 BufferedReader br =
-                        new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        new BufferedReader(
+                                new InputStreamReader(conn.getInputStream()));
 
                 StringBuilder sb = new StringBuilder();
                 String line;
-                while ((line = br.readLine()) != null) sb.append(line);
+
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                }
+
                 br.close();
 
                 JSONObject json = new JSONObject(sb.toString());
 
-                String latestVersion = json.getString("latest_version");
-                String apkUrl = json.getString("apk_url");
+
+                if (!json.has("latest_version") || !json.has("apk_url")) {
+
+                    Log.w(TAG, "OTA JSON missing latest_version/apk_url");
+
+                    if (manualCheck) {
+                        mainHandler.post(() ->
+                                showCustomToast("No beta version available")
+                        );
+                    }
+
+                    return;
+                }
+                String latestVersion =
+                        json.getString("latest_version");
+
+                String apkUrl =
+                        json.getString("apk_url");
 
                 String currentVersion =
                         getPackageManager()
-                                .getPackageInfo(getPackageName(), 0)
+                                .getPackageInfo(
+                                        getPackageName(),
+                                        0)
+
+
                                 .versionName;
 
-                Log.i(TAG, "Current=" + currentVersion + " | Server=" + latestVersion);
+                Log.i(TAG,
+                        "Current="
+                                + currentVersion
+                                + " | Server="
+                                + latestVersion);
 
-                // 2️ Version decision
-                boolean updateAvailable = !latestVersion.equals(currentVersion);
+                // Version comparison
+                boolean updateAvailable =
+                        !latestVersion.equals(currentVersion);
 
                 if (updateAvailable) {
 
                     Log.i(TAG, "OTA update AVAILABLE");
 
+                    // MQTT silent OTA
                     if (remoteSilent) {
-                        // 🤖 REMOTE MODE (MQTT)
-                        Log.i(TAG, " Remote silent OTA → auto start");
-                        launchProgressAndDownload(apkUrl);   //  NO POPUP
+
+                        Log.i(TAG,
+                                "Remote silent OTA -> auto start");
+
+                        launchProgressAndDownload(apkUrl);
 
                     } else {
-                        //  USER MODE (UI)
-                        mainHandler.post(() -> showUpdatePopup(apkUrl)); // popup only here
+
+                        // User initiated OTA
+                        mainHandler.post(() -> {
+
+                            if (BRANCH_RND.equals(branch)) {
+
+                                showBetaUpdatePopup(apkUrl);
+
+                            } else {
+
+                                showUpdatePopup(apkUrl);
+
+                            }
+                        });
                     }
 
                 } else {
+
                     Log.i(TAG, "No OTA update available");
 
-                    // Only manual check shows toast
                     if (manualCheck) {
+
                         mainHandler.post(() ->
-                                showCustomToast("Your system is up to date")
-                        );
+                                showCustomToast(
+                                        "Your system is up to date"
+                                ));
                     }
                 }
 
-            } catch (Exception e) {
-                Log.e(TAG, "OTA check failed", e);
+            }
+            catch (FileNotFoundException e) {
+
+                Log.w(TAG, "Beta OTA JSON not found");
 
                 if (manualCheck) {
                     mainHandler.post(() ->
-                            showCustomToast("Server error, failed to fetch rideOS version")
+                            showCustomToast("No beta version available")
                     );
+                }
+            }
+            catch (Exception e) {
+
+                Log.e(TAG, "OTA check failed", e);
+
+                if (manualCheck) {
+
+                    mainHandler.post(() ->
+                            showCustomToast(
+                                    "Server error, failed to fetch rideOS version"
+                            ));
                 }
             }
         }).start();
     }
+    private void showBetaUpdatePopup(String apkUrl){
+        if (apkUrl == null) return;
 
+        if (updateDialog != null && updateDialog.isShowing()) {
+            Log.w(TAG, "OTA popup already showing");
+            return;
+        }
 
+        Log.i(TAG, "Showing custom OTA popup");
+
+        try {
+            updateDialog = new Dialog(this);
+            updateDialog.setCancelable(false);
+            updateDialog.setCanceledOnTouchOutside(false);
+
+            LayoutInflater inflater =
+                    (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.popupdialog, null);
+
+            TextView title = view.findViewById(R.id.dialogTitle);
+            TextView message = view.findViewById(R.id.dialogMessage);
+            Button btnYes = view.findViewById(R.id.btnYes);
+            Button btnNo = view.findViewById(R.id.btnNo);
+
+            title.setText("Beta Update Available");
+            message.setText("New beta rideOS update is available.\nDo you want to update now?");
+
+            btnYes.setText("Update Now");
+            btnNo.setText("Cancle");
+
+            // Stop inactivity timer while popup is visible
+            Log.i(TAG, "TOUCH Stopping inactivity timer for OTA popup");
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> InactivityManager.getInstance().stopTimer(), 5000);
+
+            btnYes.setOnClickListener(v -> {
+                Log.i(TAG, "User accepted OTA update");
+                updateDialog.dismiss();
+                updateDialog = null;
+                launchProgressAndDownload(apkUrl);
+            });
+
+            btnNo.setOnClickListener(v -> {
+                Log.i(TAG, "User selected Remind Me Later");
+                if (UIUpdater.directionalGears == 0) {
+                    InactivityManager.getInstance().startTimer(1);
+                }
+
+                updateDialog.dismiss();
+                updateDialog = null;
+            });
+
+            updateDialog.setContentView(view);
+
+            Window window = updateDialog.getWindow();
+            if (window != null) {
+                window.setBackgroundDrawableResource(android.R.color.transparent);
+                window.setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.width = WindowManager.LayoutParams.WRAP_CONTENT;
+                params.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                params.gravity = Gravity.CENTER;
+                window.setAttributes(params);
+            }
+
+            updateDialog.show();
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to show OTA popup", e);
+        }
+    }
     private void showCustomToast(String message) {
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(() -> {

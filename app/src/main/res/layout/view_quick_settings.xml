@@ -437,7 +437,7 @@
         android:background="@drawable/quick_setting_btn"
         android:text="All Settings"
         android:textColor="#FFFFFF"
-        android:textSize="25sp"
+        android:textSize="21sp"
         android:textAllCaps="false"
         android:fontFamily="@font/kanit"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -955,9 +955,22 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
     }
     private void startUpdateService() {
-        // Start the UpdateService to check and prompt the user for an update
-        Intent intent = new Intent(this, UpdateService.class);
-        startService(intent);
+
+        String branch =
+                OtaBranchManager.getBranch(this);
+
+        if (UpdateService.BRANCH_PRODUCTION.equals(branch)) {
+
+            Intent intent =
+                    new Intent(this, UpdateService.class);
+
+            intent.putExtra(
+                    UpdateService.EXTRA_BRANCH,
+                    branch
+            );
+
+            startService(intent);
+        }
     }
 
     public void navLeft(View view) {
@@ -1764,8 +1777,21 @@ public void recoNavLeft(View view) {
         // If deferred update exists, show it
 //        if (UpdateService.pendingUpdateApkUrl != null) {
             //Log.d("MainActivity", "Showing deferred OTA update dialog...");
-        Intent intent = new Intent(this, UpdateService.class);
-        startService(intent);   // auto check (respects remind-later timer)
+        String branch =
+                OtaBranchManager.getBranch(this);
+
+        if (UpdateService.BRANCH_PRODUCTION.equals(branch)) {
+
+            Intent intent =
+                    new Intent(this, UpdateService.class);
+
+            intent.putExtra(
+                    UpdateService.EXTRA_BRANCH,
+                    branch
+            );
+
+            startService(intent);
+        }
 
         if (!isStatusReceiverRegistered) {
             IntentFilter signalFilter = new IntentFilter();

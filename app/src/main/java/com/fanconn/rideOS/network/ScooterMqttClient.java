@@ -509,12 +509,19 @@ public class ScooterMqttClient {
     private void startRideOSRemoteOta(Context context) {
 
         if (!FrameUtils.isNetworkAvailable(context)) {
-//            Log.e("MQTT", " No internet, rideOS OTA aborted");
             return;
         }
 
         Intent intent = new Intent(context, UpdateService.class);
-        intent.putExtra(UpdateService.EXTRA_REMOTE_SILENT, true);  //  silent
+
+        intent.putExtra(UpdateService.EXTRA_REMOTE_SILENT, true);
+
+        // ALWAYS Production
+        intent.putExtra(
+                UpdateService.EXTRA_BRANCH,
+                UpdateService.BRANCH_PRODUCTION
+        );
+
         context.startService(intent);
     }
 
