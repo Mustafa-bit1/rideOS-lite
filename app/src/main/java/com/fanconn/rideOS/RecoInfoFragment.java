@@ -52,33 +52,64 @@ public class RecoInfoFragment extends Fragment {
 
     private void updateRecoValues() {
         UIUpdater uiUpdater = UIUpdater.getInstance();
+
         if (uiUpdater == null) return;
+
+        if (tripRecoKmTv == null
+                || lastRecokmTv == null
+                || totalRecoKmTv == null) {
+            return;
+        }
 
         float tripKm = uiUpdater.getTripRecoKm();
         float totalKm = uiUpdater.getTotalRecoKm();
-        float lastKm =uiUpdater.getLastTripRecoKm();
+        float lastKm = uiUpdater.getLastTripRecoKm();
+
         tripRecoKmTv.setText(String.format("+%.1f km (Current Trip)", tripKm));
-        lastRecokmTv.setText(String.format("+%.1f km (Last trip)",lastKm));
+        lastRecokmTv.setText(String.format("+%.1f km (Last trip)", lastKm));
         totalRecoKmTv.setText(String.format("+%.1f km (Total)", totalKm));
     }
 
     private void close() {
-        if (getActivity() == null || getView() == null) return;
 
-        View rightPanel = getView().findViewById(R.id.rightPanel);
+        View root = getView();
+
+        if (root == null) {
+            return;
+        }
+
+        View rightPanel = root.findViewById(R.id.rightPanel);
+
         rightPanel.animate()
                 .translationX(rightPanel.getWidth())
                 .setDuration(250)
                 .withEndAction(() -> {
-                    getActivity().getSupportFragmentManager()
+
+                    if (!isAdded()) {
+                        return;
+                    }
+
+                    FragmentActivity activity = getActivity();
+
+                    if (activity == null
+                            || activity.isFinishing()
+                            || activity.isDestroyed()) {
+                        return;
+                    }
+
+                    activity.getSupportFragmentManager()
                             .beginTransaction()
-                            .remove(this)
+                            .remove(RecoInfoFragment.this)
                             .commitAllowingStateLoss();
 
-                    View overlay = getActivity().findViewById(R.id.overlayContainer);
-                    if (overlay != null) overlay.setVisibility(View.GONE);
-                    if (UIUpdater.directionalGears==0)
-                    {
+                    View overlay =
+                            activity.findViewById(R.id.overlayContainer);
+
+                    if (overlay != null) {
+                        overlay.setVisibility(View.GONE);
+                    }
+
+                    if (UIUpdater.directionalGears == 0) {
                         InactivityManager.getInstance().startTimer(1);
                     }
                 })

@@ -112,6 +112,16 @@
         <item name="android:activityCloseExitAnimation">@anim/slide_out_up</item>
     </style>
 
+    <style name="DiagButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">6dp</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:backgroundTint">#0878C1</item>
+    </style>
+
 <!--    <style name="TransparentSlideThemeforOthers" parent="Theme.AppCompat.Light.NoActionBar">-->
 <!--        <item name="android:windowIsTranslucent">true</item>-->
 <!--        <item name="android:windowBackground">@android:color/transparent</item>-->
