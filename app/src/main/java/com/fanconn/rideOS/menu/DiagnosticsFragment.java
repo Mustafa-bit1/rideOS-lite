@@ -52,8 +52,8 @@ public class DiagnosticsFragment extends Fragment {
     private Button resetRecoBtn, resetChargerRegenBtn,ResetAll;
     private Button resetOdoBtn;
     private Button bootbutton, handlelockbutton, handleUNlockbutton,  lockScreen, ToAPU, ToMain, LEDON,In60,In90,out0, LEDOFF, debugbtn,lowtorue,highTorque;
-    private ImageButton  rebootbtn, shutdownbtn;
-    private Button wifiBtn, wifiOffBtn, Devicesettings;
+    private Button  rebootbtn, shutdownbtn;
+    private Button Devicesettings;
     private TextView tireDimensionDisplay;
     private ProgressDialog progressDialog;
     private SerialPortManager serialPortManager;
@@ -164,8 +164,6 @@ public class DiagnosticsFragment extends Fragment {
         out0 = view.findViewById(R.id.out0);
         rebootbtn = view.findViewById(R.id.rebootbtn);
         shutdownbtn = view.findViewById(R.id.shutdownbtn);
-        wifiBtn = view.findViewById(R.id.wifiBtn);
-        wifiOffBtn = view.findViewById(R.id.wifiOffBtn);
         Devicesettings = view.findViewById(R.id.Devicesettings);
         debugbtn = view.findViewById(R.id.debug);
         tireDimensionDisplay = view.findViewById(R.id.tireDimensionDisplay);
@@ -306,7 +304,7 @@ public class DiagnosticsFragment extends Fragment {
             AlertDialog dialog = createDialog(
                     dialogView,
                     "Reset All",
-                    "Are you sure you want to reset EVERYTHING?",
+                    "Are you sure you want to reset EVERYTHING(Odo,trip,recoEngine,In AH(60),Out AH(0),RegenAH,Charger AH)?",
                     "Reset",
                     () -> {
 
@@ -392,23 +390,6 @@ public class DiagnosticsFragment extends Fragment {
 //        In60.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160A01800000EA6000000000"));
         In90.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160A018000015F9000000000"));
         out0.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA5501030015160C01800000000000000000"));
-        wifiBtn.setOnClickListener(v -> {
-            if (!wifiManager.isWifiEnabled()) {
-                wifiManager.setWifiEnabled(true);
-                showCustomToast("WiFi ON");
-            } else {
-                showCustomToast("WiFi already ON");
-            }
-        });
-
-        wifiOffBtn.setOnClickListener(v -> {
-            if (wifiManager.isWifiEnabled()) {
-                wifiManager.setWifiEnabled(false);
-                showCustomToast("WiFi OFF");
-            } else {
-                showCustomToast("WiFi already OFF");
-            }
-        });
 
         Devicesettings.setOnClickListener(v -> showPasswordDialog());
         debugbtn.setOnClickListener(v -> {

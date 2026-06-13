@@ -113,7 +113,7 @@
     </style>
 
     <style name="DiagButton">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">180dp</item>
         <item name="android:layout_height">52dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_margin">6dp</item>

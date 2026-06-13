@@ -1,466 +1,312 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="1001dp"
     android:layout_height="418dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/fragmentbg">
+    android:fillViewport="true">
 
     <LinearLayout
-        android:layout_width="500dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginEnd="200dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:background="@drawable/fragmentbg"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <TextView
-            android:layout_width="0dp"
+        <!-- OTA BRANCH -->
+
+
+        <!-- BUTTON GRID -->
+
+        <GridLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:fontFamily="@font/kanitlite"
-            android:paddingStart="1dp"
-            android:text="Software update branch"
-            android:textColor="#FFFFFF"
-            android:textSize="23sp" />
+            android:alignmentMode="alignMargins"
+            android:columnCount="5"
+            android:rowCount="6"
+            android:useDefaultMargins="true">
 
+            <!-- COLUMN 1 -->
+
+            <Button
+                android:id="@+id/handlelockbutton"
+                style="@style/DiagButton"
+                android:backgroundTint="#1C78BE"
+                android:text="Handle Lock"/>
+            <Button
+                android:id="@+id/LEDON"
+                style="@style/DiagButton"
+                android:backgroundTint="#1C78BE"
+                android:text="LED ON"/>
+
+            <Button
+                android:id="@+id/mcuotaupdatebtn"
+                style="@style/DiagButton"
+                android:backgroundTint="#D45333"
+                android:text="MCU OTA"/>
+
+            <Button
+                android:id="@+id/ToMain"
+                style="@style/DiagButton"
+                android:backgroundTint="#B40300"
+                android:text="Switch to Main"/>
+            <Button
+                android:id="@+id/hightorque"
+                style="@style/DiagButton"
+                android:backgroundTint="#FF9BEB"
+                android:textColor="@color/black"
+                android:text="Set controler High"/>
+
+            <Button
+                android:id="@+id/handleUNlockbutton"
+                style="@style/DiagButton"
+                android:backgroundTint="#1C78BE"
+                android:text="Handle Unlock"/>
+
+
+            <!-- COLUMN 2 -->
+
+            <Button
+                android:id="@+id/LEDOFF"
+                style="@style/DiagButton"
+                android:backgroundTint="#1C78BE"
+                android:text="LED OFF"/>
+
+            <Button
+                android:id="@+id/aospotaupdate"
+                style="@style/DiagButton"
+                android:backgroundTint="#D45333"
+                android:text="AOSP OTA"/>
+
+
+            <Button
+                android:id="@+id/ToAPU"
+                style="@style/DiagButton"
+                android:backgroundTint="#B40300"
+                android:text="Switch to APU"/>
+            <Button
+                android:id="@+id/Low"
+                style="@style/DiagButton"
+                android:backgroundTint="#FF9BEB"
+                android:textColor="@color/black"
+                android:text="Set controller low"/>
+
+            <Button
+                android:id="@+id/bootbutton"
+                style="@style/DiagButton"
+                android:backgroundTint="#1C78BE"
+                android:text="Seat Lock"/>
+            <Button
+                android:id="@+id/lockScreen"
+                style="@style/DiagButton"
+                android:backgroundTint="#1C78BE"
+                android:text="Lock Scooter"/>
+
+            <Button
+                android:id="@+id/ResetAll"
+                style="@style/DiagButton"
+                android:backgroundTint="#FFFB06"
+                android:textColor="@color/black"
+                android:text="Reset ALL"/>
+
+
+            <!-- COLUMN 3 -->
+
+
+
+<!--            <Button-->
+<!--                android:id="@+id/wifiOffBtn"-->
+<!--                style="@style/DiagButton"-->
+<!--                android:text="WiFi OFF"/>-->
+
+
+
+            <Button
+                android:id="@+id/resetRecoBtn"
+                style="@style/DiagButton"
+                android:backgroundTint="#FFFB06"
+                android:textColor="@color/black"
+                android:text="Reset Reco"/>
+            <Button
+                android:id="@+id/Devicesettings"
+                style="@style/DiagButton"
+                android:backgroundTint="#7400A2"
+
+                android:text="System settings"/>
+
+
+            <!-- COLUMN 4 -->
+
+            <Button
+                android:id="@+id/resetAhvalues"
+                style="@style/DiagButton"
+                android:backgroundTint="#079500"
+                android:text="Battery AH"/>
+
+<!--            <Button-->
+<!--                android:id="@+id/wifiBtn"-->
+<!--                style="@style/DiagButton"-->
+<!--                android:text="WiFi ON"/>-->
+
+
+            <Button
+                android:id="@+id/in90"
+                style="@style/DiagButton"
+                android:backgroundTint="#079500"
+                android:text="Do In AH 90"/>
+
+            <Button
+                android:id="@+id/resetChargerRegenBtn"
+                style="@style/DiagButton"
+                android:backgroundTint="#FFFB06"
+                android:textColor="@color/black"
+                android:text="Reset charger AH"/>
+
+
+            <!-- COLUMN 5 -->
+            <Button
+                android:id="@+id/resetOdoBtn"
+                style="@style/DiagButton"
+                android:backgroundTint="#FFFB06"
+                android:textColor="@color/black"
+                android:text="Reset ODO"/>
+
+            <Button
+                android:id="@+id/rebootbtn"
+                style="@style/DiagButton"
+                android:backgroundTint="#7400A2"
+                android:text="VCU restart"/>
+
+
+            <Button
+                android:id="@+id/out0"
+                style="@style/DiagButton"
+                android:backgroundTint="#079500"
+                android:text="Do Out AH 0"/>
+
+            <Button
+                android:id="@+id/in60"
+                style="@style/DiagButton"
+                android:backgroundTint="#079500"
+                android:text="Do In AH 60"/>
+
+            <Button
+                android:id="@+id/debug"
+                style="@style/DiagButton"
+                android:backgroundTint="#D9D9D9"
+                android:textColor="@color/black"
+                android:text="Debug Mode"/>
+
+            <Button
+                android:id="@+id/btnmetadata"
+                style="@style/DiagButton"
+                android:backgroundTint="#D9D9D9"
+                android:textColor="@color/black"
+                android:text="Edit VIN"/>
+
+            <Button
+                android:id="@+id/shutdownbtn"
+                style="@style/DiagButton"
+                android:backgroundTint="#7400A2"
+                android:text="VCU shutdown"/>
+
+
+        </GridLayout>
+
+        <!-- REBOOT / SHUTDOWN -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="27dp"
-            android:orientation="vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
 
-            <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="50dp">
+            <LinearLayout
+                android:layout_width="500dp"
+                android:layout_height="60dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="12dp"
+                android:background="@drawable/branch_card_bg">
 
-                <Spinner
-                    android:id="@+id/branchSpinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/spinner_blue_border" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Software Update Branch"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/kanitlite"/>
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:src="@drawable/ic_spinner_arrow" />
-            </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="170dp"
+                    android:layout_height="40dp">
+
+                    <Spinner
+                        android:id="@+id/branchSpinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/spinner_blue_border"
+                        android:spinnerMode="dropdown"/>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="8dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:src="@drawable/ic_spinner_arrow"/>
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="40dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnDecrease"
+                    style="@style/DiagButton"
+                    android:layout_width="60dp"
+                    android:text="-"/>
+
+                <TextView
+                    android:id="@+id/tireDimensionDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="20dp"
+                    android:text="-"
+                    android:textColor="@android:color/white"
+                    android:textSize="22sp"/>
+
+                <Button
+                    android:id="@+id/btnIncrease"
+                    style="@style/DiagButton"
+                    android:layout_width="60dp"
+                    android:text="+"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/ipTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Board ID"
+                android:layout_marginStart="40dp"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"/>
+
         </LinearLayout>
 
-    </LinearLayout>
-    <Button
-        android:id="@+id/bootbutton"
-        android:layout_width="180dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="180dp"
-        android:backgroundTint="#0878C1"
-        android:text="Seat Lock"
-        android:textSize="15dp"
-        android:foreground="@drawable/btn_click_effect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
-        android:id="@+id/resetAhvalues"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="4dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="BAttAh"
-        android:textSize="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/Low"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="784dp"
-        android:layout_marginTop="248dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Low"
-        android:textSize="15dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/hightorque"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="784dp"
-        android:layout_marginTop="310dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Reset Controller"
-        android:textSize="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
-        android:id="@+id/Devicesettings"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="280dp"
-        android:layout_marginTop="330dp"
-        android:backgroundTint="#0878C1"
-        android:text="System"
-        android:textSize="18dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/handlelockbutton"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="44dp"
-        android:backgroundTint="#0878C1"
-        android:text="Handle Lock"
-        android:textSize="15dp"
-        android:foreground="@drawable/btn_click_effect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/handleUNlockbutton"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="112dp"
-        android:backgroundTint="#0878C1"
-        android:text="Handle Unlock"
-        android:textSize="15dp"
-        android:foreground="@drawable/btn_click_effect"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/lockScreen"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="316dp"
-        android:backgroundTint="#0878C1"
-        android:text="Lock Scooter"
-        android:foreground="@drawable/btn_click_effect"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/ToAPU"
-        android:layout_width="140dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="372dp"
-        android:layout_marginTop="234dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Switch to APU"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/ToMain"
-        android:layout_width="140dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="220dp"
-        android:layout_marginTop="234dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Switch to Main"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/resetOdoBtn"
-        android:layout_width="120dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="292dp"
-        android:layout_marginTop="284dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Reset ODO"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/resetRecoBtn"
-        android:layout_width="140dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="215dp"
-        android:layout_marginTop="174dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Reset recoEngine"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/resetChargerRegenBtn"
-        android:layout_width="140dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="360dp"
-        android:layout_marginTop="174dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Reset Charger and Regen AH"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/LEDON"
-        android:layout_width="190dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="512dp"
-        android:layout_marginTop="180dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="LED ON"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/LEDOFF"
-        android:layout_width="190dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="512dp"
-        android:layout_marginTop="244dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="LED OFF"
-        android:textColor="@color/white"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/in60"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="328dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="in60"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/in90"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="208dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="in90"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/out0"
-        android:layout_width="100dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="448dp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="out0"
-        android:textColor="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/wifiBtn"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="532dp"
-        android:layout_marginTop="112dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Turn WiFi ON"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/wifiOffBtn"
-        android:layout_width="130dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="532dp"
-        android:layout_marginTop="44dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Turn WiFi OFF"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/debug"
-        android:layout_width="170dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="250dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Open Debug Mode"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/ResetAll"
-        android:layout_width="170dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="772dp"
-        android:layout_marginTop="120dp"
-        android:backgroundTint="#0878C1"
-        android:textColor="@color/white"
-
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Reset ALL"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <Button
-        android:id="@+id/btnmetadata"
-        android:layout_width="170dp"
-        android:layout_height="51dp"
-        android:layout_marginStart="772dp"
-        android:layout_marginTop="180dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="Edit EV data"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/mcuotaupdatebtn"
-        android:layout_width="170dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="212dp"
-        android:layout_marginTop="60dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="MCU OTA"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/aospotaupdate"
-        android:layout_width="170dp"
-        android:layout_height="41dp"
-        android:layout_marginStart="208dp"
-        android:layout_marginTop="120dp"
-        android:backgroundTint="#0878C1"
-        android:foreground="@drawable/btn_click_effect"
-        android:text="AOSP OTA"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/rebootbtn"
-        android:layout_width="182dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="712dp"
-        android:layout_marginTop="44dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:foreground="@drawable/btn_click_effect"
-        android:padding="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/rebootbtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageButton
-        android:id="@+id/shutdownbtn"
-        android:layout_width="152dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="712dp"
-        android:layout_marginTop="76dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:foreground="@drawable/btn_click_effect"
-        android:padding="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/shutdownbtn"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout
-        android:layout_width="300dp"
-        android:layout_height="80dp"
-        android:layout_marginTop="300dp"
-        android:layout_marginEnd="240dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <Button
-            android:id="@+id/btnDecrease"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#0878C1"
-            android:fontFamily="@font/opti"
-            android:text="-"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/tireDimensionDisplay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/kanit"
-            android:padding="14dp"
-            android:text="-"
-            android:textColor="@color/white"
-            android:textSize="22sp" />
-
-
-        <Button
-            android:id="@+id/btnIncrease"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#0878C1"
-            android:fontFamily="@font/opti"
-            android:text="+"
-            android:textSize="20dp" />
     </LinearLayout>
 
-
-
-    <TextView
-        android:id="@+id/ipTV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="15dp"
-        android:text="IP Address: --"
-        android:textColor="@android:color/white"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -68,7 +68,7 @@ public class UpdateService extends Service {
         );
         InactivityManager.getInstance().stopTimer();
 
-        Log.i(TAG, "UpdateService created");
+        //Log.i(TAG, "UpdateService created");
     }
     public static final String EXTRA_REMOTE_SILENT = "remote_silent";
 
@@ -103,20 +103,20 @@ public class UpdateService extends Service {
                 && !manualCheck
                 && !remoteSilent) {
 
-            Log.i(TAG,
-                    "R&D branch selected - skipping automatic OTA check");
+          //  Log.i(TAG,
+             //       "R&D branch selected - skipping automatic OTA check");
 
             stopSelf(startId);
             return START_NOT_STICKY;
         }
 
-        Log.i(TAG,
-                "UpdateService start | manual="
-                        + manualCheck
-                        + " | remoteSilent="
-                        + remoteSilent
-                        + " | branch="
-                        + branch);
+//        Log.i(TAG,
+//                "UpdateService start | manual="
+//                        + manualCheck
+//                        + " | remoteSilent="
+//                        + remoteSilent
+//                        + " | branch="
+//                        + branch);
 
         if (manualCheck || remoteSilent || canCheckNow()) {
 
@@ -128,8 +128,8 @@ public class UpdateService extends Service {
 
         } else {
 
-            Log.i(TAG,
-                    "OTA check skipped (remind-later active)");
+//            Log.i(TAG,
+//                    "OTA check skipped (remind-later active)");
         }
 
         return START_STICKY;
@@ -147,13 +147,13 @@ public class UpdateService extends Service {
         new Thread(() -> {
             try {
 
-                Log.i(TAG,
-                        "Checking OTA JSON | manual="
-                                + manualCheck
-                                + " | remoteSilent="
-                                + remoteSilent
-                                + " | branch="
-                                + branch);
+//                Log.i(TAG,
+//                        "Checking OTA JSON | manual="
+//                                + manualCheck
+//                                + " | remoteSilent="
+//                                + remoteSilent
+//                                + " | branch="
+//                                + branch);
 
                 // Select JSON based on branch
                 String updateUrl =
@@ -187,7 +187,7 @@ public class UpdateService extends Service {
 
                 if (!json.has("latest_version") || !json.has("apk_url")) {
 
-                    Log.w(TAG, "OTA JSON missing latest_version/apk_url");
+                   // Log.w(TAG, "OTA JSON missing latest_version/apk_url");
 
                     if (manualCheck) {
                         mainHandler.post(() ->
@@ -212,11 +212,11 @@ public class UpdateService extends Service {
 
                                 .versionName;
 
-                Log.i(TAG,
-                        "Current="
-                                + currentVersion
-                                + " | Server="
-                                + latestVersion);
+//                Log.i(TAG,
+//                        "Current="
+//                                + currentVersion
+//                                + " | Server="
+//                                + latestVersion);
 
                 // Version comparison
                 boolean updateAvailable =
@@ -224,13 +224,13 @@ public class UpdateService extends Service {
 
                 if (updateAvailable) {
 
-                    Log.i(TAG, "OTA update AVAILABLE");
+                   // Log.i(TAG, "OTA update AVAILABLE");
 
                     // MQTT silent OTA
                     if (remoteSilent) {
 
-                        Log.i(TAG,
-                                "Remote silent OTA -> auto start");
+//                        Log.i(TAG,
+//                                "Remote silent OTA -> auto start");
 
                         launchProgressAndDownload(apkUrl);
 
@@ -253,7 +253,7 @@ public class UpdateService extends Service {
 
                 } else {
 
-                    Log.i(TAG, "No OTA update available");
+                   // Log.i(TAG, "No OTA update available");
 
                     if (manualCheck) {
 
@@ -267,7 +267,7 @@ public class UpdateService extends Service {
             }
             catch (FileNotFoundException e) {
 
-                Log.w(TAG, "Beta OTA JSON not found");
+                //Log.w(TAG, "Beta OTA JSON not found");
 
                 if (manualCheck) {
                     mainHandler.post(() ->
@@ -277,7 +277,7 @@ public class UpdateService extends Service {
             }
             catch (Exception e) {
 
-                Log.e(TAG, "OTA check failed", e);
+                //Log.e(TAG, "OTA check failed", e);
 
                 if (manualCheck) {
 
@@ -293,11 +293,11 @@ public class UpdateService extends Service {
         if (apkUrl == null) return;
 
         if (updateDialog != null && updateDialog.isShowing()) {
-            Log.w(TAG, "OTA popup already showing");
+            //Log.w(TAG, "OTA popup already showing");
             return;
         }
 
-        Log.i(TAG, "Showing custom OTA popup");
+        //Log.i(TAG, "Showing custom OTA popup");
 
         try {
             updateDialog = new Dialog(this);
@@ -317,22 +317,22 @@ public class UpdateService extends Service {
             message.setText("New beta rideOS update is available.\nDo you want to update now?");
 
             btnYes.setText("Update Now");
-            btnNo.setText("Cancle");
+            btnNo.setText("Cancel");
 
             // Stop inactivity timer while popup is visible
-            Log.i(TAG, "TOUCH Stopping inactivity timer for OTA popup");
+           // Log.i(TAG, "TOUCH Stopping inactivity timer for OTA popup");
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> InactivityManager.getInstance().stopTimer(), 5000);
 
             btnYes.setOnClickListener(v -> {
-                Log.i(TAG, "User accepted OTA update");
+               // Log.i(TAG, "User accepted OTA update");
                 updateDialog.dismiss();
                 updateDialog = null;
                 launchProgressAndDownload(apkUrl);
             });
 
             btnNo.setOnClickListener(v -> {
-                Log.i(TAG, "User selected Remind Me Later");
+                //Log.i(TAG, "User selected Remind Me Later");
                 if (UIUpdater.directionalGears == 0) {
                     InactivityManager.getInstance().startTimer(1);
                 }
@@ -358,7 +358,7 @@ public class UpdateService extends Service {
             updateDialog.show();
 
         } catch (Exception e) {
-            Log.e(TAG, "Failed to show OTA popup", e);
+           // Log.e(TAG, "Failed to show OTA popup", e);
         }
     }
     private void showCustomToast(String message) {
@@ -381,10 +381,10 @@ public class UpdateService extends Service {
                 toast.setView(layout);
                 toast.show();
 
-                Log.i(TAG, "Custom toast shown: " + message);
+               // Log.i(TAG, "Custom toast shown: " + message);
 
             } catch (Exception e) {
-                Log.e(TAG, "Failed to show custom toast", e);
+               // Log.e(TAG, "Failed to show custom toast", e);
             }
         });
     }
@@ -395,11 +395,11 @@ public class UpdateService extends Service {
         if (apkUrl == null) return;
 
         if (updateDialog != null && updateDialog.isShowing()) {
-            Log.w(TAG, "OTA popup already showing");
+           // Log.w(TAG, "OTA popup already showing");
             return;
         }
 
-        Log.i(TAG, "Showing custom OTA popup");
+       // Log.i(TAG, "Showing custom OTA popup");
 
         try {
             updateDialog = new Dialog(this);
@@ -422,25 +422,25 @@ public class UpdateService extends Service {
             btnNo.setText("Remind Later(24H)");
 
             // Stop inactivity timer while popup is visible
-            Log.i(TAG, "TOUCH Stopping inactivity timer for OTA popup");
+           // Log.i(TAG, "TOUCH Stopping inactivity timer for OTA popup");
 
             new Handler(Looper.getMainLooper()).postDelayed(() -> InactivityManager.getInstance().stopTimer(), 5000);
 
             btnYes.setOnClickListener(v -> {
-                Log.i(TAG, "User accepted OTA update");
+               // Log.i(TAG, "User accepted OTA update");
                 updateDialog.dismiss();
                 updateDialog = null;
                 launchProgressAndDownload(apkUrl);
             });
 
             btnNo.setOnClickListener(v -> {
-                Log.i(TAG, "User selected Remind Me Later");
+              //  Log.i(TAG, "User selected Remind Me Later");
 
                 //  Schedule NEXT SERVER CHECK (not popup)
                 nextAllowedCheckTime =
                         System.currentTimeMillis() + (24 * 60 * 60 * 1000); // 24
 //                                               System.currentTimeMillis() + (10* 1000); // 24hh
-                Log.i(TAG, "Next OTA check scheduled after 24h");
+               // Log.i(TAG, "Next OTA check scheduled after 24h");
 
                 if (UIUpdater.directionalGears == 0) {
                     InactivityManager.getInstance().startTimer(1);
@@ -467,7 +467,7 @@ public class UpdateService extends Service {
             updateDialog.show();
 
         } catch (Exception e) {
-            Log.e(TAG, "Failed to show OTA popup", e);
+            //Log.e(TAG, "Failed to show OTA popup", e);
         }
     }
 
@@ -494,7 +494,7 @@ public class UpdateService extends Service {
                 conn.connect();
 
                 int total = conn.getContentLength();
-                Log.i(TAG, "APK size=" + total);
+               // Log.i(TAG, "APK size=" + total);
 
                 InputStream is = conn.getInputStream();
                 OutputStream os = new FileOutputStream(downloadedApkFile);
@@ -521,7 +521,7 @@ public class UpdateService extends Service {
                         pi.putExtra("progress", progress);
                         LocalBroadcastManager.getInstance(this).sendBroadcast(pi);
 
-                        Log.d(TAG, "Download progress=" + progress + "%");
+                        //Log.d(TAG, "Download progress=" + progress + "%");
                     }
                 }
 
@@ -532,10 +532,10 @@ public class UpdateService extends Service {
                 done.putExtra("progress", 100);
                 LocalBroadcastManager.getInstance(this).sendBroadcast(done);
 
-                Log.i(TAG, "APK download completed");
+               /// Log.i(TAG, "APK download completed");
 
             } catch (Exception e) {
-                Log.e(TAG, "APK download failed", e);
+                //Log.e(TAG, "APK download failed", e);
 
                 Intent fail = new Intent("com.fanconn.UPDATE_PROGRESS");
                 fail.putExtra("progress", -1);
@@ -549,12 +549,12 @@ public class UpdateService extends Service {
     private final BroadcastReceiver installReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.i(TAG, "ACTION_INSTALL_UPDATE received");
+           // Log.i(TAG, "ACTION_INSTALL_UPDATE received");
 
             if (downloadedApkFile != null && downloadedApkFile.exists()) {
                 installApkSilently(downloadedApkFile);
             } else {
-                Log.e(TAG, "APK missing, cannot install");
+               // Log.e(TAG, "APK missing, cannot install");
             }
         }
     };
@@ -562,10 +562,10 @@ public class UpdateService extends Service {
     private void installApkSilently(File apk) {
         try {
             String cmd = "pm install -r " + apk.getAbsolutePath();
-            Log.i(TAG, "Executing: " + cmd);
+           // Log.i(TAG, "Executing: " + cmd);
             Runtime.getRuntime().exec(cmd).waitFor();
         } catch (Exception e) {
-            Log.e(TAG, "Silent install failed", e);
+           // Log.e(TAG, "Silent install failed", e);
         }
     }
 
@@ -574,7 +574,7 @@ public class UpdateService extends Service {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this)
                 .unregisterReceiver(installReceiver);
-        Log.i(TAG, "UpdateService destroyed");
+        //Log.i(TAG, "UpdateService destroyed");
     }
 
     @Nullable

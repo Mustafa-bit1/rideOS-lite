@@ -185,7 +185,7 @@ public class UIUpdater  {
         tm.setTeleChargerAH(0f);
         tm.setTeleRegenAH(0f);
 
-        Log.d("RECO_RESET", "✅ All reco engine params reset");
+        Log.d("RECO_RESET", "All reco engine params reset");
 
         updateRecoKm();
     }
