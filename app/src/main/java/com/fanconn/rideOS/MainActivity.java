@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private VelocityTracker velocityTracker;
     private SpeedArcView speedArc;
     private View dot1, dot2;//, dot3, dot4;
-
+    private View touchBlocker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //
@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        touchBlocker = findViewById(R.id.touchBlocker);
         TemperatureLogger.logImportantThermals();
 
         setFullScreen();
@@ -2540,5 +2541,21 @@ public void runPostLoginInit() {
         toast.setDuration(Toast.LENGTH_SHORT);
         toast.setView(layout);
         toast.show();
+    }
+
+    public void enableTouchBlocker() {
+        runOnUiThread(() -> {
+            if (touchBlocker != null) {
+                touchBlocker.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void disableTouchBlocker() {
+        runOnUiThread(() -> {
+            if (touchBlocker != null) {
+                touchBlocker.setVisibility(View.GONE);
+            }
+        });
     }
 }

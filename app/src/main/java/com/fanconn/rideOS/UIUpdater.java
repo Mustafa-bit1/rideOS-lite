@@ -69,7 +69,7 @@ public class UIUpdater  {
     public static UIUpdater instance;
     private BroadcastReceiver tpmsReceiver;
     AhTrackerManager ahTrackerManager;
-
+    private boolean touchBlocked = false;
 
     public UIUpdater(ActivityMainBinding binding, Context ctx) {
         this.binding = binding;
@@ -2136,10 +2136,14 @@ private int streamId = 0;
 
                     if (!activity.isFinishing() && !activity.isDestroyed()) {
 
-                        // 🚨 Immediately reset state when popup appears
+                        //  Immediately reset state when popup appears
                         if (serialPortManager != null) {
                             serialPortManager.getHb3().setBSG2_BYTE78(0);
                         }
+                        updateRideLock(0);
+                        updateSpeedTrueAnimation(0,0);
+                        InactivityManager.getInstance().startTimer(1);
+                        UIUpdater.directionalGears=0;
                         binding.speedNumberTV.setText("0");
                         tm.setTeleSpeed(0);
                         tm.setTeleControllerAbruptOff(1);
@@ -2205,6 +2209,7 @@ private int streamId = 0;
         tm.setTeleControllerAbruptOff(0);
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
         int speed = (int)((hb3.getBSG2_BYTE78() * 60.0 * Speed_ratio_Value) / 3.3125 * 1 / 1000); // 10% high
+        updateRideLock(speed);
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.48331442) / 3.3125 * 1 / 1000;//5 % high
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * 1.412404) / 3.3125 * 1 / 1000;// 0% high
 
@@ -3515,6 +3520,26 @@ private int streamId = 0;
             handler.postDelayed(() -> {
                 serialPortManager.VCUSendToMCU("FFAA550107000A01");
                 }, 500);
+        }
+    }
+    private void updateRideLock(int rpm) {
+
+        if (rpm > 0 && !touchBlocked) {
+
+            touchBlocked = true;
+
+            activity.enableTouchBlocker();
+
+            Log.d("RIDE_LOCK", "Touch disabled");
+        }
+
+        else if (rpm == 0 && touchBlocked) {
+
+            touchBlocked = false;
+
+            activity.disableTouchBlocker();
+
+            Log.d("RIDE_LOCK", "Touch enabled");
         }
     }
 }

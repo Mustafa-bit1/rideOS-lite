@@ -23,7 +23,7 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
 
     @Override
     public void onInactivityTimeout(int code) {
-        Log.d(TAG, "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
+       // Log.d(TAG, "SSSSSSSSSSSSSSSSSSSS Timeout triggered with code: " + code);
 
         switch (code) {
             case 1:
@@ -48,9 +48,10 @@ public class InactivityHandler implements InactivityManager.InactivityCallback {
                 int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
               //  Log.d(TAG,"code 1 TOUCHTIMER GEAR  "+UIUpdater.directionalGears);
               //  Log.d(TAG,"code 1 TOUCHTIMER STAND  "+UIUpdater.getInstance().isStand);
+                //Log.d("TOUCHTIMER","ENTER CODE 1 TOUCHTIMER IFTIMER");
 
                 if(rpm==0 && (UIUpdater.directionalGears==0 || UIUpdater.getInstance().isStand)){
-               //     Log.d("TOUCHTIMER","IF OF code 1 TOUCHTIMER IFTIMER");
+                   // Log.d("TOUCHTIMER","Entered IF OF code 1 TOUCHTIMER IFTIMER");
                     EVLockService.getInstance().startLockSequence();    // Start lock
                     Context context2 = MainActivity.instance;
                     if (context2 != null) {
