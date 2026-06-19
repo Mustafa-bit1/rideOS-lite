@@ -129,7 +129,7 @@
                         style="@style/riderprofiletogglestyle"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:text="Basic"
+                        android:text="Info"
                         android:padding="8dp"
                         android:textSize="19dp"
 
@@ -142,7 +142,7 @@
                         style="@style/riderprofiletogglestyle"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:text="Advanced"
+                        android:text="Parameters"
                         android:padding="8dp"
                         android:textSize="19dp"
 
@@ -154,7 +154,7 @@
                         style="@style/riderprofiletogglestyle"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:text="Security"
+                        android:text="Password"
                         android:padding="8dp"
                         android:textSize="19dp"
                         android:textColor="#FFFFFF"
@@ -444,110 +444,126 @@
             android:id="@+id/advancedContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="20dp"
             android:orientation="vertical"
             android:visibility="gone">
 
             <!-- MAX SPEED -->
+            <!-- SPEED + TORQUE IN SAME ROW -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="10dp"
-                android:layout_marginStart="163dp"
+                android:weightSum="2"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="40dp">
 
-                android:layout_marginTop="10dp">
-
-                <!-- LEFT TEXT -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Set Max Speed"
-                    android:textColor="#FFFFFF"
-                    android:textSize="23sp"
-                    android:fontFamily="@font/kanit"
-                    />
-
-                <!-- FIXED SIZE BLOCK TO PREVENT SHAKING -->
-                <FrameLayout
-                    android:layout_width="310dp"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:paddingStart="25dp"
-                    android:paddingEnd="25dp">
-
-                    <SeekBar
-                        android:id="@+id/seekBarMaxSpeed"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:max="40"
-                        android:progress="40"
-                        android:paddingStart="25dp"
-                        android:paddingEnd="25dp"
-                        android:thumb="@drawable/reverse_speed_seekbarthumb"
-                        android:progressTint="#FFEE00"
-                        android:progressBackgroundTint="#FFFFFF"
-                        />
-                </FrameLayout>
-
-                <!-- RIGHT VALUE TEXT -->
-                <TextView
-                    android:id="@+id/tvMaxspeedValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="100 kmph"
-                    android:textColor="#FFFFFF"
-                    android:textSize="28sp"
-                    android:fontFamily="@font/kanit"
-                    android:layout_marginStart="15dp"/>
-            </LinearLayout>
-
-
-
-            <!-- Main Horizontal Container -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginStart="163dp"
-                android:padding="10dp">
-
-                <!-- LEFT TEXT -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Set Max Torque"
-                    android:textColor="#FFFFFF"
-                    android:textSize="23sp"
-                    android:fontFamily="@font/kanit" />
-
-                <!-- MIDDLE BLOCK -->
+                <!-- ================= SPEED ================= -->
                 <LinearLayout
-                    android:layout_width="310dp"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingHorizontal="20dp"
-                    android:paddingTop="33dp"
-                    android:clipToPadding="false">
+                    android:layout_weight="1"
+                    android:layout_marginStart="53dp"
+                    android:orientation="horizontal"
+                    >
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Speed"
+                        android:textColor="#FFFFFF"
+                        android:textSize="21sp"
+                        android:fontFamily="@font/kanit" />
 
-                    <!-- SEEK BAR -->
+                        <TextView
+                            android:id="@+id/tvMaxspeedValue"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="100 kmph"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+                    </LinearLayout>
+                        <FrameLayout
+                            android:layout_width="260dp"
+                            android:layout_height="wrap_content"
+                            android:clipToPadding="false"
+                            android:layout_marginStart="25dp"
+                           >
+
+                            <SeekBar
+                                android:id="@+id/seekBarMaxSpeed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:max="40"
+                                android:progress="40"
+                                android:paddingStart="25dp"
+                                android:paddingEnd="25dp"
+                                android:thumb="@drawable/reverse_speed_seekbarthumb"
+                                android:progressTint="#FFEE00"
+                                android:progressBackgroundTint="#FFFFFF" />
+                        </FrameLayout>
+
+
+
+                </LinearLayout>
+
+                <!-- ================= TORQUE ================= -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="30dp"
+                    android:orientation="horizontal"
+                   >
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Torque"
+                        android:textColor="#FFFFFF"
+                        android:textSize="21sp"
+                        android:fontFamily="@font/kanit" />
+                    <TextView
+                        android:id="@+id/tvTorqueLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lvl 2"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp"
+                        android:fontFamily="@font/kanit"
+                        android:layout_marginTop="5dp" />
+
+                </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical"
+                       >
                     <SeekBar
                         android:id="@+id/seekBarTorque"
-                        android:layout_width="match_parent"
+                        android:layout_width="260dp"
                         android:layout_height="wrap_content"
                         android:max="4"
                         android:progress="4"
-                        android:paddingStart="25dp"
+                        android:paddingStart="35dp"
                         android:paddingEnd="25dp"
                         android:thumb="@drawable/reverse_speed_seekbarthumb"
                         android:progressTint="#F88213"
                         android:progressBackgroundTint="#FFFFFF" />
 
-                    <!-- LABELS -->
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="260dp"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:weightSum="5"
@@ -557,68 +573,284 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Minimum"
+                            android:text="1"
                             android:textColor="#00E5FF"
                             android:gravity="center"
-                            android:textSize="15sp"
+                            android:textSize="20sp"
                             android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Easy"
+                            android:text="2"
                             android:textColor="#2AFF00"
                             android:gravity="center"
-                            android:textSize="15sp"
+                            android:textSize="20sp"
                             android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Medium"
+                            android:text="3"
                             android:textColor="#FFEE00"
                             android:gravity="center"
-                            android:textSize="15sp"
+                            android:textSize="20sp"
                             android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Rush"
+                            android:text="4"
                             android:textColor="#FC7E09"
                             android:gravity="center"
-                            android:textSize="15sp"
+                            android:textSize="20sp"
                             android:fontFamily="@font/kanit" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Insane"
+                            android:text="5"
                             android:textColor="#FF4040"
                             android:gravity="center"
-                            android:textSize="15sp"
+                            android:textSize="20sp"
                             android:fontFamily="@font/kanit" />
+                    </LinearLayout>
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <!-- RIGHT TORQUE LEVEL -->
-                <TextView
-                    android:id="@+id/tvTorqueLevel"
-                    android:layout_width="wrap_content"
+            </LinearLayout>
+            <!-- ACCELERATION + BRAKING IN SAME ROW -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2"
+                android:layout_marginStart="53dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginTop="65dp">
+
+                <!-- ================= ACCELERATION ================= -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Lvl 2"
-                    android:textColor="#FFFFFF"
-                    android:textSize="28sp"
-                    android:fontFamily="@font/kanit"
-                    android:layout_marginStart="25dp" />
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    >
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Acceleration"
+                        android:textColor="#FFFFFF"
+                        android:textSize="21sp"
+                        android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:id="@+id/tvPickupLevel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lvl 2"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit"
+                            android:layout_marginTop="5dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="10dp"
+                        android:orientation="vertical"
+                        >
+                    <SeekBar
+                        android:id="@+id/seekBarPickup"
+                        android:layout_width="260dp"
+                        android:layout_height="wrap_content"
+                        android:max="4"
+                        android:progress="4"
+                        android:paddingStart="25dp"
+                        android:paddingEnd="35dp"
+                        android:thumb="@drawable/reverse_speed_seekbarthumb"
+                        android:progressTint="#F88213"
+                        android:progressBackgroundTint="#FFFFFF" />
+
+                    <LinearLayout
+                        android:layout_width="260dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="3"
+                        android:gravity="center">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="1"
+                            android:textColor="#00E5FF"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="2"
+                            android:textColor="#2AFF00"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="3"
+                            android:textColor="#FFEE00"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+                    </LinearLayout>
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- ================= BRAKING ================= -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="25dp">
+                    <LinearLayout
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="eBraking"
+                        android:textColor="#FFFFFF"
+                        android:layout_marginTop="10dp"
+                        android:textSize="21sp"
+                        android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:id="@+id/tvBrakingLevel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Lvl 2"
+                            android:textColor="#FFFFFF"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit"
+                            android:layout_marginTop="5dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="28dp"
+                        android:orientation="vertical">
+
+                    <SeekBar
+                        android:id="@+id/seekBarBraking"
+                        android:layout_width="260dp"
+                        android:layout_height="wrap_content"
+                        android:max="5"
+                        android:progress="2"
+                        android:paddingStart="25dp"
+                        android:paddingEnd="35dp"
+                        android:thumb="@drawable/reverse_speed_seekbarthumb"
+                        android:progressTint="#F88213"
+                        android:progressBackgroundTint="#FFFFFF" />
+
+                    <LinearLayout
+                        android:layout_width="260dp"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="6"
+                        android:gravity="center"
+                        android:layout_marginTop="4dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="1"
+                            android:textColor="#00E5FF"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="2"
+                            android:textColor="#2AFF00"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="3"
+                            android:textColor="#FFEE00"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="4"
+                            android:textColor="#FC7E09"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="5"
+                            android:textColor="#FF4040"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="6"
+                            android:textColor="#FF4040"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:fontFamily="@font/kanit" />
+                    </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
-
 
         </LinearLayout>
         <!-- ===========================================================

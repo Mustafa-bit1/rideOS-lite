@@ -36,13 +36,13 @@
                 android:id="@+id/LEDON"
                 style="@style/DiagButton"
                 android:backgroundTint="#1C78BE"
-                android:text="LED ON"/>
+                android:text="12V ON"/>
 
             <Button
                 android:id="@+id/mcuotaupdatebtn"
                 style="@style/DiagButton"
                 android:backgroundTint="#D45333"
-                android:text="MCU OTA"/>
+                android:text="TBD"/>
 
             <Button
                 android:id="@+id/ToMain"
@@ -54,7 +54,7 @@
                 style="@style/DiagButton"
                 android:backgroundTint="#FF9BEB"
                 android:textColor="@color/black"
-                android:text="Set controler High"/>
+                android:text="Reset line/phase"/>
 
             <Button
                 android:id="@+id/handleUNlockbutton"
@@ -69,13 +69,13 @@
                 android:id="@+id/LEDOFF"
                 style="@style/DiagButton"
                 android:backgroundTint="#1C78BE"
-                android:text="LED OFF"/>
+                android:text="12V OFF"/>
 
             <Button
                 android:id="@+id/aospotaupdate"
                 style="@style/DiagButton"
                 android:backgroundTint="#D45333"
-                android:text="AOSP OTA"/>
+                android:text="TBD"/>
 
 
             <Button
@@ -88,7 +88,7 @@
                 style="@style/DiagButton"
                 android:backgroundTint="#FF9BEB"
                 android:textColor="@color/black"
-                android:text="Set controller low"/>
+                android:text="Set line 15A"/>
 
             <Button
                 android:id="@+id/bootbutton"
@@ -99,14 +99,14 @@
                 android:id="@+id/lockScreen"
                 style="@style/DiagButton"
                 android:backgroundTint="#1C78BE"
-                android:text="Lock Scooter"/>
+                android:text="TBD"/>
 
             <Button
                 android:id="@+id/ResetAll"
                 style="@style/DiagButton"
                 android:backgroundTint="#FFFB06"
                 android:textColor="@color/black"
-                android:text="Reset ALL"/>
+                android:text="Reset ALL counters"/>
 
 
             <!-- COLUMN 3 -->
@@ -125,7 +125,7 @@
                 style="@style/DiagButton"
                 android:backgroundTint="#FFFB06"
                 android:textColor="@color/black"
-                android:text="Reset Reco"/>
+                android:text="Reset reco"/>
             <Button
                 android:id="@+id/Devicesettings"
                 style="@style/DiagButton"
@@ -140,7 +140,7 @@
                 android:id="@+id/resetAhvalues"
                 style="@style/DiagButton"
                 android:backgroundTint="#079500"
-                android:text="Battery AH"/>
+                android:text="Rest total IN-OUT AH"/>
 
 <!--            <Button-->
 <!--                android:id="@+id/wifiBtn"-->
@@ -152,7 +152,7 @@
                 android:id="@+id/in90"
                 style="@style/DiagButton"
                 android:backgroundTint="#079500"
-                android:text="Do In AH 90"/>
+                android:text="Set In AH 90"/>
 
             <Button
                 android:id="@+id/resetChargerRegenBtn"
@@ -168,33 +168,33 @@
                 style="@style/DiagButton"
                 android:backgroundTint="#FFFB06"
                 android:textColor="@color/black"
-                android:text="Reset ODO"/>
+                android:text="Reset Odometer"/>
 
             <Button
                 android:id="@+id/rebootbtn"
                 style="@style/DiagButton"
                 android:backgroundTint="#7400A2"
-                android:text="VCU restart"/>
+                android:text="Android restart"/>
 
 
             <Button
                 android:id="@+id/out0"
                 style="@style/DiagButton"
                 android:backgroundTint="#079500"
-                android:text="Do Out AH 0"/>
+                android:text="Set Out AH 0"/>
 
             <Button
                 android:id="@+id/in60"
                 style="@style/DiagButton"
                 android:backgroundTint="#079500"
-                android:text="Do In AH 60"/>
+                android:text="Set In AH 60"/>
 
             <Button
                 android:id="@+id/debug"
                 style="@style/DiagButton"
                 android:backgroundTint="#D9D9D9"
                 android:textColor="@color/black"
-                android:text="Debug Mode"/>
+                android:text="Pilot test"/>
 
             <Button
                 android:id="@+id/btnmetadata"
@@ -207,7 +207,7 @@
                 android:id="@+id/shutdownbtn"
                 style="@style/DiagButton"
                 android:backgroundTint="#7400A2"
-                android:text="VCU shutdown"/>
+                android:text="Android shutdown"/>
 
 
         </GridLayout>

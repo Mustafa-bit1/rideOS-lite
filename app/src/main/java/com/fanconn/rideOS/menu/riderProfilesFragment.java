@@ -99,6 +99,14 @@ public class riderProfilesFragment extends Fragment {
     private int currentStep = 0;
     private ImageButton btnBack, btnNext;
 
+
+    SeekBar seekBarPickup, seekBarBraking;
+
+    TextView tvPickupLevel, tvBrakingLevel;
+
+    private int pickupLevel = 2;
+
+    private int brakingLevel = 3;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -212,6 +220,11 @@ public class riderProfilesFragment extends Fragment {
         tvMaxspeedValue = view.findViewById(R.id.tvMaxspeedValue);
         tvTorqueLevel = view.findViewById(R.id.tvTorqueLevel);
 
+        seekBarPickup = view.findViewById(R.id.seekBarPickup);
+        seekBarBraking = view.findViewById(R.id.seekBarBraking);
+        tvPickupLevel = view.findViewById(R.id.tvPickupLevel);
+        tvBrakingLevel = view.findViewById(R.id.tvBrakingLevel);
+
         securitybtn = view.findViewById(R.id.securitybtn);
         etPin = view.findViewById(R.id.etPin);
         etPinConfirm = view.findViewById(R.id.etPinConfirm);
@@ -308,11 +321,60 @@ public class riderProfilesFragment extends Fragment {
                 tvTorqueLevel.setText(selectedTorqueLevel);
             }
 
+
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {}
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        seekBarPickup.setMax(2);
+        seekBarPickup.setProgress(1);
+        pickupLevel = 2;
+        tvPickupLevel.setText("Level 2");
+
+        seekBarPickup.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                pickupLevel = progress + 1;
+
+                tvPickupLevel.setText("Level " + pickupLevel);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        seekBarBraking.setMax(5);
+        seekBarBraking.setProgress(3);
+        brakingLevel = 3;
+        tvBrakingLevel.setText("Level 3");
+
+        seekBarBraking.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+                brakingLevel = progress+1;
+
+                tvBrakingLevel.setText("Level " + brakingLevel);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
 //        btnAddRider.setOnClickListener(v -> {
 //
@@ -693,6 +755,11 @@ public class riderProfilesFragment extends Fragment {
         TVdrawpat.setVisibility(View.GONE);
         TVconfirmpat.setVisibility(View.GONE);
 
+        seekBarPickup.setProgress(1);
+        pickupLevel = 2;
+        tvPickupLevel.setText("Level 2");
+
+
 
         pinMatched = false;
         isPatternConfirmed = false;
@@ -811,6 +878,8 @@ public class riderProfilesFragment extends Fragment {
         String phone = sharedPreferences.getString("user_" + username + "_phone", "");
         String maxSpeed = sharedPreferences.getString("user_" + username + "_maxspeed", "60");
         String torque = sharedPreferences.getString("user_" + username + "_torque", "Easy");
+        String pickup = sharedPreferences.getString("user_" + username + "_pickup", "2");
+        String braking = sharedPreferences.getString("user_" + username + "_braking", "3");
 
         etUsername.setText(username);
         etPhone.setText(phone);
@@ -831,6 +900,14 @@ public class riderProfilesFragment extends Fragment {
 
         selectedTorqueLevel = torque;
         tvTorqueLevel.setText(torque);
+
+        pickupLevel = Integer.parseInt(pickup);
+        brakingLevel = Integer.parseInt(braking);
+        seekBarPickup.setProgress(pickupLevel - 1);
+        tvPickupLevel.setText("Level " + pickupLevel);
+        seekBarBraking.setProgress(brakingLevel-1);
+        tvBrakingLevel.setText("Level " + brakingLevel);
+
 
         isEditMode = true;
         editingUsername = username;
@@ -887,6 +964,10 @@ public class riderProfilesFragment extends Fragment {
         String pin = etPin.getText().toString().trim();
         String pinConfirm = etPinConfirm.getText().toString().trim();
 
+
+        String pickup = String.valueOf(pickupLevel);
+        String braking = String.valueOf(brakingLevel);
+
 //        btnNext.setVisibility(View.GONE);
 //        currentStep = 0;
 
@@ -934,10 +1015,17 @@ public class riderProfilesFragment extends Fragment {
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
             String finalUsername = isEditMode ? editingUsername : username;
+
             editor.putString("user_" + finalUsername + "_age", age);
             editor.putString("user_" + finalUsername + "_phone", phone);
             editor.putString("user_" + finalUsername + "_maxspeed", maxspeed);
             editor.putString("user_" + finalUsername + "_torque", torque);
+
+            editor.putString("user_" + finalUsername + "_pickup",
+                    String.valueOf(pickupLevel));
+
+            editor.putString("user_" + finalUsername + "_braking",
+                    String.valueOf(brakingLevel));
 
             // Save PIN
             String salt = generateSalt();

@@ -1357,7 +1357,7 @@ public void recoNavLeft(View view) {
 //        String sProt = "";
 //        String hexData = "";
 //        String hexSeepData = "";
-      //  Log.d("sadfgfh", "neutarla entered");
+        Log.d("sadfgfh", "neutarla entered");
 //        // 空档
 //        data = (serialPortManager.hb3.getBSG1_BYTE1() & 0xfc) + 0;
 //        seep_data = (serialPortManager.hb3.getBSG1_BYTE4() & 0xfc) + FrameUtils.extractBits(serialPortManager.hb3.getBSG1_BYTE1(), 2, 4);
@@ -1754,6 +1754,7 @@ public void recoNavLeft(View view) {
                 batteryView.setBatteryLevel(0);
                 batteryView.blockInitialDraw(false);
                 runPostLoginInit();
+
             });
         }
 
@@ -1955,14 +1956,12 @@ public void recoNavLeft(View view) {
 //        delayedUnlockHandler.postDelayed(delayedUnlockRunnable, 8000);
 //    }
 public void runPostLoginInit() {
-
     //  ALWAYS run UI work on UI thread
     runOnUiThread(() -> {
 
         uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
 
         currentgear = 'O';
-
         //  Start unlock (no change)
         EVLockService.getInstance().startUnlockSequence();
         refreshStats();
@@ -2110,8 +2109,6 @@ public void runPostLoginInit() {
         // Do nothing
     }
 
-    private final Handler bmsHandler = new Handler(Looper.getMainLooper());
-    private int requestIndex = 0;
 
 //    private final Runnable bmsRunnable = new Runnable() {
 //        @Override
@@ -2135,65 +2132,97 @@ public void runPostLoginInit() {
 //        }
 //    };
 
+    private final Handler bmsHandler = new Handler(Looper.getMainLooper());
+    private int requestIndex = 0;
 
+    private volatile boolean pauseBmsUart = false;
+    private final Handler uartPauseHandler =
+            new Handler(Looper.getMainLooper());
+
+    private final Runnable resumeBmsRunnable = () -> {
+        pauseBmsUart = false;
+    };
     private final Runnable bmsRunnable = new Runnable() {
         @Override
         public void run() {
-            switch (requestIndex) {
-                case 0://Log.d("sfadsgf","ENTERREQUSTLOOP");
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189001400001020304050607");
-                    break;
 
-                case 1:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189002400001020304050607");
-                    break;
+            if (!pauseBmsUart) {
+                switch (requestIndex) {
+                    case 0://Log.d("sfadsgf","ENTERREQUSTLOOP");
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189001400001020304050607");
+                        break;
 
-                case 2:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189601400001020304050607");
-                    break;
+                    case 1:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189002400001020304050607");
+                        break;
 
-                case 3:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189602400001020304050607");
-                    break;
+                    case 2:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189601400001020304050607");
+                        break;
 
-                case 4:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189302400001020304050607");
-                    break;
+                    case 3:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189602400001020304050607");
+                        break;
 
-                case 5:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189301400001020304050607");
-                    break;
+                    case 4:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189302400001020304050607");
+                        break;
 
-                case 6:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015160B01800001020304050607");
-                    break;
+                    case 5:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189301400001020304050607");
+                        break;
 
-                case 7:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015160D01800001020304050607");
-                    break;
+                    case 6:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015160B01800001020304050607");
+                        break;
 
-                case 8:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189801400001020304050607");
-                    break;
-                case 9:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189101400001020304050607");
-                    break;
-                case 10:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189501400001020304050607");
-                    break;
-                case 11:
-                    serialPortManager.VCUSendToMCU("FFAA550103001518FF50A5"+VIN_On_CAN);
-                    break;
-                case 12:
-                    serialPortManager.VCUSendToMCU("FFAA5501030015189401400001020304050607");
-                    break;
+                    case 7:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015160D01800001020304050607");
+                        break;
 
+                    case 8:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189801400001020304050607");
+                        break;
+                    case 9:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189101400001020304050607");
+                        break;
+                    case 10:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189501400001020304050607");
+                        break;
+                    case 11:
+                        serialPortManager.VCUSendToMCU("FFAA550103001518FF50A5" + VIN_On_CAN);
+                        break;
+                    case 12:
+                        serialPortManager.VCUSendToMCU("FFAA5501030015189401400001020304050607");
+                        break;
+
+                }
+                requestIndex = (requestIndex + 1) % 13;
             }
-            requestIndex = (requestIndex + 1) % 13;
             bmsHandler.postDelayed(this, 700); // 650ms interval
         }
     };
+    public void pauseBmsUart() {
+        pauseBmsUart = true;
+    }
 
+    public void resumeBmsUart() {
+        pauseBmsUart = false;
+    }
+
+    public void pauseBmsFor10Seconds() {
+
+        pauseBmsUart = true;
+
+        // Cancel previous resume timer if any
+        uartPauseHandler.removeCallbacks(resumeBmsRunnable);
+
+        // Start fresh 10 sec timer
+        uartPauseHandler.postDelayed(
+                resumeBmsRunnable,
+                10000
+        );
+    }
     private boolean isDraggingQS = false;
     private float qsStartY = 0f;
     private float lastY = 0f;

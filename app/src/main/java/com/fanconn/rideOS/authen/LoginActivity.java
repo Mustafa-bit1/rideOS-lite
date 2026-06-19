@@ -137,7 +137,7 @@ public class LoginActivity extends AppCompatActivity{
     private int invalidAttemptCount = 0;
     private long lastInvalidAttemptTime = 0L;
 
-    private static final int MAX_INVALID_ATTEMPTS = 3;
+    private static final int MAX_INVALID_ATTEMPTS = 5;
     private static final long ATTEMPT_RESET_WINDOW_MS = 30_000; // 30 sec
     private static final long LOCK_DURATION_MS = 30_000; // 30 sec
 
@@ -746,6 +746,17 @@ public class LoginActivity extends AppCompatActivity{
     int Level2_Line_Current = 50;
     int Level3_Line_Current = 75;
     int Level4_Line_Current = 110;
+
+    private static final String regen10A = "2800";
+    private static final String regen20A = "5000";
+    private static final String regen30A = "7800";
+    private static final String regen40A = "A000";
+    private static final String regen50A = "C800";
+    private static final String regen60A = "F000";
+    private static final String regen70A = "1801";
+    private static final String regen80A = "4001";
+
+
 //    private double Speed_ratio_Value = 1.5536444;//// 10% high
     //private double Speed_ratio_Value = 1.48331442;//// 5% high
     private final double Speed_ratio_Value = 1.412404;//// 0% high
@@ -756,6 +767,9 @@ public class LoginActivity extends AppCompatActivity{
 
         sessionPrefs.edit().putString("current_rider", username).apply();
         showCustomToast("Welcome " + username + " !");
+        if (MainActivity.instance != null) {
+            MainActivity.instance.pauseBmsFor10Seconds();
+        }
         //Log.d("adfsd","WELCOMETOAST "+username);
         resetInvalidAttemptCounter();
         if(serialPortManager!=null){
@@ -780,7 +794,7 @@ public class LoginActivity extends AppCompatActivity{
         overridePendingTransition(0, 0);
         finish();
 
-        // ✅ UI updates → Main thread → delayed until UI is ready
+        //  UI updates → Main thread → delayed until UI is ready
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            if(UIUpdater.getInstance() != null){
 //                UIUpdater.getInstance().setzerobatImage();
@@ -871,6 +885,7 @@ public class LoginActivity extends AppCompatActivity{
                     serialPortManager.VCUSendToMCU(finalSpeedFrame);
 //                    Log.d("asdfdg","ENTER Succes Login cmd snet  "+finalSpeedFrame);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 1000);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 1500);
                     new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU(finalSpeedFrame), 2000);
 //                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2500);
 //                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 3000);
@@ -884,7 +899,6 @@ public class LoginActivity extends AppCompatActivity{
 //            String maxTorque = prefs.getString("user_" + username + "_torque", "Rush");
             String maxTorque = userPrefs.getString("user_" + username + "_torque", "Insane");
 
-           //Log.d("fhghjjk","THISISMAXTORUE "+maxTorque);
             int lineCurrent;
             switch (maxTorque) {
                 case "Easy":   lineCurrent = Level1_Line_Current; break;
@@ -901,6 +915,43 @@ public class LoginActivity extends AppCompatActivity{
             String torqueByte01 = torqueHex.substring(2, 4); // low byte
             String torqueByte02 = torqueHex.substring(0, 2); // high byte
 
+            int braking;
+
+            try {
+                braking = Integer.parseInt(
+                        userPrefs.getString(
+                                "user_" + username + "_braking",
+                                "3"
+                        )
+                );
+            } catch (Exception e) {
+                braking = 3;
+            }
+
+            if (braking < 1 || braking > 6) {
+                braking = 3;
+            }
+
+            String RegenMinValue = REGEN_MIN[braking];
+            String RegenMaxValue = REGEN_MAX[braking];
+
+//            Log.d("REGEN_DEBUG",
+//                    "braking=" + braking +
+//                            " min=" + RegenMinValue +
+//                            " max=" + RegenMaxValue);
+            String pickupStr = userPrefs.getString("user_" + username + "_pickup", "2");
+            int pickup = Integer.parseInt(pickupStr);
+           //Log.d("Trottle","Trottle response"+pickup+" braking "+braking);
+            String throttleResponseByte;
+            switch (pickup) {
+                case 1:   throttleResponseByte = "00"; break;//Linear
+                case 2:   throttleResponseByte = "01"; break;//Sport
+                case 3:   throttleResponseByte = "02"; break;//eco
+
+                default:   throttleResponseByte = "00"; break;
+            }
+            String finalThrottleResponseFrame = "FFAA550103001510F8A80704"+throttleResponseByte+"020200000000";
+            //Log.d("Trottle","Trottle"+finalThrottleResponseFrame);
 
             //                    (serialPortManager.getHb3().getBatteryLevel() / 10 < 80)
 //                            ? "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400"//to set regen currents as 30A(7800) and 40A(A000)- 35A(8C00),45A(B400)
@@ -914,40 +965,50 @@ public class LoginActivity extends AppCompatActivity{
             }
             else if (batteryLevel ==0) { // phase max , all normal
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "F00000004001";//Phase 0 all normal,,regen 60(F000)-80(4001)
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue+"0000"+RegenMaxValue;//Phase 0 all normal,,regen 60(F000)-80(4001)
                // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
             }
             else if (batteryLevel <= 5) { // phase 0 , all normal
                 //torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
-                torqueFrame = "FFAA550103001510FBA8072800F000B0044001";//line current 10amps(2800),,regen 60(F000)-80(4001)
+                torqueFrame = "FFAA550103001510FBA8072800"+RegenMinValue+"B004"+RegenMaxValue;//line current 10amps(2800),,regen 60(F000)-80(4001)
                // Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
             }
             else if (batteryLevel <= 20) {
 //                torqueFrame = "FFAA550103001510FBA8073C00F000B0044001";//  line 15A, phase max, all normal
-                torqueFrame = "FFAA550103001510FBA8072800F000B0044001";//  line 10A, phase max, all normal
+                torqueFrame = "FFAA550103001510FBA8072800"+RegenMinValue+"B004"+RegenMaxValue;//  line 10A, phase max, all normal
                 //  Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
             } else if (batteryLevel <= 95) { // phase max, all normal  A000(45A regen) - C800(50A),regen 60(F000)-80(4001)
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "F000B0044001";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 +RegenMinValue+ "B004"+RegenMaxValue;
               //  Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
             } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue+"B004"+RegenMaxValue;
               //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
             }
             else{//all max
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "F000B0044001";
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue+"B004"+RegenMaxValue;
               //  Log.d("SEDINGSOCFRAMEAS","else "+torqueFrame);
             }
 
             final String finalTorqueFrame = torqueFrame; // make it final for lambdas
+            //Log.d("Trottle","Trottle REGEN "+finalTorqueFrame);
+
            // Log.d("dacsdvsf","THISISCONTROLECOMS  "+finalTorqueFrame);
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 3500);
             new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 4000);
+                    () -> serialPortManager.VCUSendToMCU(finalThrottleResponseFrame), 4000);
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 4500);
             new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5000);
+                    () -> serialPortManager.VCUSendToMCU(finalThrottleResponseFrame), 5000);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5500);
+            new Handler(Looper.getMainLooper()).postDelayed(
+                    () -> serialPortManager.VCUSendToMCU(finalThrottleResponseFrame), 6000);
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 6500);
+//            new Handler(Looper.getMainLooper()).postDelayed(
+//                    () -> serialPortManager.VCUSendToMCU(finalThrottleResponseFrame), 7000);
 //            new Handler(Looper.getMainLooper()).postDelayed(
 //                    () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 5500);
 //            new Handler(Looper.getMainLooper()).postDelayed(
@@ -980,7 +1041,25 @@ public class LoginActivity extends AppCompatActivity{
     }
 
 
+    private static final String[] REGEN_MIN = {
+            regen30A, // 0 default
+            regen10A,
+            regen20A,
+            regen30A,
+            regen40A,
+            regen50A,
+            regen60A
+    };
 
+    private static final String[] REGEN_MAX = {
+            regen50A, // 0 default
+            regen30A,
+            regen40A,
+            regen50A,
+            regen60A,
+            regen70A,
+            regen80A
+    };
 
 //below is b4 7/7
 //        mediaPlayer = MediaPlayer.create(this, R.raw.unlocked);
@@ -1474,7 +1553,7 @@ Log.d("asdfd","RESUME OF LOGIN ");
 
                 if (remaining <= 0) {
                     isInputLocked = false;
-                    patternView.setEnabled(true); // ✅ enable again
+                    patternView.setEnabled(true); //  enable again
                     tvLoginLockTimer.setVisibility(View.GONE);
                     return;
                 }
