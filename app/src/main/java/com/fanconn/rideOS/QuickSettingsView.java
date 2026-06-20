@@ -68,8 +68,10 @@ public class QuickSettingsView extends FrameLayout {
         }
 
         private void syncVolumeUI() {
+
             int vol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            volumeSlider.setProgress(vol);
+            int sliderValue = brightnessManager.systemToSliderVolume(vol, 100);
+            volumeSlider.setProgress(vol == 0 ? 0 : sliderValue);
             updateMuteIcon(vol == 0);
         }
     };

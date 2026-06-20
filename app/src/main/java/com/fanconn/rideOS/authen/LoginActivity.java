@@ -82,7 +82,6 @@ import java.util.Set;
 public class LoginActivity extends AppCompatActivity{
     private static boolean isFrameReceiverRegistered = false;
     public static LoginActivity instance;
-
     public  static SerialPortManager loginserialPortManager;  // 串口管理类
     private ActivityLoginBinding binding;
     private String sPort = "/dev/ttyHS1";  // 串口地址
@@ -131,7 +130,10 @@ public class LoginActivity extends AppCompatActivity{
     private static int prevMod2 = -1; // -1 indicates first-time setup
     private TextView tempWarningMessage;
 
+    private static final String PREF_LAST_LOGIN_METHOD = "last_login_method";
 
+    private static final String LOGIN_PATTERN = "pattern";
+    private static final String LOGIN_PIN = "pin";
     //-----------------------------
     // ===== Login attempt lock system =====
     private int invalidAttemptCount = 0;
@@ -472,6 +474,9 @@ public class LoginActivity extends AppCompatActivity{
                     String username = entry.getKey()
                             .replace("user_", "")
                             .replace("_pattern", "");
+                    prefs.edit()
+                            .putString(PREF_LAST_LOGIN_METHOD, LOGIN_PATTERN)
+                            .apply();
 
                     loginSuccess(username);
                     return;
@@ -485,17 +490,45 @@ public class LoginActivity extends AppCompatActivity{
 
             patternView.clearPattern();
         });
-        // Default: Show pattern
-        switchToPatternMode();
+
+
+
+        String lastMethod =
+                prefs.getString(
+                        PREF_LAST_LOGIN_METHOD,
+                        LOGIN_PATTERN   // default first boot
+                );
+
+        if (LOGIN_PIN.equals(lastMethod)) {
+
+            switchToPinMode();
+
+            switchAuthMethod.setChecked(true);
+            switchAuthMethod.setText("Use Pattern instead");
+
+        } else {
+
+            switchToPatternMode();
+
+            switchAuthMethod.setChecked(false);
+            switchAuthMethod.setText("Use PIN instead");
+        }
+
 
         // Auth method toggle
         switchAuthMethod.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
             if (isChecked) {
+
                 switchToPinMode();
+
                 playTapSound();
                 switchAuthMethod.setText("Use Pattern instead");
+
             } else {
+
                 switchToPatternMode();
+
                 playTapSound();
                 switchAuthMethod.setText("Use PIN instead");
             }
@@ -718,6 +751,9 @@ public class LoginActivity extends AppCompatActivity{
 
                     if (hashedInput != null && hashedInput.equals(storedHash)) {
                         failedAttempts = 0; // reset
+                        prefs.edit()
+                                .putString(PREF_LAST_LOGIN_METHOD, LOGIN_PIN)
+                                .apply();
                         loginSuccess(username);
                         return;
                     }

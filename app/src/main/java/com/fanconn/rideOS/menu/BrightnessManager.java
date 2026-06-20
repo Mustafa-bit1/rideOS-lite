@@ -22,7 +22,7 @@ public class BrightnessManager {
     private final Context context;
     private final SharedPreferences prefs;
     private final SharedPreferences volumePrefs;
-
+    private static final float MIN_VOLUME_PERCENT = 0.25f;
     private AudioManager audioManager;
     private boolean isMuted = false;
     private int lastVolumeBeforeMute = 0;
@@ -132,10 +132,14 @@ public class BrightnessManager {
 
         isMuted = volumePrefs.getBoolean("is_muted", false);
 
-        volumeSlider.setMax(maxVolume);
+        volumeSlider.setMax(100);
 
         //  UI sync only (NO system change here)
-        volumeSlider.setProgress(isMuted ? 0 : systemVolume);
+        volumeSlider.setProgress(
+                isMuted
+                        ? 0
+                        : systemToSliderVolume(systemVolume, 100)
+        );
         updateMuteIcon(muteButton, isMuted);
 
         /* ========== SLIDER ========== */
@@ -145,19 +149,33 @@ public class BrightnessManager {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (!fromUser) return;
 
+                int actualVolume =
+                        sliderToSystemVolume(progress, seekBar.getMax());
+
                 boolean muted = progress == 0;
 
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                if (muted) {
+                    actualVolume = 0;
+                }
+
+                audioManager.setStreamVolume(
+                        AudioManager.STREAM_MUSIC,
+                        actualVolume,
+                        0
+                );
 
                 SharedPreferences.Editor editor = volumePrefs.edit();
 
-                editor.putInt("volume_level", progress);
+                editor.putInt("volume_level", actualVolume);
                 editor.putBoolean("is_muted", muted);
 
 // save non-zero volume as last good volume
-                if (progress > 0) {
-                    lastVolumeBeforeMute = progress;
-                    editor.putInt("last_volume_before_mute", progress);
+                if (actualVolume > 0) {
+                    lastVolumeBeforeMute = actualVolume;
+                    editor.putInt(
+                            "last_volume_before_mute",
+                            actualVolume
+                    );
                 }
 
                 editor.apply();
@@ -262,5 +280,34 @@ public class BrightnessManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private int sliderToSystemVolume(int sliderProgress, int sliderMax) {
+
+        int maxVolume =
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+        int minVolume =
+                (int) (maxVolume * MIN_VOLUME_PERCENT);
+
+        return minVolume +
+                ((sliderProgress * (maxVolume - minVolume))
+                        / sliderMax);
+    }
+
+    public int systemToSliderVolume(int systemVolume, int sliderMax) {
+
+        int maxVolume =
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+
+        int minVolume =
+                (int) (maxVolume * MIN_VOLUME_PERCENT);
+
+        if (systemVolume <= minVolume) {
+            return 0;
+        }
+
+        return ((systemVolume - minVolume) * sliderMax)
+                / (maxVolume - minVolume);
     }
 }

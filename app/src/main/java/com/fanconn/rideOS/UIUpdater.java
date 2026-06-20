@@ -617,14 +617,14 @@ public class UIUpdater  {
             }
         }
 
-        if((batteryLevel>=65 && batteryLevel<=95) && Dynamic80SOCRegencurrent) {
-            Dynamic80SOCRegencurrent=false;
-            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807C800F000B0044001");//regen 60(F000)-80(4001),,35 - 45 regen(8C00-B400)40A(A000) 50A(C800) , phase cur 300A(B004) , line current 110A(B801)or 50amps C800 ,
-            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807C800F000B0044001"), 500);
-        }
-        if(batteryLevel>=96) {
-            Dynamic80SOCRegencurrent=true;
-        }
+//        if((batteryLevel>=65 && batteryLevel<=95) && Dynamic80SOCRegencurrent) {
+//            Dynamic80SOCRegencurrent=false;
+//            serialPortManager.VCUSendToMCU("FFAA550103001510FBA807C800F000B0044001");//regen 60(F000)-80(4001),,35 - 45 regen(8C00-B400)40A(A000) 50A(C800) , phase cur 300A(B004) , line current 110A(B801)or 50amps C800 ,
+//            new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA807C800F000B0044001"), 500);
+//        }
+//        if(batteryLevel>=96) {
+//            Dynamic80SOCRegencurrent=true;
+//        }
 
 //        if(batteryLevel==5 && !apuflag  && tm.getTeleChargingState()==0){
 //            if(serialPortManager!=null){
