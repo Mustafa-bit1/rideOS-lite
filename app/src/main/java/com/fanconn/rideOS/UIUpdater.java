@@ -287,7 +287,7 @@ public class UIUpdater  {
         return getTotalAhByRegen() * RECO_KM_PER_AH;
     }
     public String getrecoEngineParams() {
-        return "LT-"+getLastTripRecoKm()+",CT-"+getTripRecoKm()+",TT-"+getTotalRecoKm();
+        return getLastTripRecoKm()+","+getTripRecoKm()+","+getTotalRecoKm();
     }
     private int lastTurnSignalState = -1;
     private boolean reset_Auto_lock_inHighbeam_flag;
@@ -943,7 +943,10 @@ public class UIUpdater  {
         NTC8 = hb3.getNTC8() - 40;
 
         //Log.d("TemperatureCheck", "NTCs = " + NTC1 + "," + NTC2 + "," + NTC3 + "," + NTC4 + "," + NTC5 + "," + NTC6 + "," + NTC7 + "," + NTC8);
-        tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
+        if(NTC5 > 0 || NTC6 > 0 || NTC7 > 0 || NTC8 > 0){
+            tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
+        }
+        else tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4);
         int[] temps = {NTC1, NTC2, NTC3, NTC4, NTC5, NTC6, NTC7, NTC8};
         boolean anyIs45 = false;
         boolean anyIs50OrAbove = false;
