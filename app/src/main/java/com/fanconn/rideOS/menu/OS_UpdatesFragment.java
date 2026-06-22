@@ -434,7 +434,7 @@ public class OS_UpdatesFragment extends Fragment {
                     requireActivity().runOnUiThread(() -> {
                         String label =
                                 UpdateService.BRANCH_RND.equals(branch)
-                                        ? "Latest RnD version "
+                                        ? "Latest beta version "
                                         : "Latest production version ";
 
                         serverVersionTV.setText(

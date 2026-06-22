@@ -312,7 +312,7 @@ public class RideOSTelemetrySender {
         }
 
         if (t.getTeleNTC() != null) {
-            data.ntc = t.getTeleNTC()+";"+ ETADataManager.getInstance().getEtaTime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+getCpu1Temp()+";"+TelemetryDataManager.getInstance().getTeleRange()+";"+ UIUpdater.getInstance().getrecoEngineParams();
+            data.ntc = "NTC="+t.getTeleNTC()+",ChargingTime="+ ETADataManager.getInstance().getEtaTime()+",ChargingCurrent="+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+",VCUtemp="+getCpu1Temp()+",Range="+TelemetryDataManager.getInstance().getTeleRange()+"recoEngine="+ UIUpdater.getInstance().getrecoEngineParams();
         }
 
         if (t.getTeleCurrentRider() != null && !t.getTeleCurrentRider().isEmpty()) {

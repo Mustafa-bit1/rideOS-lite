@@ -980,11 +980,11 @@ public class LoginActivity extends AppCompatActivity{
            //Log.d("Trottle","Trottle response"+pickup+" braking "+braking);
             String throttleResponseByte;
             switch (pickup) {
-                case 1:   throttleResponseByte = "02"; break;//eco
-                case 2:   throttleResponseByte = "00"; break;//Linear
-                case 3:   throttleResponseByte = "01"; break;//Sport
+                case 1:   throttleResponseByte = "00"; break;//Linear
+                case 2:   throttleResponseByte = "01"; break;//Sport
+                case 3:   throttleResponseByte = "02"; break;//eco
 
-                default:   throttleResponseByte = "01"; break;
+                default:   throttleResponseByte = "00"; break;
             }
             String finalThrottleResponseFrame = "FFAA550103001510F8A80704"+throttleResponseByte+"020200000000";
             //Log.d("Trottle","Trottle"+finalThrottleResponseFrame);

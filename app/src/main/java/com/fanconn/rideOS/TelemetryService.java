@@ -566,8 +566,7 @@ public class TelemetryService extends Service {
     private Heartbeat1 hb1;
     private static final String PREFS_OTA = "ota_prefs";
     private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
-    private volatile long lastUploadLatencyMs = 0;
-    private volatile int consecutiveFailures = 0;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -579,6 +578,7 @@ public class TelemetryService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String vinNumber = intent != null ? intent.getStringExtra("VIN_NUMBER") : null;
+        Log.d("xfcgvhbjnm","TELEMETRY SERVICE STARTED");
         this.context = this;
         startTelemetry(vinNumber != null ? vinNumber : "UNKNOWN");
         return START_STICKY;
@@ -602,7 +602,7 @@ public class TelemetryService extends Service {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                   // Log.e("Telemetry", "Thread interrupted", e);
+                    Log.e("Telemetry", "Thread interrupted", e);
                     return;
                 }
             }
@@ -610,12 +610,10 @@ public class TelemetryService extends Service {
             if (serialPortManager != null) {
                 serialPortManager.sendContinuousSensorData();
             } else {
-               // Log.e("Telemetry", "serialPortManager is null!");
+                Log.e("Telemetry", "serialPortManager is null!");
             }
         }).start();
     }
-
-    private int telemetryLoopCounter = 0;
     private void sendDataContinuously(String vin) {
         String rideOsVersion = buildRideOSVersion(context);
 
@@ -625,8 +623,8 @@ public class TelemetryService extends Service {
             public void run() {
                 if (isSending) {
 
-//                    Log.d("TelemetryService", "Loop latlong = "
-//                            + TelemetryDataManager.getInstance().getTeleLatLong());
+                    Log.d("TelemetryService", "Loop latlong = "
+                            + TelemetryDataManager.getInstance().getTeleLatLong());
 
                     if(serialApplication.getSerialPortManager().getHb1()!=null)
                     {
@@ -654,24 +652,6 @@ public class TelemetryService extends Service {
 //                        sendRealTimeData(vin);
 //                        sendRealtimeDataOnceEvenAfterLocking++;
 //                    }
-
-                    telemetryLoopCounter++;
-                    if (telemetryLoopCounter >= 30) {
-                        telemetryLoopCounter = 0;
-                        Log.d(
-                                "TelemetryStats",
-                                "Queue="
-                                        + TelemetryStagingManager
-                                        .getInstance(getApplicationContext())
-                                        .size()
-                                        + " Latency="
-                                        + lastUploadLatencyMs
-                                        + "ms Failures="
-                                        + consecutiveFailures
-                        );
-                    }
-
-
 
                     telemetryHandler.postDelayed(this, 1000);
                 }
@@ -707,6 +687,7 @@ public class TelemetryService extends Service {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager != null) {
             simInfo = telephonyManager.getSimOperatorName()+"-"+telephonyManager.getSimSerialNumber();
+            Log.d("SIM_INFO", "SIM Information: " + simInfo);
         }
         else {
             simInfo=null;
@@ -716,7 +697,7 @@ public class TelemetryService extends Service {
         try {
             PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
             int mcuVersion = getEffectiveMcuVersion();
-            rideOSversion = pInfo.versionName+";"+Build.DISPLAY+";"+mcuVersion+";"+simInfo;
+            rideOSversion = "rideOS " + pInfo.versionName+"_GA"+",AOSPv="+Build.DISPLAY+"_GA"+",MCUv="+mcuVersion+", simInfo="+simInfo;
         } catch (PackageManager.NameNotFoundException e) {
             rideOSversion = "rideOS N/A";
         }
@@ -796,38 +777,40 @@ public class TelemetryService extends Service {
     private void sendRealTimeData(String vin) {
         RealTimeData data = collectTelemetryData(vin);
 
-        if (!hasActiveInternetConnection()) {
+        if (hasActiveInternetConnection()) {
+            // Send staged data first
+            // NEW SAFE BATCH SENDING
+//            if (TelemetryStagingManager.getInstance().hasData()) {
+//                new Thread(() -> {
+//                    while (TelemetryStagingManager.getInstance().hasData() && hasActiveInternetConnection()) {
+//
+//                        List<RealTimeData> batch = TelemetryStagingManager.getInstance().pollBatch();  // Take 20 at once
+//                        for (RealTimeData r : batch) {
+//                            sendToServer(r);
+//                            try { Thread.sleep(50); } catch (InterruptedException ignored) {}
+//                        }
+//
+//                        try { Thread.sleep(300); } catch (Exception ignored) {} // Small break between batches
+//                    }
+//                }).start();
+//            }
 
-            Log.d("TelemetryNet",
-                    "NO INTERNET -> STAGING");
+            if (TelemetryStagingManager.getInstance(getApplicationContext()).hasData()) {
+                flushStagedData();
+            }
+            // Send current data
+            //DataUsageTracker tracker = new DataUsageTracker();
+            //tracker.startTracking();
 
-            TelemetryStagingManager
-                    .getInstance(getApplicationContext())
-                    .addData(data);
+            sendToServer(data);
+            //Log.e("Telemetry", "INTENET VAIL SNEDNING ");
 
-            return;
+            //tracker.logUsage("Currdent Payload");
+
+        } else {
+            Log.e("Telemetry", "NOOINTENET VAIL SNEDNING ");
+            TelemetryStagingManager.getInstance(getApplicationContext()).addData(data);
         }
-
-        if (!isNetworkHealthy()) {
-
-            Log.d("TelemetryNet",
-                    "NETWORK SLOW -> STAGING");
-
-            TelemetryStagingManager
-                    .getInstance(getApplicationContext())
-                    .addData(data);
-
-            return;
-        }
-
-        if (TelemetryStagingManager
-                .getInstance(getApplicationContext())
-                .hasData()) {
-
-            flushStagedData();
-        }
-
-        sendToServer(data);
     }
     private boolean isFlushing = false;
     private void flushStagedData() {
@@ -865,8 +848,8 @@ public class TelemetryService extends Service {
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
         if(SerialPortManager.getInstance().getHb3()!=null){
-            data.ntc =TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+TelemetryDataManager.getInstance().getTeleNTC()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+ ETADataManager.getInstance().getEtaTime()+";"+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+";"+TelemetryDataManager.getInstance().getTeleChargingState()+";"+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+
-                    ";"+SerialPortManager.getInstance().getHb3().getcell1TO3()+","+SerialPortManager.getInstance().getHb3().getcell4TO6()+","+SerialPortManager.getInstance().getHb3().getcell7TO9()+","+SerialPortManager.getInstance().getHb3().getcell10TO12()+","+SerialPortManager.getInstance().getHb3().getcell13TO15()+","+SerialPortManager.getInstance().getHb3().getcell16TO18()+","+SerialPortManager.getInstance().getHb3().getcell19TO21()+","+SerialPortManager.getInstance().getHb3().getcell22TO23();
+            data.ntc = " MOS="+TelemetryDataManager.getInstance().getTeleBMSMosStates()+",ntc="+TelemetryDataManager.getInstance().getTeleNTC()+", ChgCur="+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+",ChgTime="+ ETADataManager.getInstance().getEtaTime()+", ICV="+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+" C="+TelemetryDataManager.getInstance().getTeleChargingState()+" CE="+TelemetryDataManager.getInstance().getTeleChargingStateError()+" ApuV="+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+" ContErr="+TelemetryDataManager.getInstance().getTeleControllerAbruptOff()+
+                    " AllCells 1to3="+SerialPortManager.getInstance().getHb3().getcell1TO3()+",cell4to6="+SerialPortManager.getInstance().getHb3().getcell4TO6()+",cell7to9="+SerialPortManager.getInstance().getHb3().getcell7TO9()+",cell10to12="+SerialPortManager.getInstance().getHb3().getcell10TO12()+",cell13to15="+SerialPortManager.getInstance().getHb3().getcell13TO15()+",cell16to18="+SerialPortManager.getInstance().getHb3().getcell16TO18()+",cell19to21="+SerialPortManager.getInstance().getHb3().getcell19TO21()+",cell22to23="+SerialPortManager.getInstance().getHb3().getcell22TO23();
      //   Log.d("dsafgs","ddddddddddddddd "+data.ntc);
         }else{
             //Log.d("dsafgs","ddddddddddddddddeeeeeeeeeeeeeeeeeeeeeedddddddd "+data.ntc);
@@ -879,8 +862,8 @@ public class TelemetryService extends Service {
         data.inAH_by_charger = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleChargerAH());
         data.inAH_by_regen = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRegenAH());
         data.outAH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleDischargeAH());
-        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ";" + UptimeManager.getUptime()+";"+MainActivity.currentgear;
-        data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Locked";
+        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ",uptime=" + UptimeManager.getUptime()+",Gear="+MainActivity.currentgear;
+        data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
         //Log.d("sdafd","TELETIREPRESUURE2222 IS "+data.tirepressure);
 
@@ -895,11 +878,11 @@ public class TelemetryService extends Service {
         String temps = getCriticalTemps();
         UIUpdater uiUpdater = UIUpdater.getInstance();
         if (uiUpdater!=null) {
-            data.data = TelemetryDataManager.getInstance().getTeleRange()+";="+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+";"+temps
-                    +";"+uiUpdater.getrecoEngineParams()+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSAclCap="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+                    +", recoEngine="+uiUpdater.getrecoEngineParams()+",MaxVolt="+TelemetryDataManager.getInstance().getMax_voltage_value()+", AlwedchgCur="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }else{
-            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+";"+temps
-                    +";N/A"+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+            data.data = "Range="+TelemetryDataManager.getInstance().getTeleRange()+", BMSActSOC="+TelemetryDataManager.getInstance().getBMSTeleSOC()+",BMSAclCap="+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+", PCB_temps : "+temps
+                    +", recoEngine=N/A"+",MaxVolt="+TelemetryDataManager.getInstance().getMax_voltage_value()+", AlwedchgCur="+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }
         //Log.d("QUALCOMTHERMAL  ", temps);
         return data;
@@ -932,51 +915,21 @@ public class TelemetryService extends Service {
         apiData.time = data.time;
         apiData.data = data.data;
 
-
-        final long startTime = System.currentTimeMillis();
         apiService.saveRealTimeData(apiData).enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call,
-                                   Response<ResponseBody> response) {
-
-                lastUploadLatencyMs =
-                        System.currentTimeMillis() - startTime;
-
-                consecutiveFailures = 0;
-
-                Log.d("TelemetryNet",
-                        "Latency=" + lastUploadLatencyMs + " ms");
-
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (!response.isSuccessful()) {
-
-                    consecutiveFailures++;
-
-                    TelemetryStagingManager
-                            .getInstance(getApplicationContext())
-                            .addData(data);
+                   // Log.e("TelemetryService", "❌ RealTimeData failed: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call,
-                                  Throwable t) {
-
-                lastUploadLatencyMs =
-                        System.currentTimeMillis() - startTime;
-
-                consecutiveFailures++;
-
-                Log.e(
-                        "TelemetryNet",
-                        "FAILED latency="
-                                + lastUploadLatencyMs
-                                + "ms failures="
-                                + consecutiveFailures
-                );
-
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 TelemetryStagingManager
                         .getInstance(getApplicationContext())
                         .addData(data);
+
+            //    Log.e("TelemetryService", "Failed, re-staged", t);
             }
         });
     }
@@ -1031,18 +984,7 @@ public class TelemetryService extends Service {
             return false;
         }
     }
-    private boolean isNetworkHealthy() {
 
-        if (consecutiveFailures >= 5) {
-            return false;
-        }
-
-        if (lastUploadLatencyMs > 5000) {
-            return false;
-        }
-
-        return true;
-    }
     private double roundTo3Decimal(double value) {
         return Math.round(value * 1000.0) / 1000.0;
     }
@@ -1275,7 +1217,7 @@ public class TelemetryService extends Service {
         }
 
         return
-                cpu1;
+                ",cpu1=" + cpu1;
     }
 
     private String readLine(File file) {
