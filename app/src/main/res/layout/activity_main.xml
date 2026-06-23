@@ -1275,12 +1275,11 @@
             android:layout_height="115dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="375dp"
+            android:layout_marginStart="377dp"
             android:layout_marginBottom="364dp"
             android:src="@drawable/left_on"
             android:translationY="-10dp"
             android:visibility="gone"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -1298,7 +1297,7 @@
             android:layout_width="94dp"
             android:layout_height="30dp"
             android:layout_marginTop="33dp"
-            android:layout_marginEnd="358dp"
+            android:layout_marginEnd="315dp"
             android:fontFamily="@font/kanit"
             android:text="02:22 PM"
             android:textAlignment="center"
@@ -1313,7 +1312,7 @@
             android:layout_width="22dp"
             android:layout_height="22dp"
             android:layout_marginTop="33dp"
-            android:layout_marginEnd="323dp"
+            android:layout_marginEnd="277dp"
             app:layout_constraintEnd_toStartOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/network" />
@@ -1323,7 +1322,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginTop="31dp"
-            android:layout_marginEnd="275dp"
+            android:layout_marginEnd="226dp"
             app:layout_constraintEnd_toStartOf="@+id/imageView4"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/wifioffimg" />
@@ -1332,7 +1331,7 @@
             android:id="@+id/keyOutImage"
             android:layout_width="40dp"
             android:layout_height="28dp"
-            android:layout_marginStart="664dp"
+            android:layout_marginStart="720dp"
             android:layout_marginTop="29dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -1342,8 +1341,9 @@
             android:id="@+id/tpmsicon"
             android:layout_width="32dp"
             android:layout_height="44dp"
-            android:layout_marginStart="710dp"
-            android:layout_marginTop="23dp"
+            android:layout_marginStart="473dp"
+            android:layout_marginTop="22dp"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/tpmsicon_greyout" />
@@ -1390,12 +1390,11 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="722dp"
+            android:layout_marginStart="732dp"
             android:layout_marginBottom="375dp"
             android:layout_toRightOf="@id/timeTextView"
             android:translationY="0dp"
             android:visibility="gone"
-
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/high_beam" />
@@ -1411,24 +1410,24 @@
             android:layout_marginEnd="375dp"
             android:layout_marginBottom="364dp"
             android:src="@drawable/right_on"
-            android:translationY="-10dp"
             android:visibility="gone"
+            android:translationY="-10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <ImageView
-            android:id="@+id/highBeam_IVoff"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="762dp"
-            android:layout_marginBottom="416dp"
-            android:translationY="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/headlamp" />
+<!--        <ImageView-->
+<!--            android:id="@+id/highBeam_IVoff"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginStart="762dp"-->
+<!--            android:layout_marginBottom="416dp"-->
+<!--            android:translationY="0dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:srcCompat="@drawable/headlamp" />-->
 
         <ImageView
             android:id="@+id/turnLeft_IV"

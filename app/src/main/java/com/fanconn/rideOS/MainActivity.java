@@ -234,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
         if (!isLoggedIn) {
             startActivity(new Intent(this, LoginActivity.class));
-            setNeutralGear();
+           // setNeutralGear();
             LockHandle();
             finish();
             return;

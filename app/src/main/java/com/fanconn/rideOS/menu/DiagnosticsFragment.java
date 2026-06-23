@@ -195,7 +195,7 @@ public class DiagnosticsFragment extends Fragment {
                     1200
             );
             new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"),
                     1200
             );
         });
@@ -206,7 +206,7 @@ public class DiagnosticsFragment extends Fragment {
                     1200
             );
             new Handler(Looper.getMainLooper()).postDelayed(
-                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"),
+                    () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"),
                     1200
             );
         });

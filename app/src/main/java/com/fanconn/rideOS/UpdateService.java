@@ -313,6 +313,9 @@ public class UpdateService extends Service {
             Button btnYes = view.findViewById(R.id.btnYes);
             Button btnNo = view.findViewById(R.id.btnNo);
 
+            btnYes.setAllCaps(false);
+            btnNo.setAllCaps(false);
+
             title.setText("Beta Update Available");
             message.setText("New beta rideOS update is available.\nDo you want to update now?");
 
@@ -414,6 +417,9 @@ public class UpdateService extends Service {
             TextView message = view.findViewById(R.id.dialogMessage);
             Button btnYes = view.findViewById(R.id.btnYes);
             Button btnNo = view.findViewById(R.id.btnNo);
+
+            btnYes.setAllCaps(false);
+            btnNo.setAllCaps(false);
 
             title.setText("Update Available");
             message.setText("New rideOS update is available.\nDo you want to update now?");

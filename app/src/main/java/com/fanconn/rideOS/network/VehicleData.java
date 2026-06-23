@@ -35,7 +35,7 @@ public class VehicleData {
     private String smartKeyID;
 
     @SerializedName("odo")
-    private float odo;
+    private double odo;
 
 //    @SerializedName("tripkm")
 //    private float tripkm;
@@ -67,7 +67,7 @@ public class VehicleData {
 
     public VehicleData(String vinNumber, String model, String ownerName, String phoneNumber,
                        String controllerID, String motorID, String bmsID, String chargerID,
-                       String rideOSversion, String smartKeyID, float odo,
+                       String rideOSversion, String smartKeyID, double odo,
                        int chargingState, int handleLockState, int seatLockState,
                        String bmsMosStates, String riders, int bmslifecycles,
                        String lat_long, String time) {

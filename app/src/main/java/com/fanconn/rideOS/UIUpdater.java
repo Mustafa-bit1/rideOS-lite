@@ -287,7 +287,7 @@ public class UIUpdater  {
         return getTotalAhByRegen() * RECO_KM_PER_AH;
     }
     public String getrecoEngineParams() {
-        return "LT-"+getLastTripRecoKm()+",CT-"+getTripRecoKm()+",TT-"+getTotalRecoKm();
+        return getLastTripRecoKm()+","+getTripRecoKm()+",-"+getTotalRecoKm();
     }
     private int lastTurnSignalState = -1;
     private boolean reset_Auto_lock_inHighbeam_flag;
@@ -300,7 +300,7 @@ public class UIUpdater  {
         }
         if(hb1.getHeadlights() == 1) {
             binding.highBeamIVon.setVisibility(View.VISIBLE);
-            binding.highBeamIVoff.setVisibility(View.INVISIBLE);
+            //binding.highBeamIVoff.setVisibility(View.INVISIBLE);
             if(reset_Auto_lock_inHighbeam_flag){
                 reset_Auto_lock_inHighbeam_flag=false;
                 InactivityManager.getInstance().onUserInteraction();
@@ -310,7 +310,7 @@ public class UIUpdater  {
         {
             reset_Auto_lock_inHighbeam_flag=true;
             binding.highBeamIVon.setVisibility(View.INVISIBLE);
-            binding.highBeamIVoff.setVisibility(View.VISIBLE);
+            //binding.highBeamIVoff.setVisibility(View.VISIBLE);
 
 //                if (isDriveMode && !isStand) {
 //                    binding.highBeamIVoff.setVisibility(View.VISIBLE);
@@ -559,7 +559,7 @@ public class UIUpdater  {
             updateTransportModeWarning();
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801F000B0044001"); //max all phase 300, line 100 , regen 60(F000)-80(4001)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
+//                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
             }
             binding.yellowalert.clearAnimation();
             binding.LowBatmsg.clearAnimation();
@@ -606,14 +606,14 @@ public class UIUpdater  {
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");//regen 60(F000)-80(4001)
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001");//line current 10A(2800), phase current max, regen currents as 40A(A000) to make 6 (1800) and 50A(C800) to make 8 (2000)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
          //       Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
 
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//STOP SCOOTER, phase zero
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
             }
         }
 
@@ -644,7 +644,7 @@ public class UIUpdater  {
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
                 new Handler(Looper.getMainLooper()).postDelayed(() ->  serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001"), 1000);//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1500);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1500);
             }
             InactivityManager.getInstance().stopTimer();
 
@@ -1675,7 +1675,7 @@ public class UIUpdater  {
     public void neutralUI() {
         stopReverseBeep();
         binding.ForwardInstruction.setVisibility(View.VISIBLE);
-        binding.tpmsicon.setVisibility(View.VISIBLE);
+       // binding.tpmsicon.setVisibility(View.VISIBLE);
 
         binding.neutralicon.setVisibility(View.VISIBLE);
 //        binding.brk.setVisibility(View.VISIBLE);
@@ -1736,7 +1736,7 @@ public class UIUpdater  {
     public void powerOnUi()
     {
         stopReverseBeep();
-        binding.tpmsicon.setVisibility(View.VISIBLE);
+       // binding.tpmsicon.setVisibility(View.VISIBLE);
         binding.ForwardInstruction.setVisibility(View.GONE);
 //        binding.avgSpeed.setVisibility(View.VISIBLE);
         binding.tripTextView.setVisibility(View.VISIBLE);
@@ -1795,7 +1795,7 @@ public class UIUpdater  {
     {
 
         startReverseBeep();
-        binding.tpmsicon.setVisibility(View.INVISIBLE);
+//binding.tpmsicon.setVisibility(View.INVISIBLE);
         binding.ForwardInstruction.setVisibility(View.GONE);
         binding.startButton.setVisibility(View.INVISIBLE);
 //        binding.avgSpeed.setVisibility(View.VISIBLE);
@@ -1866,7 +1866,7 @@ public class UIUpdater  {
             binding.startButton.setVisibility(View.INVISIBLE);}
         stopReverseBeep();
         binding.ForwardInstruction.setVisibility(View.GONE);
-        binding.tpmsicon.setVisibility(View.VISIBLE);
+      //  binding.tpmsicon.setVisibility(View.VISIBLE);
 
 //        binding.batterryBar.setVisibility(View.VISIBLE);
         binding.batteryArc.setVisibility(View.VISIBLE);
@@ -2221,6 +2221,7 @@ private int streamId = 0;
         double odoKm = tripManager.getOdoDistance();
         tm.setTeleTrip((float) roundTo2Decimal(tripKm));
         tm.setTeleODO((float) roundTo2Decimal(odoKm));
+        Log.d("sadfdgf","ODOOO"+(float) roundTo2Decimal(odoKm));
 
         if (activity != null) {
             activity.refreshDistance();
@@ -3401,13 +3402,13 @@ private int streamId = 0;
                 /* ================= UI ================= */
 
                 if ((frontWarning || rearWarning) && TpmsState.sensorAvailable) {
-//                    binding.tpmsicon.setVisibility(View.VISIBLE);
+                    binding.tpmsicon.setVisibility(View.VISIBLE);
                     binding.tpmsicon.setImageResource(R.drawable.tpmsicon);
 //                    binding.lowTireWarning.setVisibility(View.VISIBLE);
                     Play_tpmsSound_on_loggin=true;
                 } else {
-//                    binding.tpmsicon.setVisibility(View.GONE);
-                    binding.tpmsicon.setImageResource(R.drawable.tpmsicon_greyout);
+                    binding.tpmsicon.setVisibility(View.GONE);
+                    //binding.tpmsicon.setImageResource(R.drawable.tpmsicon_greyout);
 //                    binding.lowTireWarning.setVisibility(View.INVISIBLE);
                     Play_tpmsSound_on_loggin=false;
                 }
