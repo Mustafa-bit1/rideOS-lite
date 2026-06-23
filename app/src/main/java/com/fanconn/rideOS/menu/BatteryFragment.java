@@ -27,6 +27,7 @@ import com.fanconn.rideOS.Heartbeat3;
 import com.fanconn.rideOS.MetadataManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
+import com.fanconn.rideOS.UIUpdater;
 
 import java.util.Locale;
 
@@ -62,6 +63,7 @@ public class BatteryFragment extends Fragment {
         @SuppressLint("DefaultLocale")
         @Override
         public void run() {
+            updateApuButtonState();
             if (serialPortManager != null && serialPortManager.getHb3() != null) {
                 Heartbeat3 hb3 = serialPortManager.getHb3();
 
@@ -298,6 +300,7 @@ public class BatteryFragment extends Fragment {
         // Radio buttons
         btnBattery = view.findViewById(R.id.btnBattery);
         btnAuxillary = view.findViewById(R.id.btnAuxillary);
+        updateApuButtonState();
         btnBattery.setChecked(true);
 
         RadioGroup topToggleGroup = view.findViewById(R.id.topToggleGroup);
@@ -309,6 +312,12 @@ public class BatteryFragment extends Fragment {
                 topMainContainer.setVisibility(View.VISIBLE);
                 topAuxContainer.setVisibility(View.GONE);
             } else if (checkedId == R.id.btnAuxillary) {
+
+                if (!UIUpdater.isAPUPresent) {
+                    btnBattery.setChecked(true);
+                    return;
+                }
+
                 currentBattery = BatteryType.AUX;
                 mainScroll.setVisibility(View.GONE);
                 auxScroll.setVisibility(View.VISIBLE);
@@ -327,5 +336,24 @@ public class BatteryFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         uiHandler.removeCallbacksAndMessages(null);
+    }
+
+    private void updateApuButtonState() {
+
+        if (btnAuxillary == null) return;
+
+        if (UIUpdater.isAPUPresent) {
+
+            btnAuxillary.setEnabled(true);
+            btnAuxillary.setAlpha(1.0f);   // normal
+
+        } else {
+
+            btnAuxillary.setEnabled(false);
+            btnAuxillary.setAlpha(0.2f);   // greyed out
+
+            // if currently showing APU page, switch back
+            btnBattery.setChecked(true);
+        }
     }
 }

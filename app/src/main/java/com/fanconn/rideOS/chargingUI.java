@@ -46,6 +46,8 @@ public class chargingUI extends AppCompatActivity {
     // Runtime variables
     private float currentRangeKm = 0f;
     private long lastUpdateTime = 0;
+
+
     private final BroadcastReceiver frameReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -80,6 +82,8 @@ public class chargingUI extends AppCompatActivity {
         }
     };
     private MediaPlayer mediaPlayer;
+    private boolean wasCharging = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -199,6 +203,13 @@ public class chargingUI extends AppCompatActivity {
 
                     Heartbeat3 hb3 = serialPortManager.getHb3();
                     float chargingbit = hb3.getChargingbit();
+
+                    boolean isChargingNow = chargingbit > 0;
+                    if (isChargingNow && !wasCharging) {
+                        wakeScreenIfNeededWhenChargingStarts();
+                    }
+                    wasCharging = isChargingNow;
+
                     Log.d("asf","CHARHINGCURRENTVALYE----"+chargingbit);
                     BATTERY_CAPACITY_AH = getBatteryCapacity();
 
@@ -329,6 +340,26 @@ public class chargingUI extends AppCompatActivity {
         };
 
         socUpdateHandler.post(socUpdateRunnable);
+    }
+
+    private void wakeScreenIfNeededWhenChargingStarts() {
+
+        PowerManager pm =
+                (PowerManager) getSystemService(Context.POWER_SERVICE);
+
+        if (pm == null) return;
+
+        if (pm.isInteractive()) {
+            return;
+        }
+
+        PowerManager.WakeLock wakeLock =
+                pm.newWakeLock(
+                        PowerManager.FULL_WAKE_LOCK
+                                | PowerManager.ACQUIRE_CAUSES_WAKEUP,
+                        "rideOS:ChargingWake");
+
+        wakeLock.acquire(3000);
     }
     private int getChargingIcon(float chargingbit) {
 
