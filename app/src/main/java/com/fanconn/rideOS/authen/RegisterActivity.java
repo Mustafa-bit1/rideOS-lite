@@ -162,10 +162,10 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch (progress) {
-                    case 0: selectedTorqueLevel = "Level2"; break;
-                    case 1: selectedTorqueLevel = "Level3"; break;
-                    case 2: selectedTorqueLevel = "Level4"; break;
-                    case 3: selectedTorqueLevel = "Level5"; break;
+                    case 0: selectedTorqueLevel = "Level 2"; break;
+                    case 1: selectedTorqueLevel = "Level 3"; break;
+                    case 2: selectedTorqueLevel = "Level 4"; break;
+                    case 3: selectedTorqueLevel = "Level 5"; break;
                 }
                 tvTorqueLevel.setText(selectedTorqueLevel);
             }

@@ -778,10 +778,10 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
     int Level0_Line_Current = 15;
-    int Level1_Line_Current = 20;
+    int Level1_Line_Current = 25;
     int Level2_Line_Current = 50;
     int Level3_Line_Current = 75;
-    int Level4_Line_Current = 110;
+    int Level4_Line_Current = 100;
 
     private static final String regen10A = "2800";
     private static final String regen20A = "5000";
@@ -944,19 +944,19 @@ public class LoginActivity extends AppCompatActivity{
             }//END OF SAME USER
 
 //            String maxTorque = prefs.getString("user_" + username + "_torque", "Rush");
-            String maxTorque = userPrefs.getString("user_" + username + "_torque", "Level5");
+            String maxTorque = userPrefs.getString("user_" + username + "_torque", "Level 5");
 
             int lineCurrent;
             switch (maxTorque) {
-                case "Level2":   lineCurrent = Level1_Line_Current; break;
-                case "Level3": lineCurrent = Level2_Line_Current; break;
-                case "Level4":   lineCurrent = Level3_Line_Current; break;
-                case "Level5": lineCurrent = Level4_Line_Current; break;
-                case "Level1":   lineCurrent = Level0_Line_Current; break;
+                case "Level 2":   lineCurrent = Level1_Line_Current; break;
+                case "Level 3": lineCurrent = Level2_Line_Current; break;
+                case "Level 4":   lineCurrent = Level3_Line_Current; break;
+                case "Level 5": lineCurrent = Level4_Line_Current; break;
+                case "Level 1":   lineCurrent = Level0_Line_Current; break;
 
                 default:       lineCurrent = Level4_Line_Current; break;
             }
-
+Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
             int torqueValue = lineCurrent * 4;
             String torqueHex = String.format("%04X", torqueValue);
             String torqueByte01 = torqueHex.substring(2, 4); // low byte

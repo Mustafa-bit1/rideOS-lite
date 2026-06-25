@@ -33,7 +33,7 @@ public class PatternView extends View {
     private int soundBeepId;
     private boolean soundLoaded = false;
     private boolean isMuted;
-
+    private AudioManager audioManager;
     public PatternView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
@@ -74,7 +74,7 @@ public class PatternView extends View {
         soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
             if (status == 0) soundLoaded = true;
         });
-
+        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         isMuted = context.getSharedPreferences("volume_prefs", Context.MODE_PRIVATE)
                 .getBoolean("is_muted", false);
     }
@@ -134,11 +134,27 @@ public class PatternView extends View {
                 return true;
 
             case MotionEvent.ACTION_MOVE:
-                if (isDrawing) {
-                    checkAndAddDot(touchX, touchY);
-                    postInvalidate();
+                int historySize = event.getHistorySize();
+
+                for (int i = 0; i < historySize; i++) {
+                    checkAndAddDot(
+                            event.getHistoricalX(i),
+                            event.getHistoricalY(i));
                 }
+
+                checkAndAddDot(
+                        event.getX(),
+                        event.getY());
+
+                postInvalidate();
                 return true;
+
+//            case MotionEvent.ACTION_MOVE:
+//                if (isDrawing) {
+//                    checkAndAddDot(touchX, touchY);
+//                    postInvalidate();
+//                }
+//                return true;
 
             case MotionEvent.ACTION_UP:
                 isDrawing = false;
@@ -157,11 +173,10 @@ public class PatternView extends View {
             float dx = dotCenters[i][0];
             float dy = dotCenters[i][1];
             float distance = (float) Math.hypot(dx - x, dy - y);
-            if (distance < radius * 2.2f && !pattern.contains(i)) {  // 🔸 Touch area increased
+            if (distance < radius * 3.3f && !pattern.contains(i)) {  // 🔸 Touch area increased
                 pattern.add(i);
 
                 if (soundLoaded && soundPool != null) {
-                    AudioManager audioManager = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);
                     int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
                     int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
                     float volume = maxVolume == 0 ? 0f : (float) currentVolume / maxVolume;

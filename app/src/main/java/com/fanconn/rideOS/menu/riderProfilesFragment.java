@@ -76,7 +76,7 @@ public class riderProfilesFragment extends Fragment {
     // ADVANCED
     private SeekBar seekBarMaxSpeed, seekBarTorque;
     private TextView tvMaxspeedValue, tvTorqueLevel;
-    private String selectedTorqueLevel = "Level3";
+    private String selectedTorqueLevel = "Level 3";
     private int maxSpeedValue = 60;
     // SECURITY
     private RadioButton securitybtn;
@@ -294,7 +294,7 @@ public class riderProfilesFragment extends Fragment {
 
         seekBarTorque.setMax(4);
         seekBarTorque.setProgress(1);
-        selectedTorqueLevel = "Level1";
+        selectedTorqueLevel = "Level 1";
         tvTorqueLevel.setText(selectedTorqueLevel);
 
         seekBarTorque.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -302,19 +302,19 @@ public class riderProfilesFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 switch (progress) {
                     case 0:
-                        selectedTorqueLevel = "Level1";
+                        selectedTorqueLevel = "Level 1";
                         break;
                     case 1:
-                        selectedTorqueLevel = "Level2";
+                        selectedTorqueLevel = "Level 2";
                         break;
                     case 2:
-                        selectedTorqueLevel = "Level3";
+                        selectedTorqueLevel = "Level 3";
                         break;
                     case 3:
-                        selectedTorqueLevel = "Level4";
+                        selectedTorqueLevel = "Level 4";
                         break;
                     case 4:
-                        selectedTorqueLevel = "Level5";
+                        selectedTorqueLevel = "Level 5";
                         break;
                 }
 
@@ -745,8 +745,8 @@ public class riderProfilesFragment extends Fragment {
         seekBarMaxSpeed.setProgress(80);
         tvMaxspeedValue.setText("100 Kmph");
         seekBarTorque.setProgress(4);    // Insane
-        selectedTorqueLevel = "Level5";
-        tvTorqueLevel.setText("Level5");
+        selectedTorqueLevel = "Level 5";
+        tvTorqueLevel.setText("Level 5");
         etPin.setText("");
         etPinConfirm.setText("");
         resetPatterns();
@@ -797,9 +797,9 @@ public class riderProfilesFragment extends Fragment {
 
         nameText.setText(username);
         String maxSpeed = sharedPreferences.getString("user_" + username + "_maxspeed", "60");
-        String torque = sharedPreferences.getString("user_" + username + "_torque", "Level2");
+        String torque = sharedPreferences.getString("user_" + username + "_torque", "Level 2");
         tvMaxSpeed.setText("Max speed : " + maxSpeed + " Kmph");
-        tvTorque.setText("Torque level : " + torque);
+        tvTorque.setText("Torque level : " + torque+"/5");
 
         String currentRider = getCurrentRider();
 
@@ -877,7 +877,7 @@ public class riderProfilesFragment extends Fragment {
         String age = sharedPreferences.getString("user_" + username + "_age", "");
         String phone = sharedPreferences.getString("user_" + username + "_phone", "");
         String maxSpeed = sharedPreferences.getString("user_" + username + "_maxspeed", "60");
-        String torque = sharedPreferences.getString("user_" + username + "_torque", "Level2");
+        String torque = sharedPreferences.getString("user_" + username + "_torque", "Level 2");
         String pickup = sharedPreferences.getString("user_" + username + "_pickup", "2");
         String braking = sharedPreferences.getString("user_" + username + "_braking", "3");
 
@@ -891,11 +891,11 @@ public class riderProfilesFragment extends Fragment {
 
         // Torque mapping
         switch (torque) {
-            case "Level1": seekBarTorque.setProgress(0); break;
-            case "Level2": seekBarTorque.setProgress(1); break;
-            case "Level3": seekBarTorque.setProgress(2); break;
-            case "Level4": seekBarTorque.setProgress(3); break;
-            case "Level5": seekBarTorque.setProgress(4); break;
+            case "Level 1": seekBarTorque.setProgress(0); break;
+            case "Level 2": seekBarTorque.setProgress(1); break;
+            case "Level 3": seekBarTorque.setProgress(2); break;
+            case "Level 4": seekBarTorque.setProgress(3); break;
+            case "Level 5": seekBarTorque.setProgress(4); break;
         }
 
         selectedTorqueLevel = torque;
@@ -1301,8 +1301,8 @@ public class riderProfilesFragment extends Fragment {
         seekBarMaxSpeed.setProgress(80);
         tvMaxspeedValue.setText((60 + 40) + " Kmph");
         seekBarTorque.setProgress(1);
-        selectedTorqueLevel = "Level2";
-        tvTorqueLevel.setText("Level2");
+        selectedTorqueLevel = "Level 2";
+        tvTorqueLevel.setText("Level 2");
         // Security (reset inputs)
         etPin.setText("");
         etPinConfirm.setText("");
