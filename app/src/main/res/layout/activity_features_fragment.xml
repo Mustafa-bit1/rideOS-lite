@@ -445,6 +445,105 @@
                 </RadioGroup>
             </LinearLayout>
 
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"
+                android:paddingVertical="8dp">
+
+                <!-- Text Column -->
+
+                <!-- Switch aligned right -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/kanitlite"
+                        android:paddingEnd="15dp"
+                        android:text="Traction Control"
+                        android:textColor="#FFFFFF"
+                        android:textSize="32sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/kanit"
+                        android:paddingTop="10dp"
+                        android:text="Traction control provides you better grip on road"
+                        android:textColor="#7D7D7D"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/traction_control_switch"
+                    android:layout_width="174dp"
+                    android:layout_height="58dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:paddingEnd="20dp"
+                    android:scaleX="1.4"
+                    android:scaleY="1.4"
+                    android:textColor="@color/white"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp"
+                android:paddingVertical="8dp">
+
+                <!-- Text Column -->
+
+                <!-- Switch aligned right -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/kanitlite"
+                        android:paddingEnd="15dp"
+                        android:text="Hill Assist"
+                        android:textColor="#FFFFFF"
+                        android:textSize="32sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/kanit"
+                        android:paddingTop="10dp"
+                        android:text="Hill assist mode prevent your scooter from rolling on slopes"
+                        android:textColor="#7D7D7D"
+                        android:textSize="17sp" />
+                </LinearLayout>
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/hillAssistMode_Switch"
+                    android:layout_width="174dp"
+                    android:layout_height="58dp"
+                    android:layout_marginEnd="8dp"
+                    android:fontFamily="@font/kanitlite"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:paddingEnd="20dp"
+                    android:scaleX="1.4"
+                    android:scaleY="1.4"
+                    android:textColor="@color/white"
+                    />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

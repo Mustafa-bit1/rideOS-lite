@@ -798,6 +798,8 @@ public class LoginActivity extends AppCompatActivity{
     private final double Speed_ratio_Value = 1.412404;//// 0% high
     public void loginSuccess(String username) {
 
+
+        SharedPreferences featurePrefs = getSharedPreferences("feature_prefs", MODE_PRIVATE);
         SharedPreferences sessionPrefs = getSharedPreferences("app_session", MODE_PRIVATE);
         SharedPreferences userPrefs = SecurePrefs.get();
 
@@ -813,6 +815,15 @@ public class LoginActivity extends AppCompatActivity{
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 100);
         }
+        boolean hillAssist =
+                featurePrefs.getBoolean("hill_assist", false);
+        boolean tractionControl =
+                featurePrefs.getBoolean("traction_control", false);
+        String hillBit = hillAssist ? "0" : "2";
+        String tractionBit = tractionControl ? "0" : "1";
+        String HillAssist_and_TCS = hillBit + tractionBit;
+        Log.d("LoginActivity",
+                "HillAssist_and_TCS = " + HillAssist_and_TCS);
 
         TelemetryService.shdtelemetrywhenunlocked = true;
         TelemetryDataManager.getInstance().setTeleCurrentRider(username);
@@ -933,15 +944,15 @@ public class LoginActivity extends AppCompatActivity{
             }//END OF SAME USER
 
 //            String maxTorque = prefs.getString("user_" + username + "_torque", "Rush");
-            String maxTorque = userPrefs.getString("user_" + username + "_torque", "Insane");
+            String maxTorque = userPrefs.getString("user_" + username + "_torque", "Level5");
 
             int lineCurrent;
             switch (maxTorque) {
-                case "Easy":   lineCurrent = Level1_Line_Current; break;
-                case "Medium": lineCurrent = Level2_Line_Current; break;
-                case "Rush":   lineCurrent = Level3_Line_Current; break;
-                case "Insane": lineCurrent = Level4_Line_Current; break;
-                case "Minimum":   lineCurrent = Level0_Line_Current; break;
+                case "Level2":   lineCurrent = Level1_Line_Current; break;
+                case "Level3": lineCurrent = Level2_Line_Current; break;
+                case "Level4":   lineCurrent = Level3_Line_Current; break;
+                case "Level5": lineCurrent = Level4_Line_Current; break;
+                case "Level1":   lineCurrent = Level0_Line_Current; break;
 
                 default:       lineCurrent = Level4_Line_Current; break;
             }
@@ -980,13 +991,16 @@ public class LoginActivity extends AppCompatActivity{
            //Log.d("Trottle","Trottle response"+pickup+" braking "+braking);
             String throttleResponseByte;
             switch (pickup) {
-                case 1:   throttleResponseByte = "00"; break;//Linear
-                case 2:   throttleResponseByte = "01"; break;//Sport
-                case 3:   throttleResponseByte = "02"; break;//eco
+                case 1:   throttleResponseByte = "02"; break;//eco
+                case 2:   throttleResponseByte = "00"; break;//Linear
+                case 3:   throttleResponseByte = "01"; break;//Sport
 
                 default:   throttleResponseByte = "00"; break;
             }
-            String finalThrottleResponseFrame = "FFAA550103001510F8A80704"+throttleResponseByte+"020200000000";
+
+
+
+            String finalThrottleResponseFrame = "FFAA550103001510F8A80704" + throttleResponseByte + HillAssist_and_TCS + "020E000000";
             //Log.d("Trottle","Trottle"+finalThrottleResponseFrame);
 
             //                    (serialPortManager.getHb3().getBatteryLevel() / 10 < 80)

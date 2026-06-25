@@ -57,7 +57,9 @@ public class FeaturesFragment extends Fragment {
     private double Speed_ratio_Value = 1.5536444;//// 10% high
     //private double Speed_ratio_Value = 1.48331442;//// 5% high
     //private double Speed_ratio_Value = 1.412404;//// 0% hi
-
+    private static final String PREF_NAME = "feature_prefs";
+    private static final String KEY_HILL_ASSIST = "hill_assist";
+    private static final String KEY_TRACTION_CONTROL = "traction_control";
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -67,7 +69,10 @@ public class FeaturesFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_features_fragment, container, false);
         ctx = requireContext();
-
+        sharedPreferences = requireContext().getSharedPreferences(//TCS and hillAssist pref
+                PREF_NAME,
+                Context.MODE_PRIVATE
+        );
         serialPortManager= serialApplication.getSerialPortManager();
         // Initialize switches
 //        cruiseControlSwitch = view.findViewById(R.id.cruisecontrolSwitch);
@@ -395,12 +400,14 @@ public class FeaturesFragment extends Fragment {
         handleLockSwitch.setChecked(isHandleEnabled);
         handleLockSwitch.setText(isHandleEnabled ? "Enabled" : "Disabled");
 
-// Apply styling
-        Drawable thumb = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_thumb).mutate();
-        Drawable track = ContextCompat.getDrawable(requireContext(), R.drawable.custom_switch_track).mutate();
+//Styling for toggle button
+        handleLockSwitch.setThumbDrawable(
+                ContextCompat.getDrawable(requireContext(),
+                        R.drawable.custom_switch_thumb).mutate());
 
-        handleLockSwitch.setThumbDrawable(thumb);
-        handleLockSwitch.setTrackDrawable(track);
+        handleLockSwitch.setTrackDrawable(
+                ContextCompat.getDrawable(requireContext(),
+                        R.drawable.custom_switch_track).mutate());
 
 // Listener
         handleLockSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -412,6 +419,57 @@ public class FeaturesFragment extends Fragment {
             }
         });
 //=============================================================================
+        SwitchCompat hillAssistSwitch =
+                view.findViewById(R.id.hillAssistMode_Switch);
+
+        SwitchCompat tractionControlSwitch =
+                view.findViewById(R.id.traction_control_switch);
+
+        boolean hillAssistEnabled =
+                sharedPreferences.getBoolean(KEY_HILL_ASSIST, false);
+
+        boolean tractionEnabled =
+                sharedPreferences.getBoolean(KEY_TRACTION_CONTROL, false);
+
+        hillAssistSwitch.setThumbDrawable(
+                ContextCompat.getDrawable(requireContext(),
+                        R.drawable.custom_switch_thumb).mutate());
+        hillAssistSwitch.setTrackDrawable(
+                ContextCompat.getDrawable(requireContext(),
+                        R.drawable.custom_switch_track).mutate());
+        tractionControlSwitch.setThumbDrawable(
+                ContextCompat.getDrawable(requireContext(),
+                        R.drawable.custom_switch_thumb).mutate());
+        tractionControlSwitch.setTrackDrawable(
+                ContextCompat.getDrawable(requireContext(),
+                        R.drawable.custom_switch_track).mutate());
+
+        hillAssistSwitch.setChecked(hillAssistEnabled);
+        tractionControlSwitch.setChecked(tractionEnabled);
+
+        hillAssistSwitch.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+
+                    sharedPreferences.edit()
+                            .putBoolean(KEY_HILL_ASSIST, isChecked)
+                            .apply();
+
+                    Log.d("FeaturesFragment",
+                            "Hill Assist = " + isChecked);
+                });
+
+        tractionControlSwitch.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+
+                    sharedPreferences.edit()
+                            .putBoolean(KEY_TRACTION_CONTROL, isChecked)
+                            .apply();
+
+                    Log.d("FeaturesFragment",
+                            "Traction Control = " + isChecked);
+                });
+
+        //======================================================================
         return view;
     }
 

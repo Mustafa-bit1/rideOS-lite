@@ -76,7 +76,7 @@
 
                 <ImageButton
                     android:id="@+id/editBtn"
-                    android:layout_width="30dp"
+                    android:layout_width="70dp"
                     android:layout_height="30dp"
                     android:background="@android:color/transparent"
                     android:src="@android:drawable/ic_menu_edit"
@@ -100,11 +100,11 @@
 
                 <ImageButton
                     android:id="@+id/deleteBtn"
-                    android:layout_width="30dp"
+                    android:layout_width="70dp"
                     android:layout_height="30dp"
                     android:background="@android:color/transparent"
                     android:src="@android:drawable/ic_menu_delete"
-                    app:tint="#F10000"/>
+                    app:tint="#C81F1F"/>
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -606,14 +606,14 @@ public class UIUpdater  {
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");//regen 60(F000)-80(4001)
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001");//line current 10A(2800), phase current max, regen currents as 40A(A000) to make 6 (1800) and 50A(C800) to make 8 (2000)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
+                //new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
          //       Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
 
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//STOP SCOOTER, phase zero
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
+                //new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
             }
         }
 
@@ -644,7 +644,7 @@ public class UIUpdater  {
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
                 new Handler(Looper.getMainLooper()).postDelayed(() ->  serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001"), 1000);//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1500);
+               // new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1500);
             }
             InactivityManager.getInstance().stopTimer();
 
