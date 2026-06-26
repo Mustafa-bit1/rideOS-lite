@@ -287,7 +287,7 @@ public class UIUpdater  {
         return getTotalAhByRegen() * RECO_KM_PER_AH;
     }
     public String getrecoEngineParams() {
-        return getLastTripRecoKm()+","+getTripRecoKm()+",-"+getTotalRecoKm();
+        return getLastTripRecoKm()+","+getTripRecoKm()+","+getTotalRecoKm();
     }
     private int lastTurnSignalState = -1;
     private boolean reset_Auto_lock_inHighbeam_flag;

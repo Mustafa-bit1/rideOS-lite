@@ -639,7 +639,7 @@ public class TelemetryService extends Service {
                                     TelemetryDataManager.getInstance().getTeleODO() * 100.0
                             ) / 100.0;
                     sendVehicleData(context, odoRounded, TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
-                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+"-"+UptimeManager.getUptime(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
+                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+UptimeManager.getUptime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
                             TelemetryDataManager.getInstance().getTeleBmsLifeCycles(), TelemetryDataManager.getInstance().getTeleLatLong());
                     TelemetryDataManager.getInstance()
                             .setTeleEvPowerState(shdtelemetrywhenunlocked ? 1 : 0);
@@ -850,7 +850,7 @@ public class TelemetryService extends Service {
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
         if(SerialPortManager.getInstance().getHb3()!=null){
-            data.ntc = TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+TelemetryDataManager.getInstance().getTeleNTC()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+ ETADataManager.getInstance().getEtaTime()+";"+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+";"+TelemetryDataManager.getInstance().getTeleChargingState()+";"+TelemetryDataManager.getInstance().getTeleChargingStateError()+";"+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+ ";"+SerialPortManager.getInstance().getHb3().getcell1TO3()+","+SerialPortManager.getInstance().getHb3().getcell4TO6()+","+SerialPortManager.getInstance().getHb3().getcell7TO9()+","+SerialPortManager.getInstance().getHb3().getcell10TO12()+","+SerialPortManager.getInstance().getHb3().getcell13TO15()+","+SerialPortManager.getInstance().getHb3().getcell16TO18()+","+SerialPortManager.getInstance().getHb3().getcell19TO21()+","+SerialPortManager.getInstance().getHb3().getcell22TO23();
+            data.ntc = TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+TelemetryDataManager.getInstance().getTeleNTC()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+ ETADataManager.getInstance().getEtaTime()+";"+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+";"+TelemetryDataManager.getInstance().getTeleChargingState()+";"+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+ ";"+SerialPortManager.getInstance().getHb3().getcell1TO3()+","+SerialPortManager.getInstance().getHb3().getcell4TO6()+","+SerialPortManager.getInstance().getHb3().getcell7TO9()+","+SerialPortManager.getInstance().getHb3().getcell10TO12()+","+SerialPortManager.getInstance().getHb3().getcell13TO15()+","+SerialPortManager.getInstance().getHb3().getcell16TO18()+","+SerialPortManager.getInstance().getHb3().getcell19TO21()+","+SerialPortManager.getInstance().getHb3().getcell22TO23();
      //   Log.d("dsafgs","ddddddddddddddd "+data.ntc);
         }else{
             //Log.d("dsafgs","ddddddddddddddddeeeeeeeeeeeeeeeeeeeeeedddddddd "+data.ntc);
@@ -1218,7 +1218,7 @@ public class TelemetryService extends Service {
         }
 
         return
-                ",cpu1=" + cpu1;
+                cpu1;
     }
 
     private String readLine(File file) {

@@ -29,6 +29,8 @@ public class PatternViewRegister extends View {
     private PatternCompleteListener listener;
     private float radius;
     private int padding;
+    private Paint selectedCirclePaint;
+    private Paint glowPaint;
 
     public PatternViewRegister(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,12 +42,11 @@ public class PatternViewRegister extends View {
     public void setOnPatternCompleteListener(PatternCompleteListener listener) {
         this.listener = listener;
     }
-
     private void init(Context context) {
         setBackgroundColor(Color.parseColor("#000000")); // fallback dark background
 
         // Convert 50dp to px
-        radius = dpToPx(context, 19); // ~48dp diameter
+        radius = dpToPx(context, 19);
         padding = (int) dpToPx(context, 32);
 
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -58,6 +59,19 @@ public class PatternViewRegister extends View {
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeCap(Paint.Cap.ROUND);
         linePaint.setStrokeJoin(Paint.Join.ROUND);
+
+        glowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        glowPaint.setColor(Color.parseColor("#66FF953E"));
+        selectedCirclePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        selectedCirclePaint.setColor(Color.parseColor("#FF953E"));
+        selectedCirclePaint.setStyle(Paint.Style.FILL);
+
+        selectedCirclePaint.setShadowLayer(
+                dpToPx(getContext(), 10),
+                0,
+                0,
+                Color.parseColor("#FF953E"));
+        setLayerType(LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override
@@ -65,12 +79,36 @@ public class PatternViewRegister extends View {
         if (dotCenters == null) calculateDotCenters();
 
         // Draw all the dots
-        for (float[] center : dotCenters) {
-            canvas.drawCircle(center[0], center[1], radius, circlePaint);
-        }
-
-        // Draw the connecting path
         canvas.drawPath(linePath, linePaint);
+
+        for (int i = 0; i < dotCenters.length; i++) {
+
+            float x = dotCenters[i][0];
+            float y = dotCenters[i][1];
+
+            if (pattern.contains(i)) {
+
+                canvas.drawCircle(
+                        x,
+                        y,
+                        radius * 1.8f,
+                        glowPaint);
+
+                canvas.drawCircle(
+                        x,
+                        y,
+                        radius,
+                        selectedCirclePaint);
+
+            } else {
+
+                canvas.drawCircle(
+                        x,
+                        y,
+                        radius,
+                        circlePaint);
+            }
+        }
     }
 
     private void calculateDotCenters() {
@@ -112,10 +150,29 @@ public class PatternViewRegister extends View {
                 postInvalidate();
                 return true;
 
+//            case MotionEvent.ACTION_MOVE:
+//                if (isDrawing) {
+//                    checkAndAddDot(touchX, touchY);
+//                    postInvalidate();
+//                }
+//                return true;
+
             case MotionEvent.ACTION_MOVE:
                 if (isDrawing) {
-                    checkAndAddDot(touchX, touchY);
-                    postInvalidate();
+
+                    int historySize = event.getHistorySize();
+
+                    for (int i = 0; i < historySize; i++) {
+                        checkAndAddDot(
+                                event.getHistoricalX(i),
+                                event.getHistoricalY(i));
+                    }
+
+                    checkAndAddDot(
+                            event.getX(),
+                            event.getY());
+
+                    invalidate();
                 }
                 return true;
 
@@ -160,7 +217,7 @@ public class PatternViewRegister extends View {
             float dx = dotCenters[i][0];
             float dy = dotCenters[i][1];
             float distance = (float) Math.hypot(dx - x, dy - y);
-            if (distance < radius && !pattern.contains(i)) {
+            if (distance < radius * 1.3f && !pattern.contains(i)) {
                 pattern.add(i);
                 if (pattern.size() == 1) {
                     linePath.moveTo(dx, dy);
