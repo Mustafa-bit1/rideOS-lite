@@ -27,7 +27,7 @@ public class settings extends AppCompatActivity {
 
     // Settings items
     private final String[] titles = {
-            "Battery", "rideCam", "Documents", "Support", "Information", "Diagnostic"
+            "Battery", "rideCam", "Documents", "Support", "Information"
     };
 
     private final int[] icons = {
@@ -36,7 +36,6 @@ public class settings extends AppCompatActivity {
             R.drawable.docicon,
             R.drawable.supporticon,
             R.drawable.informationicon,
-            R.drawable.diagnosticicon
     };
 
     private ListView settingsList;
@@ -104,9 +103,6 @@ public class settings extends AppCompatActivity {
                     fragment = informationFragment;
                     break;
 
-                case 5:
-                    fragment = diagnosticsFragment;
-                    break;
             }
 
             loadFragment(fragment);
@@ -152,5 +148,16 @@ public class settings extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+
+    public void openDiagnosticsFragment() {
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(
+                        R.id.settingsContentFrame,
+                        diagnosticsFragment
+                )
+                .commit();
     }
 }

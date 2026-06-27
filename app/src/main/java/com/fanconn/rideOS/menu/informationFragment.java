@@ -1,6 +1,8 @@
 package com.fanconn.rideOS.menu;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
@@ -10,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +30,8 @@ import com.fanconn.rideOS.TpmsScanService;
 public class informationFragment extends Fragment {
     Button refreshBtn;
     private Toast currentToast;
+    private int vinTapCount = 0;
+    private long lastTapTime = 0;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,6 +53,25 @@ public class informationFragment extends Fragment {
         TextView chargerID = view.findViewById(R.id.chargerID);
         // Set text from MetadataManager
         vinView.setText(MetadataManager.get().getVin());
+
+        vinView.setOnClickListener(v -> {
+
+            long now = System.currentTimeMillis();
+
+            if (now - lastTapTime > 2000) {
+                vinTapCount = 0;
+            }
+
+            lastTapTime = now;
+            vinTapCount++;
+
+            if (vinTapCount >= 3) {
+                vinTapCount = 0;
+                showDiagnosticPasswordDialog();
+            }
+        });
+
+
         ownerName.setText(MetadataManager.get().getOwner());
         nx100Model.setText(MetadataManager.get().getModel());
         controllerView.setText(MetadataManager.get().getControllerId());
@@ -162,6 +187,77 @@ public class informationFragment extends Fragment {
 //        Log.d("META_CHECK", "phone number = " + MetadataManager.get().getModel());
 
         return view;
+    }
+
+
+    private void showDiagnosticPasswordDialog() {
+
+        View view = LayoutInflater.from(requireContext())
+                .inflate(
+                        R.layout.dialog_diagnostic_password,
+                        null
+                );
+
+        AlertDialog dialog =
+                new AlertDialog.Builder(requireContext())
+                        .setView(view)
+                        .create();
+
+        dialog.getWindow()
+                .setBackgroundDrawable(
+                        new ColorDrawable(
+                                Color.TRANSPARENT
+                        )
+                );
+
+        EditText passwordInput =
+                view.findViewById(
+                        R.id.passwordInput
+                );
+
+        Button openBtn =
+                view.findViewById(
+                        R.id.connectBtn
+                );
+
+        openBtn.setOnClickListener(v -> {
+
+            String vin =
+                    MetadataManager.get()
+                            .getVin();
+
+            String expectedPassword = "";
+
+            if (vin != null &&
+                    vin.length() >= 4) {
+
+                expectedPassword =
+                        vin.substring(
+                                vin.length() - 4
+                        );
+            }
+
+            String entered =
+                    passwordInput
+                            .getText()
+                            .toString()
+                            .trim();
+
+            if (entered.equals(expectedPassword)) {
+
+                dialog.dismiss();
+
+                settings activity =
+                        (settings) requireActivity();
+
+                activity.openDiagnosticsFragment();
+
+            } else {
+                showCustomToast("Wrong password - Access Denied");
+            }
+        });
+
+        dialog.show();
     }
     private boolean isInternetAvailable() {
 
