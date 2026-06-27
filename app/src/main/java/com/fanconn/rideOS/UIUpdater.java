@@ -2489,7 +2489,7 @@ private int streamId = 0;
         currentComsForSpeed=(int)current;
         if(current <= 1){
             binding.RegenCurrentValue.setVisibility(View.INVISIBLE);
-            binding.CurrentConsumptionValue.setText(current + "A");
+           // binding.CurrentConsumptionValue.setText(current + "A");
             updateRegenAnimation(0);   // reset animation
             //setSpeedColor(false);
         } else {

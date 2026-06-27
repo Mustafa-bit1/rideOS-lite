@@ -639,7 +639,7 @@ public class TelemetryService extends Service {
                                     TelemetryDataManager.getInstance().getTeleODO() * 100.0
                             ) / 100.0;
                     sendVehicleData(context, odoRounded, TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
-                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+UptimeManager.getUptime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
+                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+UptimeManager.getUptime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+(TelemetryDataManager.getInstance().isGpsTelemetryEnabled() ? 1 : 0), TelemetryDataManager.getInstance().getTeleCurrentRider(),
                             TelemetryDataManager.getInstance().getTeleBmsLifeCycles(), TelemetryDataManager.getInstance().getTeleLatLong());
                     TelemetryDataManager.getInstance()
                             .setTeleEvPowerState(shdtelemetrywhenunlocked ? 1 : 0);

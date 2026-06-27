@@ -83,15 +83,38 @@ public class TelemetryDataManager {
     public void setTeleBmsLifeCycles(int teleBmsLifeCycles) {
         this.teleBmsLifeCycles = teleBmsLifeCycles;
     }
+//    public String getTeleLatLong() {
+//        return teleLatLong;
+//    }
+//
+//    public void setTeleLatLong(String teleLatLong) {
+//        this.teleLatLong = teleLatLong;
+//    }
 
-    public String getTeleLatLong() {
+    private volatile boolean gpsTelemetryEnabled = true;
+
+    public synchronized String getTeleLatLong() {
+
+        // GPS disabled -> always return 0,0
+        if (!gpsTelemetryEnabled) {
+            return "0.000000, 0.000000";
+        }
+
         return teleLatLong;
     }
 
-    public void setTeleLatLong(String teleLatLong) {
+    public synchronized void setTeleLatLong(String teleLatLong) {
         this.teleLatLong = teleLatLong;
     }
 
+    // NEW METHODS
+    public boolean isGpsTelemetryEnabled() {
+        return gpsTelemetryEnabled;
+    }
+
+    public void setGpsTelemetryEnabled(boolean enabled) {
+        this.gpsTelemetryEnabled = enabled;
+    }
     public int getTeleHandleLockState() {
         return teleHandleLockState;
     }

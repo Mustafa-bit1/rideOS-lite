@@ -38,7 +38,7 @@ public class QuickSettingsView extends FrameLayout {
     private AudioManager audioManager;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Button allSetbtn;
-    private Button wifiToggle, autoBrightnessToggle, blue_tpmsbtn,new_feature_btn;
+    private Button wifiToggle, autoBrightnessToggle, blue_tpmsbtn,GPS_btn;
     private TextView autoBrightnessText;
     private SeekBar brightnessSlider, volumeSlider;
     private ImageButton muteButton;
@@ -47,6 +47,9 @@ public class QuickSettingsView extends FrameLayout {
     private SharedPreferences prefs;
     private ContentObserver brightnessObserver;
     private TextView currentRiderTV;
+    private static final String PREF_GPS_TELEMETRY =
+            "pref_gps_telemetry";
+
     /* ================= WIFI RECEIVER ================= */
 
     private final BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
@@ -111,12 +114,6 @@ public class QuickSettingsView extends FrameLayout {
         updateTpmsButtonColor();
         registerObservers(context);
 
-        if(new_feature_btn!=null)
-            new_feature_btn.setBackgroundTintList(
-                ColorStateList.valueOf(Color.parseColor("#1C78BE"))
-        );
-
-
         post(() -> setTranslationY(-getHeight()));
     }
 
@@ -158,6 +155,34 @@ public class QuickSettingsView extends FrameLayout {
             brightnessManager.setAutoBrightnessEnabled(!auto);
             syncBrightnessUI();
             rebindBrightnessSlider();
+        });
+
+        //-------GPS--------
+
+        GPS_btn = findViewById(R.id.GPS_btn);
+        boolean gpsEnabled =
+                prefs.getBoolean(PREF_GPS_TELEMETRY, true);
+
+        TelemetryDataManager.getInstance()
+                .setGpsTelemetryEnabled(gpsEnabled);
+
+        syncGpsUI();
+        GPS_btn.setOnClickListener(v -> {
+
+            boolean enabled =
+                    TelemetryDataManager.getInstance()
+                            .isGpsTelemetryEnabled();
+
+            enabled = !enabled;
+
+            TelemetryDataManager.getInstance()
+                    .setGpsTelemetryEnabled(enabled);
+
+            prefs.edit()
+                    .putBoolean(PREF_GPS_TELEMETRY, enabled)
+                    .apply();
+
+            syncGpsUI();
         });
 
         /* ---------- VOLUME ---------- */
@@ -210,7 +235,6 @@ public class QuickSettingsView extends FrameLayout {
         /* ---------- TPMS ---------- */
 
         blue_tpmsbtn = findViewById(R.id.blue_tpmsbtn);
-        blue_tpmsbtn = findViewById(R.id.blue_tpmsbtn);
 
         blue_tpmsbtn.setOnClickListener(v -> {
 
@@ -237,28 +261,6 @@ public class QuickSettingsView extends FrameLayout {
             context.startActivity(
                     new Intent(context, TPMS_activity.class)
             );
-        });
-
-        new_feature_btn = findViewById(R.id.new_feature_btn);
-
-        new_feature_btn.setOnClickListener(v -> {
-
-            // Click animation
-            v.animate()
-                    .scaleX(0.92f)
-                    .scaleY(0.92f)
-                    .setDuration(70)
-                    .withEndAction(() -> v.animate()
-                            .scaleX(1f)
-                            .scaleY(1f)
-                            .setDuration(20))
-                    .start();
-
-            // MCU send
-            SerialPortManager spm = SerialPortManager.getInstance();
-            if (spm != null) {
-                spm.VCUSendToMCU("FFAA550102000A01");
-            }
         });
 
     }
@@ -354,6 +356,7 @@ public class QuickSettingsView extends FrameLayout {
     public void open() {
         MainActivity.isVisible = false;
         syncBrightnessUI();
+        syncGpsUI();
         syncVolumeUI();
         updateCurrentRiderUI();
         animate()
@@ -407,6 +410,26 @@ public class QuickSettingsView extends FrameLayout {
                     brightnessManager.getCurrentBrightness()
             );
         }
+    }
+
+    private void syncGpsUI() {
+
+        boolean enabled =
+                TelemetryDataManager.getInstance()
+                        .isGpsTelemetryEnabled();
+
+        int on = Color.parseColor("#1C78BE");
+        int off = Color.parseColor("#555555");
+
+        GPS_btn.setBackgroundTintList(
+                ColorStateList.valueOf(
+                        enabled ? on : off
+                )
+        );
+
+        GPS_btn.setText(
+                enabled ? "Ride Location ON" : "Ride Location OFF"
+        );
     }
 
     private void rebindBrightnessSlider() {
