@@ -107,6 +107,7 @@ public class DisplayFragment extends Fragment {
             brightnessValue.setText("Adjust overall screen brightness : " + percent + "%");
         }
     }
+
     private void showCustomToast(String message) {
         View layout = LayoutInflater.from(ctx).inflate(R.layout.toast_custom, null);
         ((ImageView) layout.findViewById(R.id.toast_icon)).setImageResource(R.drawable.toastlogo);

@@ -79,10 +79,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
     private static boolean isFrameReceiverRegistered = false;
     public static LoginActivity instance;
-    public  static SerialPortManager loginserialPortManager;  // 串口管理类
+    public static SerialPortManager loginserialPortManager;  // 串口管理类
     private ActivityLoginBinding binding;
     private String sPort = "/dev/ttyHS1";  // 串口地址
     private int iBaudRate = 115200;  // 波特率
@@ -119,10 +119,10 @@ public class LoginActivity extends AppCompatActivity{
     private Vibrator vibrator;
     GestureDetector gestureDetector;
     SerialPortManager serialPortManager;
-    public static boolean ChargingUiClosedByUserFlag= false;
+    public static boolean ChargingUiClosedByUserFlag = false;
     public static boolean isChargingUIActive = false;
-//    public static boolean shouldshowchargingicononmainonot = false;
-    public static boolean forceStandUIDUEToCharging=false;
+    //    public static boolean shouldshowchargingicononmainonot = false;
+    public static boolean forceStandUIDUEToCharging = false;
     public static Handler chargingFrameTimeoutHandler = new Handler(Looper.getMainLooper());
     public static Runnable chargingFrameTimeoutRunnable;
     private static long lastChargingUILaunchTime = 0;
@@ -157,56 +157,56 @@ public class LoginActivity extends AppCompatActivity{
         public void onReceive(Context context, Intent intent) {
 
             String frame = intent.getStringExtra("frame_data");
-            if(frame.startsWith("FFAA770303001518FF50E5"))
+            if (frame.startsWith("FFAA770303001518FF50E5"))
                 //Log.d("FRAME", "Received in4001NNNNNNNN " + getClass().getSimpleName() + ": " + frame);
                 //if(frame.startsWith("FFAA770303001518FF50E5"))Log.d("sdfgh","frameofCHARGING"+frame);
 
-            if (frame.length() > 15 && FrameUtils.verifyFrame(frame)){
+                if (frame.length() > 15 && FrameUtils.verifyFrame(frame)) {
 
-                if (frame == null || frame.length() < 38) return;
+                    if (frame == null || frame.length() < 38) return;
 
-                if (frame.startsWith("FFAA770303001510F807A8")) {
-                    // Log.d("sdfgh","frame"+frame);
-                    handleWakeFrame(context, frame);
-                }
-                if (frame.startsWith("FFAA770303001518904001")) {
-                    //Log.d("dsfgdfh", "SOC frame ; " + frame);
-                    handleLoginFrame();
-                }
-
-                if (frame.startsWith("FFAA770301")) {
-//                    Log.d("sdfgg","heartbeat packet 1-> "+frame);
-                    if(serialPortManager!=null) {
-                        serialPortManager.parseHeartbeat1(frame);
+                    if (frame.startsWith("FFAA770303001510F807A8")) {
+                        // Log.d("sdfgh","frame"+frame);
+                        handleWakeFrame(context, frame);
                     }
-                }
+                    if (frame.startsWith("FFAA770303001518904001")) {
+                        //Log.d("dsfgdfh", "SOC frame ; " + frame);
+                        handleLoginFrame();
+                    }
+
+                    if (frame.startsWith("FFAA770301")) {
+//                    Log.d("sdfgg","heartbeat packet 1-> "+frame);
+                        if (serialPortManager != null) {
+                            serialPortManager.parseHeartbeat1(frame);
+                        }
+                    }
 //                if (frame.startsWith("FFAA660107")) {
 //                    serialPortManager.parseLEDControlResponse(frame);//              18FF50E5
 //                }18FF50E5
-            }
+                }
             if (frame.length() >= 38 && frame.startsWith("FFAA770303001518FF50E5")) {
                 BatPackSwitcher.startSwitchingToNormalState();
                 // wakeScreenIfNeeded();
                 Heartbeat3 hb3 = serialPortManager.getHb3();
                 binding.loginchargingicon.setVisibility(View.VISIBLE);
 //                shouldshowchargingicononmainonot=true;
-                UIUpdater.shouldshowchargingicononmainonot=true;
-                forceStandUIDUEToCharging=true;
+                UIUpdater.shouldshowchargingicononmainonot = true;
+                forceStandUIDUEToCharging = true;
 //                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+frame);
-                String candata=FrameUtils.getByteSubstring(frame,11,18);
+                String candata = FrameUtils.getByteSubstring(frame, 11, 18);
                 CanDataParser.parseCanData18FF50E5(hb3, candata);
                 float chargingbit = hb3.getChargingbit();
-                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+chargingbit);
+                Log.d("sdfdgfh", "CHRAGINGBITINFEILDeeeeeeee___________" + chargingbit);
 
 //                    UIUpdater.telechargingstate=hb3.getChargingbit();
 //                    String byt = frame.substring(22, 24);
 //                    int chargingbit = Integer.parseInt(byt, 16);
 
-                if(chargingbit==0){
+                if (chargingbit == 0) {
                     binding.loginchargingicon.setVisibility(View.INVISIBLE);
                     TelemetryDataManager.getInstance().setTeleChargingState(2);
                 }
-                if(chargingbit>0) {
+                if (chargingbit > 0) {
 //                  Log.d("sdfdgfh","CHRAGINGBITINFEILD___________"+chargingbit);
                     binding.loginchargingicon.setVisibility(View.VISIBLE);
                     TelemetryDataManager.getInstance().setTeleChargingState(1);
@@ -216,9 +216,9 @@ public class LoginActivity extends AppCompatActivity{
 
                 long currentTime = System.currentTimeMillis();
                 boolean canLaunchUI = !isChargingUIActive && !ChargingUiClosedByUserFlag;
-                    Log.d("sdfdgfh","flague  "+isChargingUIActive);
-                Log.d("sdfdgfh","flague  "+ChargingUiClosedByUserFlag);
-                    Log.d("sdfdgfh","bugsofcharging flague "+(currentTime - lastChargingUILaunchTime));
+                Log.d("sdfdgfh", "flague  " + isChargingUIActive);
+                Log.d("sdfdgfh", "flague  " + ChargingUiClosedByUserFlag);
+                Log.d("sdfdgfh", "bugsofcharging flague " + (currentTime - lastChargingUILaunchTime));
 
                 if (canLaunchUI && (currentTime - lastChargingUILaunchTime > 1000)) {
                     isChargingUIActive = true;
@@ -239,7 +239,7 @@ public class LoginActivity extends AppCompatActivity{
                     isChargingUIActive = false;
 //                    ChargingUiClosedByUserFlag=false;
 //                    shouldshowchargingicononmainonot = false;
-                    UIUpdater.shouldshowchargingicononmainonot=false;
+                    UIUpdater.shouldshowchargingicononmainonot = false;
 
 
                     binding.loginchargingicon.setVisibility(View.INVISIBLE);
@@ -252,8 +252,7 @@ public class LoginActivity extends AppCompatActivity{
                 chargingFrameTimeoutHandler.postDelayed(chargingFrameTimeoutRunnable, 5000); // 1 second
 
 
-            }
-            else {
+            } else {
             }
         }
 
@@ -263,9 +262,9 @@ public class LoginActivity extends AppCompatActivity{
 
 //            int soc = FrameUtils.getByteSubstringAsInt(dataSegment, 6, 7) / 10;
 //            int socInt = (int) ahTrackerManager.getSOC();   // removes decimal part
-            float socInt=0;
-            if(serialPortManager.getHb3()!=null){
-                 socInt = serialPortManager.getHb3().getBatteryLevel();   // removes decimal part
+            float socInt = 0;
+            if (serialPortManager.getHb3() != null) {
+                socInt = serialPortManager.getHb3().getBatteryLevel();   // removes decimal part
             }
             if (socInt <= 100) {
                 binding.loginSoc.setText("Battery " + socInt + "%");
@@ -317,6 +316,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         }
     };
+
     public void showTempWarning(String msg) {
         runOnUiThread(() -> {
             tempWarningMessage.setText(msg);
@@ -327,6 +327,7 @@ public class LoginActivity extends AppCompatActivity{
     public void hideTempWarning() {
         runOnUiThread(() -> tempWarningMessage.setVisibility(View.GONE));
     }
+
     //================================================
     private static boolean seenNonWakeFrameSinceScreenOff = true;
 
@@ -351,9 +352,11 @@ public class LoginActivity extends AppCompatActivity{
     private boolean isRunning = false;
     private Runnable screenToggleRunnable;
     private boolean isScreenOn = true;
+
     public static LoginActivity getInstance() {
         return instance;
     }
+
     //private Button btnRegister;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -382,17 +385,17 @@ public class LoginActivity extends AppCompatActivity{
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
         tapSoundPlayer = MediaPlayer.create(this, R.raw.dottap33);
-        TelemetryService.shdtelemetrywhenunlocked=false;
+        TelemetryService.shdtelemetrywhenunlocked = false;
         instance = this;
 
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
-        InactivityManager.getInstance().startTimer(3,15000);
+        InactivityManager.getInstance().startTimer(3, 15000);
 
         etCredential = findViewById(R.id.etCredential);
         patternView = findViewById(R.id.patternView);
-       // btnRegister = findViewById(R.id.btnRegister);
+        // btnRegister = findViewById(R.id.btnRegister);
         tempWarningMessage = findViewById(R.id.tempWarningMessage);
         tvLoginLockTimer = findViewById(R.id.tvLoginLockTimer);
         SwitchCompat switchAuthMethod = findViewById(R.id.switchAuthMethod);
@@ -442,8 +445,14 @@ public class LoginActivity extends AppCompatActivity{
 
         // PIN entry listener
         etCredential.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
             @Override
             public void afterTextChanged(Editable s) {
                 if (actualPin.length() == 4) {
@@ -490,7 +499,6 @@ public class LoginActivity extends AppCompatActivity{
 
             patternView.clearPattern();
         });
-
 
 
         String lastMethod =
@@ -576,7 +584,7 @@ public class LoginActivity extends AppCompatActivity{
 //        rootView.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
 //
         setupToggleRunnable();
-        ahTrackerManager=AhTrackerManager.getInstance(this);
+        ahTrackerManager = AhTrackerManager.getInstance(this);
         boolean autoUnlock = getIntent().getBooleanExtra("AUTO_UNLOCK", false);
 
         if (autoUnlock) {
@@ -646,6 +654,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         };
     }
+
     private void onLoginDoubleTap() {
         try {
             Log.d("TAG", "Doubletappednow");
@@ -668,8 +677,7 @@ public class LoginActivity extends AppCompatActivity{
         }
     }
 
-    public void Onscreen()
-    {
+    public void Onscreen() {
 //        serialPortManager.VCUSendToMCU("");
     }
 
@@ -739,7 +747,7 @@ public class LoginActivity extends AppCompatActivity{
 
             // Iterate all saved pins and compare
             for (Map.Entry<String, ?> entry : encryptedPrefs.getAll().entrySet()) {
-                if (entry.getKey().endsWith("_pin") ) {
+                if (entry.getKey().endsWith("_pin")) {
                     String username = entry.getKey().replace("user_", "").replace("_pin", "");
                     String storedSalt = encryptedPrefs.getString("user_" + username + "_salt", "");
                     String storedHash = (String) entry.getValue();
@@ -777,6 +785,7 @@ public class LoginActivity extends AppCompatActivity{
             etCredential.setText("");
         }
     }
+
     int Level0_Line_Current = 15;
     int Level1_Line_Current = 25;
     int Level2_Line_Current = 50;
@@ -793,9 +802,10 @@ public class LoginActivity extends AppCompatActivity{
     private static final String regen80A = "4001";
 
 
-//    private double Speed_ratio_Value = 1.5536444;//// 10% high
+    //    private double Speed_ratio_Value = 1.5536444;//// 10% high
     //private double Speed_ratio_Value = 1.48331442;//// 5% high
     private final double Speed_ratio_Value = 1.412404;//// 0% high
+
     public void loginSuccess(String username) {
 
 
@@ -810,7 +820,7 @@ public class LoginActivity extends AppCompatActivity{
         }
         //Log.d("adfsd","WELCOMETOAST "+username);
         resetInvalidAttemptCounter();
-        if(serialPortManager!=null){
+        if (serialPortManager != null) {
             serialPortManager.VCUSendToMCU("FFAA550101000A01");
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550107000A01"), 100);
@@ -880,7 +890,7 @@ public class LoginActivity extends AppCompatActivity{
                 try {
                     maxSpeed = Integer.parseInt(maxSpeedStr);
                 } catch (NumberFormatException e) {
-                  //  Log.e("ParseError", "Invalid maxSpeed: " + maxSpeedStr);
+                    //  Log.e("ParseError", "Invalid maxSpeed: " + maxSpeedStr);
                 }
 
                 // Speed calculation
@@ -937,8 +947,7 @@ public class LoginActivity extends AppCompatActivity{
 //                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 2500);
 //                    new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 3000);
 
-                }
-                else{
+                } else {
                     //Log.d("asdfsgd","THE BATTERY IS "+serialPortManager.getHb3().getBatteryLevel()/10) ;
                 }
             }//END OF SAME USER
@@ -948,15 +957,27 @@ public class LoginActivity extends AppCompatActivity{
 
             int lineCurrent;
             switch (maxTorque) {
-                case "Level 2":   lineCurrent = Level1_Line_Current; break;
-                case "Level 3": lineCurrent = Level2_Line_Current; break;
-                case "Level 4":   lineCurrent = Level3_Line_Current; break;
-                case "Level 5": lineCurrent = Level4_Line_Current; break;
-                case "Level 1":   lineCurrent = Level0_Line_Current; break;
+                case "Level 2":
+                    lineCurrent = Level1_Line_Current;
+                    break;
+                case "Level 3":
+                    lineCurrent = Level2_Line_Current;
+                    break;
+                case "Level 4":
+                    lineCurrent = Level3_Line_Current;
+                    break;
+                case "Level 5":
+                    lineCurrent = Level4_Line_Current;
+                    break;
+                case "Level 1":
+                    lineCurrent = Level0_Line_Current;
+                    break;
 
-                default:       lineCurrent = Level4_Line_Current; break;
+                default:
+                    lineCurrent = Level4_Line_Current;
+                    break;
             }
-Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
+            Log.d("asdfsgd", "TORQUELEVEL IS " + lineCurrent);
             int torqueValue = lineCurrent * 4;
             String torqueHex = String.format("%04X", torqueValue);
             String torqueByte01 = torqueHex.substring(2, 4); // low byte
@@ -988,16 +1009,23 @@ Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
 //                            " max=" + RegenMaxValue);
             String pickupStr = userPrefs.getString("user_" + username + "_pickup", "2");
             int pickup = Integer.parseInt(pickupStr);
-           //Log.d("Trottle","Trottle response"+pickup+" braking "+braking);
+            //Log.d("Trottle","Trottle response"+pickup+" braking "+braking);
             String throttleResponseByte;
             switch (pickup) {
-                case 1:   throttleResponseByte = "02"; break;//eco
-                case 2:   throttleResponseByte = "00"; break;//Linear
-                case 3:   throttleResponseByte = "01"; break;//Sport
+                case 1:
+                    throttleResponseByte = "02";
+                    break;//eco
+                case 2:
+                    throttleResponseByte = "00";
+                    break;//Linear
+                case 3:
+                    throttleResponseByte = "01";
+                    break;//Sport
 
-                default:   throttleResponseByte = "00"; break;
+                default:
+                    throttleResponseByte = "00";
+                    break;
             }
-
 
 
             String finalThrottleResponseFrame = "FFAA550103001510F8A80704" + throttleResponseByte + HillAssist_and_TCS + "020E000000";
@@ -1012,37 +1040,33 @@ Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
 
             if (UIUpdater.apuflag) { // phase max , all normal
                 torqueFrame = "FFAA550103001510FBA8073C007800B0047800";//  line 15A, phase max,regen 30 -30 (7800)
-            }
-            else if (batteryLevel ==0) { // phase max , all normal
+            } else if (batteryLevel == 0) { // phase max , all normal
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue+"0000"+RegenMaxValue;//Phase 0 all normal,,regen 60(F000)-80(4001)
-               // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
-            }
-            else if (batteryLevel <= 5) { // phase 0 , all normal
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "0000" + RegenMaxValue;//Phase 0 all normal,,regen 60(F000)-80(4001)
+                // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
+            } else if (batteryLevel <= 5) { // phase 0 , all normal
                 //torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
-                torqueFrame = "FFAA550103001510FBA8072800"+RegenMinValue+"B004"+RegenMaxValue;//line current 10amps(2800),,regen 60(F000)-80(4001)
-               // Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
-            }
-            else if (batteryLevel <= 20) {
+                torqueFrame = "FFAA550103001510FBA8072800" + RegenMinValue + "B004" + RegenMaxValue;//line current 10amps(2800),,regen 60(F000)-80(4001)
+                // Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
+            } else if (batteryLevel <= 20) {
 //                torqueFrame = "FFAA550103001510FBA8073C00F000B0044001";//  line 15A, phase max, all normal
-                torqueFrame = "FFAA550103001510FBA8072800"+RegenMinValue+"B004"+RegenMaxValue;//  line 10A, phase max, all normal
+                torqueFrame = "FFAA550103001510FBA8072800" + RegenMinValue + "B004" + RegenMaxValue;//  line 10A, phase max, all normal
                 //  Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
             } else if (batteryLevel <= 95) { // phase max, all normal  A000(45A regen) - C800(50A),regen 60(F000)-80(4001)
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 +RegenMinValue+ "B004"+RegenMaxValue;
-              //  Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
-            } else if(batteryLevel<=100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue+"B004"+RegenMaxValue;
-              //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
-            }
-            else{//all max
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue+"B004"+RegenMaxValue;
-              //  Log.d("SEDINGSOCFRAMEAS","else "+torqueFrame);
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
+                //  Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
+            } else if (batteryLevel <= 100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
+                //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
+            } else {//all max
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
+                //  Log.d("SEDINGSOCFRAMEAS","else "+torqueFrame);
             }
 
             final String finalTorqueFrame = torqueFrame; // make it final for lambdas
             //Log.d("Trottle","Trottle REGEN "+finalTorqueFrame);
 
-           // Log.d("dacsdvsf","THISISCONTROLECOMS  "+finalTorqueFrame);
+            // Log.d("dacsdvsf","THISISCONTROLECOMS  "+finalTorqueFrame);
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU(finalTorqueFrame), 3500);
             new Handler(Looper.getMainLooper()).postDelayed(
@@ -1159,6 +1183,7 @@ Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
         toast.setView(layout);
         toast.show();
     }
+
     private void showCustomToasterror(String message) {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.custom_toast_errror, null);
@@ -1171,6 +1196,7 @@ Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
         toast.setView(layout);
         toast.show();
     }
+
     public void onKeypadButtonClick(View view) {
         if (isInputLocked) return;
         playTapSound();
@@ -1259,7 +1285,7 @@ Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
         if (instance == this) {
             instance = null;
         }
-        TelemetryService.shdtelemetrywhenunlocked=true;
+        TelemetryService.shdtelemetrywhenunlocked = true;
         LocalBroadcastManager.getInstance(this).unregisterReceiver(tempWarningReceiver);
 
 //        if(!UIUpdater.shouldshowchargingicononmainonot){
@@ -1295,31 +1321,32 @@ Log.d("asdfsgd","TORQUELEVEL IS "+lineCurrent);
     private Handler resumehandler = new Handler(Looper.getMainLooper());
     private Runnable resetChargingUIFlagRunnable;
     AhTrackerManager ahTrackerManager;
+
     @Override
     protected void onResume() {
         super.onResume();
         MainActivity.MainisActive = false;
         MainActivity.isVisible = true;
-Log.d("asdfd","RESUME OF LOGIN ");
+        Log.d("asdfd", "RESUME OF LOGIN ");
 
 //        TelemetryDataManager.getInstance().getTeleChargingState();
 
-        if(UIUpdater.getInstance()!=null){
+        if (UIUpdater.getInstance() != null) {
             UIUpdater.getInstance().ReadystopBeeping();
             UIUpdater.getInstance().stopReverseBeep();
             UIUpdater.getInstance().stopBlinking();
         }
 
-        float batteryLevel=serialPortManager.getHb3().getBatteryLevel();
+        float batteryLevel = serialPortManager.getHb3().getBatteryLevel();
 //        int batteryLevel=(int)ahTrackerManager.getSOC();
 
         String sBatteryLevel = String.valueOf(batteryLevel);
-        if(batteryLevel>=0 && batteryLevel<=100){
+        if (batteryLevel >= 0 && batteryLevel <= 100) {
             binding.loginSoc.setText("Battery " + batteryLevel + "%");
         }
-        UIUpdater.ignorefirstblink=true;
-        UIUpdater.islock=false;
-        TelemetryService.shdtelemetrywhenunlocked=false;
+        UIUpdater.ignorefirstblink = true;
+        UIUpdater.islock = false;
+        TelemetryService.shdtelemetrywhenunlocked = false;
 
 //        serialPortManager.getHb3().setLEDresponse(1);
 //        serialPortManager.getHb3().sethandleLockresponse(1);
@@ -1350,7 +1377,7 @@ Log.d("asdfd","RESUME OF LOGIN ");
 //        mHandlerTime.postDelayed(mRunnableTime, 0);
         // Re-assign the callback and restart the timer when coming back to LoginActivity
 
-        InactivityManager.getInstance().startTimer(3,15000);
+        InactivityManager.getInstance().startTimer(3, 15000);
         // Cancel any previous delayed task to avoid overlap
 
 
@@ -1369,8 +1396,26 @@ Log.d("asdfd","RESUME OF LOGIN ");
         chargingUIFlagRunnable = () -> {
             ChargingUiClosedByUserFlag = false;
             isChargingUIActive = false;
-           // Log.d("bugsofcharging", "bugsofcharging Charging UI flags reset after delay");
+            // Log.d("bugsofcharging", "bugsofcharging Charging UI flags reset after delay");
         };
+
+//        MainActivity.highSocPopupPending = false;
+//        MainActivity.highSocPopupShownThisLogin = false;
+        if (MainActivity.instance != null) {
+            MainActivity.instance.resetHighSocPopupState();
+        }
+
+//        if ( MainActivity.highSocDialog != null &&
+//                MainActivity.highSocDialog.isShowing()) {
+//            MainActivity.highSocDialog.dismiss();
+//            MainActivity. highSocDialog = null;
+//        }
+        if (MainActivity.instance != null) {
+            MainActivity.instance.dismissHighSocPopup();
+        }
+        if (MainActivity.instance != null) {
+            MainActivity.instance.invalidateUnlockSession();
+        }
 
         //this was bcz when user comes back from chargingUI on login then wait on login for 15 seconds then start again chargingUI
         chargingUIFlagHandler.postDelayed(chargingUIFlagRunnable, 7000);
@@ -1386,23 +1431,23 @@ Log.d("asdfd","RESUME OF LOGIN ");
 //        };
 //        delayedLockHandler.postDelayed(delayedLockRunnable, 5000);
     }
-    private  String canId;
 
-    private String getloginCanid()
-    {
+    private String canId;
+
+    private String getloginCanid() {
         return canId;
     }
-    public void loginsetcanid(String i)
-    {
-        this.canId=i;
+
+    public void loginsetcanid(String i) {
+        this.canId = i;
     }
-    private String getloginCandata()
-    {
+
+    private String getloginCandata() {
         return canId;
     }
-    public void loginsetcandata(String i)
-    {
-        this.canId=i;
+
+    public void loginsetcandata(String i) {
+        this.canId = i;
     }
 
     //------------------------------------------------------
@@ -1479,7 +1524,7 @@ Log.d("asdfd","RESUME OF LOGIN ");
             SharedPreferences sharedPreferences = EncryptedSharedPreferences.create(
                     "user_data",
                     MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
-                    LoginActivity.this ,
+                    LoginActivity.this,
                     EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
                     EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
             );
@@ -1499,8 +1544,7 @@ Log.d("asdfd","RESUME OF LOGIN ");
         return count;
     }
 
-    private void wakeScreenIfNeeded()
-    {
+    private void wakeScreenIfNeeded() {
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if (powerManager != null && !powerManager.isInteractive()) {
             PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
@@ -1616,6 +1660,7 @@ Log.d("asdfd","RESUME OF LOGIN ");
 
         loginLockHandler.post(countdownRunnable);
     }
+
     private void resetInvalidAttemptCounter() {
         invalidAttemptCount = 0;
         lastInvalidAttemptTime = 0L;

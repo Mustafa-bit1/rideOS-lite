@@ -26,6 +26,7 @@ public class BrightnessManager {
     private AudioManager audioManager;
     private boolean isMuted = false;
     private int lastVolumeBeforeMute = 0;
+
     public BrightnessManager(Context context) {
         this.context = context;
         this.prefs = context.getSharedPreferences("menu", Context.MODE_PRIVATE);
@@ -109,10 +110,12 @@ public class BrightnessManager {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar sb) {}
+            public void onStartTrackingTouch(SeekBar sb) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar sb) {}
+            public void onStopTrackingTouch(SeekBar sb) {
+            }
         });
     }
 
@@ -185,7 +188,8 @@ public class BrightnessManager {
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {

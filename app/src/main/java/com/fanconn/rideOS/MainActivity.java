@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.security.crypto.EncryptedSharedPreferences;
 import androidx.security.crypto.MasterKeys;
+
 import android.Manifest;
 
 import android.animation.Animator;
@@ -17,6 +18,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -54,14 +56,17 @@ import android.text.style.MetricAffectingSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -93,12 +98,14 @@ import com.fanconn.rideOS.network.ApiService;
 //import com.fanconn.rideOS.network.ScooterMqttManager;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;
+
 import tp.xmaihh.serialport.BuildConfig;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements FrameDataListener {
-    public  SerialPortManager serialPortManager;  // 串口管理类
+    public SerialPortManager serialPortManager;  // 串口管理类
     private ActivityMainBinding binding; // 自动生成的绑定类实例，用于访问布局文件中的视图组件
     private String sPort = "/dev/ttyHS1";  // 串口地址
     private int iBaudRate = 115200;  // 波特率
@@ -170,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         public void onReceive(Context context, Intent intent) {
             String frame = intent.getStringExtra("frame_data");
 //            if(frame.startsWith("FFAA77030300151890"))
-             //   Log.d("FRAME", "Received FRAME 6666666 " + frame);
+            //   Log.d("FRAME", "Received FRAME 6666666 " + frame);
             //Log.d("kdfsg","SERIAL FRAME : "+frame);
 //            if(frame.length()>22){
 //            if(frame.startsWith("FFAA77030300151806E5"))
@@ -188,10 +195,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private ApiService apiService;
     final private String VINNUMBER = MetadataManager.get().getVin();//"ME9NC1202F1172002";//ME9NC1202F1172001
     static EVWebSocketClient evClient;
-    ImageButton mapbtn,menubtn;//,lowtire_pressure_button;
+    ImageButton mapbtn, menubtn;//,lowtire_pressure_button;
     TripDistanceManager tripManager;
     GestureDetector gestureDetector;
-    private Handler delayedUnlockHandler  = new Handler(Looper.getMainLooper());
+    private Handler delayedUnlockHandler = new Handler(Looper.getMainLooper());
     private Runnable delayedUnlockRunnable;
     public static MainActivity instance;
     private boolean isStatusReceiverRegistered = false;
@@ -209,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private SpeedArcView speedArc;
     private View dot1, dot2;//, dot3, dot4;
     private View touchBlocker;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState); //
@@ -234,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         boolean isLoggedIn = prefs.getBoolean("is_logged_in", false);
         if (!isLoggedIn) {
             startActivity(new Intent(this, LoginActivity.class));
-           // setNeutralGear();
+            // setNeutralGear();
             LockHandle();
             finish();
             return;
@@ -267,8 +275,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         startService(new Intent(this, WatchdogService.class));//wacthdog service
 
 
-
-
         IntentFilter lockbtnpressedofsettingclass = new IntentFilter("com.ev.LOCK");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(lockReceiver, lockbtnpressedofsettingclass, Context.RECEIVER_NOT_EXPORTED);
@@ -298,8 +304,8 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         SpannableString s = new SpannableString("Apply brake & press F to start the ride");
 
         int b1 = s.toString().indexOf("brake");
-        s.setSpan(new StyleSpan(Typeface.BOLD), b1, b1+5, 0);
-        s.setSpan(new ForegroundColorSpan(Color.parseColor("#06FFD1")), b1, b1+5, 0);
+        s.setSpan(new StyleSpan(Typeface.BOLD), b1, b1 + 5, 0);
+        s.setSpan(new ForegroundColorSpan(Color.parseColor("#06FFD1")), b1, b1 + 5, 0);
         s.setSpan(new MetricAffectingSpan() {
             @Override
             public void updateDrawState(TextPaint tp) {
@@ -310,11 +316,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             public void updateMeasureState(TextPaint tp) {
                 tp.setFakeBoldText(true);
             }
-        }, b1, b1+5, 0);
+        }, b1, b1 + 5, 0);
 
         int f1 = s.toString().indexOf("F");
-        s.setSpan(new StyleSpan(Typeface.BOLD), f1, f1+1, 0);
-        s.setSpan(new ForegroundColorSpan(Color.parseColor("#06FFD1")), f1, f1+1, 0);
+        s.setSpan(new StyleSpan(Typeface.BOLD), f1, f1 + 1, 0);
+        s.setSpan(new ForegroundColorSpan(Color.parseColor("#06FFD1")), f1, f1 + 1, 0);
         s.setSpan(new MetricAffectingSpan() {
             @Override
             public void updateDrawState(TextPaint tp) {
@@ -325,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             public void updateMeasureState(TextPaint tp) {
                 tp.setFakeBoldText(true);
             }
-        }, f1, f1+1, 0);
+        }, f1, f1 + 1, 0);
 
         tv.setText(s);
         acquisitionTime();
@@ -358,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //       Feature Startups
         bmsHandler.post(bmsRunnable);
 
-        mapbtn  = findViewById(R.id.mapbtn);
+        mapbtn = findViewById(R.id.mapbtn);
         menubtn = findViewById(R.id.menubtn);
 //        lowtire_pressure_button= findViewById(R.id.low_tire_warning);
         mapbtn.setOnTouchListener((v, event) -> {
@@ -551,7 +557,6 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         speedArc = findViewById(R.id.speedArc);
 
 
-
         if (!MetadataManager.get().isMetadataSynced()) {
 
             startActivity(new Intent(this, MetadataActivity.class));
@@ -567,6 +572,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         }
         //startTestAnimation();
     }//END OF ONCREATE METHOD
+
     private void startTestAnimation() {
 
         ValueAnimator animator = ValueAnimator.ofFloat(0, 100);
@@ -577,11 +583,12 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         animator.addUpdateListener(animation -> {
             float value = (float) animation.getAnimatedValue();
-            speedArc.setSpeed(value,0);
+            speedArc.setSpeed(value, 0);
         });
 
         animator.start();
     }
+
     private void initRegenImages() {
         for (int i = 0; i <= 50; i++) {
             int resId = getResources().getIdentifier(
@@ -632,6 +639,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         VIN_On_CAN = hex.toString();
     }
+
     //private CommandHandler commandHandler;
     private void forceStopSelfAndLaunchOther() {
         String myPkg = getPackageName();
@@ -658,7 +666,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (lastLocation != null) {
-           // Log.d("GPS", "Last Known Location: " + lastLocation.getLatitude() + ", " + lastLocation.getLongitude());
+            // Log.d("GPS", "Last Known Location: " + lastLocation.getLatitude() + ", " + lastLocation.getLongitude());
         }
 
         // Fresh update
@@ -667,15 +675,23 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             public void onLocationChanged(Location location) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
-              //  Log.d("GPS", "Fresh Location: " + latitude + ", " + longitude);
+                //  Log.d("GPS", "Fresh Location: " + latitude + ", " + longitude);
 
                 // Stop updates after first fix
                 locationManager.removeUpdates(this);
             }
 
-            @Override public void onStatusChanged(String provider, int status, Bundle extras) {}
-            @Override public void onProviderEnabled(String provider) {}
-            @Override public void onProviderDisabled(String provider) {}
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+            }
         };
 
         // Request updates every 1 sec, 0 meters
@@ -785,6 +801,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
             uiUpdater.onDoubleTapAction(); // Delegate to UIUpdater
         }
     }
+
     private void showPasswordDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         builder.setTitle("Only Admin");
@@ -824,7 +841,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private void animateBatteryLevelOnce() {
 
         runOnUiThread(() -> {
-        //Log.d("dasfdsgf","ENTERoCNEANIMA");
+            //Log.d("dasfdsgf","ENTERoCNEANIMA");
             final Handler handler = new Handler(Looper.getMainLooper());
             final int[] level = {0};
             final boolean[] increasing = {true};
@@ -850,10 +867,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                         level[0] -= 10;
                         if (level[0] < 0) {
                             handler.postDelayed(() -> {
-                                ReloggedIn=true;
+                                ReloggedIn = true;
 //                                uiUpdater.updateBatteryAnimation((int)AhTrackerManager.getInstance(instance).getSOC());
-                                if(serialPortManager.getHb3()!=null){
-                                    uiUpdater.updateBatteryAnimation((int)serialPortManager.getHb3().getBatteryLevel() /10);
+                                if (serialPortManager.getHb3() != null) {
+                                    uiUpdater.updateBatteryAnimation((int) serialPortManager.getHb3().getBatteryLevel() / 10);
                                 }
                             }, 1000);
                             handler.postDelayed(() -> {
@@ -949,12 +966,13 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         boolean isUpdated = prefs.getBoolean(PREF_IS_UPDATED, false);
 
         if (!isUpdated) {
-           // Log.d(TAG, "App not updated, checking for updates...");
+            // Log.d(TAG, "App not updated, checking for updates...");
             startUpdateService();
         } else {
-           // Log.d(TAG, "App is already updated.");
+            // Log.d(TAG, "App is already updated.");
         }
     }
+
     private void startUpdateService() {
 
         String branch =
@@ -984,6 +1002,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         showingTrip = !showingTrip;
         updateDistanceDisplay();
     }
+
     private void updateDistanceDisplay() {
         if (uiUpdater == null || uiUpdater.tripManager == null) return;
 
@@ -994,10 +1013,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         String label = showingTrip ? "Trip" : "Odo.";
         tripTextView.setText(String.format("%s %.2f km", label, value));
 
-        if(serialPortManager!=null && extractBits(serialPortManager.getHb3().getBSG1_BYTE1(), 0, 1)==1){
+        if (serialPortManager != null && extractBits(serialPortManager.getHb3().getBSG1_BYTE1(), 0, 1) == 1) {
             tripResetBtn.setVisibility(showingTrip ? View.VISIBLE : View.GONE);
         }
     }
+
     public void refreshDistance() {
         runOnUiThread(this::updateDistanceDisplay);
     }
@@ -1016,6 +1036,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private TextView statsValueText;
     private TextView statsLabelText;
     private ImageView statsIcon;
+
     public void statsNavLeft(View view) {
         statsIndex--;
         if (statsIndex < 0) statsIndex = 1;
@@ -1029,6 +1050,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         updateStatsDisplay();
         updateStatsDots();
     }
+
     private void updateStatsDisplay() {
 
         if (uiUpdater == null || uiUpdater.tripManager == null) return;
@@ -1109,6 +1131,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         return formatter.format(amount);
     }
+
     private void updateStatsDots() {
 
         dot1.setBackgroundResource(R.drawable.dot_unselected);
@@ -1117,8 +1140,12 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 //        dot4.setBackgroundResource(R.drawable.dot_unselected);
 
         switch (statsIndex) {
-            case 0: dot1.setBackgroundResource(R.drawable.dot_selected); break;
-            case 1: dot2.setBackgroundResource(R.drawable.dot_selected); break;
+            case 0:
+                dot1.setBackgroundResource(R.drawable.dot_selected);
+                break;
+            case 1:
+                dot2.setBackgroundResource(R.drawable.dot_selected);
+                break;
 //            case 2: dot3.setBackgroundResource(R.drawable.dot_selected); break;
 //            case 3: dot4.setBackgroundResource(R.drawable.dot_selected); break;
         }
@@ -1128,10 +1155,11 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         runOnUiThread(this::updateStatsDisplay);
     }
 
-///reco logic
-public void recoNavLeft(View view) {
-    UIUpdater.getInstance().toggleRecoMode();
-}
+    /// reco logic
+    public void recoNavLeft(View view) {
+        UIUpdater.getInstance().toggleRecoMode();
+    }
+
     public void recoNavRight(View view) {
         UIUpdater.getInstance().toggleRecoMode();
     }
@@ -1202,8 +1230,8 @@ public void recoNavLeft(View view) {
         @Override
         protected void onPostExecute(Integer mcuOtaVer_new) {
             int mcuOtaVer_local = serialPortManager.mad.getMcuVersions();
-          //  Log.d("UIUpdater", "updateMacVersions mcuOtaVer_local: " + mcuOtaVer_local);
-         //   Log.d("UIUpdater", "updateMacVersions mcuOtaVer_new: " + mcuOtaVer_new);
+            //  Log.d("UIUpdater", "updateMacVersions mcuOtaVer_local: " + mcuOtaVer_local);
+            //   Log.d("UIUpdater", "updateMacVersions mcuOtaVer_new: " + mcuOtaVer_new);
             if (mcuOtaVer_new != -1) {
                 if (mcuOtaVer_new > mcuOtaVer_local) {
                     showUpdateDialog();
@@ -1253,7 +1281,7 @@ public void recoNavLeft(View view) {
                     Toast.makeText(MainActivity.this, R.string.tips_mcuota_file_unexist, Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException | InterruptedException e) {
-              //  Log.e("startFirmwareDownload", "Error downloading or sending firmware", e);
+                //  Log.e("startFirmwareDownload", "Error downloading or sending firmware", e);
                 Toast.makeText(MainActivity.this, R.string.tips_mcuota_Error_downloading_or_sending_firmware, Toast.LENGTH_SHORT).show();
             }
 
@@ -1302,7 +1330,7 @@ public void recoNavLeft(View view) {
 //    }
 
 
-//    private final Handler bmsHandler = new Handler(Looper.getMainLooper());
+    //    private final Handler bmsHandler = new Handler(Looper.getMainLooper());
 //    private int requestIndex = 0;
 //
 //    private final Runnable bmsRunnable = new Runnable() {
@@ -1351,6 +1379,7 @@ public void recoNavLeft(View view) {
             e.printStackTrace();
         }
     }
+
     public void setNeutralGear() {
 //        int data = 0;
 //        int seep_data = 0;
@@ -1466,6 +1495,7 @@ public void recoNavLeft(View view) {
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
     }
+
     private String getSimState(TelephonyManager telephonyManager, int slotIndex) {
         int simState = telephonyManager.getSimState(slotIndex);
         switch (simState) {
@@ -1487,6 +1517,7 @@ public void recoNavLeft(View view) {
                 return "SIM卡状态异常";
         }
     }
+
     private boolean getSimInfo(TelephonyManager telephonyManager) {
         isSIMCardExist = false;
         SubscriptionManager subscriptionManager = getSystemService(SubscriptionManager.class);
@@ -1509,10 +1540,11 @@ public void recoNavLeft(View view) {
         }
         return isSIMCardExist;
     }
-    public void Lockhandle()
-    {
-      //  Log.d("oikujhdagvb","Locking handle");serialPortManager.VCUSendToMCU("FFAA550101000A00");
+
+    public void Lockhandle() {
+        //  Log.d("oikujhdagvb","Locking handle");serialPortManager.VCUSendToMCU("FFAA550101000A00");
     }
+
     @Override
     public void onUserInteraction() {
         super.onUserInteraction();
@@ -1595,7 +1627,7 @@ public void recoNavLeft(View view) {
 //    private boolean isSequenceActive = false;
 //    public  static boolean universalflag=false;
 
-//    public void startUnlockSequence() {
+    //    public void startUnlockSequence() {
 //        LoginActivity.isSequenceActive = true;
 //        task111(); // start task1 directly
 //    }
@@ -1727,12 +1759,13 @@ public void recoNavLeft(View view) {
     public static boolean isVisible = false;
     public static boolean isrideOSOTA = false;
     public static boolean justLoggedIn = false;
+
     @Override
     protected void onResume() {
         super.onResume();
         acquisitionTime();
         LoginisActive = true;
-        UIUpdater.islock=true;
+        UIUpdater.islock = true;
         isVisible = true;
         MainActivity.isrideOSOTA = false;
         MainisActive = true;
@@ -1742,12 +1775,12 @@ public void recoNavLeft(View view) {
             binding.getRoot().post(() -> {
 
                 serialPortManager = serialApplication.getSerialPortManager();
-                if(serialPortManager!=null){
+                if (serialPortManager != null) {
                     serialPortManager.VCUSendToMCU("FFAA550101000A01");
 
                     new Handler().postDelayed(() -> {
                         serialPortManager.VCUSendToMCU("FFAA550107000A01");
-                        }, 300);
+                    }, 300);
                 }
                 BatteryArcView batteryView = binding.batteryArc;
                 batteryView.blockInitialDraw(true);
@@ -1767,18 +1800,17 @@ public void recoNavLeft(View view) {
 //            InactivityManager.getInstance().startTimer(1);
 //            //Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
 //        }
-        if (UIUpdater.directionalGears==0)
-        {
+        if (UIUpdater.directionalGears == 0) {
             InactivityManager.getInstance().startTimer(1);
         }
-     //   Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
+        //   Log.d("sadfg","INRESUMEOFMAINSTARTINGTIMERWITH1");
 //         If you need to restart anything like timers here, do so
 //         mHandlerTime.postDelayed(mRunnableTime, 0);
 
 
         // If deferred update exists, show it
 //        if (UpdateService.pendingUpdateApkUrl != null) {
-            //Log.d("MainActivity", "Showing deferred OTA update dialog...");
+        //Log.d("MainActivity", "Showing deferred OTA update dialog...");
         String branch =
                 OtaBranchManager.getBranch(this);
 
@@ -1847,7 +1879,7 @@ public void recoNavLeft(View view) {
 
         if (delayedUnlockRunnable != null) {
             delayedUnlockHandler.removeCallbacks(delayedUnlockRunnable);
-           // Log.d("MainActivity", "Delayed unlock cancelled");
+            // Log.d("MainActivity", "Delayed unlock cancelled");
         }
 //        if (isReceiverRegistered) {
 //            LocalBroadcastManager.getInstance(this).unregisterReceiver(frameReceiver);
@@ -1875,7 +1907,12 @@ public void recoNavLeft(View view) {
         if (UIUpdater.getInstance() != null) {
             UIUpdater.getInstance().cleanup(this);
         }
+        unlockSessionId++;
 
+        if (highSocDialog != null) {
+            highSocDialog.dismiss();
+            highSocDialog = null;
+        }
         // Reset SerialPortManager
         //SerialPortManager.reset();
         //serialPortManager.closeSerialPort();
@@ -1885,19 +1922,20 @@ public void recoNavLeft(View view) {
 
         if (delayedUnlockRunnable != null) {
             delayedUnlockHandler.removeCallbacks(delayedUnlockRunnable);
-           // Log.d("MainActivity", "Delayed unlock cancelled");
+            // Log.d("MainActivity", "Delayed unlock cancelled");
         }
         // Release other resources if necessary
         // cameraHandler.stop();
         // cameraHandler.releaseCamera();
         // if (musicPlayer != null) musicPlayer.onDestroy();
     }
-    public void resetMosfets()
-    {
+
+    public void resetMosfets() {
         serialPortManager.VCUSendToMCU("FFAA5501030015162A01800101020304050607");//Main BatPack Charging ON
         serialPortManager.VCUSendToMCU("FFAA5501030015162C01800101020304050607");//Main BatPack DisCharging ON
         serialPortManager.VCUSendToMCU("FFAA5501030015162C01800001020304050607");//Main APU DisCharging OFF
     }
+
     public void updateStatusText(String message) {
         if (binding.textstatus != null) {
             binding.textstatus.setText(message);
@@ -1924,7 +1962,7 @@ public void recoNavLeft(View view) {
 //        }, 1000); // 1000ms = 1 second
 //        uiUpdater.onTripReset();
 
-        //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+    //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
 //            long minRequired = 50 * 1024 * 1024; // 50 MB minimum free space
 //            if (isSdCardHasSpace(minRequired)) {
 //                Log.d("MainActivity", "Starting CameraService recording...");
@@ -1944,7 +1982,7 @@ public void recoNavLeft(View view) {
 //            startService(i);
 //        }, 8000); // 8 seconds
 
-//        delayedUnlockRunnable = () -> {
+    //        delayedUnlockRunnable = () -> {
 //            Heartbeat1 hb1 = serialPortManager.getHb1();
 //            if ((hb1.getDragonLock() == 0 || hb1.getLED() == 0)&& LoginisActive) {
 //                Log.d("MainActivity", "&&&&&&&&&&&&&&&&&&&&&&&Unlocking again after delay...");
@@ -1955,61 +1993,82 @@ public void recoNavLeft(View view) {
 //        };
 //        delayedUnlockHandler.postDelayed(delayedUnlockRunnable, 8000);
 //    }
-public void runPostLoginInit() {
-    //  ALWAYS run UI work on UI thread
-    runOnUiThread(() -> {
+    public void resetHighSocPopupState() {
+        highSocPopupShownThisLogin = false;
+        highSocPopupPending = false;
+    }
 
-        uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
+    public void invalidateUnlockSession() {
+        unlockSessionId++;
+    }
 
-        currentgear = 'O';
-        //  Start unlock (no change)
-        EVLockService.getInstance().startUnlockSequence();
-        refreshStats();
-        //  Slight delay for UI stability (IMPORTANT)
-        binding.getRoot().post(() -> {
+    private boolean highSocPopupShownThisLogin = false;
+    private boolean highSocPopupPending = false;
+    private Dialog highSocDialog;
+    //================
+    private int unlockSessionId = 0;
 
-            //  Reset battery instantly
+    public void runPostLoginInit() {
+        //  ALWAYS run UI work on UI thread
+        highSocPopupShownThisLogin = false;
+        highSocPopupPending = true;
+        unlockSessionId++;
 
-            //  Start intro AFTER UI is ready (smooth now)
-            binding.batteryArc.setBatteryLevel(0);
-            binding.batteryArc.setIntroMode(true);
-            runBatteryIntroAnimation();
+        runOnUiThread(() -> {
+
+            uiUpdater.lastCanUpdateTime = System.currentTimeMillis();
+
+            currentgear = 'O';
+            //  Start unlock (no change)
+            EVLockService.getInstance().startUnlockSequence();
+            refreshStats();
+            //  Slight delay for UI stability (IMPORTANT)
+            binding.getRoot().post(() -> {
+
+                //  Reset battery instantly
+
+                //  Start intro AFTER UI is ready (smooth now)
+                binding.batteryArc.setBatteryLevel(0);
+                binding.batteryArc.setIntroMode(true);
+                runBatteryIntroAnimation();
 
 //            binding.speedArc.setSpeed(0);
 //            binding.speedArc.setIntroMode(true);
 //            runSpeedIntroAnimation();
+            });
+
+            // TPMS sound (unchanged)
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                if (uiUpdater != null && uiUpdater.Play_tpmsSound_on_loggin) {
+                    uiUpdater.playLowTireSound();
+                }
+            }, 2100);
+
+            //Trip reset (unchanged)
+            uiUpdater.onTripReset();
+
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+
+                MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.unlocked);
+                if (mp != null) {
+                    mp.setOnCompletionListener(MediaPlayer::release);
+                    mp.start();
+                }
+
+            }, 300);
         });
+    }
 
-        // TPMS sound (unchanged)
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            if (uiUpdater != null && uiUpdater.Play_tpmsSound_on_loggin) {
-                uiUpdater.playLowTireSound();
-            }
-        }, 2100);
-
-        //Trip reset (unchanged)
-        uiUpdater.onTripReset();
-
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-
-            MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.unlocked);
-            if (mp != null) {
-                mp.setOnCompletionListener(MediaPlayer::release);
-                mp.start();
-            }
-
-        }, 300);
-    });
-}
     public void startSpeedIntroFromUpdater() {
         runOnUiThread(() -> {
-            binding.speedArc.setSpeed(0,0);
+            binding.speedArc.setSpeed(0, 0);
             binding.speedArc.setIntroMode(true);
             runSpeedIntroAnimation();
         });
     }
-    private void runBatteryIntroAnimation() {
 
+    private void runBatteryIntroAnimation() {
+        final int sessionId = unlockSessionId;
         runOnUiThread(() -> {   // FIX HERE
 
             UIUpdater.getInstance().setBatteryIntroRunning(true);
@@ -2045,11 +2104,16 @@ public void runPostLoginInit() {
 
                     batteryView.postDelayed(() -> {
 
+                        if (sessionId != unlockSessionId) {
+                            return;
+                        }
+
+
                         float lastBattery = UIUpdater.getInstance().getLastKnownBattery();
 
                         batteryView.setIntroMode(false);
                         batteryView.setBatteryLevel(lastBattery);
-
+                        checkHighSocBrakingPopup(); //After completed of battery animation show eBraking aleret if soc is > 95%
                         UIUpdater.getInstance().setBatteryIntroRunning(false);
 
                     }, 300);
@@ -2058,6 +2122,7 @@ public void runPostLoginInit() {
             up.start();
         });
     }
+
     private void runSpeedIntroAnimation() {
 
         runOnUiThread(() -> {
@@ -2072,11 +2137,11 @@ public void runPostLoginInit() {
             down.setDuration(930);
 
             up.addUpdateListener(a ->
-                    speedView.setSpeed((float) a.getAnimatedValue(),0)
+                    speedView.setSpeed((float) a.getAnimatedValue(), 0)
             );
 
             down.addUpdateListener(a ->
-                    speedView.setSpeed((float) a.getAnimatedValue(),0)
+                    speedView.setSpeed((float) a.getAnimatedValue(), 0)
             );
 
             up.addListener(new AnimatorListenerAdapter() {
@@ -2095,7 +2160,7 @@ public void runPostLoginInit() {
                         speedView.setIntroMode(false); //  BACK TO NORMAL
 
                         // optionally reset to 0
-                        speedView.setSpeed(0,0);
+                        speedView.setSpeed(0, 0);
 
                     }, 500);
                 }
@@ -2104,6 +2169,136 @@ public void runPostLoginInit() {
             up.start();
         });
     }
+
+    private void checkHighSocBrakingPopup() {
+
+        if (!highSocPopupPending) {
+            return;
+        }
+
+        if (highSocPopupShownThisLogin) {
+            return;
+        }
+
+        if (isFinishing() || isDestroyed()) {
+            return;
+        }
+
+        if (serialPortManager == null ||
+                serialPortManager.getHb3() == null) {
+            return;
+        }
+
+        float soc =
+                serialPortManager
+                        .getHb3()
+                        .getBatteryLevel();
+
+        if (soc > 95) {
+
+            highSocPopupPending = false;
+            highSocPopupShownThisLogin = true;
+
+            showHighSocBrakingPopup();
+        }
+    }
+
+    private void showHighSocBrakingPopup() {
+
+        LayoutInflater inflater =
+                LayoutInflater.from(this);
+
+        View dialogView =
+                inflater.inflate(
+                        R.layout.popupdialog,
+                        null
+                );
+
+        highSocDialog = new Dialog(this);
+
+        Dialog dialog = highSocDialog;
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        Window window = dialog.getWindow();
+
+        if (window != null) {
+
+            window.setBackgroundDrawableResource(
+                    android.R.color.transparent
+            );
+
+            WindowManager.LayoutParams params =
+                    window.getAttributes();
+
+            params.width =
+                    WindowManager.LayoutParams.WRAP_CONTENT;
+
+            params.height =
+                    WindowManager.LayoutParams.WRAP_CONTENT;
+
+            params.gravity = Gravity.CENTER;
+
+            window.setAttributes(params);
+        }
+
+        TextView title =
+                dialogView.findViewById(
+                        R.id.dialogTitle
+                );
+
+        TextView message =
+                dialogView.findViewById(
+                        R.id.dialogMessage
+                );
+
+        title.setText("eBraking warning");
+
+        message.setText(
+                "100% Charge Detected, eBraking unavailable untill 95%, ride with caution"
+        );
+
+        Button yes =
+                dialogView.findViewById(
+                        R.id.btnYes
+                );
+
+        Button no =
+                dialogView.findViewById(
+                        R.id.btnNo
+                );
+
+        no.setVisibility(View.GONE);
+
+        yes.setText("Got it");
+
+        yes.setBackgroundTintList(null);
+        yes.setBackgroundResource(R.drawable.bg_btn_rounded);
+        yes.setOnClickListener(v -> {
+
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            if (dialog == highSocDialog) {
+                highSocDialog = null;
+            }
+        });
+
+        if (!isFinishing() && !isDestroyed()) {
+            dialog.show();
+        }
+    }
+
+    public void dismissHighSocPopup() {
+        if (highSocDialog != null &&
+                highSocDialog.isShowing()) {
+
+            highSocDialog.dismiss();
+            highSocDialog = null;
+        }
+    }
+
     @Override
     public void onBackPressed() {
         // Do nothing
@@ -2202,6 +2397,7 @@ public void runPostLoginInit() {
             bmsHandler.postDelayed(this, 700); // 650ms interval
         }
     };
+
     public void pauseBmsUart() {
         pauseBmsUart = true;
     }
@@ -2223,6 +2419,7 @@ public void runPostLoginInit() {
                 10000
         );
     }
+
     private boolean isDraggingQS = false;
     private float qsStartY = 0f;
     private float lastY = 0f;
@@ -2351,6 +2548,7 @@ public void runPostLoginInit() {
             }
         }
     }
+
     public void closeQuickSettingsIfOpen() {
 
         if (qsView == null) return;
@@ -2366,6 +2564,7 @@ public void runPostLoginInit() {
             dragDistance = 0f;
         }
     }
+
     private float dragDistance = 0f;   // add this as class variable
 
     private void finishQuickSettings(float velocityY) {
@@ -2459,11 +2658,13 @@ public void runPostLoginInit() {
             velocityTracker = null;
         }
     }
+
     public static int extractBits(int value, int startBit, int endBit) {
         int mask = ((1 << (endBit - startBit + 1)) - 1) << startBit;
         int extractedBits = (value & mask) >> startBit;
         return extractedBits;
     }
+
     public void showRecoInfo() {
         FrameLayout overlay = findViewById(R.id.overlayContainer);
         overlay.setVisibility(View.VISIBLE);
@@ -2485,6 +2686,7 @@ public void runPostLoginInit() {
             }
         });
     }
+
     private static final String PREFS_OTA = "ota_prefs";
     private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
 
@@ -2510,13 +2712,13 @@ public void runPostLoginInit() {
         if (liveVersion > 0) {
             // ✅ MCU responded correctly → store it
             saveLastMcuVersion(liveVersion);
-           // Log.d("OTA", "Using LIVE MCU version: " + liveVersion);
+            // Log.d("OTA", "Using LIVE MCU version: " + liveVersion);
             return liveVersion;
         }
 
         // ⚠️ MCU failed → fallback
         int storedVersion = getLastSavedMcuVersion();
-       // Log.w("OTA", "MCU version invalid, fallback to stored: " + storedVersion);
+        // Log.w("OTA", "MCU version invalid, fallback to stored: " + storedVersion);
         return storedVersion;
     }
 
@@ -2555,10 +2757,12 @@ public void runPostLoginInit() {
         } finally {
             try {
                 if (reader != null) reader.close();
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
             if (connection != null) connection.disconnect();
         }
     }
+
     private void showCustomToast(String message) {
         LayoutInflater inflater = getLayoutInflater();
         View layout = inflater.inflate(R.layout.toast_custom, null);

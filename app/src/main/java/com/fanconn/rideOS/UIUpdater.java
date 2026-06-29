@@ -2221,7 +2221,6 @@ private int streamId = 0;
         double odoKm = tripManager.getOdoDistance();
         tm.setTeleTrip((float) roundTo2Decimal(tripKm));
         tm.setTeleODO((float) roundTo2Decimal(odoKm));
-        Log.d("sadfdgf","ODOOO"+(float) roundTo2Decimal(odoKm));
 
         if (activity != null) {
             activity.refreshDistance();

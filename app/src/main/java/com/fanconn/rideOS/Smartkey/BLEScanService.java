@@ -279,7 +279,7 @@ public class BLEScanService extends Service {
                 if (!isScanning) {
                     scanner.startScan(null, buildScanSettings(), scanCallback);
                     isScanning = true;
-                    Log.d(TAG, " BLE scan started");
+                    //Log.d(TAG, " BLE scan started");
                 }
             } catch (IllegalStateException e) {
                   Log.w(TAG, " startScan failed (BT state change)");
@@ -428,7 +428,7 @@ public class BLEScanService extends Service {
             if (adapter != null && adapter.isEnabled() && scanner != null && isScanning) {
                 scanner.stopScan(scanCallback);
                 isScanning = false;
-                Log.d(TAG, " BLE scan stopped");
+                //Log.d(TAG, " BLE scan stopped");
             }
         } catch (IllegalStateException e) {
             Log.w(TAG, " stopScan ignored (Bluetooth OFF)");
@@ -439,7 +439,7 @@ public class BLEScanService extends Service {
         SharedPreferences prefs = getSharedPreferences("ble_settings", MODE_PRIVATE);
         rssiUnlockThreshold = prefs.getInt("rssi_unlock_threshold", -65);
 
-        Log.d(TAG, "Loaded RSSI unlock threshold = " + rssiUnlockThreshold);
+        //Log.d(TAG, "Loaded RSSI unlock threshold = " + rssiUnlockThreshold);
     }
     @Nullable
     @Override

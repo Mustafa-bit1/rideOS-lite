@@ -176,7 +176,7 @@ public class DiagnosticsFragment extends Fragment {
     private void initListeners(View view) {
         WifiManager wifiManager = (WifiManager) requireContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
-        view.findViewById(R.id.mcuotaupdatebtn).setOnClickListener(v -> MCUOTA_Onclick(v));
+//        view.findViewById(R.id.mcuotaupdatebtn).setOnClickListener(v -> MCUOTA_Onclick(v));
 
             bootbutton.setOnClickListener(v -> serialPortManager.VCUSendToMCU("FFAA550102000A01"));
 
@@ -367,18 +367,18 @@ public class DiagnosticsFragment extends Fragment {
 //            );
 //        });
 
-        lockScreen.setOnClickListener(v -> {
-            // Start lock
-            EVLockService.getInstance().startLockSequence();
-
-            // Pop this fragment (remove from backstack if needed)
-            requireActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-            // Start LoginActivity
-            Intent intent = new Intent(requireContext(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            requireContext().startActivity(intent);
-        });
+//        lockScreen.setOnClickListener(v -> {
+//            // Start lock
+//            EVLockService.getInstance().startLockSequence();
+//
+//            // Pop this fragment (remove from backstack if needed)
+//            requireActivity().getSupportFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//
+//            // Start LoginActivity
+//            Intent intent = new Intent(requireContext(), LoginActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//            requireContext().startActivity(intent);
+//        });
 
 
         ToAPU.setOnClickListener(v -> new batteryPackSwitcher().startSwitchingToAPU());

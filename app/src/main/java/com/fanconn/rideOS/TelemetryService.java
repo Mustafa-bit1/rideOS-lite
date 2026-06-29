@@ -644,18 +644,18 @@ public class TelemetryService extends Service {
                     TelemetryDataManager.getInstance()
                             .setTeleEvPowerState(shdtelemetrywhenunlocked ? 1 : 0);
 
-                    sendRealTimeData(vin);
 //                    RideOSTelemetrySender.send(vin);
                     RideOSTelemetrySender.send(vin, rideOsVersion);
 
-//                    if (shdtelemetrywhenunlocked) {
-//                        sendRealTimeData(vin);
-//                        sendRealtimeDataOnceEvenAfterLocking = 0;
-//                    } else if (sendRealtimeDataOnceEvenAfterLocking == 0) {
-//                        sendRealTimeData(vin);
-//                        sendRealtimeDataOnceEvenAfterLocking++;
-//                    }
 
+                    //sendRealTimeData(vin);
+                    if (shdtelemetrywhenunlocked) {
+                        sendRealTimeData(vin);
+                        sendRealtimeDataOnceEvenAfterLocking = 0;
+                    } else if (sendRealtimeDataOnceEvenAfterLocking == 0) {
+                        sendRealTimeData(vin);
+                        sendRealtimeDataOnceEvenAfterLocking++;
+                    }
                     telemetryHandler.postDelayed(this, 1000);
                 }
             }
@@ -751,7 +751,7 @@ public class TelemetryService extends Service {
                         lat_long,
                         time
                 );
-        Log.d("TelemetryService", "Sending telemetry: " + TelemetryDataManager.getInstance().getTeleLatLong());
+        //Log.d("TelemetryService", "Sending telemetry: " + TelemetryDataManager.getInstance().getTeleLatLong());
 
         if (anyChanged) {
             prefs.edit()
