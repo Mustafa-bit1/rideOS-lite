@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.fanconn.rideOS.menu.SecurePrefs;
 import com.fanconn.rideOS.network.ScooterMqttClient;
+import com.fanconn.rideOS.receiver.NightlyRebootScheduler;
 
 public class MyApp extends Application {
 
@@ -21,6 +22,9 @@ public class MyApp extends Application {
 
         MetadataManager.init(this);
         appStartTime = System.currentTimeMillis();
+
+        NightlyRebootScheduler.scheduleNext(this);
+
         UptimeManager.start();
         InactivityManager.getInstance().init(this);
         SecurePrefs.init(this);

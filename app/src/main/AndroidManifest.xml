@@ -155,6 +155,10 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".receiver.NightlyRebootReceiver"
+            android:exported="false"/>
         <service
             android:name=".UpdateService"
             android:enabled="true"

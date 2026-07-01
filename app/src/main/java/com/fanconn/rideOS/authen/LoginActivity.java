@@ -372,7 +372,10 @@ public class LoginActivity extends AppCompatActivity {
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 tempWarningReceiver, new IntentFilter("TEMP_WARNING_EVENT"));
-        SoundPlayer.playOnce(this, R.raw.locksound2);  // `this` is Activity context
+
+        if(UIUpdater.getInstance() != null){ //Dont play lock sound on first launch of rideOS
+            SoundPlayer.playOnce(this, R.raw.locksound2);  // `this` is Activity context
+        }
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -1037,10 +1040,18 @@ public class LoginActivity extends AppCompatActivity {
             String torqueFrame;
             float batteryLevel = serialPortManager.getHb3().getBatteryLevel();
 //            float batteryLevel = ahTrackerManager.getSOC();
+            boolean socReady = UIUpdater.getInstance() != null && UIUpdater.getInstance().hasReceivedValidSoc();
 
             if (UIUpdater.apuflag) { // phase max , all normal
                 torqueFrame = "FFAA550103001510FBA8073C007800B0047800";//  line 15A, phase max,regen 30 -30 (7800)
-            } else if (batteryLevel == 0) { // phase max , all normal
+            }
+            else if (!socReady) {
+                // First unlock after boot.
+                // SOC frame not received yet.
+                //all max
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
+            }
+            else if (batteryLevel == 0) { // phase current set as 0 AMPS , all normal
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "0000" + RegenMaxValue;//Phase 0 all normal,,regen 60(F000)-80(4001)
                 // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);

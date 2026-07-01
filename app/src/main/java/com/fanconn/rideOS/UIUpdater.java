@@ -471,9 +471,19 @@ public class UIUpdater  {
     private float lastKnownBattery = 0;
     private boolean isBatteryIntroRunning = false;
     private boolean canDataInitialized = false;
+    private boolean hasReceivedValidSoc = false;
+
+    public boolean hasReceivedValidSoc() {
+        return hasReceivedValidSoc;
+    }
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
         float batteryLevel= hb3.getBatteryLevel();
+
+        if(hb3.getbatvoltage()/10>0){//This says we have recieved a valid CAN data from BMS (voltage and OSC somes in same CAN frame that is reason using voltage > 0)
+            hasReceivedValidSoc = true;
+        }
+
        /// Log.d("asf","SOCOFTODAY IS "+batteryLevel);
 //        int batteryLevel = get10LessSOC(batteryLevel1);//BMS SOC BUT 10 LESS
 
@@ -514,14 +524,17 @@ public class UIUpdater  {
             tm.setTeleSOC(batteryLevel);
             tm.setBMSTeleSOC(hb3.getNoLess10BMSBatteryLevel() /10);
             tm.setTeleRange(range);
-            binding.batteryTV.setText(
-                    String.format(
-                            Locale.US,
-                            "Battery %.1f%%   |  ~ %.1f km",
-                            batteryLevel,
-                            range
-                    )
-            );        }
+            if(hasReceivedValidSoc){ // say "Calculating charge" untill valid SOC|voltage is recieved
+                binding.batteryTV.setText(
+                        String.format(
+                                Locale.US,
+                                "Battery %.1f%%   |  ~ %.1f km",
+                                batteryLevel,
+                                range
+                        )
+                );
+            }
+        }
 
         if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18 ||  batteryLevel==17)  && tm.getTeleChargingState()==0) {
 

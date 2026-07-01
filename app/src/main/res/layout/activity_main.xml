@@ -1260,7 +1260,7 @@
             android:shadowDx="5"
             android:shadowDy="3"
             android:shadowRadius="5"
-            android:text="Calculating your Charge..."
+            android:text="Calculating your charge..."
             android:textAlignment="center"
             android:textColor="#FFFFFFFF"
             android:textSize="20dp"
