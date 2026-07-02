@@ -2193,11 +2193,9 @@ private int streamId = 0;
 //                                })
 //                                .setCancelable(false)
 //                                .show();
-                                Log.d("saghfkjaf","THIS IS CONTOL OFF ON NOTLOCK");
 
                     }
                 } else if ((now - lastCanUpdateTime) > CAN_TIMEOUT_MS && !canPopupShown) {
-                    Log.d("saghfkjaf","THIS IS CONTOL OFF ON LOCK");
                     canPopupShown = true;
                     MainActivity.currentgear='O';
                 }

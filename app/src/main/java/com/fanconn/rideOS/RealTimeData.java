@@ -31,4 +31,26 @@ public class RealTimeData {
     public String lat_long;
     public String time;
     public String data;
+
+    public String bmsmos;
+    public String chargingstatus;
+    public String singleminmaxvoltage;
+    public Double apuvoltage;
+    public String uptime;
+    public String gear;
+    public Double range;
+    public Double bmssoc;
+    public Double bmsremainingcap;
+    public Double vcutemp;
+    public String recoengine;
+    public Double maxtotalvoltage;
+    public Double allowablechargingcurrent;
+    public String cell1to3;
+    public String cell4to6;
+    public String cell7to9;
+    public String cell10to12;
+    public String cell13to15;
+    public String cell16to18;
+    public String cell19to21;
+    public String cell22to23;
 }

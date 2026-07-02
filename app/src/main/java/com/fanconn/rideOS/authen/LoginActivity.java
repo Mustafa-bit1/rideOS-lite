@@ -1338,7 +1338,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onResume();
         MainActivity.MainisActive = false;
         MainActivity.isVisible = true;
-        Log.d("asdfd", "RESUME OF LOGIN ");
 
 //        TelemetryDataManager.getInstance().getTeleChargingState();
 

@@ -539,6 +539,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -566,13 +567,20 @@ public class TelemetryService extends Service {
     private Heartbeat1 hb1;
     private static final String PREFS_OTA = "ota_prefs";
     private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
-
+    private SharedPreferences vehiclePrefs;
+    private SharedPreferences realtimePrefs;
     @Override
     public void onCreate() {
         super.onCreate();
         telemetryThread = new HandlerThread("TelemetryThread");
         telemetryThread.start();
         telemetryHandler = new Handler(telemetryThread.getLooper());
+
+        vehiclePrefs =
+                getSharedPreferences("vehicle_delta", MODE_PRIVATE);
+
+        realtimePrefs =
+                getSharedPreferences("realtime_delta", MODE_PRIVATE);
     }
 
     @Override
@@ -587,7 +595,7 @@ public class TelemetryService extends Service {
     private void startTelemetry(String VINNUMBER) {
         evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://sb.rivotmotors.com:8081/ws/ev"));
 //        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://103.174.148.224:8081/ws/ev"));
-//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.134:8081/ws/ev"));
+//        evClient = new EVWebSocketClient(VINNUMBER, URI.create("ws://192.168.1.116:8081/ws/ev"));
 
         evClient.connect();
 
@@ -648,14 +656,14 @@ public class TelemetryService extends Service {
                     RideOSTelemetrySender.send(vin, rideOsVersion);
 
 
-                    //sendRealTimeData(vin);
-                    if (shdtelemetrywhenunlocked) {
-                        sendRealTimeData(vin);
-                        sendRealtimeDataOnceEvenAfterLocking = 0;
-                    } else if (sendRealtimeDataOnceEvenAfterLocking == 0) {
-                        sendRealTimeData(vin);
-                        sendRealtimeDataOnceEvenAfterLocking++;
-                    }
+                    sendRealTimeData(vin);
+//                    if (shdtelemetrywhenunlocked) {
+//                        sendRealTimeData(vin);
+//                        sendRealtimeDataOnceEvenAfterLocking = 0;
+//                    } else if (sendRealtimeDataOnceEvenAfterLocking == 0) {
+//                        sendRealTimeData(vin);
+//                        sendRealtimeDataOnceEvenAfterLocking++;
+//                    }
                     telemetryHandler.postDelayed(this, 1000);
                 }
             }
@@ -729,28 +737,53 @@ public class TelemetryService extends Service {
 //                        null, null, null, rideOSversion, null,
 //                        odo, chargingState, handleLockState, seatLockState,
 //                        bmsMosStates, riders, bmslifecycles, lat_long, time);
-        VehicleData data =
-                new VehicleData(
-                        vinNumber,
-                        null,   // model
-                        null,   // owner
-                        null,   // phone
-                        null,   // controller
-                        null,   // motor
-                        null,   // bms
-                        null,   // charger
-                        rideOSversion,
-                        null,   // smart key
-                        odo,
-                        chargingState,
-                        handleLockState,
-                        seatLockState,
-                        bmsMosStates,
-                        riders,
-                        bmslifecycles,
-                        lat_long,
-                        time
-                );
+        VehicleData data = new VehicleData(
+                vinNumber,
+
+                getChangedString(vehiclePrefs,
+                        "model",
+                        model),
+
+                getChangedString(vehiclePrefs,
+                        "owner",
+                        ownerName),
+
+                getChangedString(vehiclePrefs,
+                        "phone",
+                        phoneNumber),
+
+                getChangedString(vehiclePrefs,
+                        "controller",
+                        controllerID),
+
+                getChangedString(vehiclePrefs,
+                        "motor",
+                        motorID),
+
+                getChangedString(vehiclePrefs,
+                        "bms",
+                        bmsID),
+
+                getChangedString(vehiclePrefs,
+                        "charger",
+                        chargerID),
+
+                rideOSversion,
+
+                getChangedString(vehiclePrefs,
+                        "smartkey",
+                        smartKeyID),
+
+                odo,
+                chargingState,
+                handleLockState,
+                seatLockState,
+                bmsMosStates,
+                riders,
+                bmslifecycles,
+                lat_long,
+                time
+        );
         //Log.d("TelemetryService", "Sending telemetry: " + TelemetryDataManager.getInstance().getTeleLatLong());
 
         if (anyChanged) {
@@ -775,7 +808,24 @@ public class TelemetryService extends Service {
             }
         });
     }
+    private String getChangedString(
+            SharedPreferences prefs,
+            String key,
+            String newValue) {
 
+        String old =
+                prefs.getString(key, null);
+
+        if (Objects.equals(old, newValue)) {
+            return null;
+        }
+
+        prefs.edit()
+                .putString(key, newValue)
+                .apply();
+
+        return newValue;
+    }
     private void sendRealTimeData(String vin) {
         RealTimeData data = collectTelemetryData(vin);
 
@@ -876,63 +926,350 @@ public class TelemetryService extends Service {
         }
         data.time = java.time.OffsetDateTime.now().toString();
         //int mcuVersion = getEffectiveMcuVersion();
-        String temps = getCriticalTemps();
+        int temps = getCriticalTemps();
         UIUpdater uiUpdater = UIUpdater.getInstance();
         if (uiUpdater!=null) {
-            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+";"+temps
-                    +";"+uiUpdater.getrecoEngineParams()+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+
+                    ";"+uiUpdater.getrecoEngineParams()+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }else{
             data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+";"+temps
                     +";N/A"+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
         }
+
+        //===============
+
+        data.bmsmos =
+                TelemetryDataManager.getInstance().getTeleBMSMosStates();
+
+        data.chargingstatus =
+                TelemetryDataManager.getInstance().getTeleChargingStateError();
+
+        data.apuvoltage =
+                (double) TelemetryDataManager.getInstance().getTeleAPUBatVoltage();
+
+        data.uptime =
+                UptimeManager.getUptime();
+
+        data.gear =
+                String.valueOf(MainActivity.currentgear);
+
+        data.range =
+                (double) TelemetryDataManager.getInstance().getTeleRange();
+
+        data.bmssoc =
+                (double) TelemetryDataManager.getInstance().getBMSTeleSOC();
+
+        data.bmsremainingcap =
+                (double) TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH();
+
+        try {
+            data.vcutemp = (double)getCriticalTemps();
+        } catch (NumberFormatException e) {
+            data.vcutemp = 0.0; // or some default value
+        }
+
+        if (uiUpdater!=null) {
+            data.recoengine =
+                    uiUpdater.getrecoEngineParams();
+        }
+        data.maxtotalvoltage =
+                (double) TelemetryDataManager.getInstance().getMax_voltage_value();
+
+        data.allowablechargingcurrent =
+                (double) TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+
+        data.cell1to3 =
+                TelemetryDataManager.getInstance().getcell1TO3();
+
+        data.cell4to6 =
+                TelemetryDataManager.getInstance().getcell4TO6();
+
+        data.cell7to9 =
+                TelemetryDataManager.getInstance().getcell7TO9();
+
+        data.cell10to12 =
+                TelemetryDataManager.getInstance().getcell10TO12();
+
+        data.cell13to15 =
+                TelemetryDataManager.getInstance().getcell13TO15();
+
+        data.cell16to18 =
+                TelemetryDataManager.getInstance().getcell16TO18();
+
+        data.cell19to21 =
+                TelemetryDataManager.getInstance().getcell19TO21();
+
+        data.cell22to23 =
+                TelemetryDataManager.getInstance().getcell22TO23();
         //Log.d("QUALCOMTHERMAL  ", temps);
         return data;
     }
 
-    private void sendToServer(RealTimeData data) {
+//    private void sendToServer(RealTimeData data) {
+//
+//        RealTimeDataApi apiData = new RealTimeDataApi();
+//
+//        apiData.vinNumber = data.vinNumber;
+//        apiData.speed_kmph = data.speed_kmph;
+//        apiData.tripkm = data.tripkm;
+//        apiData.controllerMosTemp = data.controllerMosTemp;
+//        apiData.motorTemp = data.motorTemp;
+//        apiData.bmsMosTemp = data.bmsMosTemp;
+//        apiData.ntc = data.ntc;
+//        apiData.currentconsumption = data.currentconsumption;
+//        apiData.batvoltage = data.batvoltage;
+//        apiData.remainingCapacity_AH = data.remainingCapacity_AH;
+//        apiData.inAH = data.inAH;
+//        apiData.inAH_by_charger = data.inAH_by_charger;
+//        apiData.inAH_by_regen = data.inAH_by_regen;
+//        apiData.outAH = data.outAH;
+//        apiData.ev_power_state = data.ev_power_state;
+//        apiData.currentRider = data.currentRider;
+//        apiData.tirepressure = data.tirepressure;
+//        apiData.soc = data.soc;
+//        apiData.apuSoc = data.apuSoc;
+//        apiData.lat_long = data.lat_long;
+//        apiData.time = data.time;
+//        apiData.data = data.data;
+//
+//        apiService.saveRealTimeData(apiData).enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                if (!response.isSuccessful()) {
+//                   // Log.e("TelemetryService", "❌ RealTimeData failed: " + response.code());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                TelemetryStagingManager
+//                        .getInstance(getApplicationContext())
+//                        .addData(data);
+//
+//            //    Log.e("TelemetryService", "Failed, re-staged", t);
+//            }
+//        });
+//    }
+private void sendToServer(RealTimeData data) {
 
-        RealTimeDataApi apiData = new RealTimeDataApi();
+    RealTimeDataApi apiData = new RealTimeDataApi();
 
-        apiData.vinNumber = data.vinNumber;
-        apiData.speed_kmph = data.speed_kmph;
-        apiData.tripkm = data.tripkm;
-        apiData.controllerMosTemp = data.controllerMosTemp;
-        apiData.motorTemp = data.motorTemp;
-        apiData.bmsMosTemp = data.bmsMosTemp;
-        apiData.ntc = data.ntc;
-        apiData.currentconsumption = data.currentconsumption;
-        apiData.batvoltage = data.batvoltage;
-        apiData.remainingCapacity_AH = data.remainingCapacity_AH;
-        apiData.inAH = data.inAH;
-        apiData.inAH_by_charger = data.inAH_by_charger;
-        apiData.inAH_by_regen = data.inAH_by_regen;
-        apiData.outAH = data.outAH;
-        apiData.ev_power_state = data.ev_power_state;
-        apiData.currentRider = data.currentRider;
-        apiData.tirepressure = data.tirepressure;
-        apiData.soc = data.soc;
-        apiData.apuSoc = data.apuSoc;
-        apiData.lat_long = data.lat_long;
-        apiData.time = data.time;
-        apiData.data = data.data;
+    RealtimeDeltaManager delta =
+            RealtimeDeltaManager.getInstance();
 
-        apiService.saveRealTimeData(apiData).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (!response.isSuccessful()) {
-                   // Log.e("TelemetryService", "❌ RealTimeData failed: " + response.code());
+    // Always send these
+    apiData.vinNumber =  data.vinNumber;
+    apiData.time = data.time;
+    apiData.ev_power_state =  delta.changed("ev_power_state",data.ev_power_state);
+
+    // Delta fields
+    apiData.speed_kmph =
+            delta.changedDouble(
+                    "speed_kmph",
+                    data.speed_kmph);
+
+    apiData.tripkm =
+            delta.changedDouble(
+                    "tripkm",
+                    data.tripkm);
+
+    apiData.controllerMosTemp =
+            delta.changedDouble(
+                    "controllerMosTemp",
+                    data.controllerMosTemp);
+
+    apiData.motorTemp =
+            delta.changedDouble(
+                    "motorTemp",
+                    data.motorTemp);
+
+    apiData.bmsMosTemp =
+            delta.changedDouble(
+                    "bmsMosTemp",
+                    data.bmsMosTemp);
+
+    apiData.ntc =
+            delta.changed(
+                    "ntc",
+                    data.ntc);
+
+    apiData.currentconsumption =
+            delta.changedDouble(
+                    "currentconsumption",
+                    data.currentconsumption);
+
+    apiData.batvoltage =
+            delta.changedDouble(
+                    "batvoltage",
+                    data.batvoltage);
+
+    apiData.remainingCapacity_AH =
+            delta.changedDouble(
+                    "remainingCapacity_AH",
+                    data.remainingCapacity_AH);
+
+    apiData.inAH =
+            delta.changedDouble(
+                    "inAH",
+                    data.inAH);
+
+    apiData.inAH_by_charger =
+            delta.changedDouble(
+                    "inAH_by_charger",
+                    data.inAH_by_charger);
+
+    apiData.inAH_by_regen =
+            delta.changedDouble(
+                    "inAH_by_regen",
+                    data.inAH_by_regen);
+
+    apiData.outAH =
+            delta.changedDouble(
+                    "outAH",
+                    data.outAH);
+
+    apiData.currentRider =
+            delta.changed(
+                    "currentRider",
+                    data.currentRider);
+
+    apiData.tirepressure =
+            delta.changed(
+                    "tirepressure",
+                    data.tirepressure);
+
+    apiData.soc =
+            delta.changedDouble(
+                    "soc",
+                    data.soc);
+
+    apiData.apuSoc =
+            delta.changedDouble(
+                    "apuSoc",
+                    data.apuSoc);
+
+    apiData.lat_long =
+            delta.changed(
+                    "lat_long",
+                    data.lat_long);
+
+    apiData.data =
+            delta.changed(
+                    "data",
+                    data.data);
+
+    apiData.bmsmos =
+            delta.changed("bmsmos", data.bmsmos);
+
+    apiData.chargingstatus =
+            delta.changed("chargingstatus", data.chargingstatus);
+
+    apiData.singleminmaxvoltage =
+            delta.changed("singleminmaxvoltage",
+                    data.singleminmaxvoltage);
+
+    apiData.apuvoltage =
+            delta.changedDouble("apuvoltage",
+                    data.apuvoltage);
+
+    apiData.uptime =
+            delta.changed("uptime", data.uptime);
+
+    apiData.gear =
+            delta.changed("gear", data.gear);
+
+    apiData.range =
+            delta.changedDouble("range",
+                    data.range);
+
+    apiData.bmssoc =
+            delta.changedDouble("bmssoc",
+                    data.bmssoc);
+
+    apiData.bmsremainingcap =
+            delta.changedDouble("bmsremainingcap",
+                    data.bmsremainingcap);
+
+    apiData.vcutemp =
+            delta.changedDouble("vcutemp",
+                    data.vcutemp);
+
+    apiData.recoengine =
+            delta.changed("recoengine",
+                    data.recoengine);
+
+    apiData.maxtotalvoltage =
+            delta.changedDouble("maxtotalvoltage",
+                    data.maxtotalvoltage);
+
+    apiData.allowablechargingcurrent =
+            delta.changedDouble("allowablechargingcurrent",
+                    data.allowablechargingcurrent);
+
+    apiData.cell1to3 =
+            delta.changed("cell1to3",
+                    data.cell1to3);
+
+    apiData.cell4to6 =
+            delta.changed("cell4to6",
+                    data.cell4to6);
+
+    apiData.cell7to9 =
+            delta.changed("cell7to9",
+                    data.cell7to9);
+
+    apiData.cell10to12 =
+            delta.changed("cell10to12",
+                    data.cell10to12);
+
+    apiData.cell13to15 =
+            delta.changed("cell13to15",
+                    data.cell13to15);
+
+    apiData.cell16to18 =
+            delta.changed("cell16to18",
+                    data.cell16to18);
+
+    apiData.cell19to21 =
+            delta.changed("cell19to21",
+                    data.cell19to21);
+
+    apiData.cell22to23 =
+            delta.changed("cell22to23",
+                    data.cell22to23);
+
+//    Log.e(
+//            "REALTIME_JSON",
+//            new Gson().toJson(apiData)
+//    );
+    apiService.saveRealTimeData(apiData)
+            .enqueue(new Callback<ResponseBody>() {
+
+                @Override
+                public void onResponse(
+                        Call<ResponseBody> call,
+                        Response<ResponseBody> response) {
+
+                    if (!response.isSuccessful()) {
+                        // Log.e("TelemetryService",
+                        //      "❌ RealTimeData failed: "
+                        //      + response.code());
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                TelemetryStagingManager
-                        .getInstance(getApplicationContext())
-                        .addData(data);
+                @Override
+                public void onFailure(
+                        Call<ResponseBody> call,
+                        Throwable t) {
 
-            //    Log.e("TelemetryService", "Failed, re-staged", t);
-            }
-        });
+                    TelemetryStagingManager
+                            .getInstance(getApplicationContext())
+                            .addData(data);
+
+                    // Log.e("TelemetryService",
+                    //      "Failed, re-staged", t);
+                }
+            });
     }
 
     private boolean isInternetAvailable() {
@@ -1180,10 +1517,10 @@ public class TelemetryService extends Service {
         }
     }
 
-    public String getCriticalTemps() {
+    public int getCriticalTemps() {
 
 
-        String cpu1 = "NA";
+        int cpu1=0;
 
 
         try {
@@ -1206,7 +1543,7 @@ public class TelemetryService extends Service {
                             if (type == null || tempRaw == null) continue;
 
                             float tempC = Float.parseFloat(tempRaw) / 1000f;
-                                cpu1 = String.format("%.1f", tempC);
+                                cpu1 = (int)tempC;
                             }
                         }
                     }

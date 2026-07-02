@@ -13,7 +13,7 @@ import com.fanconn.rideOS.menu.RiderSyncDao;
                 RealTimeData.class,
                 RiderSync.class
         },
-        version = 2,
+        version = 3,
         exportSchema = false
 )
 public abstract class TelemetryDatabase extends RoomDatabase {

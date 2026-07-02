@@ -39,7 +39,6 @@ public class EVLockService {
     }
 
     public void startUnlockSequence() {
-        Log.d("gvhb","ENTERINGUNLOCKOFSCOOTERCODE");
         stopSequence();  // Stop any existing sequence
         serialPortManager.VCUSendToMCU("FFAA550101000A01");
         new Handler(Looper.getMainLooper()).postDelayed(
