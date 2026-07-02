@@ -526,6 +526,7 @@ import com.fanconn.rideOS.network.RetrofitClient;
 import com.fanconn.rideOS.network.VehicleData;
 import com.fanconn.rideOS.network.ApiService;
 
+import com.fanconn.rideOS.util.NumberUtils;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -916,10 +917,9 @@ public class TelemetryService extends Service {
         data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ";" + UptimeManager.getUptime()+";"+MainActivity.currentgear;
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
-        //Log.d("sdafd","TELETIREPRESUURE2222 IS "+data.tirepressure);
 
-        data.soc = TelemetryDataManager.getInstance().getTeleSOC();
-        data.apuSoc = TelemetryDataManager.getInstance().getTeleAPUSOC();
+        data.soc = NumberUtils.truncate1(TelemetryDataManager.getInstance().getTeleSOC());
+        data.apuSoc = NumberUtils.truncate1(TelemetryDataManager.getInstance().getTeleAPUSOC());
         data.lat_long = TelemetryDataManager.getInstance().getTeleLatLong();
         if (data.lat_long == null || data.lat_long.isEmpty()) {
             data.lat_long = "0.0,0.0";   // fallback if GPS not ready
@@ -942,7 +942,10 @@ public class TelemetryService extends Service {
                 TelemetryDataManager.getInstance().getTeleBMSMosStates();
 
         data.chargingstatus =
-                TelemetryDataManager.getInstance().getTeleChargingStateError();
+                TelemetryDataManager.getInstance().getTeleChargingState()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+ETADataManager.getInstance().getEtaTime();
+
+        data.singleminmaxvoltage =
+                TelemetryDataManager.getInstance().getteleIndividualCellVoltages();
 
         data.apuvoltage =
                 (double) TelemetryDataManager.getInstance().getTeleAPUBatVoltage();
@@ -954,13 +957,13 @@ public class TelemetryService extends Service {
                 String.valueOf(MainActivity.currentgear);
 
         data.range =
-                (double) TelemetryDataManager.getInstance().getTeleRange();
+                NumberUtils.truncate1(TelemetryDataManager.getInstance().getTeleRange());
 
         data.bmssoc =
-                (double) TelemetryDataManager.getInstance().getBMSTeleSOC();
+                NumberUtils.truncate1( TelemetryDataManager.getInstance().getBMSTeleSOC());
 
         data.bmsremainingcap =
-                (double) TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH();
+                NumberUtils.truncate1( TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH());
 
         try {
             data.vcutemp = (double)getCriticalTemps();
@@ -979,28 +982,28 @@ public class TelemetryService extends Service {
                 (double) TelemetryDataManager.getInstance().getAlowable_charging_current_value();
 
         data.cell1to3 =
-                TelemetryDataManager.getInstance().getcell1TO3();
+                SerialPortManager.getInstance().getHb3().getcell1TO3();
 
         data.cell4to6 =
-                TelemetryDataManager.getInstance().getcell4TO6();
+                SerialPortManager.getInstance().getHb3().getcell4TO6();
 
         data.cell7to9 =
-                TelemetryDataManager.getInstance().getcell7TO9();
+                SerialPortManager.getInstance().getHb3().getcell7TO9();
 
         data.cell10to12 =
-                TelemetryDataManager.getInstance().getcell10TO12();
+                SerialPortManager.getInstance().getHb3().getcell10TO12();
 
         data.cell13to15 =
-                TelemetryDataManager.getInstance().getcell13TO15();
+                SerialPortManager.getInstance().getHb3().getcell13TO15();
 
         data.cell16to18 =
-                TelemetryDataManager.getInstance().getcell16TO18();
+                SerialPortManager.getInstance().getHb3().getcell16TO18();
 
         data.cell19to21 =
-                TelemetryDataManager.getInstance().getcell19TO21();
+                SerialPortManager.getInstance().getHb3().getcell19TO21();
 
         data.cell22to23 =
-                TelemetryDataManager.getInstance().getcell22TO23();
+                SerialPortManager.getInstance().getHb3().getcell22TO23();
         //Log.d("QUALCOMTHERMAL  ", temps);
         return data;
     }
