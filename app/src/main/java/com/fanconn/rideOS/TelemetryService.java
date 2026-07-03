@@ -623,6 +623,7 @@ public class TelemetryService extends Service {
             }
         }).start();
     }
+    private boolean firstVehicleUpload = true;
     private void sendDataContinuously(String vin) {
         String rideOsVersion = buildRideOSVersion(context);
 
@@ -643,10 +644,8 @@ public class TelemetryService extends Service {
                         TelemetryDataManager.getInstance().setTeleHandleLockState(hb1.getDragonLock());
                         TelemetryDataManager.getInstance().setTeleSeatLockState(hb1.getSeatLock());
                     }
-                    double odoRounded =
-                            Math.round(
-                                    TelemetryDataManager.getInstance().getTeleODO() * 100.0
-                            ) / 100.0;
+                    double odoRounded = TelemetryDataManager.getInstance().getTeleODO();
+
                     sendVehicleData(context, odoRounded, TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
                             TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+UptimeManager.getUptime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+(TelemetryDataManager.getInstance().isGpsTelemetryEnabled() ? 1 : 0), TelemetryDataManager.getInstance().getTeleCurrentRider(),
                             TelemetryDataManager.getInstance().getTeleBmsLifeCycles(), TelemetryDataManager.getInstance().getTeleLatLong());
@@ -738,53 +737,212 @@ public class TelemetryService extends Service {
 //                        null, null, null, rideOSversion, null,
 //                        odo, chargingState, handleLockState, seatLockState,
 //                        bmsMosStates, riders, bmslifecycles, lat_long, time);
-        VehicleData data = new VehicleData(
-                vinNumber,
 
-                getChangedString(vehiclePrefs,
-                        "model",
-                        model),
+        //Always sned complete data in first payload
+        RealtimeDeltaManager delta =
+                RealtimeDeltaManager.getInstance();
 
-                getChangedString(vehiclePrefs,
-                        "owner",
-                        ownerName),
+        VehicleData data;
 
-                getChangedString(vehiclePrefs,
-                        "phone",
-                        phoneNumber),
+        if (firstVehicleUpload) {
 
-                getChangedString(vehiclePrefs,
-                        "controller",
-                        controllerID),
+            firstVehicleUpload = false;
 
-                getChangedString(vehiclePrefs,
-                        "motor",
-                        motorID),
+            data = new VehicleData(
+                    vinNumber,
+                    model,
+                    ownerName,
+                    phoneNumber,
+                    controllerID,
+                    motorID,
+                    bmsID,
+                    chargerID,
+                    rideOSversion,
+                    smartKeyID,
+                    odo,
+                    chargingState,
+                    handleLockState,
+                    seatLockState,
+                    bmsMosStates,
+                    riders,
+                    bmslifecycles,
+                    lat_long,
+                    time
+            );
+        }
+        else {
 
-                getChangedString(vehiclePrefs,
-                        "bms",
-                        bmsID),
+            data = new VehicleData(
 
-                getChangedString(vehiclePrefs,
-                        "charger",
-                        chargerID),
+                    vinNumber,
 
-                rideOSversion,
+                    getChangedString(vehiclePrefs,
+                            "model",
+                            model),
 
-                getChangedString(vehiclePrefs,
-                        "smartkey",
-                        smartKeyID),
+                    getChangedString(vehiclePrefs,
+                            "owner",
+                            ownerName),
 
-                odo,
-                chargingState,
-                handleLockState,
-                seatLockState,
-                bmsMosStates,
-                riders,
-                bmslifecycles,
-                lat_long,
-                time
-        );
+                    getChangedString(vehiclePrefs,
+                            "phone",
+                            phoneNumber),
+
+                    getChangedString(vehiclePrefs,
+                            "controller",
+                            controllerID),
+
+                    getChangedString(vehiclePrefs,
+                            "motor",
+                            motorID),
+
+                    getChangedString(vehiclePrefs,
+                            "bms",
+                            bmsID),
+
+                    getChangedString(vehiclePrefs,
+                            "charger",
+                            chargerID),
+
+                    getChangedString(vehiclePrefs,
+                            "rideos",
+                            rideOSversion),
+
+                    getChangedString(vehiclePrefs,
+                            "smartkey",
+                            smartKeyID),
+
+                    delta.changedDouble(
+                            "vehicle_odo",
+                            odo
+                    ),
+
+                    delta.changedInt(
+                            "vehicle_charging_state",
+                            chargingState
+                    ),
+
+                    delta.changedInt(
+                            "vehicle_handle_lock",
+                            handleLockState
+                    ),
+
+                    delta.changedInt(
+                            "vehicle_seat_lock",
+                            seatLockState
+                    ),
+
+                    delta.changed(
+                            "vehicle_bmsmos",
+                            bmsMosStates
+                    ),
+
+                    delta.changed(
+                            "vehicle_rider",
+                            riders
+                    ),
+
+                    delta.changedInt(
+                            "vehicle_bms_cycles",
+                            bmslifecycles
+                    ),
+
+                    delta.changed(
+                            "vehicle_latlong",
+                            lat_long
+                    ),
+
+                    time
+            );
+        }
+
+        //Dont send complete data in frist payload
+//        RealtimeDeltaManager delta =
+//                RealtimeDeltaManager.getInstance();
+//
+//        VehicleData data =
+//                new VehicleData(
+//
+//                        vinNumber,
+//
+//                        getChangedString(vehiclePrefs,
+//                                "model",
+//                                model),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "owner",
+//                                ownerName),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "phone",
+//                                phoneNumber),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "controller",
+//                                controllerID),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "motor",
+//                                motorID),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "bms",
+//                                bmsID),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "charger",
+//                                chargerID),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "rideos",
+//                                rideOSversion),
+//
+//                        getChangedString(vehiclePrefs,
+//                                "smartkey",
+//                                smartKeyID),
+//
+//                        delta.changedDouble(
+//                                "vehicle_odo",
+//                                odo
+//                        ),
+//
+//                        delta.changedInt(
+//                                "vehicle_charging_state",
+//                                chargingState
+//                        ),
+//
+//                        delta.changedInt(
+//                                "vehicle_handle_lock",
+//                                handleLockState
+//                        ),
+//
+//                        delta.changedInt(
+//                                "vehicle_seat_lock",
+//                                seatLockState
+//                        ),
+//
+//                        delta.changed(
+//                                "vehicle_bmsmos",
+//                                bmsMosStates
+//                        ),
+//
+//                        delta.changed(
+//                                "vehicle_rider",
+//                                riders
+//                        ),
+//
+//                        delta.changedInt(
+//                                "vehicle_bms_cycles",
+//                                bmslifecycles
+//                        ),
+//
+//                        delta.changed(
+//                                "vehicle_latlong",
+//                                lat_long
+//                        ),
+//
+//                        time
+//                );
         //Log.d("TelemetryService", "Sending telemetry: " + TelemetryDataManager.getInstance().getTeleLatLong());
 
         if (anyChanged) {
@@ -799,7 +957,8 @@ public class TelemetryService extends Service {
                     .putString("model", model)
                     .apply();
         }
-
+        String json = new Gson().toJson(data);
+        //Log.e("VEHICLE_JSON", json);
         apiService.saveVehicleData(data).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) { }
@@ -824,7 +983,10 @@ public class TelemetryService extends Service {
         prefs.edit()
                 .putString(key, newValue)
                 .apply();
-
+        Log.e("DELTA",
+                key +
+                        " old=" + old +
+                        " new=" + newValue);
         return newValue;
     }
     private void sendRealTimeData(String vin) {
@@ -942,7 +1104,7 @@ public class TelemetryService extends Service {
                 TelemetryDataManager.getInstance().getTeleBMSMosStates();
 
         data.chargingstatus =
-                TelemetryDataManager.getInstance().getTeleChargingState()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+ETADataManager.getInstance().getEtaTime();
+                TelemetryDataManager.getInstance().getTeleChargingState()+","+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+","+ETADataManager.getInstance().getEtaTime();
 
         data.singleminmaxvoltage =
                 TelemetryDataManager.getInstance().getteleIndividualCellVoltages();

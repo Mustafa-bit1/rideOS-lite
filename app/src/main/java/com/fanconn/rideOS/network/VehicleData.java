@@ -35,19 +35,18 @@ public class VehicleData {
     private String smartKeyID;
 
     @SerializedName("odo")
-    private double odo;
-
+    private Double odo;
 //    @SerializedName("tripkm")
 //    private float tripkm;
 
     @SerializedName("chargingState")
-    private int chargingState;
+    private Integer chargingState;
 
     @SerializedName("handleLockState")
-    private int handleLockState;
+    private Integer handleLockState;
 
     @SerializedName("seatLockState")
-    private int seatLockState;
+    private Integer seatLockState;
 
     @SerializedName("bmsMosStates")
     private String bmsMosStates;
@@ -56,7 +55,7 @@ public class VehicleData {
     private String riders;
 
     @SerializedName("bmslifecycles")
-    private int bmslifecycles;
+    private Integer bmslifecycles;
 
     @SerializedName("lat_long")
     private String lat_long;
@@ -65,13 +64,27 @@ public class VehicleData {
     private String time;
 
 
-    public VehicleData(String vinNumber, String model, String ownerName, String phoneNumber,
-                       String controllerID, String motorID, String bmsID, String chargerID,
-                       String rideOSversion, String smartKeyID, double odo,
-                       int chargingState, int handleLockState, int seatLockState,
-                       String bmsMosStates, String riders, int bmslifecycles,
-                       String lat_long, String time) {
-
+    public VehicleData(
+            String vinNumber,
+            String model,
+            String ownerName,
+            String phoneNumber,
+            String controllerID,
+            String motorID,
+            String bmsID,
+            String chargerID,
+            String rideOSversion,
+            String smartKeyID,
+            Double odo,
+            Integer chargingState,
+            Integer handleLockState,
+            Integer seatLockState,
+            String bmsMosStates,
+            String riders,
+            Integer bmslifecycles,
+            String lat_long,
+            String time)
+    {
         this.vinNumber = vinNumber;
         this.model = model;
         this.ownerName = ownerName;
@@ -92,7 +105,6 @@ public class VehicleData {
         this.lat_long = lat_long;
         this.time = time;
     }
-
     // Getters (if needed)
 
 
