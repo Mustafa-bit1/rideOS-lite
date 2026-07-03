@@ -520,6 +520,7 @@ public class chargingUI extends AppCompatActivity {
 //            }
             //=======================================
             TelemetryDataManager.getInstance().setTeleChargingState(0);
+            ETADataManager.getInstance().setEtaTime(0);
             LoginActivity.ChargingUiClosedByUserFlag = false;
             LoginActivity.isChargingUIActive= false;
             finish();

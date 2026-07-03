@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.airbnb.lottie.L;
 import com.fanconn.rideOS.AhTrackerManager;
 import com.fanconn.rideOS.CanDataParser;
+import com.fanconn.rideOS.ETADataManager;
 import com.fanconn.rideOS.EVLockService;
 import com.fanconn.rideOS.FrameUtils;
 import com.fanconn.rideOS.Heartbeat1;
@@ -220,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
                 Log.d("sdfdgfh", "flague  " + ChargingUiClosedByUserFlag);
                 Log.d("sdfdgfh", "bugsofcharging flague " + (currentTime - lastChargingUILaunchTime));
 
-                if (canLaunchUI && (currentTime - lastChargingUILaunchTime > 1000)) {
+                if (canLaunchUI && (currentTime - lastChargingUILaunchTime > 1000) && !MainActivity.MainisActive) {
                     isChargingUIActive = true;
 
                     lastChargingUILaunchTime = currentTime;
@@ -234,7 +235,9 @@ public class LoginActivity extends AppCompatActivity {
                 // Timeout logic: reset handler every time
                 chargingFrameTimeoutHandler.removeCallbacks(chargingFrameTimeoutRunnable);
                 chargingFrameTimeoutRunnable = () -> {
-                    Log.d("Frame", "Charging frame timeout — NOT CHARGING");
+                    //Log.d("Frame", "Charging frame timeout — NOT CHARGING");
+                    TelemetryDataManager.getInstance().setTeleChargingState(0);
+                    TelemetryDataManager.getInstance().setTeleChargingCurrentValue(0);
 
                     isChargingUIActive = false;
 //                    ChargingUiClosedByUserFlag=false;
