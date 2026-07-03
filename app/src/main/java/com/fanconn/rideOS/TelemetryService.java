@@ -513,13 +513,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 
 import com.fanconn.rideOS.network.EVWebSocketClient;
 import com.fanconn.rideOS.network.RetrofitClient;
@@ -537,7 +535,6 @@ import java.net.Socket;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -547,8 +544,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import android.Manifest;
-import android.os.HandlerThread;
 import com.fanconn.rideOS.network.RideOSTelemetrySender;
 
 
@@ -587,7 +582,6 @@ public class TelemetryService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String vinNumber = intent != null ? intent.getStringExtra("VIN_NUMBER") : null;
-        Log.d("xfcgvhbjnm","TELEMETRY SERVICE STARTED");
         this.context = this;
         startTelemetry(vinNumber != null ? vinNumber : "UNKNOWN");
         return START_STICKY;
@@ -611,7 +605,7 @@ public class TelemetryService extends Service {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException e) {
-                    Log.e("Telemetry", "Thread interrupted", e);
+                    //Log.e("Telemetry", "Thread interrupted", e);
                     return;
                 }
             }
@@ -619,7 +613,7 @@ public class TelemetryService extends Service {
             if (serialPortManager != null) {
                 serialPortManager.sendContinuousSensorData();
             } else {
-                Log.e("Telemetry", "serialPortManager is null!");
+                //Log.e("Telemetry", "serialPortManager is null!");
             }
         }).start();
     }
@@ -654,7 +648,9 @@ public class TelemetryService extends Service {
 
 //                    RideOSTelemetrySender.send(vin);
                     RideOSTelemetrySender.send(vin, rideOsVersion);
-
+//                    RideOSTelemetrySocketSender
+//                            .getInstance()
+//                            .sendTelemetry();
 
                     sendRealTimeData(vin);
 //                    if (shdtelemetrywhenunlocked) {

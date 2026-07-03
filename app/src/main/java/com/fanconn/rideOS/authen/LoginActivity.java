@@ -234,7 +234,7 @@ public class LoginActivity extends AppCompatActivity {
                 // Timeout logic: reset handler every time
                 chargingFrameTimeoutHandler.removeCallbacks(chargingFrameTimeoutRunnable);
                 chargingFrameTimeoutRunnable = () -> {
-                    //Log.d("Frame", "Charging frame timeout — closing UI");
+                    Log.d("Frame", "Charging frame timeout — NOT CHARGING");
 
                     isChargingUIActive = false;
 //                    ChargingUiClosedByUserFlag=false;

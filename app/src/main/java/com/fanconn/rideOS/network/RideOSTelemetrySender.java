@@ -224,7 +224,10 @@ public class RideOSTelemetrySender {
     public static void send(String vin, String rideOsVersion) {
 
         TelemetryDataManager t = TelemetryDataManager.getInstance();
-        TelemetryApiPayload data = new TelemetryApiPayload();
+        TelemetryDeltaManager delta =
+                TelemetryDeltaManager.getInstance();
+        CompactTelemetryPayload data =
+                new CompactTelemetryPayload();
 
         // =============================
         // BASIC
@@ -233,110 +236,184 @@ public class RideOSTelemetrySender {
         data.time = java.time.OffsetDateTime.now().toString();
 
 
-        data.rideOsVersion = rideOsVersion;
-
+        data.rideOsVersion =
+                delta.changed(
+                        "rideos",
+                        rideOsVersion);
 
         // =============================
         // MOTION (always valid)
         // =============================
-        data.speedKmph = Math.round(t.getTeleSpeed());
-        data.tripKm = t.getTeleTrip();
-        data.odo = t.getTeleODO();
-
+        data.speedKmph =
+                delta.changedInt(
+                        "speed",
+                        Math.round(t.getTeleSpeed()));
+        data.tripKm =
+                delta.changedFloat(
+                        "trip",
+                        t.getTeleTrip());
+        data.odo =
+                delta.changedFloat(
+                        "odo",
+                        t.getTeleODO());
         //Log.e("ODOFORRO ","ODOFORRO "+data.odo);
 
 
         // =============================
         // BATTERY (guarded)
         // =============================
-        if (t.getTeleSOC() > 0) {
-            data.soc = Math.round(t.getTeleSOC());
+        data.soc =
+                delta.changedInt(
+                        "soc",
+                        Math.round(t.getTeleSOC()));
+
+        data.range =
+                delta.changedFloat(
+                        "range",
+                        TelemetryDataManager.getInstance()
+                                .getTeleRange());
+
+        String reco = "";
+
+        if (UIUpdater.getInstance() != null) {
+            reco = UIUpdater.getInstance()
+                    .getrecoEngineParams();
+
+            if (reco == null)
+                reco = "";
         }
 
-        if (t.getTeleAPUSOC() > 0) {
-            data.apuSoc = Math.round(t.getTeleAPUSOC());
-        }
-
-
-        if (t.getTeleBatVoltage() > 0) {
-            data.batVoltage = t.getTeleBatVoltage();
-        }
-
-        if (t.getTeleCurrentConsumption() != 0) {
-            data.currentConsumption = t.getTeleCurrentConsumption();
-        }
-
-        if (t.getTeleRemainingCapacityAH() > 0) {
-            data.remainingCapacityAh = t.getTeleRemainingCapacityAH();
-        }
-
-        // =============================
-        // ENERGY (event-based)
-        // =============================
-        if (t.getTeleTotalAH() > 0) {
-            data.inAh = t.getTeleTotalAH();
-        }
-
-        if (t.getTeleChargerAH() > 0) {
-            data.inAhByCharger = t.getTeleChargerAH();
-        }
-
-        if (t.getTeleRegenAH() > 0) {
-            data.inAhByRegen = t.getTeleRegenAH();
-        }
-
-        if (t.getTeleDischargeAH() > 0) {
-            data.outAh = t.getTeleDischargeAH();
-        }
-
+        data.recoEngine =
+                delta.changed(
+                        "reco_engine",
+                        reco);
         // =============================
         // TEMPERATURES (guarded)
         // =============================
-        if (t.getTeleMotorTemp() > 0) {
-            data.motorTemp = t.getTeleMotorTemp();
-        }
+        data.controllerTemp =
+                delta.changedFloat(
+                        "ctrl",
+                        t.getTeleControllerMosTemp());
 
-        if (t.getTeleControllerMosTemp() > 0) {
-            data.controllerMosTemp = t.getTeleControllerMosTemp();
-        }
+        data.motorTemp =
+                delta.changedFloat(
+                        "motor",
+                        t.getTeleMotorTemp());
 
-        if (t.getTeleBMSMosTemp() > 0) {
-            data.bmsMosTemp = t.getTeleBMSMosTemp();
-        }
+        data.vcuTemp =
+                delta.changedFloat(
+                        "vcu",
+                        getCriticalTemps());
+
+        data.bmsTemp =
+                delta.changedFloat(
+                        "bms",
+                        t.getTeleBMSMosTemp());
 
         // =============================
         // MISC
         // =============================
-        if (t.getTeleTirePressure() != null) {
-            data.tirePressure = t.getTeleTirePressure();
+        String front = "";
+        String rear = "";
+
+        String tpms =
+                t.getTeleTirePressure();
+
+        if (tpms != null) {
+
+            String[] arr =
+                    tpms.split(";");
+
+            if (arr.length > 0)
+                front = arr[0];
+
+            if (arr.length > 1)
+                rear = arr[1];
         }
 
-        if (t.getTeleNTC() != null) {
-            data.ntc = t.getTeleNTC()+";"+ ETADataManager.getInstance().getEtaTime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+getCpu1Temp()+";"+TelemetryDataManager.getInstance().getTeleRange()+";"+ UIUpdater.getInstance().getrecoEngineParams();
-        }
+        data.frontTpms =
+                delta.changed(
+                        "front_tpms",
+                        front);
 
-        if (t.getTeleCurrentRider() != null && !t.getTeleCurrentRider().isEmpty()) {
-            data.currentRider = t.getTeleCurrentRider();
-        }
+        data.rearTpms =
+                delta.changed(
+                        "rear_tpms",
+                        rear);
+
+
+//        if (t.getTeleNTC() != null) {
+            //data.ntc = t.getTeleNTC()+";"+ ETADataManager.getInstance().getEtaTime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+TelemetryDataManager.getInstance().getTeleChargingState()+";"+getCpu1Temp()+";"+TelemetryDataManager.getInstance().getTeleRange()+";"+ UIUpdater.getInstance().getrecoEngineParams();
+//        }
+        String ntc =
+                t.getTeleNTC();
+
+        if (ntc == null)
+            ntc = "";
+
+        data.ntc =
+                delta.changed(
+                        "ntc",
+                        ntc);
+
+        String rider =
+                t.getTeleCurrentRider();
+
+        if (rider == null)
+            rider = "";
+
+        data.rider =
+                delta.changed(
+                        "rider",
+                        rider);
 
         // =============================
         // RAW STATES (ALWAYS SEND)
         // =============================
 //    data.evPowerState = (TelemetryService.shdtelemetrywhenunlocked ? "ON" : "OFF");
-        data.evPowerState =
-                (t.getTeleEvPowerState() == 1) ? "ON" : "OFF";
+        String state =
+                (t.getTeleEvPowerState() == 1)
+                        ? "ON"
+                        : "OFF";
+        data.scooterState =
+                delta.changed(
+                        "state",
+                        state);
 
 
 
-        data.chargingState = t.getTeleChargingState();
+        data.chargingState =
+                delta.changedInt(
+                        "charging_state",
+                        t.getTeleChargingState());
 
+        data.chargingCurrent =
+                delta.changedFloat(
+                        "charging_current",
+                        TelemetryDataManager.getInstance()
+                                .getTeleChargingCurrentValue());
+
+        float eta =
+                ETADataManager.getInstance()
+                        .getEtaTime();
+
+        data.estChargingTime =
+                delta.changedFloat(
+                        "eta",
+                        eta);
         // =============================
         // LOCATION
         // =============================
-        String latLong = t.getTeleLatLong();
-        data.latLong = (latLong == null || latLong.isEmpty())
-                ? "0.0,0.0"
-                : latLong;
+        String location =
+                t.getTeleLatLong();
+
+        if (location == null)
+            location = "0.0,0.0";
+
+        data.location =
+                delta.changed(
+                        "location",
+                        location);
 
         // =============================
         // LOG
@@ -346,9 +423,14 @@ public class RideOSTelemetrySender {
         // =============================
         // SEND
         // =============================
+
+        String json = gson.toJson(data);
+
+        Log.e("COMPACT_TELEMETRY", json);
+
         RequestBody body = RequestBody.create(
                 MediaType.parse("application/json"),
-                new Gson().toJson(data)
+                json
         );
 
         Request request = new Request.Builder()
@@ -371,16 +453,17 @@ public class RideOSTelemetrySender {
     }
 
 
-    public static String getCpu1Temp() {
+    private static int getCriticalTemps() {
 
-        String cpu1 = "NA";
+
+        int cpu1=0;
+
 
         try {
             File thermalDir = new File("/sys/class/thermal/");
             File[] zones = thermalDir.listFiles();
 
             if (zones != null) {
-
                 for (File zone : zones) {
 
                     if (zone.getName().startsWith("thermal_zone")) {
@@ -393,27 +476,22 @@ public class RideOSTelemetrySender {
                             String type = readLine(typeFile);
                             String tempRaw = readLine(tempFile);
 
-                            if (type == null || tempRaw == null) {
-                                continue;
-                            }
+                            if (type == null || tempRaw == null) continue;
 
-                            if (type.equals("cpuss-1-usr")) {
-
-                                float tempC = Float.parseFloat(tempRaw) / 1000f;
-                                cpu1 = String.format("%.1f", tempC);
-
-                                break;
-                            }
+                            float tempC = Float.parseFloat(tempRaw) / 1000f;
+                            cpu1 = (int)tempC;
                         }
                     }
                 }
             }
 
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return cpu1;
+        return
+                cpu1;
     }
     private static String readLine(File file) {
 

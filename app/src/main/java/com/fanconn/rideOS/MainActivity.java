@@ -2256,7 +2256,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         title.setText("eBraking warning");
 
         message.setText(
-                "100% Charge Detected, eBraking unavailable untill 95%, ride with caution"
+                "Full charge detected, eBraking unavailable untill 95%, ride with caution"
         );
 
         Button yes =
