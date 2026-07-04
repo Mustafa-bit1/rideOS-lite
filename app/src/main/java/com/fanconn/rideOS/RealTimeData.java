@@ -38,6 +38,7 @@ public class RealTimeData {
     public Double apuvoltage;
     public String uptime;
     public String gear;
+
     public Double range;
     public Double bmssoc;
     public Double bmsremainingcap;

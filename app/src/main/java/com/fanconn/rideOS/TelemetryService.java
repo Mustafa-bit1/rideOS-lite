@@ -641,16 +641,15 @@ public class TelemetryService extends Service {
                     double odoRounded = TelemetryDataManager.getInstance().getTeleODO();
 
                     sendVehicleData(context, odoRounded, TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
-                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+UptimeManager.getUptime()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+(TelemetryDataManager.getInstance().isGpsTelemetryEnabled() ? 1 : 0), TelemetryDataManager.getInstance().getTeleCurrentRider(),
-                            TelemetryDataManager.getInstance().getTeleBmsLifeCycles(), TelemetryDataManager.getInstance().getTeleLatLong());
+                            TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
+                            22, TelemetryDataManager.getInstance().getTeleLatLong());
                     TelemetryDataManager.getInstance()
                             .setTeleEvPowerState(shdtelemetrywhenunlocked ? 1 : 0);
 
 //                    RideOSTelemetrySender.send(vin);
-                    RideOSTelemetrySender.send(vin, rideOsVersion);
-//                    RideOSTelemetrySocketSender
-//                            .getInstance()
-//                            .sendTelemetry();
+
+              //This start sending RIVOT One app data seperately
+               //     RideOSTelemetrySender.send(vin, rideOsVersion);
 
                     sendRealTimeData(vin);
 //                    if (shdtelemetrywhenunlocked) {
@@ -979,10 +978,10 @@ public class TelemetryService extends Service {
         prefs.edit()
                 .putString(key, newValue)
                 .apply();
-        Log.e("DELTA",
-                key +
-                        " old=" + old +
-                        " new=" + newValue);
+//        Log.e("DELTA",
+//                key +
+//                        " old=" + old +
+//                        " new=" + newValue);
         return newValue;
     }
     private void sendRealTimeData(String vin) {
@@ -1059,7 +1058,7 @@ public class TelemetryService extends Service {
         data.motorTemp = TelemetryDataManager.getInstance().getTeleMotorTemp();
         data.bmsMosTemp = TelemetryDataManager.getInstance().getTeleBMSMosTemp();
         if(SerialPortManager.getInstance().getHb3()!=null){
-            data.ntc = TelemetryDataManager.getInstance().getTeleBMSMosStates()+";"+TelemetryDataManager.getInstance().getTeleNTC()+";"+TelemetryDataManager.getInstance().getTeleChargingCurrentValue()+";"+ ETADataManager.getInstance().getEtaTime()+";"+TelemetryDataManager.getInstance().getteleIndividualCellVoltages()+";"+TelemetryDataManager.getInstance().getTeleChargingState()+";"+TelemetryDataManager.getInstance().getTeleAPUBatVoltage()+ ";"+SerialPortManager.getInstance().getHb3().getcell1TO3()+","+SerialPortManager.getInstance().getHb3().getcell4TO6()+","+SerialPortManager.getInstance().getHb3().getcell7TO9()+","+SerialPortManager.getInstance().getHb3().getcell10TO12()+","+SerialPortManager.getInstance().getHb3().getcell13TO15()+","+SerialPortManager.getInstance().getHb3().getcell16TO18()+","+SerialPortManager.getInstance().getHb3().getcell19TO21()+","+SerialPortManager.getInstance().getHb3().getcell22TO23();
+            data.ntc = TelemetryDataManager.getInstance().getTeleNTC();
      //   Log.d("dsafgs","ddddddddddddddd "+data.ntc);
         }else{
             //Log.d("dsafgs","ddddddddddddddddeeeeeeeeeeeeeeeeeeeeeedddddddd "+data.ntc);
@@ -1072,7 +1071,7 @@ public class TelemetryService extends Service {
         data.inAH_by_charger = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleChargerAH());
         data.inAH_by_regen = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRegenAH());
         data.outAH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleDischargeAH());
-        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF") + ";" + UptimeManager.getUptime()+";"+MainActivity.currentgear;
+        data.ev_power_state = (shdtelemetrywhenunlocked ? "1" : "0");
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
 
@@ -1086,13 +1085,15 @@ public class TelemetryService extends Service {
         //int mcuVersion = getEffectiveMcuVersion();
         int temps = getCriticalTemps();
         UIUpdater uiUpdater = UIUpdater.getInstance();
-        if (uiUpdater!=null) {
-            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+
-                    ";"+uiUpdater.getrecoEngineParams()+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
-        }else{
-            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+";"+temps
-                    +";N/A"+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
-        }
+        data.data = String.valueOf(TelemetryDataManager.getInstance().isGpsTelemetryEnabled() ? 1 : 0);
+
+//        if (uiUpdater!=null) {
+//            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+
+//                    ";"+uiUpdater.getrecoEngineParams()+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+//        }else{
+//            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+";"+temps
+//                    +";N/A"+";"+TelemetryDataManager.getInstance().getMax_voltage_value()+";"+TelemetryDataManager.getInstance().getAlowable_charging_current_value();
+//        }
 
         //===============
 

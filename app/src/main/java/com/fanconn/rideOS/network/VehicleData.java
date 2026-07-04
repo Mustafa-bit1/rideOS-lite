@@ -4,63 +4,63 @@ import com.google.gson.annotations.SerializedName;
 
 public class VehicleData {
 
-    @SerializedName("vinNumber")
+    @SerializedName("v")
     private String vinNumber;
 
-    @SerializedName("model")
+    @SerializedName("m")
     private String model;
 
-    @SerializedName("ownerName")
+    @SerializedName("o")
     private String ownerName;
 
-    @SerializedName("phoneNumber")
+    @SerializedName("p")
     private String phoneNumber;
 
-    @SerializedName("controllerID")
+    @SerializedName("c")
     private String controllerID;
 
-    @SerializedName("motorID")
+    @SerializedName("r")
     private String motorID;
 
-    @SerializedName("bmsID")
+    @SerializedName("b")
     private String bmsID;
 
-    @SerializedName("chargerID")
+    @SerializedName("q")
     private String chargerID;
 
-    @SerializedName("rideOSversion")
+    @SerializedName("s")
     private String rideOSversion;
 
-    @SerializedName("smartKeyID")
+    @SerializedName("e")
     private String smartKeyID;
 
-    @SerializedName("odo")
+    @SerializedName("z")
     private Double odo;
 //    @SerializedName("tripkm")
 //    private float tripkm;
 
-    @SerializedName("chargingState")
+    @SerializedName("x")
     private Integer chargingState;
 
-    @SerializedName("handleLockState")
+    @SerializedName("h")
     private Integer handleLockState;
 
-    @SerializedName("seatLockState")
+    @SerializedName("g")
     private Integer seatLockState;
 
-    @SerializedName("bmsMosStates")
+    @SerializedName("n")
     private String bmsMosStates;
 
-    @SerializedName("riders")
+    @SerializedName("y")
     private String riders;
 
-    @SerializedName("bmslifecycles")
+    @SerializedName("j")
     private Integer bmslifecycles;
 
-    @SerializedName("lat_long")
+    @SerializedName("l")
     private String lat_long;
 
-    @SerializedName("time")
+    @SerializedName("t")
     private String time;
 
 

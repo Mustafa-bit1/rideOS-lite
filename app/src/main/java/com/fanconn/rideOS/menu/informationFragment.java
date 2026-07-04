@@ -1,5 +1,6 @@
 package com.fanconn.rideOS.menu;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -247,10 +248,15 @@ public class informationFragment extends Fragment {
 
                 dialog.dismiss();
 
-                settings activity =
-                        (settings) requireActivity();
+                if (!isAdded() || getActivity() == null) {
+                    return;
+                }
 
-                activity.openDiagnosticsFragment();
+                settings activity = (settings) getActivity();
+
+                if (activity != null) {
+                    activity.openDiagnosticsFragment();
+                }
 
             } else {
                 showCustomToast("Wrong password - Access Denied");
@@ -281,12 +287,17 @@ public class informationFragment extends Fragment {
     }
     private void showCustomToast(String message) {
 
-        // Cancel previous toast if showing
+        if (!isAdded() || getContext() == null) {
+            return;
+        }
+
+        Context context = getContext();
+
         if (currentToast != null) {
             currentToast.cancel();
         }
 
-        View layout = LayoutInflater.from(requireContext())
+        View layout = LayoutInflater.from(context)
                 .inflate(R.layout.toast_custom, null);
 
         ((ImageView) layout.findViewById(R.id.toast_icon))
@@ -295,12 +306,9 @@ public class informationFragment extends Fragment {
         ((TextView) layout.findViewById(R.id.toast_text))
                 .setText(message);
 
-        currentToast = new Toast(requireContext());
-
+        currentToast = new Toast(context);
         currentToast.setDuration(Toast.LENGTH_SHORT);
-
         currentToast.setView(layout);
-
         currentToast.show();
     }
     private void updateMetadataUI(

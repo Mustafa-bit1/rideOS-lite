@@ -956,7 +956,11 @@ public class UIUpdater  {
         NTC8 = hb3.getNTC8() - 40;
 
         //Log.d("TemperatureCheck", "NTCs = " + NTC1 + "," + NTC2 + "," + NTC3 + "," + NTC4 + "," + NTC5 + "," + NTC6 + "," + NTC7 + "," + NTC8);
-        tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
+        if(isAPUPresent){
+            tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
+        }else  {
+            tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4);
+        }
         int[] temps = {NTC1, NTC2, NTC3, NTC4, NTC5, NTC6, NTC7, NTC8};
         boolean anyIs45 = false;
         boolean anyIs50OrAbove = false;
