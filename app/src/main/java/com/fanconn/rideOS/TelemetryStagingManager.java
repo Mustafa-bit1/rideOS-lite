@@ -52,6 +52,6 @@ public class TelemetryStagingManager {
     }
 
     public void clear() {
-        dao.deleteByIds(new ArrayList<>());
+        new Thread(() -> dao.deleteAll()).start();
     }
 }

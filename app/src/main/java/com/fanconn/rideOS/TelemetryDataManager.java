@@ -13,6 +13,8 @@ public class TelemetryDataManager {
     private String teleLatLong;
     private int teleHandleLockState;
     private int teleSeatLockState;
+    private int teleStaggingCount;
+
     private String teleBMSMosStates;
     private String teleTirePressure;
     private String teleFTirePressureVoltage;
@@ -129,6 +131,14 @@ public class TelemetryDataManager {
 
     public void setTeleSeatLockState(int teleSeatLockState) {
         this.teleSeatLockState = teleSeatLockState;
+    }
+
+    public int getTeleStaggingCount() {
+        return teleStaggingCount;
+    }
+
+    public void setTeleStaggingCount(int teleStaggingCount) {
+        this.teleStaggingCount = teleStaggingCount;
     }
 
     public String getTeleBMSMosStates() {

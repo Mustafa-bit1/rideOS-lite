@@ -2684,7 +2684,9 @@ private int streamId = 0;
     }
 
     public void showCustomPopup(String title, String message) {
-        SoundPlayer.playOnce(context, R.raw.rescue_detected);
+        if(MainActivity.MainisActive){
+            SoundPlayer.playOnce(context, R.raw.rescue_detected);
+        }
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.apupopupdialog, null);
 
@@ -2810,8 +2812,9 @@ private int streamId = 0;
     private final Handler handler;
 
     public void showCustomPopupAPUdetected(String title, String message) {
-        SoundPlayer.playOnce(context, R.raw.rescue_detected);
-        // Prevent multiple popups
+        if(MainActivity.MainisActive){
+            SoundPlayer.playOnce(context, R.raw.rescue_detected);
+        }        // Prevent multiple popups
         if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
             return;
         }
@@ -2939,7 +2942,9 @@ private int streamId = 0;
     }
 
     public void showAPUDetachedPopup() {
-        SoundPlayer.playOnce(context, R.raw.rescue_detected);
+        if(MainActivity.MainisActive){
+            SoundPlayer.playOnce(context, R.raw.rescue_detected);
+        }
         activity.runOnUiThread(() -> {
 
             if (apuPopupDialog != null &&
@@ -3083,7 +3088,9 @@ private int streamId = 0;
     }
 
     public void showCustomPopupatSOC7(String title, String message) {
-        SoundPlayer.playOnce(context, R.raw.rescue_detected);
+        if(MainActivity.MainisActive){
+            SoundPlayer.playOnce(context, R.raw.rescue_detected);
+        }
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.popupdialog, null);
 

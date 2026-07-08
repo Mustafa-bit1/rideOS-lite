@@ -24,4 +24,7 @@ public interface TelemetryDao {
 
     @Query("DELETE FROM telemetry_queue WHERE id NOT IN (SELECT id FROM telemetry_queue ORDER BY id DESC LIMIT 86400)")
     void keepLast24Hours();
+
+    @Query("DELETE FROM telemetry_queue")
+    void deleteAll();
 }

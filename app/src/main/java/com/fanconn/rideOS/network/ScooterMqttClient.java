@@ -15,6 +15,7 @@ import com.fanconn.rideOS.DeviceBluetoothController;
 import com.fanconn.rideOS.FrameUtils;
 import com.fanconn.rideOS.MainActivity;
 import com.fanconn.rideOS.SerialPortManager;
+import com.fanconn.rideOS.StagedTelemetryController;
 import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.UpdateService;
 import com.fanconn.rideOS.aosp_mainActivity;
@@ -365,6 +366,36 @@ public class ScooterMqttClient {
                                 3000   // 3 seconds
                         );
 
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
+                case "STARTSTAGE":
+                    if ("1".equals(value)) {
+                        StagedTelemetryController
+                                .getInstance(context)
+                                .startSending();
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
+                case "STOPSTAGE":
+                    if ("1".equals(value)) {
+                        StagedTelemetryController
+                                .getInstance(context)
+                                .stopSending();
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
+                case "CLEARSTAGE":
+                    if ("1".equals(value)) {
+                        StagedTelemetryController
+                                .getInstance(context)
+                                .clearQueue();
                     } else {
                         ackStatus = "invalidcommand";
                     }

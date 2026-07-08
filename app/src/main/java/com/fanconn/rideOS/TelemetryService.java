@@ -572,13 +572,58 @@ public class TelemetryService extends Service {
         telemetryThread.start();
         telemetryHandler = new Handler(telemetryThread.getLooper());
 
+        ////Stagging controller>
+        StagedTelemetryController
+                .getInstance(getApplicationContext())
+                .initialize(stagedUploadRunnable);
+
         vehiclePrefs =
                 getSharedPreferences("vehicle_delta", MODE_PRIVATE);
 
         realtimePrefs =
                 getSharedPreferences("realtime_delta", MODE_PRIVATE);
     }
+    private final Runnable stagedUploadRunnable = new Runnable() {
 
+        @Override
+        public void run() {
+
+            StagedTelemetryController controller =
+                    StagedTelemetryController.getInstance(getApplicationContext());
+
+            if (!controller.shouldContinue()) {
+                controller.finished();
+                return;
+            }
+
+            if (!hasActiveInternetConnection()) {
+                telemetryHandler.postDelayed(this, 3000);
+                return;
+            }
+
+            TelemetryStagingManager manager =
+                    TelemetryStagingManager.getInstance(getApplicationContext());
+
+            if (!manager.hasData()) {
+                controller.finished();
+                return;
+            }
+
+            java.util.List<RealTimeData> batch = manager.pollBatch();
+
+            for (RealTimeData data : batch) {
+
+                sendToServer(data);
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException ignored) {
+                }
+            }
+//            Log.d("STAGE COUNT","REALTIME_JSON STAGE COUNT = "+ StagedTelemetryController.getInstance(context).getPendingPayloadCount());
+            telemetryHandler.postDelayed(this, 300);
+        }
+    };
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String vinNumber = intent != null ? intent.getStringExtra("VIN_NUMBER") : null;
@@ -649,6 +694,9 @@ public class TelemetryService extends Service {
 
               //This start sending RIVOT One app data seperately
                //     RideOSTelemetrySender.send(vin, rideOsVersion);
+
+//                    Log.d("STAGE COUNT","REALTIME_JSON STAGE COUNT SEND CONTINOS = "+ StagedTelemetryController.getInstance(context).getPendingPayloadCount());
+                    TelemetryDataManager.getInstance().setTeleStaggingCount(StagedTelemetryController.getInstance(context).getPendingPayloadCount());
 
                     sendRealTimeData(vin);
 //                    if (shdtelemetrywhenunlocked) {
@@ -1004,9 +1052,12 @@ public class TelemetryService extends Service {
 //                }).start();
 //            }
 
-            if (TelemetryStagingManager.getInstance(getApplicationContext()).hasData()) {
-                flushStagedData();
-            }
+            //START SENDNG STAGGED DATA AS SOON AS INTERNET IS AVALBALE
+//            if (TelemetryStagingManager.getInstance(getApplicationContext()).hasData()) {
+//                flushStagedData();
+//            }
+            //==end========START SENDNG STAGGED DATA AS SOON AS INTERNET IS AVALBALE
+
             // Send current data
             //DataUsageTracker tracker = new DataUsageTracker();
             //tracker.startTracking();
@@ -1084,7 +1135,7 @@ public class TelemetryService extends Service {
         //int mcuVersion = getEffectiveMcuVersion();
         int temps = getCriticalTemps();
         UIUpdater uiUpdater = UIUpdater.getInstance();
-        data.data = String.valueOf(TelemetryDataManager.getInstance().isGpsTelemetryEnabled() ? 1 : 0);
+        data.data = (TelemetryDataManager.getInstance().isGpsTelemetryEnabled() ? 1 : 0) +","+TelemetryDataManager.getInstance().getTeleStaggingCount();
 
 //        if (uiUpdater!=null) {
 //            data.data = TelemetryDataManager.getInstance().getTeleRange()+";"+TelemetryDataManager.getInstance().getBMSTeleSOC()+";"+TelemetryDataManager.getInstance().getBMSTeleRemainingCapacityAH()+
