@@ -135,7 +135,7 @@ public class BatteryPackSwitchHelper {
                 } else {
 
                     failSequence(
-                            "Failed to turn ON APU Charge Switch"
+                            "Failed to turn ON rescue pack charge switch"
                     );
                 }
             }
@@ -144,7 +144,7 @@ public class BatteryPackSwitchHelper {
     }
     private void apuDischargeON() {
 
-        callback.onProgress("Turning ON APU (2/2)...");
+        callback.onProgress("Turning ON rescue pack (2/2)...");
 
         serialPortManager.VCUSendToMCU(
                 "FFAA5501030015162C02800101020304050607"
@@ -164,7 +164,7 @@ public class BatteryPackSwitchHelper {
                 UIUpdater.apuflag = true;
 
                 callback.onSuccess(
-                        "Successfully switched to APU"
+                        "Successfully switched to rescue pack"
                 );
 
             } else {
@@ -178,7 +178,7 @@ public class BatteryPackSwitchHelper {
                 } else {
 
                     failSequence(
-                            "Failed to turn ON APU Discharge switch"
+                            "Failed to turn ON rescue pack discharge switch"
                     );
                 }
             }
@@ -198,7 +198,7 @@ public class BatteryPackSwitchHelper {
         retryCount = 0;
 
         callback.onProgress(
-                "Turning OFF APU Discharge..."
+                "Turning OFF rescue pack discharge..."
         );
         handler.postDelayed(() -> {
             apuDischargeOFF();
@@ -235,7 +235,7 @@ public class BatteryPackSwitchHelper {
                 } else {
 
                     failSequence(
-                            "Failed to turn OFF APU Discharge"
+                            "Failed to turn OFF rescue pack discharge"
                     );
                 }
             }
@@ -321,7 +321,7 @@ public class BatteryPackSwitchHelper {
                 UIUpdater.apuflag = false;
 
                 callback.onSuccess(
-                        "Successfully restored Main Battery"
+                        "Successfully restored main battery"
                 );
 
             } else {
@@ -336,7 +336,7 @@ public class BatteryPackSwitchHelper {
 
                     isSequenceActive = false;
                     callback.onFailure(
-                            "Failed to restore Main Battery.\nContact RIVOT-care 8988984646."
+                            "Failed to restore main battery.\nContact RIVOT-care 8988984646."
                     );
                 }
             }

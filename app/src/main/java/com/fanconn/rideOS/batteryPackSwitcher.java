@@ -42,7 +42,7 @@ public class batteryPackSwitcher {
         if (statusTextView != null) {
             statusTextView.setVisibility(View.VISIBLE);
         }
-        updateStatusText("Switching to APU, Please wait...");
+        updateStatusText("Switching to rescue pack, Please wait...");
         mainChargeOFF();
     }
 
@@ -68,7 +68,7 @@ public class batteryPackSwitcher {
                 // Check again if main charge is really off
                 boolean mainChargeStillOn = (hb3 != null && hb3.getMainChargeMosState() != 0);
                 //Log.d("CommandSequence", "This-B------------"+hb3.getMainChargeMosState());
-                updateStatusText("Successfully Switched To APU");
+                updateStatusText("Successfully Switched To rescue pack");
                 UIUpdater.apuflag=true;
                 if(serialPortManager!=null){
                     serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
@@ -78,7 +78,7 @@ public class batteryPackSwitcher {
 //                            serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 2000);
                 }
 
-                Log.i("CommandSequence", "Switched TO APU succeeded");
+                //Log.i("CommandSequence", "Switched TO APU succeeded");
                 new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     if (statusTextView != null) {
                         statusTextView.setVisibility(View.INVISIBLE);
@@ -100,7 +100,7 @@ public class batteryPackSwitcher {
 //                    isSequenceActive = false;
 //                }
             } else {
-                Log.e("CommandSequence", "APU Dis ON failed after max retries");
+                //Log.e("CommandSequence", "APU Dis ON failed after max retries");
                 isSequenceActive = false;
                 if(statusTextView!=null){
                 statusTextView.setVisibility(View.INVISIBLE);}
@@ -139,7 +139,7 @@ public class batteryPackSwitcher {
 //                    isSequenceActive = false;
 //                }
             } else {
-                Log.e("CommandSequence", "APU Dis ON failed after max retries");
+                //Log.e("CommandSequence", "APU Dis ON failed after max retries");
                 isSequenceActive = false;
                 if(statusTextView!=null){
                     statusTextView.setVisibility(View.INVISIBLE);}

@@ -645,7 +645,6 @@ public class TelemetryService extends Service {
                             22, TelemetryDataManager.getInstance().getTeleLatLong());
                     TelemetryDataManager.getInstance()
                             .setTeleEvPowerState(shdtelemetrywhenunlocked ? 1 : 0);
-
 //                    RideOSTelemetrySender.send(vin);
 
               //This start sending RIVOT One app data seperately
@@ -1071,7 +1070,7 @@ public class TelemetryService extends Service {
         data.inAH_by_charger = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleChargerAH());
         data.inAH_by_regen = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleRegenAH());
         data.outAH = roundTo3Decimal(TelemetryDataManager.getInstance().getTeleDischargeAH());
-        data.ev_power_state = (shdtelemetrywhenunlocked ? "1" : "0");
+        data.ev_power_state = (shdtelemetrywhenunlocked ? "ON" : "OFF");
         data.currentRider = shdtelemetrywhenunlocked ? TelemetryDataManager.getInstance().getTeleCurrentRider() : "Scooter Locked";
         data.tirepressure = TelemetryDataManager.getInstance().getTeleTirePressure();
 

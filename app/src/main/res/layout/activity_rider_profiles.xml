@@ -62,7 +62,7 @@
         android:layout_marginEnd="30dp"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
-        android:src="@drawable/rideerprofilebackbtn"
+        android:src="@drawable/rider_profile_back_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,7 +74,7 @@
         android:layout_marginEnd="50dp"
         android:background="@android:color/transparent"
         android:scaleType="fitXY"
-        android:src="@drawable/ridepronextbtn"
+        android:src="@drawable/next_btn_riderprofile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -197,8 +197,7 @@
                     android:background="@drawable/rounded_edittext_border"
                     android:fontFamily="@font/kanit"
                     android:hint="Enter Name"
-                    android:inputType="textPersonName"
-                    android:textColor="@color/white"
+                    android:inputType="textCapSentences"                    android:textColor="@color/white"
                     android:textColorHint="#808080"
                     android:textSize="22sp"
                     android:paddingStart="30dp"
@@ -379,62 +378,101 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnKeepPin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/skip_security_btn"
+                        android:layout_marginTop="20dp"
+                        android:paddingHorizontal="20dp"
+                        android:text="Keep existing PIN"
+                        android:textColor="@color/white"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
 
-                <!-- ⭐ PATTERN SECTION — CENTERED BELOW PIN EXACTLY -->
-
-                <com.fanconn.rideOS.authen.PatternViewRegister
-                    android:id="@+id/patternViewRegister"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_gravity="center"
-                    android:background="@android:color/transparent"
-                    android:visibility="gone"/>
-
-                <TextView
-                    android:id="@+id/TVdrawpat"
-                    android:layout_width="wrap_content"
+                <!--  PATTERN SECTION — CENTERED BELOW PIN EXACTLY -->
+                <LinearLayout
+                    android:id="@+id/patternContainer"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Draw Pattern"
-                    android:layout_marginTop="15dp"
-                    android:textColor="#9D9D9D"
-                    android:textSize="21sp"
-                    android:fontFamily="@font/kanit"
-                    android:visibility="gone"/>
+                    android:orientation="vertical">
+
+                    <com.fanconn.rideOS.authen.PatternViewRegister
+                        android:id="@+id/patternViewRegister"
+                        android:layout_width="250dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        android:background="@android:color/transparent"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/TVdrawpat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Draw Pattern"
+                        android:layout_marginTop="5dp"
+                        android:textColor="#9D9D9D"
+                        android:textSize="21sp"
+                        android:fontFamily="@font/kanit"
+                        android:visibility="gone"/>
 
 
-                <com.fanconn.rideOS.authen.PatternViewRegister
-                    android:id="@+id/patternViewConfirm"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_gravity="center"
-                    android:background="@android:color/transparent"
-                    android:visibility="gone"/>
+                    <com.fanconn.rideOS.authen.PatternViewRegister
+                        android:id="@+id/patternViewConfirm"
+                        android:layout_width="250dp"
+                        android:layout_height="250dp"
+                        android:layout_gravity="center"
+                        android:background="@android:color/transparent"
+                        android:visibility="gone"/>
 
-                <TextView
-                    android:id="@+id/TVconfirmpat"
-                    android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/TVconfirmpat"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:text="Confirm Pattern"
+                        android:textColor="#9D9D9D"
+                        android:textSize="21sp"
+                        android:fontFamily="@font/kanit"
+                        android:visibility="gone"/>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnKeepPattern"
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:text="Confirm Pattern"
-                    android:textColor="#9D9D9D"
-                    android:layout_marginTop="15dp"
-                    android:textSize="21sp"
-                    android:fontFamily="@font/kanit"
+                    android:paddingHorizontal="20dp"
+                    android:textSize="16sp"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/skip_security_btn"
+                    android:text="Keep existing pattern"
                     android:visibility="gone"/>
+
                 <Button
                     android:id="@+id/btnClearPattern"
-                    android:layout_width="180dp"
-                    android:layout_height="50dp"
+                    android:layout_width="200dp"
+                    android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="15dp"
+                    android:paddingHorizontal="20dp"
                     android:text="Clear Pattern"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@android:color/white"
-                    android:background="@drawable/rounded_edittext_border"
+                    android:background="@drawable/skip_security_btn"
                     android:visibility="gone"/>
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -483,15 +521,16 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="100 kmph"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#A3A3A3"
                             android:textSize="20sp"
+                            android:layout_marginTop="5dp"
                             android:fontFamily="@font/kanit" />
                     </LinearLayout>
                         <FrameLayout
                             android:layout_width="260dp"
                             android:layout_height="wrap_content"
                             android:clipToPadding="false"
-                            android:layout_marginStart="25dp"
+                            android:layout_marginStart="23dp"
                            >
 
                             <SeekBar
@@ -506,8 +545,6 @@
                                 android:progressTint="#FFEE00"
                                 android:progressBackgroundTint="#FFFFFF" />
                         </FrameLayout>
-
-
 
                 </LinearLayout>
 
@@ -524,24 +561,24 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         >
-                    <TextView
+                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Torque"
                         android:textColor="#FFFFFF"
                         android:textSize="21sp"
                         android:fontFamily="@font/kanit" />
-                    <TextView
+                     <TextView
                         android:id="@+id/tvTorqueLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Lvl 2"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#A3A3A3"
                         android:textSize="20sp"
                         android:fontFamily="@font/kanit"
                         android:layout_marginTop="5dp" />
 
-                </LinearLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -556,8 +593,9 @@
                         android:layout_height="wrap_content"
                         android:max="4"
                         android:progress="4"
-                        android:paddingStart="35dp"
+                        android:paddingStart="25dp"
                         android:paddingEnd="25dp"
+                        android:layout_marginStart="13dp"
                         android:thumb="@drawable/reverse_speed_seekbarthumb"
                         android:progressTint="#F88213"
                         android:progressBackgroundTint="#FFFFFF" />
@@ -567,6 +605,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:weightSum="5"
+                        android:layout_marginStart="13dp"
                         android:layout_marginTop="8dp">
 
                         <TextView
@@ -659,7 +698,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Lvl 2"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#A3A3A3"
                             android:textSize="20sp"
                             android:fontFamily="@font/kanit"
                             android:layout_marginTop="5dp" />
@@ -679,7 +718,7 @@
                         android:layout_height="wrap_content"
                         android:max="4"
                         android:progress="4"
-                        android:paddingStart="25dp"
+                        android:paddingStart="35dp"
                         android:paddingEnd="35dp"
                         android:thumb="@drawable/reverse_speed_seekbarthumb"
                         android:progressTint="#F88213"
@@ -751,7 +790,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Lvl 2"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#A3A3A3"
                             android:textSize="20sp"
                             android:fontFamily="@font/kanit"
                             android:layout_marginTop="5dp" />
@@ -772,7 +811,7 @@
                         android:max="5"
                         android:progress="2"
                         android:paddingStart="25dp"
-                        android:paddingEnd="35dp"
+                        android:paddingEnd="25dp"
                         android:thumb="@drawable/reverse_speed_seekbarthumb"
                         android:progressTint="#F88213"
                         android:progressBackgroundTint="#FFFFFF" />

@@ -623,7 +623,6 @@ public class UIUpdater  {
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
          //       Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
-
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//STOP SCOOTER, phase zero
                 //new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
@@ -746,7 +745,7 @@ public class UIUpdater  {
             isApuConnected = true;
            // Log.d("APU", "APU Connected");
             InactivityManager.getInstance().stopTimer();
-            showCustomPopupAPUdetected("Assistance", "APU detected. Do you want to switch to APU?");
+            showCustomPopupAPUdetected("Assistance", "Rescue pack detected. Do you want to switch to rescue battery pack?");
         }
         tm.setTeleAPUBatVoltage(hb3.getAPUbatvoltage()/10);
         // Ensure the disconnect watcher is running only once
@@ -765,7 +764,7 @@ public class UIUpdater  {
             //binding.APUbatteryTV.setVisibility(View.VISIBLE);
            //binding.apubaticon.setVisibility(View.VISIBLE);
             binding.APUbatteryImageView.setVisibility(View.VISIBLE);
-            binding.APUbatteryTV.setText("APU "+sAPUBatteryLevel + "% ");
+            binding.APUbatteryTV.setText("Rescue "+sAPUBatteryLevel + "% ");
         }//  |  ~ "+range+" km");}
 
         int batteryImageResId = getBatteryImageResource(APUbatteryLevel);
@@ -818,7 +817,6 @@ public class UIUpdater  {
                         }
                         InactivityManager.getInstance().stopTimer();
                         showAPUDetachedPopup();
-                        Log.d("sadfsgdg","APUDETAHC POPUP");
                     }
 
                     binding.APUbatteryTV.setVisibility(View.GONE);
@@ -2686,7 +2684,7 @@ private int streamId = 0;
     }
 
     public void showCustomPopup(String title, String message) {
-
+        SoundPlayer.playOnce(context, R.raw.rescue_detected);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.apupopupdialog, null);
 
@@ -2812,7 +2810,7 @@ private int streamId = 0;
     private final Handler handler;
 
     public void showCustomPopupAPUdetected(String title, String message) {
-
+        SoundPlayer.playOnce(context, R.raw.rescue_detected);
         // Prevent multiple popups
         if (apuPopupDialog != null && apuPopupDialog.isShowing()) {
             return;
@@ -2907,7 +2905,7 @@ private int streamId = 0;
 
                                     dialogMessage.setText(message);
 
-                                    btnYes.setText("REVERT BACK");
+                                    btnYes.setText("Revert back");
 
                                     btnYes.setVisibility(View.VISIBLE);
 
@@ -2941,7 +2939,7 @@ private int streamId = 0;
     }
 
     public void showAPUDetachedPopup() {
-
+        SoundPlayer.playOnce(context, R.raw.rescue_detected);
         activity.runOnUiThread(() -> {
 
             if (apuPopupDialog != null &&
@@ -2996,13 +2994,13 @@ private int streamId = 0;
             Button btnNo =
                     dialogView.findViewById(R.id.btnNo);
 
-            dialogTitle.setText("APU Detached");
+            dialogTitle.setText("Rescue battery detached");
 
             dialogMessage.setText(
-                    "The auxilary battery is removed from scooter.\nRollback to main battery"
+                    "The rescue battery pack is removed from the scooter.\nRollback to main battery"
             );
 
-            btnYes.setText("ROLLBACK");
+            btnYes.setText("Rollback");
 
             btnNo.setVisibility(View.GONE);
 
@@ -3077,7 +3075,7 @@ private int streamId = 0;
                 helper[0].startEmergencyMainBatteryRestore();
             });
 
-            Log.d("APU_POPUP", "SHOWING DETACHED POPUP");
+           // Log.d("APU_POPUP", "SHOWING DETACHED POPUP");
 
             apuPopupDialog.show();
 
@@ -3085,7 +3083,7 @@ private int streamId = 0;
     }
 
     public void showCustomPopupatSOC7(String title, String message) {
-
+        SoundPlayer.playOnce(context, R.raw.rescue_detected);
         LayoutInflater inflater = LayoutInflater.from(context);
         View dialogView = inflater.inflate(R.layout.popupdialog, null);
 

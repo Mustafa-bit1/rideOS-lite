@@ -50,6 +50,8 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:text="OK"
+            android:textSize="18dp"
+            android:textAllCaps="false"
             android:background="@drawable/bg_btn_rounded"
             android:textColor="#FFFFFF" />
 
@@ -59,8 +61,10 @@
             android:layout_width="160dp"
             android:layout_height="wrap_content"
             android:text="Decline"
+            android:textSize="18dp"
             android:background="@drawable/bg_btn_rounded_uncheck"
             android:textColor="#000000"
+            android:textAllCaps="false"
             android:layout_marginStart="20dp" />
     </LinearLayout>
 

@@ -62,6 +62,9 @@ public class riderProfilesFragment extends Fragment {
     // Shared prefs
     private SharedPreferences sharedPreferences;
     private Button btnClearPattern;
+
+    Button btnKeepPin;
+    Button btnKeepPattern;
     // Containers & UI
     private View initialContainer;
     private View settingsParent;
@@ -69,7 +72,7 @@ public class riderProfilesFragment extends Fragment {
     private LinearLayout ridersContainer;
     private ImageButton btnAddRider;      // initial screen add button
 
-    private LinearLayout basicContainer, advancedContainer, securityContainer;
+    private LinearLayout basicContainer, advancedContainer, securityContainer,pinContainer,patternContainer;
 
     // BASIC
     private EditText etUsername, etPhone, etAge;
@@ -107,6 +110,9 @@ public class riderProfilesFragment extends Fragment {
     private int pickupLevel = 2;
 
     private int brakingLevel = 3;
+
+    private boolean keepExistingPin = false;
+    private boolean keepExistingPattern = false;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -124,6 +130,9 @@ public class riderProfilesFragment extends Fragment {
         basicContainer = view.findViewById(R.id.basicContainer);
         advancedContainer = view.findViewById(R.id.advancedContainer);
         securityContainer = view.findViewById(R.id.securityContainer);
+
+        pinContainer = view.findViewById(R.id.pinContainer);
+        patternContainer = view.findViewById(R.id.patternContainer);
 
         btnBack = view.findViewById(R.id.btnBack);
         btnNext = view.findViewById(R.id.btnNext);
@@ -191,7 +200,9 @@ public class riderProfilesFragment extends Fragment {
                 }
 
                 isUpdating = false;
+                updateNextButtonState();
             }
+
         });
 
         etAge = view.findViewById(R.id.etAge);
@@ -212,6 +223,7 @@ public class riderProfilesFragment extends Fragment {
 
                     etAge.clearFocus();   // optional
                 }
+                updateNextButtonState();
             }
         });
 
@@ -236,6 +248,10 @@ public class riderProfilesFragment extends Fragment {
         patternViewRegister = view.findViewById(R.id.patternViewRegister);
         patternViewConfirm = view.findViewById(R.id.patternViewConfirm);
         btnClearPattern = view.findViewById(R.id.btnClearPattern);
+
+        btnKeepPin = view.findViewById(R.id.btnKeepPin);
+        btnKeepPattern = view.findViewById(R.id.btnKeepPattern);
+
         btnRegister = view.findViewById(R.id.btnsave);
         btnRegister.setVisibility(View.GONE);
 
@@ -416,8 +432,17 @@ public class riderProfilesFragment extends Fragment {
 
             btnBack.setVisibility(View.VISIBLE);
             btnNext.setVisibility(View.VISIBLE);
+            btnNext.setEnabled(false);
+            btnNext.setAlpha(0.1f);
 
             clearEntryFields();
+
+            btnKeepPin.setVisibility(View.GONE);
+            btnKeepPattern.setVisibility(View.GONE);
+            keepExistingPin = false;
+            keepExistingPattern = false;
+            isEditMode = false;
+
             InactivityManager.getInstance().stopTimer();
         });
 
@@ -450,7 +475,9 @@ public class riderProfilesFragment extends Fragment {
             // show first pattern again
             patternViewRegister.setVisibility(View.VISIBLE);
             TVdrawpat.setVisibility(View.VISIBLE);
-
+            btnKeepPattern.setVisibility(
+                    isEditMode ? View.VISIBLE : View.GONE
+            );
             TVdrawpat.setText("Draw Pattern");
             TVdrawpat.setTextColor(Color.parseColor("#9D9D9D"));
 
@@ -551,20 +578,22 @@ public class riderProfilesFragment extends Fragment {
                     pinMatched = true;
 
                     // show pattern setup
+                    // Hide PIN section
+                    pinContainer.setVisibility(View.GONE);
+
+// Show Pattern section
+                    patternContainer.setVisibility(View.VISIBLE);
+
                     patternViewRegister.setVisibility(View.VISIBLE);
                     TVdrawpat.setVisibility(View.VISIBLE);
-
-                    btnClearPattern.setVisibility(View.VISIBLE);
+                    TVdrawpat.setText("Draw Pattern");
 
                     patternViewConfirm.setVisibility(View.GONE);
                     TVconfirmpat.setVisibility(View.GONE);
 
-                    // hide PIN inputs
-                    etPin.setVisibility(View.GONE);
-                    etPinConfirm.setVisibility(View.GONE);
+                    //btnClearPattern.setVisibility(View.VISIBLE);
 
-                    tvEnterPin.setVisibility(View.GONE);
-                    tvConfirmPin.setVisibility(View.GONE);
+                    btnKeepPattern.setVisibility(isEditMode ? View.VISIBLE : View.GONE);
 
                     resetPatterns();
                 }
@@ -678,6 +707,49 @@ public class riderProfilesFragment extends Fragment {
 
         });
 
+        btnKeepPin.setOnClickListener(v -> {
+
+            keepExistingPin = true;
+
+            pinContainer.setVisibility(View.GONE);
+
+            patternContainer.setVisibility(View.VISIBLE);
+
+            patternViewRegister.setVisibility(View.VISIBLE);
+            TVdrawpat.setVisibility(View.VISIBLE);
+            TVdrawpat.setText("Draw Pattern");
+
+            patternViewConfirm.setVisibility(View.GONE);
+            TVconfirmpat.setVisibility(View.GONE);
+
+            btnKeepPattern.setVisibility(
+                    isEditMode ? View.VISIBLE : View.GONE
+            );
+            //btnClearPattern.setVisibility(View.VISIBLE);
+
+            showCustomToast("Existing PIN will be set");
+        });
+        btnKeepPattern.setOnClickListener(v -> {
+
+            keepExistingPattern = true;
+
+            patternViewRegister.setVisibility(View.GONE);
+            patternViewConfirm.setVisibility(View.GONE);
+
+            TVconfirmpat.setVisibility(View.GONE);
+
+            btnClearPattern.setVisibility(View.GONE);
+
+            btnKeepPattern.setVisibility(View.GONE);
+
+            TVdrawpat.setVisibility(View.VISIBLE);
+            TVdrawpat.setText("Verified Successfully, Please save your profile");
+            TVdrawpat.setTextColor(getResources().getColor(android.R.color.holo_blue_bright));
+
+            btnRegister.setVisibility(View.VISIBLE);
+
+            showCustomToast("Existing Pattern will be set");
+        });
 
 
         return view;
@@ -729,14 +801,36 @@ public class riderProfilesFragment extends Fragment {
 
 
     private void showSecurityTab() {
+
         basicContainer.setVisibility(View.GONE);
         advancedContainer.setVisibility(View.GONE);
         securityContainer.setVisibility(View.VISIBLE);
 
         btnNext.setVisibility(View.GONE);
-        btnRegister.setVisibility(View.VISIBLE);
-    }
 
+        pinContainer.setVisibility(View.VISIBLE);
+        patternContainer.setVisibility(View.GONE);
+
+        if (isEditMode) {
+            btnKeepPin.setVisibility(View.VISIBLE);
+        } else {
+            btnKeepPin.setVisibility(View.GONE);
+        }
+        etPin.setHint(isEditMode ? "● ● ● ●" : "Enter PIN");
+        etPinConfirm.setHint(isEditMode ? "● ● ● ●" : "Confirm PIN");
+
+        btnKeepPattern.setVisibility(View.GONE);
+
+        //btnRegister.setVisibility(View.VISIBLE);
+
+        // reset security UI
+        etPin.setVisibility(View.VISIBLE);
+        etPinConfirm.setVisibility(View.VISIBLE);
+        tvEnterPin.setVisibility(View.VISIBLE);
+        tvConfirmPin.setVisibility(View.VISIBLE);
+
+        resetPatterns();
+    }
 
     private void clearEntryFields() {
         etUsername.setText("");
@@ -766,7 +860,7 @@ public class riderProfilesFragment extends Fragment {
         selectedPattern.clear();
         firstPattern.clear();
         confirmPattern.clear();
-
+        updateNextButtonState();
 //        customKeypad.setVisibility(View.GONE);
     }
 
@@ -911,6 +1005,12 @@ public class riderProfilesFragment extends Fragment {
 
         isEditMode = true;
         editingUsername = username;
+
+        btnKeepPin.setVisibility(View.VISIBLE);
+        btnKeepPattern.setVisibility(View.GONE);
+
+        keepExistingPin = false;
+        keepExistingPattern = false;
     }
     private int getRegisteredRiderCount() {
         Set<String> usernames = new HashSet<>();
@@ -989,25 +1089,33 @@ public class riderProfilesFragment extends Fragment {
         }
 
         // -------- PIN VALIDATION ----------
-        if (TextUtils.isEmpty(pin) || TextUtils.isEmpty(pinConfirm)) {
-            playErrorSound();
-            showCustomToasterror("Please enter PIN");
-            return;
+        if (!keepExistingPin) {
+
+            if (TextUtils.isEmpty(pin) || TextUtils.isEmpty(pinConfirm)) {
+                playErrorSound();
+                showCustomToasterror("Please enter PIN");
+                return;
+            }
+
+            if (!pin.equals(pinConfirm)) {
+                playErrorSound();
+                etPin.setText("");
+                etPinConfirm.setText("");
+                showCustomToasterror("PIN does not match");
+                return;
+            }
         }
 
-        if (!pin.equals(pinConfirm)) {
-            playErrorSound();
-            etPin.setText("");
-            etPinConfirm.setText("");
-            showCustomToasterror("PIN does not match");
-            return;
-        }
 
         // -------- PATTERN VALIDATION -------
-        if (!isPatternConfirmed || selectedPattern.size() < 4) {
-            playErrorSound();
-            showCustomToasterror("Please draw and confirm the pattern");
-            return;
+        if (!keepExistingPattern) {
+
+            if (!isPatternConfirmed || selectedPattern.size() < 4) {
+
+                playErrorSound();
+                showCustomToasterror("Please draw and confirm the pattern");
+                return;
+            }
         }
 
         // -------- SAVE USER ---------------
@@ -1028,13 +1136,21 @@ public class riderProfilesFragment extends Fragment {
                     String.valueOf(brakingLevel));
 
             // Save PIN
-            String salt = generateSalt();
-            String hashedPin = hashWithSalt(pin, salt);
+            if (!keepExistingPin) {
 
-            editor.putString("user_" + finalUsername + "_salt", salt);
-            editor.putString("user_" + finalUsername + "_pin", hashedPin);
-            editor.putString("user_" + finalUsername + "_pattern",
-                    TextUtils.join("", selectedPattern));
+                String salt = generateSalt();
+                String hashedPin = hashWithSalt(pin, salt);
+
+                editor.putString("user_" + finalUsername + "_salt", salt);
+                editor.putString("user_" + finalUsername + "_pin", hashedPin);
+            }
+            if (!keepExistingPattern) {
+
+                editor.putString(
+                        "user_" + finalUsername + "_pattern",
+                        TextUtils.join("", selectedPattern)
+                );
+            }
 
             editor.apply();
             if (isEditMode) {
@@ -1307,6 +1423,11 @@ public class riderProfilesFragment extends Fragment {
         etPin.setText("");
         etPinConfirm.setText("");
 
+        keepExistingPin = false;
+        keepExistingPattern = false;
+        btnKeepPin.setVisibility(View.GONE);
+        btnKeepPattern.setVisibility(View.GONE);
+        isEditMode = false;
         // Reset pattern data
         pinMatched = false;
         isPatternConfirmed = false;
@@ -1331,6 +1452,8 @@ public class riderProfilesFragment extends Fragment {
         etPinConfirm.setVisibility(View.VISIBLE);
         tvEnterPin.setVisibility(View.VISIBLE);
         tvConfirmPin.setVisibility(View.VISIBLE);
+
+        updateNextButtonState();
     }
 
     // --------------------------
@@ -1372,10 +1495,8 @@ public class riderProfilesFragment extends Fragment {
         }
 
         // show PIN inputs to allow user to set PIN
-        patternViewRegister.setVisibility(View.GONE);
-        patternViewConfirm.setVisibility(View.GONE);
-        etPin.setVisibility(View.VISIBLE);
-        etPinConfirm.setVisibility(View.VISIBLE);
+        pinContainer.setVisibility(View.VISIBLE);
+        patternContainer.setVisibility(View.GONE);
         tvEnterPin.setVisibility(View.VISIBLE);
         tvConfirmPin.setVisibility(View.VISIBLE);
         TVconfirmpat.setVisibility(View.GONE);
@@ -1427,6 +1548,7 @@ public class riderProfilesFragment extends Fragment {
                 TVconfirmpat.setVisibility(View.VISIBLE);
 
                 if (TVconfirmpat.getVisibility() == View.VISIBLE) {
+                    btnKeepPattern.setVisibility(View.GONE);
                     btnClearPattern.setVisibility(View.VISIBLE);
                 }
             });
@@ -1467,6 +1589,7 @@ public class riderProfilesFragment extends Fragment {
                 patternViewConfirm.setVisibility(View.GONE);
                 TVconfirmpat.setVisibility(View.GONE);
                 btnClearPattern.setVisibility(View.GONE);
+                btnKeepPattern.setVisibility(View.GONE);
                 // Show Verified tick text
                 TVdrawpat.setVisibility(View.VISIBLE);
                 TVdrawpat.setText("Verified Successfully, Please save your profile");
@@ -1615,6 +1738,40 @@ public class riderProfilesFragment extends Fragment {
         }
 
         return false;
+    }
+
+    private void updateNextButtonState() {
+
+        String name = etUsername.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+        String age = etAge.getText().toString().trim();
+
+        boolean valid = true;
+
+        if (name.isEmpty()) {
+            valid = false;
+        }
+
+        if (!phone.matches("\\d{10}")) {
+            valid = false;
+        }
+
+        if (age.isEmpty()) {
+            valid = false;
+        } else {
+            try {
+                int a = Integer.parseInt(age);
+
+                if (a < 18 || a > 110) {
+                    valid = false;
+                }
+            } catch (Exception e) {
+                valid = false;
+            }
+        }
+
+        btnNext.setEnabled(valid);
+        btnNext.setAlpha(valid ? 1f : 0.4f);
     }
 
 }
