@@ -158,10 +158,13 @@ public class BLEScanService extends Service {
             UIUpdater.getInstance().stopKeylostRedAlertAnimation();
             UIUpdater.getInstance().stopBeeping();
         }
-        else Log.d("BLEKeyService","DETCETDBUTELSE OF222");
+        else {
+//            Log.d("BLEKeyService","DETCETDBUTELSE OF222");
+        }
 
         if (LoginActivity.getInstance() != null) {
             LoginActivity.getInstance().loginSuccess("Key Rider");
+
 //            Log.d("BLEKeyService","Emtered to call loginsucces method");
 
             PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -195,39 +198,42 @@ public class BLEScanService extends Service {
             SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A01");
             handler.postDelayed(() ->
                     SerialPortManager.getInstance().VCUSendToMCU("FFAA550101000A01"), 500);
-//            Log.d("BLEKeyService","DETCETDBUTIFFF OF444");
+//            Log.d("BLEKeyService","DETCETDBUTIFFF OF 444");
 
         }
-        else{Log.d("BLEKeyService","DETCETDBUTELSE OF444");}
+        else{
+//            Log.d("BLEKeyService","DETCETDBUTELSE OF 444");
+        }
     }
 
     // ---------------- Out-of-range ----------------
     private void handleOutOfRange() {
 
-         Log.e(TAG, " " + unlockedBy + " OUT OF RANGE");
+//         Log.e(TAG, " " + unlockedBy + " OUT OF RANGE");
         keyInRange = false;
         consecutiveOutOfRangeCount = 0;
 
         int rpm = SerialPortManager.getInstance().getHb3().getBSG2_BYTE78();
 
-        if (MainActivity.MainisActive) {
-
-            if (rpm == 0) {
-                EVLockService.getInstance().startLockSequence();
-                if (UIUpdater.getInstance() != null) {
-                    UIUpdater.getInstance().onDoubleTapAction();
-                    UIUpdater.getInstance().stopKeylostRedAlertAnimation();
-                    UIUpdater.getInstance().stopBeeping();
-                }
-            }
-//            } else {
-//                keyLostWhileMoving = true;
+        //Uncomment below if block to lock scooter when out of range
+//        if (MainActivity.MainisActive) {
+//
+//            if (rpm == 0) {
+//                EVLockService.getInstance().startLockSequence();
 //                if (UIUpdater.getInstance() != null) {
-//                    UIUpdater.getInstance().startKeylostRedAlertAnimation();
-//                    UIUpdater.getInstance().startBeeping(4);
+//                    UIUpdater.getInstance().onDoubleTapAction();
+//                    UIUpdater.getInstance().stopKeylostRedAlertAnimation();
+//                    UIUpdater.getInstance().stopBeeping();
 //                }
 //            }
-        }
+////            } else {
+////                keyLostWhileMoving = true;
+////                if (UIUpdater.getInstance() != null) {
+////                    UIUpdater.getInstance().startKeylostRedAlertAnimation();
+////                    UIUpdater.getInstance().startBeeping(4);
+////                }
+////            }
+//        }
 
         if (MainActivity.instance != null)
             MainActivity.instance.updateKeyImage(false);
@@ -264,7 +270,7 @@ public class BLEScanService extends Service {
             BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
 
             if (adapter == null || !adapter.isEnabled()) {
-                  Log.w(TAG, " Bluetooth disabled, skipping scan");
+//                  Log.w(TAG, " Bluetooth disabled, skipping scan");
                 handler.postDelayed(this, 1000);
                 return;
             }
@@ -279,7 +285,7 @@ public class BLEScanService extends Service {
                 if (!isScanning) {
                     scanner.startScan(null, buildScanSettings(), scanCallback);
                     isScanning = true;
-                    //Log.d(TAG, " BLE scan started");
+//                    Log.d(TAG, " BLE scan started");
                 }
             } catch (IllegalStateException e) {
 //                  Log.w(TAG, " startScan failed (BT state change)");
@@ -439,7 +445,7 @@ public class BLEScanService extends Service {
         SharedPreferences prefs = getSharedPreferences("ble_settings", MODE_PRIVATE);
         rssiUnlockThreshold = prefs.getInt("rssi_unlock_threshold", -65);
 
-        //Log.d(TAG, "Loaded RSSI unlock threshold = " + rssiUnlockThreshold);
+//        Log.d(TAG, "Loaded RSSI unlock threshold = " + rssiUnlockThreshold);
     }
     @Nullable
     @Override

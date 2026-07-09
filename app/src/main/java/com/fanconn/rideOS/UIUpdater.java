@@ -2625,6 +2625,7 @@ private int streamId = 0;
     private void updateCanData1806E5F4(Heartbeat3 hb3) {
          tm.setMax_voltage_value(hb3.getTotal_max_voltage_limit());
         tm.setAlowable_charging_current_value(hb3.getAllowable_Charging_currentValue());
+//        Log.d("CC","ALLOWABLECC "+hb3.getAllowable_Charging_currentValue());
     }
 
     /**
