@@ -514,6 +514,21 @@ public class riderProfilesFragment extends Fragment {
                 }
 
                 if (pin.length() == 4) {
+
+                    if (isPinAlreadyUsed(pin)) {
+
+                        playErrorSound();
+
+                        showCustomToasterror("Invalid PIN. Try a different PIN ");
+
+                        etPin.setText("");
+
+                        etPin.requestFocus();
+
+                        isUpdating = false;
+                        return;
+                    }
+
                     etPinConfirm.requestFocus();
                 }
 
@@ -1538,6 +1553,15 @@ public class riderProfilesFragment extends Fragment {
                 firstPattern.clear();
                 firstPattern.addAll(pattern);
 
+                String patternString = TextUtils.join("", firstPattern);
+                if (isPatternAlreadyUsed(patternString)) {
+                    playErrorSound();
+                    showCustomToasterror("Invalid Pattern, Try a different Pattern ");
+                    resetPatterns();
+                    patternViewRegister.clearPattern();
+                    return;
+                }
+
                 patternViewRegister.clearPattern();
 
                 // Switch to confirm pattern UI
@@ -1565,7 +1589,7 @@ public class riderProfilesFragment extends Fragment {
 
                     playErrorSound();
 
-                    showCustomToasterror("Patterns do not match");
+                    showCustomToasterror("Patterns do not match ");
 
                     resetPatterns();
 
@@ -1772,6 +1796,66 @@ public class riderProfilesFragment extends Fragment {
 
         btnNext.setEnabled(valid);
         btnNext.setAlpha(valid ? 1f : 0.4f);
+    }
+
+    private boolean isPinAlreadyUsed(String enteredPin) {
+
+        Map<String, ?> all = sharedPreferences.getAll();
+
+        for (Map.Entry<String, ?> entry : all.entrySet()) {
+
+            if (!entry.getKey().endsWith("_pin"))
+                continue;
+
+            String username = entry.getKey()
+                    .replace("user_", "")
+                    .replace("_pin", "");
+
+            // Ignore current rider while editing
+            if (isEditMode && username.equals(editingUsername))
+                continue;
+
+            String salt = sharedPreferences.getString(
+                    "user_" + username + "_salt",
+                    ""
+            );
+
+            if (salt.isEmpty())
+                continue;
+
+            String enteredHash = hashWithSalt(enteredPin, salt);
+
+            if (enteredHash != null && enteredHash.equals(entry.getValue())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isPatternAlreadyUsed(String pattern) {
+
+        Map<String, ?> all = sharedPreferences.getAll();
+
+        for (Map.Entry<String, ?> entry : all.entrySet()) {
+
+            if (!entry.getKey().endsWith("_pattern"))
+                continue;
+
+            String username = entry.getKey()
+                    .replace("user_", "")
+                    .replace("_pattern", "");
+
+            if (isEditMode && username.equals(editingUsername))
+                continue;
+
+            String savedPattern = String.valueOf(entry.getValue());
+
+            if (pattern.equals(savedPattern))
+                return true;
+        }
+
+        return false;
     }
 
 }
