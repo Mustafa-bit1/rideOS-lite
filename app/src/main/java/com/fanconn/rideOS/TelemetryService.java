@@ -572,10 +572,10 @@ public class TelemetryService extends Service {
         telemetryThread.start();
         telemetryHandler = new Handler(telemetryThread.getLooper());
 
-        ////Stagging controller>
-        StagedTelemetryController
-                .getInstance(getApplicationContext())
-                .initialize(stagedUploadRunnable);
+//        ////Stagging controller>
+//        StagedTelemetryController
+//                .getInstance(getApplicationContext())
+//                .initialize(stagedUploadRunnable);
 
         vehiclePrefs =
                 getSharedPreferences("vehicle_delta", MODE_PRIVATE);
@@ -624,6 +624,7 @@ public class TelemetryService extends Service {
             telemetryHandler.postDelayed(this, 300);
         }
     };
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String vinNumber = intent != null ? intent.getStringExtra("VIN_NUMBER") : null;
@@ -1053,9 +1054,9 @@ public class TelemetryService extends Service {
 //            }
 
             //START SENDNG STAGGED DATA AS SOON AS INTERNET IS AVALBALE
-//            if (TelemetryStagingManager.getInstance(getApplicationContext()).hasData()) {
-//                flushStagedData();
-//            }
+            if (TelemetryStagingManager.getInstance(getApplicationContext()).hasData()) {
+                flushStagedData();
+            }
             //==end========START SENDNG STAGGED DATA AS SOON AS INTERNET IS AVALBALE
 
             // Send current data
