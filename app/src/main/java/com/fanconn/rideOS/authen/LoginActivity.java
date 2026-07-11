@@ -197,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                 String candata = FrameUtils.getByteSubstring(frame, 11, 18);
                 CanDataParser.parseCanData18FF50E5(hb3, candata);
                 float chargingbit = hb3.getChargingbit();
-                Log.d("sdfdgfh", "CHRAGINGBITINFEILDeeeeeeee___________" + chargingbit);
+//                Log.d("sdfdgfh", "CHRAGINGBITINFEILDeeeeeeee___________" + chargingbit);
 
 //                    UIUpdater.telechargingstate=hb3.getChargingbit();
 //                    String byt = frame.substring(22, 24);
@@ -207,7 +207,7 @@ public class LoginActivity extends AppCompatActivity {
                     binding.loginchargingicon.setVisibility(View.INVISIBLE);
                     TelemetryDataManager.getInstance().setTeleChargingState(2);
                 }
-                if (chargingbit > 0) {
+                if (chargingbit > 0.5) {
 //                  Log.d("sdfdgfh","CHRAGINGBITINFEILD___________"+chargingbit);
                     binding.loginchargingicon.setVisibility(View.VISIBLE);
                     TelemetryDataManager.getInstance().setTeleChargingState(1);
@@ -217,9 +217,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 long currentTime = System.currentTimeMillis();
                 boolean canLaunchUI = !isChargingUIActive && !ChargingUiClosedByUserFlag;
-                Log.d("sdfdgfh", "flague  " + isChargingUIActive);
-                Log.d("sdfdgfh", "flague  " + ChargingUiClosedByUserFlag);
-                Log.d("sdfdgfh", "bugsofcharging flague " + (currentTime - lastChargingUILaunchTime));
+//                Log.d("charge", "flague  " + isChargingUIActive);
+//                Log.d("charge", "flague  " + ChargingUiClosedByUserFlag);
+//                Log.d("charge", "charge flague " + (currentTime - lastChargingUILaunchTime));
 
                 if (canLaunchUI && (currentTime - lastChargingUILaunchTime > 1000) && !MainActivity.MainisActive) {
                     isChargingUIActive = true;

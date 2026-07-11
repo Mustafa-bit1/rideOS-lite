@@ -62,7 +62,7 @@ public class chargingUI extends AppCompatActivity {
             }
 
             if (!FrameUtils.verifyFrame(frame)) {
-                Log.w("chargingUI", "Frame verification failed: " + frame);
+               // Log.w("chargingUI", "Frame verification failed: " + frame);
                 return;
             }
 
@@ -210,7 +210,7 @@ public class chargingUI extends AppCompatActivity {
                     }
                     wasCharging = isChargingNow;
 
-                    Log.d("asf","CHARHINGCURRENTVALYE----"+chargingbit);
+//                    Log.d("CHARHING","CHARHINGCURRENTVALYE----"+chargingbit);
                     BATTERY_CAPACITY_AH = getBatteryCapacity();
 
                     float socRange = ((actualSOC / 100f) * BATTERY_CAPACITY_AH) * KM_PER_AH;

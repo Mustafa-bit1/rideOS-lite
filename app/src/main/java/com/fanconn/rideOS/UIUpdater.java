@@ -1366,21 +1366,21 @@ public class UIUpdater  {
         float chargingbit = hb3.getChargingbit();
         //Log.d("sdfdg","setChargingErrorbit   "+hb3.getChargingErrorbit());
         if((shouldshowchargingicononmainonot && directionalGears!=2) || shouldshowchargingicononmainonot && isStand){
-
             binding.rectangleGearsTV.setVisibility(View.INVISIBLE);
             binding.neutralicon.setVisibility(View.INVISIBLE);
 //            binding.chargingicononmainactivty.setVisibility(View.VISIBLE);
             binding.chargingredtab.setVisibility(View.VISIBLE);
-            if(chargingbit>0){
+            if(chargingbit>0.5){
                 binding.chargingredtab.setImageResource(R.drawable.chargingredtab);
                 TelemetryDataManager.getInstance().setTeleChargingState(1);
-                UIUpdater.isChargingUIVisible = true;
+//                UIUpdater.isChargingUIVisible = true;
             }
             else {
+
                 binding.chargingredtab.setImageResource(R.drawable.yellowpluggedtab);
                 TelemetryDataManager.getInstance().setTeleChargingState(2);
             }
-
+            UIUpdater.isChargingUIVisible = true;
 //            binding.chargingredtab.setVisibility(View.VISIBLE);
         }
         else {
