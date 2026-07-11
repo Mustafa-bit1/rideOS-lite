@@ -707,10 +707,10 @@ public class TelemetryService extends Service {
 //                        sendRealTimeData(vin);
 //                        sendRealtimeDataOnceEvenAfterLocking++;
 //                    }
-                    telemetryHandler.postDelayed(this, 1000);
+                    telemetryHandler.postDelayed(this, 3000);
                 }
             }
-        }, 1000);
+        }, 3000);
     }
 
     private void sendVehicleData(Context context, double odo, int chargingState,
