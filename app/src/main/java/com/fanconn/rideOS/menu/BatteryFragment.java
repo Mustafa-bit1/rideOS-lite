@@ -328,7 +328,7 @@ public class BatteryFragment extends Fragment {
 
         uiHandler.postDelayed(updateRunnable, 1000);
         Battery_Size = getBatterykWh();
-        Main_Battry_Size.setText("Battery : "+Battery_Size + "kWh");
+        Main_Battry_Size.setText("Battery capacity: "+Battery_Size + "kWh");
         return view;
     }
 
