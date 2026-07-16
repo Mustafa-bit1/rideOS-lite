@@ -1,13 +1,9 @@
 package com.fanconn.rideOS.network;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
-import com.fanconn.rideOS.RealTimeDataApi;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.serialApplication;
-import com.google.gson.Gson;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -18,7 +14,7 @@ import java.net.URI;
 
 public class EVWebSocketClient extends WebSocketClient {
     private static final String TAG = "EVWebSocketClient";
-    private final Gson gson = new Gson();
+
     private final String vin;
     private boolean isConnected = false;
     SerialPortManager serialPortManager = serialApplication.getSerialPortManager();
@@ -30,10 +26,8 @@ public class EVWebSocketClient extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-
         isConnected = true;
-        reconnecting = false;
-
+       // Log.d(TAG, " EV Connected to WebSocket");
         registerEV();
     }
 
@@ -61,20 +55,15 @@ public class EVWebSocketClient extends WebSocketClient {
     }
 
     @Override
-    public void onClose(int code,
-                        String reason,
-                        boolean remote) {
-
+    public void onClose(int code, String reason, boolean remote) {
         isConnected = false;
-
+       // Log.w(TAG, " EV WebSocket Closed: " + reason);
         reconnectWebSocket();
     }
+
     @Override
     public void onError(Exception ex) {
-
-        isConnected = false;
-
-        reconnectWebSocket();
+     //   Log.e(TAG, " WebSocket Error: ", ex);
     }
 
     private void registerEV() {
@@ -163,70 +152,16 @@ public class EVWebSocketClient extends WebSocketClient {
             }
         }
     }
-    private final Handler reconnectHandler =
-            new Handler(Looper.getMainLooper());
 
-    private boolean reconnecting = false;
-
-    private static final long RECONNECT_DELAY = 3000;
     private void reconnectWebSocket() {
-
-        if (reconnecting) {
-            return;
-        }
-
-        reconnecting = true;
-
-        reconnectHandler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-
-                if (isOpen()) {
-                    reconnecting = false;
-                    return;
-                }
-
-                try {
-
-                    reconnect();
-
-                } catch (Exception ignored) {
-
-                }
-
-                reconnecting = false;
+        new Thread(() -> {
+            try {
+                Thread.sleep(3000); // Retry after 3 seconds
+              //  Log.d(TAG, " Attempting to reconnect...");
+                reconnect();
+            } catch (InterruptedException e) {
+                //Log.e(TAG, " Reconnect failed", e);
             }
-
-        }, RECONNECT_DELAY);
-    }
-
-    public boolean sendTelemetry(RealTimeDataApi data) {
-
-        if (!isConnected || !isOpen()) {
-            return false;
-        }
-
-        try {
-
-            JSONObject wrapper = new JSONObject();
-
-            wrapper.put("type", "telemetry");
-            wrapper.put("vin", vin);
-
-            wrapper.put("payload",
-                    new JSONObject(gson.toJson(data)));
-
-            send(wrapper.toString());
-
-            return true;
-
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isConnected() {
-        return isConnected && isOpen();
+        }).start();
     }
 }
