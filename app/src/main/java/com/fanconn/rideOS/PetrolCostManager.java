@@ -2,7 +2,7 @@ package com.fanconn.rideOS;
 
 public class PetrolCostManager {
 
-    private static final double PETROL_PRICE = 102.0;
+    private static final double PETROL_PRICE = 110.0;
     private static final double PETROL_MILEAGE = 45.0;
 
     private static final double EV_CHARGE_COST = 30.0;
