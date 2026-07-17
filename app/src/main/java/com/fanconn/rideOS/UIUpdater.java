@@ -108,7 +108,7 @@ public class UIUpdater  {
         startCanTimeoutChecker();
         registerTpmsReceiver(ctx);
         ahTrackerManager = AhTrackerManager.getInstance(context);
-        updateCanData18904001(serialPortManager.getHb3());
+
 
 // Show RECO UI
         binding.recoContainer.setVisibility(View.VISIBLE);
@@ -118,6 +118,30 @@ public class UIUpdater  {
 // Initial render
         updateRecoKm();
         updateTransportModeWarning();
+
+
+        //==================
+
+        int storedRawSoc = SocPreference.getBatteryLevel(context);
+//        Log.d("sdafg","THIS IS SOC IN UIUPDATOR rrrrrrrrr="+storedRawSoc);// show on UI
+
+        if (storedRawSoc >= 0) {
+            SerialPortManager.getInstance().getHb3().setBatteryLevel(storedRawSoc);
+
+            float soc = SerialPortManager.getInstance().getHb3().getBatteryLevel();
+            float range= (float) (soc * RANGE_km_PER_SOC);
+//            Log.d("sdafg","THIS IS SOC IN UIUPDATOR ="+soc);// show on UI
+            binding.batteryTV.setText(
+                    String.format(
+                            Locale.US,
+                            "Battery %.1f%%   |  ~ %.1f km",
+                            soc,
+                            range
+                    )
+            );
+        }
+
+        updateCanData18904001(serialPortManager.getHb3());
     }
 
     public static UIUpdater getInstance() {
@@ -479,6 +503,12 @@ public class UIUpdater  {
     public void updateCanData18904001(Heartbeat3 hb3) {
         // 更新电池电量
         float batteryLevel= hb3.getBatteryLevel();
+//        Log.d("sdafg","THIS IS SOC IN UIUPDATOR insdie real CAN ="+batteryLevel);// show on UI
+
+        SocPreference.saveBatteryLevel(
+                context,
+                hb3.getRawBatteryLevel()
+        );
 
         if(hb3.getbatvoltage()/10>0){//This says we have recieved a valid CAN data from BMS (voltage and OSC somes in same CAN frame that is reason using voltage > 0)
             hasReceivedValidSoc = true;

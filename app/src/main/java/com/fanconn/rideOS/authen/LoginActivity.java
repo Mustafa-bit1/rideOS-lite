@@ -57,6 +57,7 @@ import com.fanconn.rideOS.MetadataManager;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.Smartkey.KeyPresenceManager;
+import com.fanconn.rideOS.SocPreference;
 import com.fanconn.rideOS.SoundPlayer;
 import com.fanconn.rideOS.TelemetryDataManager;
 import com.fanconn.rideOS.TelemetryService;
@@ -394,6 +395,16 @@ public class LoginActivity extends AppCompatActivity {
         TelemetryService.shdtelemetrywhenunlocked = false;
         instance = this;
 
+
+        if(UIUpdater.getInstance() == null) {
+            int storedRawSoc = SocPreference.getBatteryLevel(instance);
+            float soc = get10LessSOC(storedRawSoc / 10.0f);
+            float displaysoc = Math.round(soc * 10f) / 10f;
+            TelemetryDataManager.getInstance().setTeleSOC(displaysoc);
+            binding.loginSoc.setText("Battery " + displaysoc + "%");
+        }
+
+
         this.BatPackSwitcher = new batteryPackSwitcher();
         //bmsHandler.post(bmsRunnable);
         // Start inactivity timer with a unique code (e.g., 3 for login timeout)
@@ -610,6 +621,22 @@ public class LoginActivity extends AppCompatActivity {
 
         }
     }// END OF ONCREATE METHOD
+
+
+
+    private float get10LessSOC(float actualSOC) {
+
+        float minActual = 16f;
+        float cutoff = 90f;   // scaling ends here
+        if (actualSOC <= minActual) {
+            return 0f;
+        }
+        if (actualSOC < cutoff) {
+            return (actualSOC - minActual) * 90f / (cutoff - minActual);
+        }
+        return actualSOC;
+    }
+
 
     private void playErrorSound() {
         MediaPlayer mediaPlayer = MediaPlayer.create(this, R.raw.errorsoundtrim);
@@ -1354,8 +1381,10 @@ public class LoginActivity extends AppCompatActivity {
 //        int batteryLevel=(int)ahTrackerManager.getSOC();
 
         String sBatteryLevel = String.valueOf(batteryLevel);
-        if (batteryLevel >= 0 && batteryLevel <= 100) {
-            binding.loginSoc.setText("Battery " + batteryLevel + "%");
+        if(UIUpdater.getInstance() != null) {
+            if (batteryLevel >= 0 && batteryLevel <= 100) {
+                binding.loginSoc.setText("Battery " + batteryLevel + "%");
+            }
         }
         UIUpdater.ignorefirstblink = true;
         UIUpdater.islock = false;

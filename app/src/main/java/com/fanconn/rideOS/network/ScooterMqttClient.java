@@ -340,6 +340,21 @@ public class ScooterMqttClient {
                     );
                     return;
 
+                case "MCURESTART":
+                    if ("1".equals(value)) {
+                        // LOCK HANDLE
+                        if (UIUpdater.getInstance() != null && serialApplication.getSerialPortManager().getHb3().getBSG2_BYTE78() == 0) {
+                            ackStatus = "success";
+                            serialApplication.getSerialPortManager().VCUSendToMCU("FFAA550109000A01");
+                        }
+                        else {
+                            ackStatus = "Scooter in motion";
+                        }
+                    } else {
+                        ackStatus = "invalidcommand";
+                    }
+                    break;
+
                 case "rideOSOTA":
                     ackStatus = "success";
                     startRideOSRemoteOta(context);

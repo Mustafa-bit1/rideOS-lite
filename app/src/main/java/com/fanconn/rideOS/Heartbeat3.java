@@ -99,7 +99,7 @@ public class Heartbeat3 {
 //
 //        return (actualSOC - minActual) * 100 / (maxActual - minActual);
 //    }
-       public float getBatteryLevel() { // scaled SOC with 1 decimal
+    public float getBatteryLevel() { // scaled SOC with 1 decimal
             float soc = get10LessSOC(batteryLevel / 10.0f);
             return Math.round(soc * 10f) / 10f;
     }
@@ -116,10 +116,16 @@ public class Heartbeat3 {
         }
         return actualSOC;
     }
+
     public void setBatteryLevel(int batteryLevel) {
         this.batteryLevel = batteryLevel;
 
     }
+    public int getRawBatteryLevel() {
+        return (int) batteryLevel;
+    }
+
+
     public float getNoLess10BMSBatteryLevel() {// Gives actual SOC without scaling
         return floatbatteryLevel;
     }
