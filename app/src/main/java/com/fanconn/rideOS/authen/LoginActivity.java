@@ -395,12 +395,12 @@ public class LoginActivity extends AppCompatActivity {
         TelemetryService.shdtelemetrywhenunlocked = false;
         instance = this;
 
-        //This below snippet loads stored soc value by scalling and also sends soc value to DB, Only runs for first time app lauhc and never runs
+
         if(UIUpdater.getInstance() == null) {
             int storedRawSoc = SocPreference.getBatteryLevel(instance);
             float soc = get10LessSOC(storedRawSoc / 10.0f);
             float displaysoc = Math.round(soc * 10f) / 10f;
-            TelemetryDataManager.getInstance().setTeleSOC(displaysoc);// send to Db
+            TelemetryDataManager.getInstance().setTeleSOC(displaysoc);
             binding.loginSoc.setText("Battery " + displaysoc + "%");
         }
 
@@ -1096,11 +1096,7 @@ public class LoginActivity extends AppCompatActivity {
             } else if (batteryLevel <= 95) { // phase max, all normal  A000(45A regen) - C800(50A),regen 60(F000)-80(4001)
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
                 //  Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
-            } else if (batteryLevel <= 100) {
-//                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800" + "B004" + "2000";
-                 // batteryLevel > 80 && <= 100, phase max, Regen 6(1800) and 8(2000) A
-
-
+            } else if (batteryLevel <= 100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
                 //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
             } else {//all max

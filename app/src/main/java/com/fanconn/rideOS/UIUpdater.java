@@ -566,12 +566,8 @@ public class UIUpdater  {
             }
         }
 
-//        if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18 ||  batteryLevel==17)  && tm.getTeleChargingState()==0) {
-        if (!Lowbatflag
-                && batteryLevel >= 17
-                && batteryLevel <= 20
-                && tm.getTeleChargingState() == 0) {
-            Log.d("asdfsg","THIS ENTEReED 20% SOC BLOCK");
+        if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18 ||  batteryLevel==17)  && tm.getTeleChargingState()==0) {
+
             if(serialPortManager!=null){
               //  Log.d("SOCWHATACTOION","ENTER 20");
 //                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C00F000B0044001");//line current 15A, max phase current 300A ,regen 60(F000)-80(4001)
@@ -636,12 +632,7 @@ public class UIUpdater  {
 //            }
 //        }
 
-//        if(!atSOC10Lowbatflag && (batteryLevel==5 || batteryLevel==4 || batteryLevel==3) && tm.getTeleChargingState()==0){
-
-        if (!atSOC10Lowbatflag
-                && (batteryLevel == 5 || batteryLevel == 4 || batteryLevel == 3)
-                && tm.getTeleChargingState() == 0) {
-            Log.d("asdfsg","THIS ENTEReED 5% SOC BLOCK");
+        if(!atSOC10Lowbatflag && (batteryLevel==5 || batteryLevel==4 || batteryLevel==3) && tm.getTeleChargingState()==0){
             atSOC10Lowbatflag=true;
             startBeeping(2);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
@@ -2273,7 +2264,6 @@ private int streamId = 0;
         double odoKm = tripManager.getOdoDistance();
         tm.setTeleTrip((float) roundTo2Decimal(tripKm));
         tm.setTeleODO((float) roundTo2Decimal(odoKm));
-
 
         if (activity != null) {
             activity.refreshDistance();
