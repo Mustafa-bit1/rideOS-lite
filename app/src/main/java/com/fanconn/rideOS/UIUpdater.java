@@ -566,7 +566,11 @@ public class UIUpdater  {
             }
         }
 
-        if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18 ||  batteryLevel==17)  && tm.getTeleChargingState()==0) {
+//        if (!Lowbatflag && (batteryLevel == 20 || batteryLevel ==19 ||  batteryLevel==18 ||  batteryLevel==17)  && tm.getTeleChargingState()==0) {
+        if (!Lowbatflag
+                && batteryLevel >= 17
+                && batteryLevel <= 20
+                && tm.getTeleChargingState() == 0) {
 
             if(serialPortManager!=null){
               //  Log.d("SOCWHATACTOION","ENTER 20");
@@ -632,7 +636,12 @@ public class UIUpdater  {
 //            }
 //        }
 
-        if(!atSOC10Lowbatflag && (batteryLevel==5 || batteryLevel==4 || batteryLevel==3) && tm.getTeleChargingState()==0){
+//        if(!atSOC10Lowbatflag && (batteryLevel==5 || batteryLevel==4 || batteryLevel==3) && tm.getTeleChargingState()==0){
+        if (!atSOC10Lowbatflag
+                && batteryLevel >= 3
+                && batteryLevel <= 5
+                && tm.getTeleChargingState() == 0) {
+
             atSOC10Lowbatflag=true;
             startBeeping(2);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {

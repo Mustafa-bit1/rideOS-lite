@@ -684,9 +684,8 @@ public class TelemetryService extends Service {
                         TelemetryDataManager.getInstance().setTeleHandleLockState(hb1.getDragonLock());
                         TelemetryDataManager.getInstance().setTeleSeatLockState(hb1.getSeatLock());
                     }
-                    double odoRounded = TelemetryDataManager.getInstance().getTeleODO();
 
-                    sendVehicleData(context, odoRounded, TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
+                    sendVehicleData(context,  NumberUtils.round(TelemetryDataManager.getInstance().getTeleODO(),3), TelemetryDataManager.getInstance().getTeleChargingState(), TelemetryDataManager.getInstance().getTeleHandleLockState(),
                             TelemetryDataManager.getInstance().getTeleSeatLockState(), TelemetryDataManager.getInstance().getTeleBMSMosStates(), TelemetryDataManager.getInstance().getTeleCurrentRider(),
                             22, TelemetryDataManager.getInstance().getTeleLatLong());
                     TelemetryDataManager.getInstance()

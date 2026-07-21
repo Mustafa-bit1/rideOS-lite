@@ -1096,8 +1096,12 @@ public class LoginActivity extends AppCompatActivity {
             } else if (batteryLevel <= 95) { // phase max, all normal  A000(45A regen) - C800(50A),regen 60(F000)-80(4001)
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
                 //  Log.d("SEDINGSOCFRAMEAS","90 "+torqueFrame);
-            } else if (batteryLevel <= 100) { // batteryLevel > 80 && <= 100, phase max, Regen 6 and 8 A
-                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
+            } else if (batteryLevel <= 100) {
+                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800" + "B004" + "2000";
+                 // batteryLevel > 80 && <= 100, phase max, Regen 6(1800) and 8(2000) A
+
+
+//                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
                 //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
             } else {//all max
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
