@@ -575,10 +575,10 @@ public class UIUpdater  {
             if(serialPortManager!=null){
               //  Log.d("SOCWHATACTOION","ENTER 20");
 //                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C00F000B0044001");//line current 15A, max phase current 300A ,regen 60(F000)-80(4001)
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001");//line current 10A, max phase current 300A ,regen 60(F000)-80(4001)
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728001800B0042C00");//line current 10A, max phase current 300A ,regen 6(1800)-11(2C00)
 
 
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001"), 800);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728001800B0042C00"), 800);
 //                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
             // Start alert
@@ -605,7 +605,7 @@ public class UIUpdater  {
             Lowbatflag = false;
             updateTransportModeWarning();
             if(serialPortManager!=null){
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B801F000B0044001"); //max all phase 300, line 100 , regen 60(F000)-80(4001)
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA807B8011800B0042C00"); //max all phase 300, line 100 , regen 60(F000)-80(4001)
 //                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"), 1200);
             }
             binding.yellowalert.clearAnimation();
@@ -657,13 +657,13 @@ public class UIUpdater  {
                // Log.d("SOCWHATACTOION","ENTER 10 AND DO 10AMPS");
                 StopInactivtyTimerDuringPopUp=false;
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");//regen 60(F000)-80(4001)
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F000B0044001");//line current 10A(2800), phase current max, regen currents as 40A(A000) to make 6 (1800) and 50A(C800) to make 8 (2000)
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728001800B0042C00");//line current 10A(2800), phase current max, regen currents as 40A(A000) to make 6 (1800) and 50A(C800) to make 8 (2000)
                 //new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
             } else if (apuflag  && UniversalAPUbatteryLevel<=15) {
                 StopInactivtyTimerDuringPopUp=false;
          //       Log.d("SOCWHATACTOION","ENTER 10 AND DO 0000AMPS");
                 showCustomPopupatSOC7("Alert","Battery too low, deep discharge may damage your scooter battery, Please charge your scooter");
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//STOP SCOOTER, phase zero
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800180000002C00");//STOP SCOOTER, phase zero
                 //new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1200);
             }
         }
@@ -693,8 +693,8 @@ public class UIUpdater  {
         if(canDataInitialized && !atSOC7Lowbatflag && (batteryLevel==0) && !apuflag  && tm.getTeleChargingState()==0){
             atSOC7Lowbatflag=true;
             if(serialPortManager!=null){
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001");//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
-                new Handler(Looper.getMainLooper()).postDelayed(() ->  serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800F00000004001"), 1000);//phase 0 , line 10AMps=2800 ,,regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800180000002C00");//phase 0 , line 10AMps=2800 ,,regen 6(1800)-11(2C00),, regen 40A - 50A(A000-C800)
+                new Handler(Looper.getMainLooper()).postDelayed(() ->  serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800180000002C00"), 1000);//phase 0 , line 10AMps=2800 ,,regen 6(1800)-11(2C00)=regen 60(F000)-80(4001),, regen 40A - 50A(A000-C800)
                // new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040000020E007387"), 1500);
             }
             InactivityManager.getInstance().stopTimer();
@@ -2794,12 +2794,12 @@ private int streamId = 0;
                                         restoreMotorState();
                                         handler.postDelayed(() -> {
                                             if (serialPortManager != null) {
-                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C001800B0042C00");
                                             }
                                         }, 1000);
                                         handler.postDelayed(() -> {
                                             if (serialPortManager != null) {
-                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C001800B0042C00");
                                             }
                                         }, 2000);
                                         apuPopupDialog.dismiss();
@@ -2838,7 +2838,7 @@ private int streamId = 0;
                 InactivityManager.getInstance().startTimer(1);
             }
             dialog.dismiss();
-            serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
+            serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728001800B0042C00");//line current 10 A
             new Handler(Looper.getMainLooper()).postDelayed(
                     () -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A807000001020E007387"),
                     1200
@@ -2926,12 +2926,12 @@ private int streamId = 0;
 
                                         handler.postDelayed(() -> {
                                             if (serialPortManager != null) {
-                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C001800B0042C00");
                                             }
                                         }, 1000);
                                         handler.postDelayed(() -> {
                                             if (serialPortManager != null) {
-                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C007800B0047800");
+                                                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C001800B0042C00");
                                             }
                                         }, 2000);
 

@@ -71,9 +71,9 @@ public class batteryPackSwitcher {
                 updateStatusText("Successfully Switched To rescue pack");
                 UIUpdater.apuflag=true;
                 if(serialPortManager!=null){
-                    serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000");//line current 10 A
+                    serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728001800B0042C00");//line current 10 A
                     new Handler(Looper.getMainLooper()).postDelayed(() ->
-                            serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728007800B004A000"), 1000);
+                            serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728002C00B0042C00"), 1000);
 //                    new Handler(Looper.getMainLooper()).postDelayed(() ->
 //                            serialPortManager.VCUSendToMCU("FFAA550103001510F8A807040001020E007387"), 2000);
                 }

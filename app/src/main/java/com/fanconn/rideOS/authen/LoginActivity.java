@@ -825,7 +825,6 @@ public class LoginActivity extends AppCompatActivity {
     int Level3_Line_Current = 75;
     int Level4_Line_Current = 100;
 
-    private static final String regen10A = "2800";
     private static final String regen20A = "5000";
     private static final String regen30A = "7800";
     private static final String regen40A = "A000";
@@ -833,6 +832,19 @@ public class LoginActivity extends AppCompatActivity {
     private static final String regen60A = "F000";
     private static final String regen70A = "1801";
     private static final String regen80A = "4001";
+
+    private static final String regen5A = "1400";
+    private static final String regen6A = "1800";
+    private static final String regen7A = "1C00";
+    private static final String regen8A = "2000";
+    private static final String regen9A = "2400";
+    private static final String regen10A = "2800";
+    private static final String regen11A = "2C00";
+    private static final String regen12A = "3000";
+    private static final String regen13A = "3400";
+    private static final String regen14A = "3800";
+    private static final String regen15A = "3C00";
+
 
 
     //    private double Speed_ratio_Value = 1.5536444;//// 10% high
@@ -1073,7 +1085,7 @@ public class LoginActivity extends AppCompatActivity {
             boolean socReady = UIUpdater.getInstance() != null && UIUpdater.getInstance().hasReceivedValidSoc();
 
             if (UIUpdater.apuflag) { // phase max , all normal
-                torqueFrame = "FFAA550103001510FBA8073C007800B0047800";//  line 15A, phase max,regen 30 -30 (7800)
+                torqueFrame = "FFAA550103001510FBA8073C001800B0042C00";//  line 15A, phase max,regen 6(1800) -11 (2C00)
             }
             else if (!socReady) {
                 // First unlock after boot.
@@ -1161,23 +1173,23 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private static final String[] REGEN_MIN = {
-            regen30A, // 0 default
-            regen10A,
-            regen20A,
-            regen30A,
-            regen40A,
-            regen50A,
-            regen60A
+            regen6A, // 0 default
+            regen5A,
+            regen6A,
+            regen7A,
+            regen8A,
+            regen9A,
+            regen10A
     };
 
     private static final String[] REGEN_MAX = {
-            regen50A, // 0 default
-            regen30A,
-            regen40A,
-            regen50A,
-            regen60A,
-            regen70A,
-            regen80A
+            regen11A, // 0 default
+            regen10A,
+            regen11A,
+            regen12A,
+            regen13A,
+            regen14A,
+            regen15A
     };
 
 //below is b4 7/7
