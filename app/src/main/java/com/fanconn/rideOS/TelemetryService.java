@@ -524,6 +524,7 @@ import com.fanconn.rideOS.network.RetrofitClient;
 import com.fanconn.rideOS.network.VehicleData;
 import com.fanconn.rideOS.network.ApiService;
 
+import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
 import com.fanconn.rideOS.util.NumberUtils;
 import com.google.gson.Gson;
 
@@ -682,6 +683,7 @@ public class TelemetryService extends Service {
                     }
                     if(hb1!=null) {
                         TelemetryDataManager.getInstance().setTeleHandleLockState(hb1.getDragonLock());
+                        VehicleTelemetryManager.getInstance().setHandleLock((double)hb1.getDragonLock());
                         TelemetryDataManager.getInstance().setTeleSeatLockState(hb1.getSeatLock());
                     }
 

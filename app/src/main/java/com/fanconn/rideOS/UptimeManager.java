@@ -1,38 +1,32 @@
 package com.fanconn.rideOS;
 
-import android.os.Handler;
-import android.os.Looper;
+public final class UptimeManager {
 
-public class UptimeManager {
-
-    private static final Handler handler = new Handler(Looper.getMainLooper());
-    private static String currentUptime = "0d 00:00:00";
-
-    private static final Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            long uptime = System.currentTimeMillis() - MyApp.appStartTime;
-
-            long days = uptime / (1000 * 60 * 60 * 24);
-            long hours = (uptime / (1000 * 60 * 60)) % 24;
-            long minutes = (uptime / (1000 * 60)) % 60;
-            long seconds = (uptime / 1000) % 60;
-
-            currentUptime = String.format("%dd %02d:%02d:%02d",
-                    days, hours, minutes, seconds);
-
-            handler.postDelayed(this, 1000); // update every second
-        }
-    };
-
-    // Call this once in Application or onStart
-    public static void start() {
-        handler.post(runnable);
+    private UptimeManager() {
     }
 
     public static String getUptime() {
-        return currentUptime;
+
+        long uptimeMillis =
+                System.currentTimeMillis() - MyApp.appStartTime;
+
+        if (uptimeMillis < 0) {
+            uptimeMillis = 0;
+        }
+
+        long totalSeconds = uptimeMillis / 1000;
+
+        long days = totalSeconds / 86400;
+        long hours = (totalSeconds / 3600) % 24;
+        long minutes = (totalSeconds / 60) % 60;
+        long seconds = totalSeconds % 60;
+
+        return String.format(
+                "%dd %02d:%02d:%02d",
+                days,
+                hours,
+                minutes,
+                seconds
+        );
     }
-
 }
-

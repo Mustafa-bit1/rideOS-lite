@@ -69,6 +69,7 @@ import com.fanconn.rideOS.databinding.ActivityMainBinding;
 import com.fanconn.rideOS.mcuupdate.YMode;
 import com.fanconn.rideOS.menu.SecurePrefs;
 import com.fanconn.rideOS.serialApplication;
+import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
 //import com.fanconn.rideOS.ScreenController;
 
 import java.io.File;
@@ -393,6 +394,7 @@ public class LoginActivity extends AppCompatActivity {
         );
         tapSoundPlayer = MediaPlayer.create(this, R.raw.dottap33);
         TelemetryService.shdtelemetrywhenunlocked = false;
+        VehicleTelemetryManager.getInstance().setEvPowerState("0");
         instance = this;
 
 
@@ -881,7 +883,10 @@ public class LoginActivity extends AppCompatActivity {
                 "HillAssist_and_TCS = " + HillAssist_and_TCS);
 
         TelemetryService.shdtelemetrywhenunlocked = true;
+        VehicleTelemetryManager.getInstance().setEvPowerState("1");
+
         TelemetryDataManager.getInstance().setTeleCurrentRider(username);
+        VehicleTelemetryManager.getInstance().setCurrentRider(username);
 
         actualPin.setLength(0);
         etCredential.setText("");
@@ -1343,6 +1348,7 @@ public class LoginActivity extends AppCompatActivity {
             instance = null;
         }
         TelemetryService.shdtelemetrywhenunlocked = true;
+        VehicleTelemetryManager.getInstance().setEvPowerState("1");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(tempWarningReceiver);
 
 //        if(!UIUpdater.shouldshowchargingicononmainonot){
@@ -1405,7 +1411,7 @@ public class LoginActivity extends AppCompatActivity {
         UIUpdater.ignorefirstblink = true;
         UIUpdater.islock = false;
         TelemetryService.shdtelemetrywhenunlocked = false;
-
+        VehicleTelemetryManager.getInstance().setEvPowerState("0");
 //        serialPortManager.getHb3().setLEDresponse(1);
 //        serialPortManager.getHb3().sethandleLockresponse(1);
         EVLockService.getInstance().startLockSequence();    // Start lock

@@ -95,6 +95,7 @@ import com.fanconn.rideOS.mcuupdate.YMode;
 import com.fanconn.rideOS.menu.menu;
 import com.fanconn.rideOS.network.EVWebSocketClient;
 import com.fanconn.rideOS.network.ApiService;
+import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
 //import com.fanconn.rideOS.network.ScooterMqttManager;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONObject;

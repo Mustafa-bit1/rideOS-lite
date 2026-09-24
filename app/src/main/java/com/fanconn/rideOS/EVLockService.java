@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
+
 public class EVLockService {
     private static EVLockService instance;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -47,6 +49,7 @@ public class EVLockService {
         currentSequenceType = SequenceType.UNLOCK;
         taskUnlock2();
         TelemetryDataManager.getInstance().setTeleHandleLockState(1);
+        VehicleTelemetryManager.getInstance().setHandleLock(1.0);
     }
     private MediaPlayer lockPlayer;
 
@@ -68,6 +71,7 @@ public class EVLockService {
         currentSequenceType = SequenceType.LOCK;
         taskLock1();
         TelemetryDataManager.getInstance().setTeleHandleLockState(0);
+        VehicleTelemetryManager.getInstance().setHandleLock(0.0);
     }
 
     public void stopSequence() {
@@ -166,6 +170,7 @@ public class EVLockService {
             retryCount2++;
             handler.postDelayed(this::taskLock2, 1000);
         } else {
+            VehicleTelemetryManager.getInstance().setGear("O");
             retryCount2 = 0;
 //            hb3.setLEDresponse(0);
             currentSequenceType = null;

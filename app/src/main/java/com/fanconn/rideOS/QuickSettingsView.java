@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.fanconn.rideOS.menu.BrightnessManager;
 import com.fanconn.rideOS.menu.settings;
+import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
 
 public class QuickSettingsView extends FrameLayout {
     private static final int TOUCH_SLOP = 8; // px (small movement threshold)
@@ -166,16 +167,24 @@ public class QuickSettingsView extends FrameLayout {
         TelemetryDataManager.getInstance()
                 .setGpsTelemetryEnabled(gpsEnabled);
 
+        VehicleTelemetryManager.getInstance()
+                .setGpsTelemetryEnabled(gpsEnabled);
+
         syncGpsUI();
         GPS_btn.setOnClickListener(v -> {
 
+//            boolean enabled =
+//                    TelemetryDataManager.getInstance()
+//                            .isGpsTelemetryEnabled();
             boolean enabled =
-                    TelemetryDataManager.getInstance()
+                    VehicleTelemetryManager.getInstance()
                             .isGpsTelemetryEnabled();
 
             enabled = !enabled;
 
             TelemetryDataManager.getInstance()
+                    .setGpsTelemetryEnabled(enabled);
+            VehicleTelemetryManager.getInstance()
                     .setGpsTelemetryEnabled(enabled);
 
             prefs.edit()
@@ -414,8 +423,11 @@ public class QuickSettingsView extends FrameLayout {
 
     private void syncGpsUI() {
 
+//        boolean enabled =
+//                TelemetryDataManager.getInstance()
+//                        .isGpsTelemetryEnabled();
         boolean enabled =
-                TelemetryDataManager.getInstance()
+                VehicleTelemetryManager.getInstance()
                         .isGpsTelemetryEnabled();
 
         int on = Color.parseColor("#1C78BE");

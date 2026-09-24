@@ -2,6 +2,8 @@ package com.fanconn.rideOS;
 
 import android.util.Log;
 
+import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
+
 /**
  * CanDataParser 类用于解析不同 CAN ID 的 CAN 数据。
  * 每个解析方法将特定的 CAN 数据字符串解析为 Heartbeat3 对象中的相应字段。
@@ -70,34 +72,42 @@ public class CanDataParser {
         {
             case "01":
                 hb3.setcell1TO3(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell1To3(FrameUtils.getByteSubstring(canData,1,7));
              //   Log.d("CELLVOLATGE","CELL 1 to 3 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "02":
                 hb3.setcell4TO6(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell4To6(FrameUtils.getByteSubstring(canData,1,7));
               //  Log.d("CELLVOLATGE","CELL 4 to 6 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "03":
                 hb3.setcell7TO9(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell7To9(FrameUtils.getByteSubstring(canData,1,7));
                // Log.d("CELLVOLATGE","CELL 7 to 9 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "04":
                 hb3.setcell10TO12(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell10To12(FrameUtils.getByteSubstring(canData,1,7));
                // Log.d("CELLVOLATGE","CELL 10 to 12 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "05":
                 hb3.setcell13TO15(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell13To15(FrameUtils.getByteSubstring(canData,1,7));
                 //Log.d("CELLVOLATGE","CELL 13 to 15 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "06":
                 hb3.setcell16TO18(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell16To18(FrameUtils.getByteSubstring(canData,1,7));
               //  Log.d("CELLVOLATGE","CELL 16 to 18 --"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "07":
                 hb3.setcell19TO21(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell19To21(FrameUtils.getByteSubstring(canData,1,7));
                 //Log.d("CELLVOLATGE","CELL 19 to 21--"+FrameUtils.getByteSubstring(canData,1,6));
                 break;
             case "08":
                 hb3.setcell22TO23(FrameUtils.getByteSubstring(canData,1,7));
+                VehicleTelemetryManager.getInstance().setCell22To23(FrameUtils.getByteSubstring(canData,1,7));
               //  Log.d("CELLVOLATGE","CELL 22 to 23 --"+FrameUtils.getByteSubstring(canData,1,4));
                 break;
             default:

@@ -27,8 +27,6 @@
         android:name="android.permission.INSTALL_PACKAGES"
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.INSTALL_SYSTEM_UPDATE" />
     <uses-permission android:name="com.fanconn.motobike.PERMISSION_ACCESS_FILES" />
@@ -43,7 +41,6 @@
     <uses-permission android:name="android.permission.SHUTDOWN" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
     <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
@@ -155,7 +152,16 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".receiver.BootCompletedReceiver"
+            android:enabled="true"
+            android:exported="true">
 
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+
+        </receiver>
         <receiver
             android:name=".receiver.NightlyRebootReceiver"
             android:exported="false"/>
@@ -184,6 +190,11 @@
             android:name=".TpmsScanService"
             android:enabled="true"
             android:exported="false" />
+
+        <service
+            android:name=".telemetry.MqttTelemetryService"
+            android:exported="false" />
+
         <service
             android:name="com.fanconn.rideOS.Smartkey.BLEScanService"
             android:exported="false" />

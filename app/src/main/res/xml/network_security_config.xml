@@ -8,11 +8,12 @@
 
     <!-- Allow HTTP for local testing/server -->
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">192.168.1.116</domain>
+        <domain includeSubdomains="true">10.189.126.175</domain>
 <!--        <domain includeSubdomains="true">103.104.231.197</domain>-->
         <domain includeSubdomains="true">sb.rivotmotors.com</domain>/
 <!--        <domain includeSubdomains="true"> 103.174.148.224</domain>&lt;!&ndash; //new grafana server VM&ndash;&gt;-->
             <domain includeSubdomains="true">103.174.148.224</domain>
+        <domain includeSubdomains="true">103.174.148.249</domain>
     </domain-config>
 
 </network-security-config>
