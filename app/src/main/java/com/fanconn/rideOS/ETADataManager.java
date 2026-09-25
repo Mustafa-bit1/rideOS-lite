@@ -1,5 +1,7 @@
 package com.fanconn.rideOS;
 
+import com.fanconn.rideOS.util.NumberUtils;
+
 public class ETADataManager {
 
     private static ETADataManager instance;
@@ -22,6 +24,6 @@ public class ETADataManager {
     }
 
     public float getEtaTime() {
-        return etaTime;
+        return (float) NumberUtils.round(etaTime,2);
     }
 }

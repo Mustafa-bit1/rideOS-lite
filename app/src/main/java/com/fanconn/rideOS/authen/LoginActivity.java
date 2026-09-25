@@ -70,6 +70,7 @@ import com.fanconn.rideOS.mcuupdate.YMode;
 import com.fanconn.rideOS.menu.SecurePrefs;
 import com.fanconn.rideOS.serialApplication;
 import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
+import com.fanconn.rideOS.util.NumberUtils;
 //import com.fanconn.rideOS.ScreenController;
 
 import java.io.File;
@@ -160,20 +161,23 @@ public class LoginActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             String frame = intent.getStringExtra("frame_data");
-            if (frame.startsWith("FFAA770303001518FF50E5"))
+            String candata = FrameUtils.getByteSubstring(frame, 11, 18);
+            Heartbeat3 hb3 = serialPortManager.getHb3();
+//            if (frame.startsWith("FFAA770303001518FF50E5"))
                 //Log.d("FRAME", "Received in4001NNNNNNNN " + getClass().getSimpleName() + ": " + frame);
                 //if(frame.startsWith("FFAA770303001518FF50E5"))Log.d("sdfgh","frameofCHARGING"+frame);
 
-                if (frame.length() > 15 && FrameUtils.verifyFrame(frame)) {
+            if (frame == null || frame.length() < 38) return;
 
-                    if (frame == null || frame.length() < 38) return;
+            if (FrameUtils.verifyFrame(frame)) {
 
                     if (frame.startsWith("FFAA770303001510F807A8")) {
                         // Log.d("sdfgh","frame"+frame);
                         handleWakeFrame(context, frame);
                     }
                     if (frame.startsWith("FFAA770303001518904001")) {
-                        //Log.d("dsfgdfh", "SOC frame ; " + frame);
+
+                        CanDataParser.parseCanData18904001(hb3, candata);
                         handleLoginFrame();
                     }
 
@@ -190,13 +194,12 @@ public class LoginActivity extends AppCompatActivity {
             if (frame.length() >= 38 && frame.startsWith("FFAA770303001518FF50E5")) {
                 BatPackSwitcher.startSwitchingToNormalState();
                 // wakeScreenIfNeeded();
-                Heartbeat3 hb3 = serialPortManager.getHb3();
                 binding.loginchargingicon.setVisibility(View.VISIBLE);
 //                shouldshowchargingicononmainonot=true;
                 UIUpdater.shouldshowchargingicononmainonot = true;
                 forceStandUIDUEToCharging = true;
 //                Log.d("sdfdgfh","CHRAGINGBITINFEILDeeeeeeee___________"+frame);
-                String candata = FrameUtils.getByteSubstring(frame, 11, 18);
+
                 CanDataParser.parseCanData18FF50E5(hb3, candata);
                 float chargingbit = hb3.getChargingbit();
 //                Log.d("sdfdgfh", "CHRAGINGBITINFEILDeeeeeeee___________" + chargingbit);
@@ -208,9 +211,13 @@ public class LoginActivity extends AppCompatActivity {
                 if (chargingbit == 0) {
                     binding.loginchargingicon.setVisibility(View.INVISIBLE);
                     TelemetryDataManager.getInstance().setTeleChargingState(2);
+                    VehicleTelemetryManager.getInstance().setChargingStatus("2;0;0");
+//                    Log.d("ChargingDebug","ChargingDebug plugged");
                 }
                 if (chargingbit > 0.5) {
 //                  Log.d("sdfdgfh","CHRAGINGBITINFEILD___________"+chargingbit);
+                    VehicleTelemetryManager.getInstance().setChargingStatus("1;"+chargingbit+";"+ ETADataManager.getInstance().getEtaTime());
+//                    Log.d("ChargingDebug","ChargingDebug1 = "+chargingbit+"  ETA="+ETADataManager.getInstance().getEtaTime());
                     binding.loginchargingicon.setVisibility(View.VISIBLE);
                     TelemetryDataManager.getInstance().setTeleChargingState(1);
                 }
@@ -238,6 +245,8 @@ public class LoginActivity extends AppCompatActivity {
                 chargingFrameTimeoutHandler.removeCallbacks(chargingFrameTimeoutRunnable);
                 chargingFrameTimeoutRunnable = () -> {
                     //Log.d("Frame", "Charging frame timeout — NOT CHARGING");
+//                    Log.d("ChargingDebug","ChargingDebug NO CHARGING");
+                    VehicleTelemetryManager.getInstance().setChargingStatus("0;0;0");
                     TelemetryDataManager.getInstance().setTeleChargingState(0);
                     TelemetryDataManager.getInstance().setTeleChargingCurrentValue(0);
 
