@@ -179,10 +179,6 @@
             android:name="org.eclipse.paho.android.service.MqttService"
             android:exported="false" />
         <service
-            android:name=".TelemetryService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
             android:name=".CameraService"
             android:enabled="true"
             android:exported="false" />

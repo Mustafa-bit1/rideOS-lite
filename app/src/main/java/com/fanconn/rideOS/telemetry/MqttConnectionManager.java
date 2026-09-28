@@ -12,6 +12,7 @@ import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.fanconn.rideOS.menu.RiderMqttSyncWorker;
 import com.fanconn.rideOS.telemetry.remotecommand.MqttCommandService;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
@@ -818,6 +819,7 @@ public class MqttConnectionManager {
                         subscribeMetadataResponseTopic();
 
                         uploadStagedTelemetry();
+                        RiderMqttSyncWorker.sync(context);
                     }
 
                     @Override

@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.airbnb.lottie.L;
 import com.fanconn.rideOS.AhTrackerManager;
 import com.fanconn.rideOS.CanDataParser;
+import com.fanconn.rideOS.ChargingStatusManager;
 import com.fanconn.rideOS.ETADataManager;
 import com.fanconn.rideOS.EVLockService;
 import com.fanconn.rideOS.FrameUtils;
@@ -59,8 +60,6 @@ import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.Smartkey.KeyPresenceManager;
 import com.fanconn.rideOS.SocPreference;
 import com.fanconn.rideOS.SoundPlayer;
-import com.fanconn.rideOS.TelemetryDataManager;
-import com.fanconn.rideOS.TelemetryService;
 import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.batteryPackSwitcher;
 import com.fanconn.rideOS.chargingUI;
@@ -210,7 +209,6 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (chargingbit == 0) {
                     binding.loginchargingicon.setVisibility(View.INVISIBLE);
-                    TelemetryDataManager.getInstance().setTeleChargingState(2);
                     VehicleTelemetryManager.getInstance().setChargingStatus("2;0;0");
 //                    Log.d("ChargingDebug","ChargingDebug plugged");
                 }
@@ -218,8 +216,8 @@ public class LoginActivity extends AppCompatActivity {
 //                  Log.d("sdfdgfh","CHRAGINGBITINFEILD___________"+chargingbit);
                     VehicleTelemetryManager.getInstance().setChargingStatus("1;"+chargingbit+";"+ ETADataManager.getInstance().getEtaTime());
 //                    Log.d("ChargingDebug","ChargingDebug1 = "+chargingbit+"  ETA="+ETADataManager.getInstance().getEtaTime());
+                    ChargingStatusManager.getInstance().setCharging(true);
                     binding.loginchargingicon.setVisibility(View.VISIBLE);
-                    TelemetryDataManager.getInstance().setTeleChargingState(1);
                 }
 //                    Log.d("Frame", "Charging frame received");
 //                    binding.loginchargingicon.setVisibility(View.VISIBLE);
@@ -234,7 +232,6 @@ public class LoginActivity extends AppCompatActivity {
                     isChargingUIActive = true;
 
                     lastChargingUILaunchTime = currentTime;
-                    TelemetryDataManager.getInstance().setTeleChargingState(1);
 
                     Intent intent0 = new Intent(context, chargingUI.class);
                     intent0.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -247,8 +244,7 @@ public class LoginActivity extends AppCompatActivity {
                     //Log.d("Frame", "Charging frame timeout — NOT CHARGING");
 //                    Log.d("ChargingDebug","ChargingDebug NO CHARGING");
                     VehicleTelemetryManager.getInstance().setChargingStatus("0;0;0");
-                    TelemetryDataManager.getInstance().setTeleChargingState(0);
-                    TelemetryDataManager.getInstance().setTeleChargingCurrentValue(0);
+                    ChargingStatusManager.getInstance().setCharging(false);
 
                     isChargingUIActive = false;
 //                    ChargingUiClosedByUserFlag=false;
@@ -281,6 +277,7 @@ public class LoginActivity extends AppCompatActivity {
                 socInt = serialPortManager.getHb3().getBatteryLevel();   // removes decimal part
             }
             if (socInt <= 100) {
+                //VehicleTelemetryManager.getInstance().setSoc((double)socInt);
                 binding.loginSoc.setText("Battery " + socInt + "%");
             }
 
@@ -402,7 +399,6 @@ public class LoginActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
         tapSoundPlayer = MediaPlayer.create(this, R.raw.dottap33);
-        TelemetryService.shdtelemetrywhenunlocked = false;
         VehicleTelemetryManager.getInstance().setEvPowerState("0");
         instance = this;
 
@@ -411,7 +407,6 @@ public class LoginActivity extends AppCompatActivity {
             int storedRawSoc = SocPreference.getBatteryLevel(instance);
             float soc = get10LessSOC(storedRawSoc / 10.0f);
             float displaysoc = Math.round(soc * 10f) / 10f;
-            TelemetryDataManager.getInstance().setTeleSOC(displaysoc);
             binding.loginSoc.setText("Battery " + displaysoc + "%");
         }
 
@@ -891,10 +886,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("LoginActivity",
                 "HillAssist_and_TCS = " + HillAssist_and_TCS);
 
-        TelemetryService.shdtelemetrywhenunlocked = true;
         VehicleTelemetryManager.getInstance().setEvPowerState("1");
-
-        TelemetryDataManager.getInstance().setTeleCurrentRider(username);
         VehicleTelemetryManager.getInstance().setCurrentRider(username);
 
         actualPin.setLength(0);
@@ -1356,7 +1348,6 @@ public class LoginActivity extends AppCompatActivity {
         if (instance == this) {
             instance = null;
         }
-        TelemetryService.shdtelemetrywhenunlocked = true;
         VehicleTelemetryManager.getInstance().setEvPowerState("1");
         LocalBroadcastManager.getInstance(this).unregisterReceiver(tempWarningReceiver);
 
@@ -1419,7 +1410,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         UIUpdater.ignorefirstblink = true;
         UIUpdater.islock = false;
-        TelemetryService.shdtelemetrywhenunlocked = false;
         VehicleTelemetryManager.getInstance().setEvPowerState("0");
 //        serialPortManager.getHb3().setLEDresponse(1);
 //        serialPortManager.getHb3().sethandleLockresponse(1);

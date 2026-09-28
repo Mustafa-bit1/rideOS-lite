@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.fanconn.rideOS.menu.RiderSyncWorker;
+import com.fanconn.rideOS.menu.RiderMqttSyncWorker;
 import com.fanconn.rideOS.network.ApiService;
 import com.fanconn.rideOS.network.RetrofitClient;
 
@@ -20,7 +20,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
             ApiService apiService =
                     RetrofitClient.getClient().create(ApiService.class);
 
-            RiderSyncWorker.sync(context, apiService);
+            RiderMqttSyncWorker.sync(context);
         }
     }
 }

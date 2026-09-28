@@ -280,24 +280,25 @@ public class MqttTelemetryService extends Service {
                     }
 
                     // Confirms the 1-second telemetry loop is still alive
-                    Log.d(
-                            TAG,
-                            "Telemetry loop tick"
-                    );
+//                    Log.d(
+//                            TAG,
+//                            "Telemetry loop tick"
+//                    );
 
                     try {
 
-                        Log.d(
-                                TAG,
-                                "Starting telemetry collection"
-                        );
+//                        Log.d(
+//                                TAG,
+//                                "Starting telemetry collection"
+//                        );
 
                         collectAndSendTelemetry();
 
-                        Log.d(
-                                TAG,
-                                "Telemetry collection completed"
-                        );
+//                        Log.d(
+
+//                                TAG,
+//                                "Telemetry collection completed"
+//                        );
 
                     } catch (Exception e) {
 
@@ -311,12 +312,12 @@ public class MqttTelemetryService extends Service {
                     if (handler != null &&
                             serviceRunning) {
 
-                        Log.d(
-                                TAG,
-                                "Scheduling next telemetry tick in "
-                                        + TELEMETRY_INTERVAL_MS
-                                        + " ms"
-                        );
+//                        Log.d(
+//                                TAG,
+//                                "Scheduling next telemetry tick in "
+//                                        + TELEMETRY_INTERVAL_MS
+//                                        + " ms"
+//                        );
 
                         handler.postDelayed(
                                 this,

@@ -270,14 +270,9 @@ public class TpmsScanService extends Service {
 //            );
             if(d.voltage>0  && Objects.equals(mac, metadata.getFrontTPMS())){
 //                Log.d("asfaf","THSIISTPMSBATTERYVOATGE FRONT "+String.format("%.2fV", d.voltage));
-                TelemetryDataManager.getInstance()
-                        .setTeleFTirePressureVoltage(String.format("%.2fV", d.voltage));
-
             }
             else if (d.voltage>0  && Objects.equals(mac, metadata.getRearTPMS())) {
               //  Log.d("asfaf","THSIISTPMSBATTERYVOATGE REAR "+String.format("%.2fV", d.voltage));
-                TelemetryDataManager.getInstance()
-                        .setTeleRTirePressureVoltage(String.format("%.2fV", d.voltage));
             }
         }
     };

@@ -519,7 +519,6 @@ public class chargingUI extends AppCompatActivity {
 //                wakeLock.acquire(3000);
 //            }
             //=======================================
-            TelemetryDataManager.getInstance().setTeleChargingState(0);
             ETADataManager.getInstance().setEtaTime(0);
             LoginActivity.ChargingUiClosedByUserFlag = false;
             LoginActivity.isChargingUIActive= false;

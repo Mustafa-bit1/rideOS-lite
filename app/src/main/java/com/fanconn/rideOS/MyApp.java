@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.fanconn.rideOS.menu.RiderMigrationManager;
+import com.fanconn.rideOS.menu.RiderMqttManager;
 import com.fanconn.rideOS.menu.SecurePrefs;
 import com.fanconn.rideOS.network.ScooterMqttClient;
 import com.fanconn.rideOS.receiver.NightlyRebootScheduler;
@@ -78,6 +80,18 @@ public class MyApp extends Application {
 
             startService(mqttIntent);
         }
+
+        //OLD rider migration code>
+// Rider migration
+        RiderMigrationManager
+                .getInstance(this, SecurePrefs.get())
+                .migrateExistingRiders();
+
+// Rider MQTT
+        RiderMqttManager
+                .getInstance(this)
+                .connect();
+        RiderMqttManager.getInstance(this).connect();
     }
 
     private void startSmartKeyService() {

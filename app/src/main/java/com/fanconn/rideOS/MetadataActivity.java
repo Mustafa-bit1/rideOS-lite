@@ -90,19 +90,6 @@ public class MetadataActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG
                     ).show();
 
-                    Intent serviceIntent =
-                            new Intent(
-                                    MetadataActivity.this,
-                                    TelemetryService.class
-                            );
-
-                    serviceIntent.putExtra(
-                            "VIN_NUMBER",
-                            vin
-                    );
-
-                    startService(serviceIntent);
-
                     finish();
                 }
         );

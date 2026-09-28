@@ -164,8 +164,6 @@ public class QuickSettingsView extends FrameLayout {
         boolean gpsEnabled =
                 prefs.getBoolean(PREF_GPS_TELEMETRY, true);
 
-        TelemetryDataManager.getInstance()
-                .setGpsTelemetryEnabled(gpsEnabled);
 
         VehicleTelemetryManager.getInstance()
                 .setGpsTelemetryEnabled(gpsEnabled);
@@ -182,8 +180,6 @@ public class QuickSettingsView extends FrameLayout {
 
             enabled = !enabled;
 
-            TelemetryDataManager.getInstance()
-                    .setGpsTelemetryEnabled(enabled);
             VehicleTelemetryManager.getInstance()
                     .setGpsTelemetryEnabled(enabled);
 

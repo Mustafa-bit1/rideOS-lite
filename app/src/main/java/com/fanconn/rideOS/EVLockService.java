@@ -48,7 +48,6 @@ public class EVLockService {
         playLockSound();  // 🔊 Play the sound once
         currentSequenceType = SequenceType.UNLOCK;
         taskUnlock2();
-        TelemetryDataManager.getInstance().setTeleHandleLockState(1);
         VehicleTelemetryManager.getInstance().setHandleLock(1.0);
     }
     private MediaPlayer lockPlayer;
@@ -70,7 +69,6 @@ public class EVLockService {
 //        }, 400);
         currentSequenceType = SequenceType.LOCK;
         taskLock1();
-        TelemetryDataManager.getInstance().setTeleHandleLockState(0);
         VehicleTelemetryManager.getInstance().setHandleLock(0.0);
     }
 

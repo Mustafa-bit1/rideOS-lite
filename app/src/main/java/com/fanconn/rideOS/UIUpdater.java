@@ -67,7 +67,7 @@ public class UIUpdater  {
     batteryPackSwitcher BatPackSwitcher;
     private final MainActivity activity; // Actual activity for dialogs, UI
 //    private CameraHandler cameraHandler;
-    TelemetryDataManager tm;
+
     VehicleTelemetryManager vTm =VehicleTelemetryManager.getInstance();
 
     public static UIUpdater instance;
@@ -105,7 +105,6 @@ public class UIUpdater  {
 //                ctx
 //        );
 
-        this.tm = TelemetryDataManager.getInstance();
         long now = System.currentTimeMillis();
         lastCanUpdateTime = now;
 
@@ -209,13 +208,10 @@ public class UIUpdater  {
                 .putFloat("lastTripAh", 0f)
                 .apply();
 
-        tm.setTeleTotalAH(0f);
         vTm.setInAh(0.0);
 
-        tm.setTeleChargerAH(0f);
         vTm.setInAhCharger(0.0);
 
-        tm.setTeleRegenAH(0f);
         vTm.setInAhRegen(0.0);
 
         Log.d("RECO_RESET", "All reco engine params reset");
@@ -237,10 +233,8 @@ public class UIUpdater  {
                 .apply();
 
         // Update telemetry
-        tm.setTeleChargerAH(0f);
         vTm.setInAhCharger(0.0);
 
-        tm.setTeleRegenAH(0f);
         vTm.setInAhRegen(0.0);
 
         //Log.d("AH_RESET", "✅ Charger Ah + Total Regen Ah reset");
@@ -538,8 +532,6 @@ public class UIUpdater  {
 
 //        tm.setTeleRemainingCapacityAH(ahTrackerManager.getRemainingAh());
         if(hb3.getreamainingAH()/1000<500){// ignore noise values
-            tm.setTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);
-            tm.setBMSTeleRemainingCapacityAH(hb3.getreamainingAH()/1000);// Actual remaining AH directly taking from BMS
 
             vTm.setRemainingCapAh((double)hb3.getreamainingAH()/1000);
             vTm.setBmsRemainingCap((double)hb3.getreamainingAH()/1000);
@@ -563,16 +555,12 @@ public class UIUpdater  {
            // Log.d("CURR", "Invalid current rejected: " + current);
         }
 
-        tm.setTeleBatVoltage(hb3.getbatvoltage()/10);
         vTm.setBatVoltage((double)(hb3.getbatvoltage()/10));
         float range= (float) (batteryLevel * RANGE_km_PER_SOC);
         if(batteryLevel>=0 && batteryLevel<=100){
-            tm.setTeleSOC(batteryLevel);
             vTm.setSoc((double)batteryLevel);
 
-            tm.setBMSTeleSOC(hb3.getNoLess10BMSBatteryLevel() /10);
             vTm.setBmsSoc((double)hb3.getNoLess10BMSBatteryLevel() /10);
-            tm.setTeleRange(range);
             vTm.setRangeKm((double)range);
 
             if(hasReceivedValidSoc){ // say "Calculating charge" untill valid SOC|voltage is recieved
@@ -591,7 +579,7 @@ public class UIUpdater  {
         if (!Lowbatflag
                 && batteryLevel >= 17
                 && batteryLevel <= 20
-                && tm.getTeleChargingState() == 0) {
+                && !ChargingStatusManager.getInstance().isCharging()) {
 
             if(serialPortManager!=null){
               //  Log.d("SOCWHATACTOION","ENTER 20");
@@ -661,7 +649,7 @@ public class UIUpdater  {
         if (!atSOC10Lowbatflag
                 && batteryLevel >= 3
                 && batteryLevel <= 5
-                && tm.getTeleChargingState() == 0) {
+                && !ChargingStatusManager.getInstance().isCharging()) {
 
             atSOC10Lowbatflag=true;
             startBeeping(2);
@@ -711,7 +699,7 @@ public class UIUpdater  {
         if (batteryLevel > 0) {
             canDataInitialized = true;
         }
-        if(canDataInitialized && !atSOC7Lowbatflag && (batteryLevel==0) && !apuflag  && tm.getTeleChargingState()==0){
+        if(canDataInitialized && !atSOC7Lowbatflag && (batteryLevel==0) && !apuflag  && !ChargingStatusManager.getInstance().isCharging()){
             atSOC7Lowbatflag=true;
             if(serialPortManager!=null){
                 serialPortManager.VCUSendToMCU("FFAA550103001510FBA8072800180000002C00");//phase 0 , line 10AMps=2800 ,,regen 6(1800)-11(2C00),, regen 40A - 50A(A000-C800)
@@ -782,7 +770,6 @@ public class UIUpdater  {
         return (actualSOC - minActual) * 100 / (maxActual - minActual);
     }
     public void updateCanData18914001(Heartbeat3 hb3) {
-        tm.setteleIndividualCellVoltages(hb3.getIndiCellVol());
         vTm.setSingleMinMaxVoltage(hb3.getIndiCellVol());
     }
     private chargingUI chargingUI;
@@ -808,7 +795,6 @@ public class UIUpdater  {
             InactivityManager.getInstance().stopTimer();
             showCustomPopupAPUdetected("Assistance", "Rescue pack detected. Do you want to switch to rescue battery pack?");
         }
-        tm.setTeleAPUBatVoltage(hb3.getAPUbatvoltage()/10);
         vTm.setApuVoltage((double)hb3.getAPUbatvoltage()/10);
         // Ensure the disconnect watcher is running only once
         if (!apuWatcherRunning) {
@@ -822,7 +808,6 @@ public class UIUpdater  {
 
 //        int range= (int) Math.floor(APUbatteryLevel * 2.8);  // Get the whole number part
         if(APUbatteryLevel>=0 && APUbatteryLevel<=100){
-            tm.setTeleAPUSOC(APUbatteryLevel);
             vTm.setApuSoc((double)APUbatteryLevel);
             //binding.APUbatteryTV.setVisibility(View.VISIBLE);
            //binding.apubaticon.setVisibility(View.VISIBLE);
@@ -891,10 +876,8 @@ public class UIUpdater  {
                         serialPortManager.getHb3().setApuChargeMosState(0);
                         serialPortManager.getHb3().setApuDisChargeMosState(0);
 
-                        tm.setTeleAPUSOC(0);
                         vTm.setApuSoc(0.0);
 
-                        tm.setTeleAPUBatVoltage(0);
                         vTm.setApuVoltage(0.0);
 
                         //NTC VALUES
@@ -926,7 +909,6 @@ public class UIUpdater  {
 
     public void updateCanData18FF50E5(Heartbeat3 hb3) {
        //Log.d("ChargingDebug", "RESETING FROM UIUPDATORrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-        TelemetryDataManager.getInstance().setTeleChargingStateError(hb3.getChargingErrorbit());
 
         //---------------------------
         binding.yellowalert.clearAnimation();
@@ -935,10 +917,6 @@ public class UIUpdater  {
         binding.yellowalert.setVisibility(View.INVISIBLE);
         binding.LowBatmsg.setVisibility(View.INVISIBLE);
         //----------------------------
-        float chargingbit = hb3.getChargingbit();
-        if(chargingbit<200){
-            tm.setTeleChargingCurrentValue(chargingbit);
-        }
 //        Log.d("ChargingDebug", "Charging bitKKK: " + chargingbit);
         if (chargingUI == null) {
             //Log.d("UIUpdater", "chargingUI is null — cannot reset timeout");
@@ -969,13 +947,10 @@ public class UIUpdater  {
             apuflag=false;
         }
 
-        tm.setTeleBmsLifeCycles(hb3.getBMSlifecycles());
-        tm.setTeleBMSMosStates(hb3.getMainChargeMosState()+","+hb3.getMainDisChargeMosState()+","+hb3.getApuChargeMosState()+","+hb3.getApuDisChargeMosState());
         vTm.setBmsMos(hb3.getMainChargeMosState()+","+hb3.getMainDisChargeMosState()+","+hb3.getApuChargeMosState()+","+hb3.getApuDisChargeMosState());
     }
     public void updateCanData18944001(Heartbeat3 hb3) {
         int BMS_Mos_Temp=hb3.getBMS_MOS_Temp();
-        tm.setTeleBMSMosTemp(BMS_Mos_Temp);
         vTm.setBmsMosTemp((double)BMS_Mos_Temp);
     }
     public void updateCanData18934002(Heartbeat3 hb3) {
@@ -1022,10 +997,8 @@ public class UIUpdater  {
 
         //Log.d("TemperatureCheck", "NTCs = " + NTC1 + "," + NTC2 + "," + NTC3 + "," + NTC4 + "," + NTC5 + "," + NTC6 + "," + NTC7 + "," + NTC8);
         if(isAPUPresent){
-            tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
             vTm.setNtc(NTC1+","+NTC2+","+NTC3+","+NTC4+","+NTC5+","+NTC6+","+NTC8+","+NTC8);
         }else  {
-            tm.setTeleNTC(NTC1+","+NTC2+","+NTC3+","+NTC4);
             vTm.setNtc(NTC1+","+NTC2+","+NTC3+","+NTC4);
         }
         int[] temps = {NTC1, NTC2, NTC3, NTC4, NTC5, NTC6, NTC7, NTC8};
@@ -1254,9 +1227,9 @@ public class UIUpdater  {
 
         // Valid increment range protection
         if (delta > 0 && delta < 20.0f) {
-            if (tm.getTeleChargingState() == 1) {
+            if (ChargingStatusManager.getInstance().isCharging()) {
                 ahByCharger += delta;
-            } else if ((tm.getTeleChargingState() == 0 || tm.getTeleChargingCurrentValue()==0) && rpm>20) {
+            } else if (!ChargingStatusManager.getInstance().isCharging() && rpm>20) {
                 ahByRegen += delta;        // total regen
                 tripAhByRegen += delta;    // trip regen
             }
@@ -1276,13 +1249,10 @@ public class UIUpdater  {
         saveAhValues(roundedTotalAh, roundedChargerAh, roundedRegenAh);
 
         // Telemetry update
-        tm.setTeleTotalAH(roundedTotalAh);
         vTm.setInAh((double)roundedTotalAh);
 
-        tm.setTeleChargerAH(roundedChargerAh);
         vTm.setInAhCharger((double)roundedChargerAh);
 
-        tm.setTeleRegenAH(roundedRegenAh);
         vTm.setInAhRegen((double)roundedRegenAh);
 //        Log.d("AH_REGEN",
 //                "TotalRegen=" + roundedRegenAh +
@@ -1309,17 +1279,14 @@ public class UIUpdater  {
     private void loadStoredAhValues() {
         SharedPreferences prefs = context.getSharedPreferences("ah_data", Context.MODE_PRIVATE);
 
-        tm.setTeleTotalAH(prefs.getFloat("totalAh", 0f));
         vTm.setInAh((double)prefs.getFloat("totalAh", 0f));
 
-        tm.setTeleChargerAH(prefs.getFloat("chargerAh", 0f));
         vTm.setInAhCharger((double)prefs.getFloat("chargerAh", 0f));
 
-        tm.setTeleRegenAH(prefs.getFloat("regenAh", 0f));
         vTm.setInAhRegen((double)prefs.getFloat("regenAh", 0f));
 
-        ahByCharger = tm.getTeleChargerAH();
-        ahByRegen = tm.getTeleRegenAH();
+        ahByCharger = vTm.getInAhCharger().floatValue();
+        ahByRegen = vTm.getInAhRegen().floatValue();
 
         tripAhByRegen = 0f; // fresh trip
     }
@@ -1339,7 +1306,6 @@ public class UIUpdater  {
         float dischargeAH = roundTo3(rawDischargeAH);
 
         saveDischargeAh(dischargeAH);
-        tm.setTeleDischargeAH(dischargeAH);
         vTm.setOutAh((double)dischargeAH);
     }
 
@@ -1437,11 +1403,8 @@ public class UIUpdater  {
         isboost=hb3.getBSG1_BYTE3()==8; //hex value 08
         isCruise=hb3.getBSG1_BYTE1()==201;//hex value of 201=C9
 
-        tm.setTeleMotorTemp(hb3. getBSG1_BYTE7()-40);   //Motor temprature hex to dec then offset 40
-        vTm.setMotorTemp((double)hb3. getBSG1_BYTE7()-40);
-
-        tm.setTeleControllerMosTemp(hb3.getBSG1_BYTE8()-40);// Controller Mos temp offset 40
-        vTm.setControllerMosTemp((double)hb3.getBSG1_BYTE8()-40);
+        vTm.setMotorTemp((double)hb3. getBSG1_BYTE7()-40);//Motor temprature hex to dec then offset 40
+        vTm.setControllerMosTemp((double)hb3.getBSG1_BYTE8()-40);// Controller Mos temp offset 40
 
 //        Log.d("dfhgvhb","CRUISE VALUE IS "+hb3.getBSG1_BYTE1());
 //        if(isboost)binding.actualboost.setVisibility(View.VISIBLE);
@@ -1456,13 +1419,10 @@ public class UIUpdater  {
             binding.chargingredtab.setVisibility(View.VISIBLE);
             if(chargingbit>0.5){
                 binding.chargingredtab.setImageResource(R.drawable.chargingredtab);
-                TelemetryDataManager.getInstance().setTeleChargingState(1);
 //                UIUpdater.isChargingUIVisible = true;
             }
             else {
-
                 binding.chargingredtab.setImageResource(R.drawable.yellowpluggedtab);
-                TelemetryDataManager.getInstance().setTeleChargingState(2);
             }
             UIUpdater.isChargingUIVisible = true;
 //            binding.chargingredtab.setVisibility(View.VISIBLE);
@@ -2247,9 +2207,7 @@ private int streamId = 0;
                         InactivityManager.getInstance().startTimer(1);
                         UIUpdater.directionalGears=0;
                         binding.speedNumberTV.setText("0");
-                        tm.setTeleSpeed(0);
                         vTm.setSpeedKmph(0.0);
-                        tm.setTeleControllerAbruptOff(1);
                         MainActivity.currentgear='O';
                         VehicleTelemetryManager.getInstance().setGear("O");
                         rpm = 0;
@@ -2273,7 +2231,7 @@ private int streamId = 0;
 //                            controllerErrorSoundPlayed = true;
 //                        }
 //
-//                        // 🚨 Show popup
+//                        //  Show popup
 //                        new AlertDialog.Builder(activity)
 //                                .setTitle("Error Alert")
 //                                .setMessage("Controller switched off abruptly, or a CAN line issue occurred.")
@@ -2309,7 +2267,6 @@ private int streamId = 0;
         long now = System.currentTimeMillis();
         lastCanUpdateTime = now;
         canPopupShown = false;
-        tm.setTeleControllerAbruptOff(0);
 //        double speed = (hb3.getBSG2_BYTE78() * 60.0 * tiredimensions) / 3.3125 * 1 / 1000;//1.4825
         int speed = (int)((hb3.getBSG2_BYTE78() * 60.0 * Speed_ratio_Value) / 3.3125 * 1 / 1000); // 10% high
         updateRideLock(speed);
@@ -2322,9 +2279,7 @@ private int streamId = 0;
 //        Log.d("sadfdgf","THIS IS TRIPBUG    "+hb3.getBSG2_BYTE78());
         double tripKm = tripManager.getTripDistance();
         double odoKm = tripManager.getOdoDistance();
-        tm.setTeleTrip((float) roundTo2Decimal(tripKm));
         vTm.setTripKm(roundTo2Decimal(tripKm));
-        tm.setTeleODO((float) roundTo2Decimal(odoKm));
         vTm.setOdometer(odoKm);
 
         if (activity != null) {
@@ -2334,7 +2289,6 @@ private int streamId = 0;
 
         if(speed < 150){
             try {
-                tm.setTeleSpeed((int)speed);
                 vTm.setSpeedKmph((double)speed);
                 binding.speedNumberTV.setText(String.valueOf((int) speed));
                 updateSpeedTrueAnimation((int)speed,currentComsForSpeed*-1);
@@ -2589,7 +2543,6 @@ private int streamId = 0;
         float current = (float) roundTo1Decimal(
                 getFormattedBusCurrent(hb3.getBSG3_BYTE34()) * -1
         );
-        tm.setTeleCurrentConsumption(current);
         vTm.setCurrentConsumption((double)current);
 
         currentComsForSpeed=(int)current;
@@ -2717,11 +2670,8 @@ private int streamId = 0;
        // tm.setcell1TO3(hb3.getcell1TO3());
     }
     private void updateCanData1806E5F4(Heartbeat3 hb3) {
-         tm.setMax_voltage_value(hb3.getTotal_max_voltage_limit());
          vTm.setMaxTotalVoltage((double)hb3.getTotal_max_voltage_limit());
-
-        tm.setAlowable_charging_current_value(hb3.getAllowable_Charging_currentValue());
-        vTm.setAllowableChargingCurrent((double)hb3.getAllowable_Charging_currentValue());
+         vTm.setAllowableChargingCurrent((double)hb3.getAllowable_Charging_currentValue());
 //        Log.d("CC","ALLOWABLECC "+hb3.getAllowable_Charging_currentValue());
     }
 
@@ -3805,8 +3755,6 @@ private int streamId = 0;
                 }
 
                 String tpmsPayload = buildTirePressurePayload();
-                TelemetryDataManager.getInstance()
-                        .setTeleTirePressure(tpmsPayload);
                 vTm.setTirePressure(tpmsPayload);
 
               //  Log.d("TPMS-UI", "TELE_TIRE_PRESSURE = " + tpmsPayload);
