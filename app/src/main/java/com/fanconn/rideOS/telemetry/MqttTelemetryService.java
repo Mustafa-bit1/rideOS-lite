@@ -398,14 +398,9 @@ public class MqttTelemetryService extends Service {
                 stagingManager.stage(
                         payload
                 );
-
             } else {
-
-                Log.d(
-                        TAG,
-                        "Telemetry sent: "
-                                + payload
-                );
+                Log.d(TAG, "MQTT payload sent");
+//                Log.d(TAG, "Telemetry sent: " + payload);
             }
 
             return;

@@ -7,6 +7,7 @@ android {
     compileSdk 35
 
     defaultConfig {
+
         applicationId "com.fanconn.rideOS"
         minSdk 26
         targetSdk 35

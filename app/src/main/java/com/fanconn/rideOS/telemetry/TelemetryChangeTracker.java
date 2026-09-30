@@ -142,6 +142,10 @@ public class TelemetryChangeTracker {
         put(payload, "c1618", data.getCell16To18());
         put(payload, "c1921", data.getCell19To21());
         put(payload, "c2223", data.getCell22To23());
+        put(payload, "lt", data.getLastTrip());
+        put(payload, "dkm", data.getDayKm());
+        put(payload, "ce", data.getControllerErrors());
+        put(payload, "be", data.getBmsErrors());
     }
 
     // ================================================================
@@ -467,6 +471,34 @@ public class TelemetryChangeTracker {
                 "c2223",
                 current.getCell22To23(),
                 previousData.getCell22To23()
+        );
+
+        putIfChanged(
+                payload,
+                "lt",
+                current.getLastTrip(),
+                previousData.getLastTrip()
+        );
+
+        putIfChanged(
+                payload,
+                "dkm",
+                current.getDayKm(),
+                previousData.getDayKm()
+        );
+
+        putIfChanged(
+                payload,
+                "ce",
+                current.getControllerErrors(),
+                previousData.getControllerErrors()
+        );
+
+        putIfChanged(
+                payload,
+                "be",
+                current.getBmsErrors(),
+                previousData.getBmsErrors()
         );
     }
 

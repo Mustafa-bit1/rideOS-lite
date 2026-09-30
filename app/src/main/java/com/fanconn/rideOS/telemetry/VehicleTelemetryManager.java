@@ -23,6 +23,8 @@ public class VehicleTelemetryManager {
     private String vin;
     private static final String PREFS_OTA = "ota_prefs";
     private static final String KEY_LAST_MCU_VERSION = "last_mcu_version";
+
+
     private Context context;
     public synchronized void init(Context context) {
         this.context = context.getApplicationContext();
@@ -77,6 +79,10 @@ public class VehicleTelemetryManager {
     private String cell16To18;
     private String cell19To21;
     private String cell22To23;
+    private String lastTrip;
+    private String dayKm;
+    private String controllerErrors;
+    private String bmsErrors;
     private volatile boolean gpsTelemetryEnabled = true;
     private static final String GPS_DISABLED_LOCATION = "0.000000, 0.000000";
     private static VehicleTelemetryManager instance;
@@ -624,6 +630,42 @@ public class VehicleTelemetryManager {
     public synchronized void setCell22To23(String cell22To23) {
         this.cell22To23 = cell22To23;
     }
+
+    // ============================================================
+// TRIP / ERROR INFORMATION
+// ============================================================
+
+    public synchronized String getLastTrip() {
+        return lastTrip;
+    }
+
+    public synchronized void setLastTrip(String lastTrip) {
+        this.lastTrip = lastTrip;
+    }
+
+    public synchronized String getDayKm() {
+        return dayKm;
+    }
+
+    public synchronized void setDayKm(String dayKm) {
+        this.dayKm = dayKm;
+    }
+
+    public synchronized String getControllerErrors() {
+        return controllerErrors;
+    }
+
+    public synchronized void setControllerErrors(String controllerErrors) {
+        this.controllerErrors = controllerErrors;
+    }
+
+    public synchronized String getBmsErrors() {
+        return bmsErrors;
+    }
+
+    public synchronized void setBmsErrors(String bmsErrors) {
+        this.bmsErrors = bmsErrors;
+    }
     public synchronized VehicleTelemetryManager createSnapshot() {
 
         VehicleTelemetryManager.GpsTelemetryState gps =
@@ -680,7 +722,10 @@ public class VehicleTelemetryManager {
         snapshot.setCell16To18(this.cell16To18);
         snapshot.setCell19To21(this.cell19To21);
         snapshot.setCell22To23(this.cell22To23);
-
+        snapshot.setLastTrip(this.lastTrip);
+        snapshot.setDayKm(this.dayKm);
+        snapshot.setControllerErrors(this.controllerErrors);
+        snapshot.setBmsErrors(this.bmsErrors);
         return snapshot;
     }
 

@@ -447,6 +447,9 @@ public class UIUpdater  {
             case "18954001":
                 updateCanData18954001(hb3);
                 break;
+            case "18984001":
+                updateCanData18984001(hb3);
+                break;
             case "18FF50E5":
                 updateCanData18FF50E5(hb3);
                 break;
@@ -1066,6 +1069,10 @@ public class UIUpdater  {
         }
     }
 
+    public void updateCanData18984001(Heartbeat3 hb3) {
+        vTm.setBmsErrors(hb3.getBMSerrors());//BMS Errors Whole frame
+    }
+
     public void highVolumeForWarning()
     {
         AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -1390,6 +1397,7 @@ public class UIUpdater  {
     }
     private Animation reverseArrowAnimation;
     public static boolean isChargingUIVisible = false;
+
     public void updateCanData10F807A8(Heartbeat3 hb3) {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
@@ -1405,7 +1413,7 @@ public class UIUpdater  {
 
         vTm.setMotorTemp((double)hb3. getBSG1_BYTE7()-40);//Motor temprature hex to dec then offset 40
         vTm.setControllerMosTemp((double)hb3.getBSG1_BYTE8()-40);// Controller Mos temp offset 40
-
+        vTm.setControllerErrors(hb3.getBSG1_BYTE4()+hb3.getBSG1_BYTE5()+hb3.getBSG1_BYTE6());//Controller Errors Byte4,Byte5,Byte6
 //        Log.d("dfhgvhb","CRUISE VALUE IS "+hb3.getBSG1_BYTE1());
 //        if(isboost)binding.actualboost.setVisibility(View.VISIBLE);
 //        else binding.actualboost.setVisibility(View.INVISIBLE);

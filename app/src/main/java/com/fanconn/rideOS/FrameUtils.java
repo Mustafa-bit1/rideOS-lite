@@ -144,6 +144,35 @@ public class FrameUtils {
         return byteSubstring;
     }
 
+
+    public static String getExactHexByteAString(String hexString, int byteIndex) {
+        // Invalid/null data
+        if (hexString == null || hexString.isEmpty()) {
+            return "00";
+        }
+
+        // Invalid byte index
+        if (byteIndex < 0) {
+            return "00";
+        }
+
+        // Remove spaces if CAN data is provided as "88 00 00 02..."
+        hexString = hexString.replaceAll("\\s+", "");
+
+        // Invalid hex string
+        if (!isValidHexString(hexString)) {
+            return "00";
+        }
+
+        // Not enough characters for the requested byte
+        int startIndex = byteIndex * 2;
+
+        if (startIndex < 0 || startIndex + 2 > hexString.length()) {
+            return "00";
+        }
+
+        return hexString.substring(startIndex, startIndex + 2);
+    }
     /**
      * 计算十六进制字符串包含的字节数
      * @param hexString

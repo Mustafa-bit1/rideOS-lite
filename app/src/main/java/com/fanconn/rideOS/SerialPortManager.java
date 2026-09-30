@@ -528,6 +528,9 @@ public class SerialPortManager {
             case "18944001"://Mos States
                 CanDataParser.parseCanData18944001(hb3, hb3.getCanData());
                 break;
+            case "18984001"://Mos States
+                CanDataParser.parseCanData18984001(hb3, hb3.getCanData());
+                break;
             case "16078001"://Mos States
                 CanDataParser.parseCanData16078001(hb3, hb3.getCanData());
                 break;

@@ -50,6 +50,9 @@ public class CanDataParser {
     public static  void parseCanData18944001(Heartbeat3 hb3, String canData) {
         hb3.setBMS_MOS_Temp(FrameUtils.getByteValue(canData,7)-40);//offset is 40
     }
+    public static  void parseCanData18984001(Heartbeat3 hb3, String canData) {
+        hb3.setBMSerrors(canData);//get whole frame
+    }
 
     public static  void parseCanData16078001(Heartbeat3 hb3, String canData) {
         hb3.setBattery_size(FrameUtils.getByteSubstringAsInt(canData,0,3)/1000);
@@ -150,9 +153,9 @@ public class CanDataParser {
         hb3.setBSG1_BYTE1(FrameUtils.getByteValue(canData,0));  // 提取心跳包 档位相关 值
         hb3.setBSG1_BYTE2(FrameUtils.getByteValue(canData,1));
         hb3.setBSG1_BYTE3(FrameUtils.getByteValue(canData,2));  // 提取心跳包 档位相关 值
-        hb3.setBSG1_BYTE4(FrameUtils.getByteValue(canData,3));  // 提取心跳包 档位相关 值
-        hb3.setBSG1_BYTE5(FrameUtils.getByteValue(canData,4));  // 提取心跳包 转速 值
-        hb3.setBSG1_BYTE6(FrameUtils.getByteValue(canData,5));  // 提取心跳包 转速 值
+        hb3.setBSG1_BYTE4(FrameUtils.getExactHexByteAString(canData,3)); // Controller errors in Byte4
+        hb3.setBSG1_BYTE5(FrameUtils.getExactHexByteAString(canData,4)); // Controller errors in Byte5
+        hb3.setBSG1_BYTE6(FrameUtils.getExactHexByteAString(canData,5)); // Controller errors in Byte6
         hb3.setBSG1_BYTE7(FrameUtils.getByteValue(canData,6));  // 提取心跳包 电机温度 值
         hb3.setBSG1_BYTE8(FrameUtils.getByteValue(canData,7));  // 提取心跳包 控制器温度 值
     }

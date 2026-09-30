@@ -22,6 +22,8 @@ public class Heartbeat3 {
     private float APUremainingAH;
     private int BMSlifecycles;
     private int BMS_MOS_Temp;
+    private String BMS_Erros_Frame;
+
     private int Battery_size;
 
     private int NTC1,NTC2,NTC3,NTC4,NTC5,NTC6,NTC7,NTC8;
@@ -29,9 +31,9 @@ public class Heartbeat3 {
     private int BSG1_BYTE1;
     private int BSG1_BYTE2;
     private int BSG1_BYTE3;
-    private int BSG1_BYTE4;
-    private int BSG1_BYTE5;
-    private int BSG1_BYTE6;
+    private String BSG1_BYTE4;
+    private String BSG1_BYTE5;
+    private String BSG1_BYTE6;
     private int BSG1_BYTE7;
     private int BSG1_BYTE8;
     private int BSG2_BYTE12;
@@ -140,7 +142,13 @@ public class Heartbeat3 {
     public void setbatvoltage(int batvoltage) {
         this.batvoltage = batvoltage;
     }
+    public String getBMSerrors() {
+        return BMS_Erros_Frame;
+    }
 
+    public void setBMSerrors(String BMS_Erros_Frame) {
+        this.BMS_Erros_Frame = BMS_Erros_Frame;
+    }
     public int getAPUBatteryLevel() {
         return APUbatteryLevel;
     }
@@ -377,27 +385,27 @@ public class Heartbeat3 {
         this.BSG1_BYTE3 = BSG1_BYTE3;
     }
 
-    public int getBSG1_BYTE4() {
+    public String getBSG1_BYTE4() {
         return BSG1_BYTE4;
     }
 
-    public void setBSG1_BYTE4(int BSG1_BYTE4) {
+    public void setBSG1_BYTE4(String BSG1_BYTE4) {
         this.BSG1_BYTE4 = BSG1_BYTE4;
     }
 
-    public int getBSG1_BYTE5() {
+    public String getBSG1_BYTE5() {
         return BSG1_BYTE5;
     }
 
-    public void setBSG1_BYTE5(int BSG1_BYTE5) {
+    public void setBSG1_BYTE5(String BSG1_BYTE5) {
         this.BSG1_BYTE5 = BSG1_BYTE5;
     }
 
-    public int getBSG1_BYTE6() {
+    public String getBSG1_BYTE6() {
         return BSG1_BYTE6;
     }
 
-    public void setBSG1_BYTE6(int BSG1_BYTE6) {
+    public void setBSG1_BYTE6(String BSG1_BYTE6) {
         this.BSG1_BYTE6 = BSG1_BYTE6;
     }
 

@@ -87,6 +87,10 @@ public class TelemetryPayloadBuilder {
             put(payload, "c1618", manager.getCell16To18());
             put(payload, "c1921", manager.getCell19To21());
             put(payload, "c2223", manager.getCell22To23());
+            put(payload, "lt", manager.getLastTrip());
+            put(payload, "dkm", manager.getDayKm());
+            put(payload, "ce", manager.getControllerErrors());
+            put(payload, "be", manager.getBmsErrors());
 
         } catch (JSONException e) {
 

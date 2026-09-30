@@ -277,7 +277,7 @@ public class LoginActivity extends AppCompatActivity {
                 socInt = serialPortManager.getHb3().getBatteryLevel();   // removes decimal part
             }
             if (socInt <= 100) {
-                //VehicleTelemetryManager.getInstance().setSoc((double)socInt);
+                VehicleTelemetryManager.getInstance().setSoc((double)socInt);
                 binding.loginSoc.setText("Battery " + socInt + "%");
             }
 
