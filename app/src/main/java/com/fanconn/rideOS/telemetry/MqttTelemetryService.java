@@ -17,6 +17,8 @@ import com.fanconn.rideOS.telemetry.remotecommand.MqttCommandService;
 
 import org.json.JSONObject;
 
+import java.nio.charset.StandardCharsets;
+
 public class MqttTelemetryService extends Service {
 
     private static final String TAG =
@@ -362,7 +364,26 @@ public class MqttTelemetryService extends Service {
                 changeTracker.buildChangedPayload(
                         telemetryManager
                 );
-
+//        int payloadSizeBytes =
+//                payload.toString().getBytes(StandardCharsets.UTF_8).length;
+//        Log.d(
+//                "MQTT_PAYLOAD",
+//                "Size: "
+//                        + payloadSizeBytes
+//                        + " bytes | Payload: "
+//                        + payload.toString()
+//        );
+//        Log.d(
+//                "MQTT_PAYLOAD",
+//                "Payload size: "
+//                        + payloadSizeBytes
+//                        + " bytes ("
+//                        + String.format(
+//                        "%.2f",
+//                        payloadSizeBytes / 1024.0
+//                )
+//                        + " KB)"
+//        );
         // --------------------------------------------------------
         // NO CHANGES
         // --------------------------------------------------------

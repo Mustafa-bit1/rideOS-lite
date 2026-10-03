@@ -122,6 +122,7 @@ public class EVLockService {
         } else if (success) {
             retryCount2 = 0;
 //            hb3.setLEDresponse(0);
+            TripStatsManager.getInstance().startTrip();// Start trip signals to TripStats
             taskUnlock1();
         } else {
             //Log.e("EVLockService", "Unlock Command 2 failed");
@@ -156,7 +157,7 @@ public class EVLockService {
 
     private void taskLock2() {
         if (currentSequenceType != SequenceType.LOCK) return;
-
+        TripStatsManager.getInstance().endTrip();// End trip signlas for TripStats
         serialPortManager.VCUSendToMCU("FFAA550107000A00");
         //Log.d("EVLockService", "Sent Lock Commandd -------- 2");
 

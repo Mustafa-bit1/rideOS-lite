@@ -32,7 +32,7 @@ public class MyApp extends Application {
 
         GpsLocationManager.getInstance().init(this);
         GpsLocationManager.getInstance().start();
-
+        TripStatsManager.getInstance(getApplicationContext());
         InactivityManager.getInstance().init(this);
         SecurePrefs.init(this);
         new InactivityHandler(this);

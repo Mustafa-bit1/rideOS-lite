@@ -1402,7 +1402,7 @@ public class UIUpdater  {
         directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
         int speedGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 2, 4);
         int READY = FrameUtils.extractBits(hb3.getBSG1_BYTE3(), 0, 0);
-        //Log.d("CAN", "🟢 ISREDVALUE ENTERED ISREADY======"+READY);
+        //Log.d("CAN", " ISREDVALUE ENTERED ISREADY======"+READY);
 
         boolean isReady = (READY == 1);
 //        Log.d("nolockbug","VALUE REDAY IS ----------"+isReady);
@@ -2289,6 +2289,8 @@ private int streamId = 0;
         double odoKm = tripManager.getOdoDistance();
         vTm.setTripKm(roundTo2Decimal(tripKm));
         vTm.setOdometer(odoKm);
+        vTm.setLastTrip(TripStatsManager.getInstance().getLastTripDistance()+";"+TripStatsManager.getInstance().getLastTripTopSpeed()+";"+TripStatsManager.getInstance().getLastTripEnergyWh());
+        vTm.setDayKm(TripStatsManager.getInstance().getTodayDistance()+";"+TripStatsManager.getInstance().getYesterdayDistance());
 
         if (activity != null) {
             activity.refreshDistance();
@@ -2296,6 +2298,7 @@ private int streamId = 0;
         InactivityManager.getInstance().updateSpeed(speed);
 
         if(speed < 150){
+            TripStatsManager.getInstance().update(speed);// this is for trip data like top speed and nergy consumed
             try {
                 vTm.setSpeedKmph((double)speed);
                 binding.speedNumberTV.setText(String.valueOf((int) speed));
@@ -3487,6 +3490,7 @@ private int streamId = 0;
 
             stopReverseBeep();
             stopBlinking();
+            TripStatsManager.getInstance().endTrip();// Thsi says trip has end for TripStats
 
             serialPortManager = serialApplication.getSerialPortManager();
 
@@ -3536,7 +3540,9 @@ private int streamId = 0;
 
                 }, 6000);
             }
-
+//            Log.d("TRIPSTATS","LASTTRIP  "+TripStatsManager.getInstance().getLastTripDistance()+";"+TripStatsManager.getInstance().getLastTripTopSpeed()+";"+TripStatsManager.getInstance().getLastTripEnergyWh());
+//            Log.d("TRIPSTATS","DAYKM "+TripStatsManager.getInstance().getTodayDistance());
+//            Log.d("TRIPSTATS","YESTERDAY "+TripStatsManager.getInstance().getYesterdayDistance());
             VehicleTelemetryManager.getInstance().setGear("O");
             binding.batteryArc.setBatteryLevel(0);
             LoginActivity.markScreenJustOff();

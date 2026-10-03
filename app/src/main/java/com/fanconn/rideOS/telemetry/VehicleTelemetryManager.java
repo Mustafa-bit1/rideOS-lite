@@ -431,6 +431,7 @@ public class VehicleTelemetryManager {
         }
         return NumberUtils.truncate1(rangeKm);
     }
+
     public synchronized void setRangeKm(Double rangeKm) {
         this.rangeKm = rangeKm;
     }
