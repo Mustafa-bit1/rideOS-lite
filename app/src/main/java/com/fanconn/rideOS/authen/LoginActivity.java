@@ -517,7 +517,7 @@ public class LoginActivity extends AppCompatActivity {
 
             //playErrorSound();
             showCustomToasterror("Invalid Pattern");
-            vibrateError();
+            //vibrateError();
             registerInvalidAttempt(true);
 
             patternView.clearPattern();
@@ -711,9 +711,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void playTapSound() {
-        if (tapSoundPlayer != null) {
-            tapSoundPlayer.start();
-        }
+        SoundPlayer.playOnce(this, R.raw.dottap33);
     }
 
     public void Onscreen() {
@@ -810,7 +808,7 @@ public class LoginActivity extends AppCompatActivity {
             // FAILED ATTEMPTS
             //playErrorSound();
             showCustomToasterror("Invalid PIN");
-            vibrateError();
+            //vibrateError();
             registerInvalidAttempt(true);
 
             actualPin.setLength(0);
@@ -1264,7 +1262,7 @@ public class LoginActivity extends AppCompatActivity {
         if (isInputLocked) return;
         playTapSound();
         String tag = view.getTag().toString();
-        vibrateTap();
+        //vibrateTap();
         if ("del".equals(tag)) {
             if (actualPin.length() > 0) {
                 actualPin.deleteCharAt(actualPin.length() - 1);

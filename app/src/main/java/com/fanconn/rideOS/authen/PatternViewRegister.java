@@ -117,7 +117,7 @@ public class PatternViewRegister extends View {
         int height = getHeight();
 
         // Adjust grid placement dynamically based on screen size
-        float spacingFactor = 0.7f; // increase this to space out the dots more
+        float spacingFactor = 1f; // increase this to space out the dots more
         int gridWidth = (int) (getWidth() / spacingFactor);
         int gridHeight = (int) (getHeight() / spacingFactor);
         int startX = (width - gridWidth) / 2;

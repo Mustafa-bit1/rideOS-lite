@@ -82,13 +82,19 @@ public class PatternView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (dotCenters == null) calculateDotCenters();
+        //if (dotCenters == null) calculateDotCenters();
 
         for (float[] center : dotCenters) {
             canvas.drawCircle(center[0], center[1], radius, circlePaint);
         }
         canvas.drawPath(linePath, linePaint);
     }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+                super.onSizeChanged(w, h, oldw, oldh);
+                calculateDotCenters();
+           }
 
     public void setLoginMode(boolean isLoginMode) {
         linePaint.setAlpha(isLoginMode ? 0 : 255);
@@ -107,7 +113,7 @@ public class PatternView extends View {
         int width = getWidth();
         int height = getHeight();
 
-        float spacingFactor = 0.8f;
+        float spacingFactor = 0.84f;
         int gridWidth = (int) (getWidth() / spacingFactor);
         int gridHeight = (int) (getHeight() / spacingFactor);
         int startX = (width - gridWidth) / 2;

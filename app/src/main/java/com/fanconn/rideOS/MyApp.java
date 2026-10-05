@@ -27,6 +27,8 @@ public class MyApp extends Application {
 
         MetadataManager.init(this);
         appStartTime = System.currentTimeMillis();
+        SoundPlayer.initialize(this);
+
         VehicleTelemetryManager.getInstance().init(this);
         NightlyRebootScheduler.scheduleNext(this);
 
