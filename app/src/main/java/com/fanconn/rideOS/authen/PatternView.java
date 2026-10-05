@@ -107,7 +107,7 @@ public class PatternView extends View {
         int width = getWidth();
         int height = getHeight();
 
-        float spacingFactor = 1f;
+        float spacingFactor = 0.8f;
         int gridWidth = (int) (getWidth() / spacingFactor);
         int gridHeight = (int) (getHeight() / spacingFactor);
         int startX = (width - gridWidth) / 2;
@@ -178,7 +178,7 @@ public class PatternView extends View {
             float dx = dotCenters[i][0];
             float dy = dotCenters[i][1];
             float distance = (float) Math.hypot(dx - x, dy - y);
-            if (distance < radius * 3.3f && !pattern.contains(i)) {  // 🔸 Touch area increased
+            if (distance < radius * 3.0f && !pattern.contains(i)) {  // 🔸 Touch area increased
                 pattern.add(i);
 
                 if (soundLoaded && soundPool != null) {
