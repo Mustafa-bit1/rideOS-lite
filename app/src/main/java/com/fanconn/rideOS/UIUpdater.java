@@ -587,10 +587,11 @@ public class UIUpdater  {
             if(serialPortManager!=null){
               //  Log.d("SOCWHATACTOION","ENTER 20");
 //                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C00F000B0044001");//line current 15A, max phase current 300A ,regen 60(F000)-80(4001)
-                serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728001800B0042C00");//line current 10A, max phase current 300A ,regen 6(1800)-11(2C00)
+                serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C001800B0042C00");//line current 10A, max phase current 300A ,regen 6(1800)-11(2C00)
 
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FCA807450F000000000005"), 800);
 
-                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA80728001800B0042C00"), 800);
+                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510FBA8073C001800B0042C00"), 1500);
 //                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
             // Start alert

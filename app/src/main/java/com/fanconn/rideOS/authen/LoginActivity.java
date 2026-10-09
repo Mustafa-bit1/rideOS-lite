@@ -916,11 +916,14 @@ public class LoginActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sessionPrefs.edit();
             String prevRider = sessionPrefs.getString("last_logged_in_user", null);
             boolean isSameRider = username.equals(prevRider);
+            float batteryLevel = serialPortManager.getHb3().getBatteryLevel();
+            boolean socReady = UIUpdater.getInstance() != null && UIUpdater.getInstance().hasReceivedValidSoc();
 
-            if (!isSameRider && !username.equals("Key Rider")) {
+//            if (!isSameRider && !username.equals("Key Rider")) {
+            if (!username.equals("Key Rider")) {
                 // Fetch user data
 //                String age = prefs.getString("user_" + username + "_age", "N/A");
-
+                    Log.d("afd","THISISRIDER ");
 //                String maxSpeedStr = prefs.getString("user_" + username + "_lucky", "0");
 //                String maxSpeedStr = prefs.getString("user_" + username + "_maxspeed", "100");
                 String age = userPrefs.getString("user_" + username + "_age", "N/A");
@@ -970,10 +973,15 @@ public class LoginActivity extends AppCompatActivity {
 //                String torqueByte02 = torqueHex.substring(0, 2); // high byte
 
                 // Frame templates
-                SharedPreferences boostPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-                String durationHex = boostPrefs.getString("boost_duration_hex", "05");
-                String intervalHex = boostPrefs.getString("boost_interval_hex", "05");
 
+                SharedPreferences boostPrefs = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+                String durationHex;
+                if(batteryLevel<20 && socReady){
+                     durationHex = "00";
+                }else {
+                     durationHex = boostPrefs.getString("boost_duration_hex", "05");
+                }
+                String intervalHex = boostPrefs.getString("boost_interval_hex", "05");
                 String finalSpeedFrame = "FFAA550103001510FCA807" + speedByte01 + speedByte02 + "00000000" + durationHex + intervalHex;//FFAA550103001510FCA807740E00000000051E  speed 3700(740E) 5seconds and 30 seconds boost
 //                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "000088040000";
 //                String finalTorqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "7800B004A000";//max phase 300A ,  regen currents as 30A(7800) and 40A(A000)
@@ -1084,30 +1092,32 @@ public class LoginActivity extends AppCompatActivity {
 //                            ? "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "8C00B004B400"//to set regen currents as 30A(7800) and 40A(A000)- 35A(8C00),45A(B400)
 //                            : "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800B0042000";//to set regen currents as 6A(1800) and 8A(2000)
             String torqueFrame;
-            float batteryLevel = serialPortManager.getHb3().getBatteryLevel();
-//            float batteryLevel = ahTrackerManager.getSOC();
-            boolean socReady = UIUpdater.getInstance() != null && UIUpdater.getInstance().hasReceivedValidSoc();
 
-            if (UIUpdater.apuflag) { // phase max , all normal
+//            float batteryLevel = ahTrackerManager.getSOC();
+
+            if (UIUpdater.apuflag) { // phase max , line 15A
                 torqueFrame = "FFAA550103001510FBA8073C001800B0042C00";//  line 15A, phase max,regen 6(1800) -11 (2C00)
             }
             else if (!socReady) {
                 // First unlock after boot.
                 // SOC frame not received yet.
                 //all max
+
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
             }
             else if (batteryLevel == 0) { // phase current set as 0 AMPS , all normal
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A000B004C800";
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "0000" + RegenMaxValue;//Phase 0 all normal,,regen 60(F000)-80(4001)
-                // Log.d("SEDINGSOCFRAMEAS","0 "+torqueFrame);
-            } else if (batteryLevel <= 5) { // phase 0 , all normal
+            } else if (batteryLevel <= 10) { // phase 0 , all normal
+
                 //torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "A0000000C800";
                 torqueFrame = "FFAA550103001510FBA8072800" + RegenMinValue + "B004" + RegenMaxValue;//line current 10amps(2800),,regen 60(F000)-80(4001)
                 // Log.d("SEDINGSOCFRAMEAS","10 "+torqueFrame);
             } else if (batteryLevel <= 20) {
+                Log.d("SEDINGSOCFRAMEAS","0 "+batteryLevel);
+
 //                torqueFrame = "FFAA550103001510FBA8073C00F000B0044001";//  line 15A, phase max, all normal
-                torqueFrame = "FFAA550103001510FBA8072800" + RegenMinValue + "B004" + RegenMaxValue;//  line 10A, phase max, all normal
+                torqueFrame = "FFAA550103001510FBA8073C00" + RegenMinValue + "B004" + RegenMaxValue;//  line 10A, phase max, all normal
                 //  Log.d("SEDINGSOCFRAMEAS","20 "+torqueFrame);
             } else if (batteryLevel <= 95) { // phase max, all normal  A000(45A regen) - C800(50A),regen 60(F000)-80(4001)
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
@@ -1115,8 +1125,6 @@ public class LoginActivity extends AppCompatActivity {
             } else if (batteryLevel <= 100) {
                 torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + "1800" + "B004" + "2000";
                  // batteryLevel > 80 && <= 100, phase max, Regen 6(1800) and 8(2000) A
-
-
 //                torqueFrame = "FFAA550103001510FBA807" + torqueByte01 + torqueByte02 + RegenMinValue + "B004" + RegenMaxValue;
                 //  Log.d("SEDINGSOCFRAMEAS","100 "+torqueFrame);
             } else {//all max
