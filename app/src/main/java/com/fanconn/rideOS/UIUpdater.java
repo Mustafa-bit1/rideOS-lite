@@ -1500,12 +1500,15 @@ public class UIUpdater  {
 
 // Priority 3: Gear-based UI (only if not charging and stand is closed)
         switch (directionalGears) {
+
             case 0: // Neutral
                 VehicleTelemetryManager.getInstance().setGear("N");
+                VehicleTelemetryManager.getInstance().setEvPowerState("1");
                 break;
 
             case 1: // Forward
                 VehicleTelemetryManager.getInstance().setGear("F");
+                VehicleTelemetryManager.getInstance().setEvPowerState("1");
                 break;
 
             case 2: // Reverse
@@ -1534,6 +1537,8 @@ public class UIUpdater  {
 
                     case 1: // Forward
                         powerOnUi();
+                        VehicleTelemetryManager.getInstance().setGear("F");
+                        VehicleTelemetryManager.getInstance().setEvPowerState("1");
                         activity.startSpeedIntroFromUpdater();
                         //if(StopInactivtyTimerDuringPopUp){Log.d("sadfgg","********1");InactivityManager.getInstance().startTimer(1);}
                         InactivityManager.getInstance().stopTimer();
@@ -3545,6 +3550,7 @@ private int streamId = 0;
 //            Log.d("TRIPSTATS","DAYKM "+TripStatsManager.getInstance().getTodayDistance());
 //            Log.d("TRIPSTATS","YESTERDAY "+TripStatsManager.getInstance().getYesterdayDistance());
             VehicleTelemetryManager.getInstance().setGear("O");
+            VehicleTelemetryManager.getInstance().setEvPowerState("0");
             binding.batteryArc.setBatteryLevel(0);
             LoginActivity.markScreenJustOff();
             //Log.d("InactivityHandler", "LoginActivity launched over MainActivity.");

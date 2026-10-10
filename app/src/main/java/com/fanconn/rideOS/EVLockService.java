@@ -64,12 +64,15 @@ public class EVLockService {
 //        new Handler(Looper.getMainLooper()).postDelayed(
 //                () -> serialPortManager.VCUSendToMCU("FFAA550107000A00"), 400);
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-//            Log.d("TAG", "📩 SMARTKEYgggggggggggg Sending delayed command: FFAA550107000A00");
+//            Log.d("TAG", " SMARTKEYgggggggggggg Sending delayed command: FFAA550107000A00");
 //            SerialPortManager.getInstance().VCUSendToMCU("FFAA550107000A00");
 //        }, 400);
         currentSequenceType = SequenceType.LOCK;
         taskLock1();
         VehicleTelemetryManager.getInstance().setHandleLock(0.0);
+        VehicleTelemetryManager.getInstance().setEvPowerState("0");
+        VehicleTelemetryManager.getInstance().setGear("O");
+
     }
 
     public void stopSequence() {
@@ -170,6 +173,7 @@ public class EVLockService {
             handler.postDelayed(this::taskLock2, 1000);
         } else {
             VehicleTelemetryManager.getInstance().setGear("O");
+            VehicleTelemetryManager.getInstance().setEvPowerState("0");
             retryCount2 = 0;
 //            hb3.setLEDresponse(0);
             currentSequenceType = null;
