@@ -32,7 +32,9 @@ import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
 import com.fanconn.rideOS.UIUpdater;
 import com.fanconn.rideOS.serialApplication;
-
+import com.fanconn.rideOS.MainActivity;
+import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
+import com.fanconn.rideOS.HolidayModeManager;
 import java.util.Locale;
 
 public class FeaturesFragment extends Fragment {
@@ -60,6 +62,9 @@ public class FeaturesFragment extends Fragment {
     private static final String PREF_NAME = "feature_prefs";
     private static final String KEY_HILL_ASSIST = "hill_assist";
     private static final String KEY_TRACTION_CONTROL = "traction_control";
+    private SwitchCompat holidayModeSwitch;
+
+    private static final String KEY_HOLIDAY_MODE = "holiday_mode_enabled";
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -74,6 +79,43 @@ public class FeaturesFragment extends Fragment {
                 Context.MODE_PRIVATE
         );
         serialPortManager= serialApplication.getSerialPortManager();
+
+        //=====Holiday mode=========
+        holidayModeSwitch = view.findViewById(R.id.holidayMode_Switch);
+
+        boolean holidayEnabled =
+                sharedPreferences.getBoolean(KEY_HOLIDAY_MODE, false);
+
+        holidayModeSwitch.setChecked(holidayEnabled);
+        holidayModeSwitch.setText(holidayEnabled ? "Enabled" : "Disabled");
+
+        holidayModeSwitch.setThumbDrawable(
+                ContextCompat.getDrawable(
+                        requireContext(), R.drawable.custom_switch_thumb).mutate());
+
+        holidayModeSwitch.setTrackDrawable(
+                ContextCompat.getDrawable(
+                        requireContext(), R.drawable.custom_switch_track).mutate());
+
+        holidayModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            sharedPreferences.edit()
+                    .putBoolean(KEY_HOLIDAY_MODE, isChecked)
+                    .apply();
+
+            holidayModeSwitch.setText(isChecked ? "Enabled" : "Disabled");
+            if (UIUpdater.getInstance() != null) {
+                UIUpdater.getInstance().updateTransportModeWarning();
+            }
+            if (isChecked) {
+                HolidayModeManager.getInstance(requireContext()).start();
+            } else {
+                HolidayModeManager.getInstance(requireContext()).stop();
+            }
+
+            showSavedToast();
+        });
+        //====holiday mode===========
+
         // Initialize switches
 //        cruiseControlSwitch = view.findViewById(R.id.cruisecontrolSwitch);
 //        boostSwitch = view.findViewById(R.id.boostSwitch);

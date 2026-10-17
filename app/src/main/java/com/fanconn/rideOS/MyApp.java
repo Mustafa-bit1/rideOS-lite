@@ -94,6 +94,14 @@ public class MyApp extends Application {
                 .getInstance(this)
                 .connect();
         RiderMqttManager.getInstance(this).connect();
+
+        //Holiday mode
+        if (getSharedPreferences(
+                "feature_prefs", MODE_PRIVATE)
+                .getBoolean("holiday_mode_enabled", false)) {
+
+            HolidayModeManager.getInstance(this).start();
+        }
     }
 
     private void startSmartKeyService() {

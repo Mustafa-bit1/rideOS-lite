@@ -1091,6 +1091,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/transportmodewarning" />
+        <ImageView
+            android:id="@+id/holidaymode_warning"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/holidaymode_warning" />
 
         <!--        <LinearLayout-->
         <!--            android:id="@+id/topBarRow"-->

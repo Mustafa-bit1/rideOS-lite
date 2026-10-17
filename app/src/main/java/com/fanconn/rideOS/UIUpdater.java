@@ -595,22 +595,32 @@ public class UIUpdater  {
 //                new Handler(Looper.getMainLooper()).postDelayed(() -> serialPortManager.VCUSendToMCU("FFAA550103001510F8A8070000000000007387"), 1200);
             }
             // Start alert
-            Animation tempalert = AnimationUtils.loadAnimation(context, R.anim.alpha);
+            SharedPreferences prefs = context.getSharedPreferences(
+                    "feature_prefs", Context.MODE_PRIVATE);
 
-            binding.yellowalert.setVisibility(View.VISIBLE);
-            binding.LowBatmsg.setVisibility(View.VISIBLE);
+            boolean isHolidayModeOn =
+                    prefs.getBoolean("holiday_mode_enabled", false);
 
-            binding.yellowalert.startAnimation(tempalert);
-            binding.LowBatmsg.startAnimation(tempalert);
+            if (!isHolidayModeOn) {
+                Animation tempalert =
+                        AnimationUtils.loadAnimation(context, R.anim.alpha);
 
-            startBeeping(2);
+                binding.yellowalert.setVisibility(View.VISIBLE);
+                binding.LowBatmsg.setVisibility(View.VISIBLE);
+
+                binding.yellowalert.startAnimation(tempalert);
+                binding.LowBatmsg.startAnimation(tempalert);
+
+                startBeeping(2);
+
+                binding.transportModeYellowWarning.setVisibility(View.GONE);
+
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                    stopBeeping();
+                }, 15_000);
+            }
 
             Lowbatflag = true;
-            binding.transportModeYellowWarning.setVisibility(View.GONE);
-            // Stop alert visuals after 10 seconds, but DO NOT reset flag yet
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                stopBeeping();
-            }, 15_000);
         }
 
         if (batteryLevel >= 21 && batteryLevel<95 && Lowbatflag) {
@@ -3875,18 +3885,50 @@ private int streamId = 0;
 
     public void updateTransportModeWarning() {
 
-        SharedPreferences prefs = context.getSharedPreferences("feature_prefs", Context.MODE_PRIVATE);
-        boolean isTransportModeOn = !prefs.getBoolean("handle_lock_enabled", true);
+        SharedPreferences prefs = context.getSharedPreferences(
+                "feature_prefs", Context.MODE_PRIVATE);
 
-        //  PRIORITY 1 → TEMP (highest)
+        boolean isHolidayModeOn =
+                prefs.getBoolean("holiday_mode_enabled", false);
+
+        boolean isTransportModeOn =
+                !prefs.getBoolean("handle_lock_enabled", true);
+
+        // PRIORITY 1: HOLIDAY MODE
+        if (isHolidayModeOn) {
+
+            binding.holidaymodeWarning.setVisibility(View.VISIBLE);
+
+            // Hide transport-mode warning
+            binding.transportModeYellowWarning.setVisibility(View.GONE);
+
+            // Clear warning animations
+            binding.yellowalert.clearAnimation();
+            binding.LowBatmsg.clearAnimation();
+
+            // Hide temperature and low-battery warning views
+            binding.yellowalert.setVisibility(View.INVISIBLE);
+            binding.LowBatmsg.setVisibility(View.INVISIBLE);
+
+            return;
+        }
+
+        // Holiday Mode is OFF
+        binding.holidaymodeWarning.setVisibility(View.GONE);
+
+        // PRIORITY 2: TEMPERATURE WARNING
         if (isTempWarningActive) {
             binding.transportModeYellowWarning.setVisibility(View.GONE);
             return;
         }
+
+        // PRIORITY 3: LOW BATTERY WARNING
         if (Lowbatflag) {
             binding.transportModeYellowWarning.setVisibility(View.GONE);
             return;
         }
+
+        // PRIORITY 4: TRANSPORT MODE WARNING
         if (!isTransportModeOn) {
             binding.transportModeYellowWarning.setVisibility(View.VISIBLE);
         } else {

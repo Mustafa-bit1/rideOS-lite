@@ -266,22 +266,67 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
+
+
         private void handleLoginFrame() {
-//            String dataSegment = frame.substring(22, 38);
-            //Log.d("CAN_DEBUG", "Parsed frame segment: " + dataSegment);
+            Log.d("HolidayMode", "LoginActivity: Processing battery data");
 
-//            int soc = FrameUtils.getByteSubstringAsInt(dataSegment, 6, 7) / 10;
-//            int socInt = (int) ahTrackerManager.getSOC();   // removes decimal part
-            float socInt = 0;
-            if (serialPortManager.getHb3() != null) {
-                socInt = serialPortManager.getHb3().getBatteryLevel();   // removes decimal part
-            }
-            if (socInt <= 100) {
-                VehicleTelemetryManager.getInstance().setSoc((double)socInt);
-                binding.loginSoc.setText("Battery " + socInt + "%");
+            if (serialPortManager == null) {
+                Log.w("HolidayMode", "LoginActivity: SerialPortManager is null");
+                return;
             }
 
+            if (serialPortManager.getHb3() == null) {
+                Log.w("HolidayMode", "LoginActivity: HB3 data is not available yet");
+                return;
+            }
+
+            float soc = serialPortManager.getHb3().getBatteryLevel();
+            float batteryVoltage =
+                    serialPortManager.getHb3().getbatvoltage() / 10.0f;
+
+            Log.d("HolidayMode",
+                    "LoginActivity: SOC=" + soc
+                            + "%, batteryVoltage=" + batteryVoltage);
+
+            boolean validSocValue =
+                    !Float.isNaN(soc)
+                            && !Float.isInfinite(soc)
+                            && soc >= 0.0f
+                            && soc <= 100.0f;
+
+            boolean validBatteryVoltage =
+                    !Float.isNaN(batteryVoltage)
+                            && !Float.isInfinite(batteryVoltage)
+                            && batteryVoltage > 0.0f;
+
+            if (validSocValue && validBatteryVoltage) {
+                if (!hasReceivedValidSocinLoginPage) {
+                    hasReceivedValidSocinLoginPage = true;
+
+                    Log.i("HolidayMode",
+                            "LoginActivity: First valid SOC received: "
+                                    + soc + "%");
+                }
+
+                VehicleTelemetryManager telemetryManager =
+                        VehicleTelemetryManager.getInstance();
+
+                if (telemetryManager != null) {
+                    telemetryManager.setSoc((double) soc);
+                }
+
+                if (binding != null && binding.loginSoc != null) {
+                    binding.loginSoc.setText("Battery " + (int) soc + "%");
+                }
+            } else {
+                Log.w("HolidayMode",
+                        "LoginActivity: Invalid battery data; "
+                                + "SOC validity flag not updated. SOC="
+                                + soc + ", voltage=" + batteryVoltage);
+            }
         }
+
 
         // Declare this class-level variable to track previous mod value
         private void handleWakeFrame(Context context, String frame) {
@@ -367,7 +412,11 @@ public class LoginActivity extends AppCompatActivity {
     public static LoginActivity getInstance() {
         return instance;
     }
+    private static volatile boolean hasReceivedValidSocinLoginPage = false;
 
+    public static boolean hasReceivedValidSocinLoginPage() {
+        return hasReceivedValidSocinLoginPage;
+    }
     //private Button btnRegister;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -375,6 +424,9 @@ public class LoginActivity extends AppCompatActivity {
 //        setContentView(R.layout.activity_login);
         serialPortManager = serialApplication.getSerialPortManager();
         IntentFilter filter = new IntentFilter("FRAME_RECEIVED");
+
+        // SOC must be validated again for this login session.
+        hasReceivedValidSocinLoginPage = false;
 
         if (!isFrameReceiverRegistered) {
             LocalBroadcastManager.getInstance(this)
