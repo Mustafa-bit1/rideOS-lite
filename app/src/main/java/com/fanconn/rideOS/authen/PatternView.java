@@ -6,14 +6,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.media.AudioAttributes;
-import android.media.AudioManager;
-import android.media.SoundPool;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.fanconn.rideOS.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +25,6 @@ public class PatternView extends View {
     private float radius;
     private int padding;
 
-    private SoundPool soundPool;
-    private int soundBeepId;
-    private boolean soundLoaded = false;
-    private boolean isMuted;
-    private AudioManager audioManager;
 
     public PatternView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -66,18 +57,6 @@ public class PatternView extends View {
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .build();
 
-        soundPool = new SoundPool.Builder()
-                .setMaxStreams(1)
-                .setAudioAttributes(audioAttributes)
-                .build();
-
-        soundBeepId = soundPool.load(context, R.raw.dottap33, 1);
-        soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
-            if (status == 0) soundLoaded = true;
-        });
-        audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-        isMuted = context.getSharedPreferences("volume_prefs", Context.MODE_PRIVATE)
-                .getBoolean("is_muted", false);
     }
 
     @Override
@@ -187,16 +166,6 @@ public class PatternView extends View {
             if (distance < radius * 3.0f && !pattern.contains(i)) {  // 🔸 Touch area increased
                 pattern.add(i);
 
-                if (soundLoaded && soundPool != null) {
-                    int currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                    int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-                    float volume = maxVolume == 0 ? 0f : (float) currentVolume / maxVolume;
-
-                    if (volume > 0f) {
-                        soundPool.play(soundBeepId, volume, volume, 1, 0, 1f);
-                    }
-                }
-
                 if (pattern.size() == 1) {
                     linePath.moveTo(dx, dy);
                 } else {
@@ -216,12 +185,4 @@ public class PatternView extends View {
         void onPatternComplete(List<Integer> pattern);
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (soundPool != null) {
-            soundPool.release();
-            soundPool = null;
-        }
-    }
 }

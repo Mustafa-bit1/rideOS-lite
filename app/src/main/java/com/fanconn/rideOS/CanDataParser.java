@@ -1,9 +1,5 @@
 package com.fanconn.rideOS;
 
-import android.util.Log;
-
-import com.fanconn.rideOS.telemetry.VehicleTelemetryManager;
-
 /**
  * CanDataParser 类用于解析不同 CAN ID 的 CAN 数据。
  * 每个解析方法将特定的 CAN 数据字符串解析为 Heartbeat3 对象中的相应字段。
@@ -16,132 +12,12 @@ public class CanDataParser {
      * @param hb3 Heartbeat3 对象，用于存储解析后的数据
      * @param canData CAN 数据字符串
      */
-
-    public static  void parseCanData18FF50E5(Heartbeat3 hb3, String canData) {
-        hb3.setChargingbit(FrameUtils.getByteSubstringAsInt(canData,2,3)/10f); //charging current value
-        hb3.setChargingErrorbit(FrameUtils.getByteSubstring(canData,4,4));
-    }
-
-    public static  void parseCanData1806E5F4(Heartbeat3 hb3, String canData) {
-        hb3.setTotal_max_voltage_limit(FrameUtils.getByteSubstringAsInt(canData,0,1)/10f); //Total voltage high limit
-        hb3.setAllowable_Charging_currentValue(FrameUtils.getByteSubstringAsInt(canData,2,3)/10f);//Allowable charging current value
-       // hb3.setBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,5,6)); //SOC
-    }
-
     public static  void parseCanData18904001(Heartbeat3 hb3, String canData) {
         // 实现 18904001 CAN 数据的解析逻辑
         // 提取心跳包 电池电量 值
-        hb3.setbatvoltage(FrameUtils.getByteSubstringAsInt(canData,0,1)); //voltage
-        hb3.setRealCurrent(FrameUtils.getByteSubstringAsInt(canData,4,5));//Real Time Current
-        hb3.setBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //SOC
-        hb3.setFloatBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //Float SOC
+        hb3.setBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7));
     }
 
-    public static  void parseCanData18914001(Heartbeat3 hb3, String canData) {
-        hb3.setIndiCellVol(FrameUtils.getByteSubstring(canData,0,5)); //Individual cell voltage Frame
-    }
-
-    public static  void parseCanData18934001(Heartbeat3 hb3, String canData) {
-        hb3.setMainChargeMosState(FrameUtils.getByteValue(canData,1));
-        hb3.setMainDisChargeMosState(FrameUtils.getByteValue(canData,2));
-        hb3.setremainingAH(FrameUtils.getByteSubstringAsInt(canData,4,7));
-        hb3.setBMSlifecycles(FrameUtils.getByteValue(canData,3));
-    }
-    public static  void parseCanData18944001(Heartbeat3 hb3, String canData) {
-        hb3.setBMS_MOS_Temp(FrameUtils.getByteValue(canData,7)-40);//offset is 40
-    }
-    public static  void parseCanData18984001(Heartbeat3 hb3, String canData) {
-        hb3.setBMSerrors(canData);//get whole frame
-    }
-
-    public static  void parseCanData16078001(Heartbeat3 hb3, String canData) {
-        hb3.setBattery_size(FrameUtils.getByteSubstringAsInt(canData,0,3)/1000);
-    }
-
-
-    public static  void parseCanData18964001(Heartbeat3 hb3, String canData) {
-        //NTC VALUES
-        hb3.setNTC1(FrameUtils.getByteValue(canData,1));
-        hb3.setNTC2(FrameUtils.getByteValue(canData,2));
-        hb3.setNTC3(FrameUtils.getByteValue(canData,3));
-        hb3.setNTC4(FrameUtils.getByteValue(canData,4));
-
-    }
-
-    public static  void parseCanData18954001(Heartbeat3 hb3, String canData) {
-        //NTC VALUES
-       // Log.d("dassfg","FRAMENUMBEROFICV  "+FrameUtils.getByteSubstring(canData,0,0));
-        switch (FrameUtils.getByteSubstring(canData,0,0))
-        {
-            case "01":
-                hb3.setcell1TO3(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell1To3(FrameUtils.getByteSubstring(canData,1,7));
-             //   Log.d("CELLVOLATGE","CELL 1 to 3 --"+FrameUtils.getByteSubstring(canData,1,6));
-                break;
-            case "02":
-                hb3.setcell4TO6(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell4To6(FrameUtils.getByteSubstring(canData,1,7));
-              //  Log.d("CELLVOLATGE","CELL 4 to 6 --"+FrameUtils.getByteSubstring(canData,1,6));
-                break;
-            case "03":
-                hb3.setcell7TO9(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell7To9(FrameUtils.getByteSubstring(canData,1,7));
-               // Log.d("CELLVOLATGE","CELL 7 to 9 --"+FrameUtils.getByteSubstring(canData,1,6));
-                break;
-            case "04":
-                hb3.setcell10TO12(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell10To12(FrameUtils.getByteSubstring(canData,1,7));
-               // Log.d("CELLVOLATGE","CELL 10 to 12 --"+FrameUtils.getByteSubstring(canData,1,6));
-                break;
-            case "05":
-                hb3.setcell13TO15(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell13To15(FrameUtils.getByteSubstring(canData,1,7));
-                //Log.d("CELLVOLATGE","CELL 13 to 15 --"+FrameUtils.getByteSubstring(canData,1,6));
-                break;
-            case "06":
-                hb3.setcell16TO18(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell16To18(FrameUtils.getByteSubstring(canData,1,7));
-              //  Log.d("CELLVOLATGE","CELL 16 to 18 --"+FrameUtils.getByteSubstring(canData,1,6));
-                break;
-            case "07":
-                hb3.setcell19TO21(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell19To21(FrameUtils.getByteSubstring(canData,1,7));
-                //Log.d("CELLVOLATGE","CELL 19 to 21--"+FrameUtils.getByteSubstring(canData,1,6));
-                break;
-            case "08":
-                hb3.setcell22TO23(FrameUtils.getByteSubstring(canData,1,7));
-                VehicleTelemetryManager.getInstance().setCell22To23(FrameUtils.getByteSubstring(canData,1,7));
-              //  Log.d("CELLVOLATGE","CELL 22 to 23 --"+FrameUtils.getByteSubstring(canData,1,4));
-                break;
-            default:
-                break;
-        }
-
-    }
-
-    public static  void parseCanData160B8001(Heartbeat3 hb3, String canData) {
-        hb3.setChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//charge AH
-    }
-    public static  void parseCanData160D8001(Heartbeat3 hb3, String canData) {
-        hb3.setDisChargeAH(FrameUtils.getByteSubstringAsInt(canData,2,3));//discharge AH
-    }
-    public static  void parseCanData18934002(Heartbeat3 hb3, String canData) {
-        hb3.setApuChargeMosState(FrameUtils.getByteValue(canData,1));
-        hb3.setApuDisChargeMosState(FrameUtils.getByteValue(canData,2));
-        hb3.setAPUremainingAH(FrameUtils.getByteSubstringAsInt(canData,4,7));
-    }
-    public static  void parseCanData18964002(Heartbeat3 hb3, String canData) {
-        //NTC VALUES
-        hb3.setNTC5(FrameUtils.getByteValue(canData,1));
-        hb3.setNTC6(FrameUtils.getByteValue(canData,2));
-        hb3.setNTC7(FrameUtils.getByteValue(canData,3));
-        hb3.setNTC8(FrameUtils.getByteValue(canData,4));
-    }
-    public static  void parseCanData18904002(Heartbeat3 hb3, String canData) {
-        hb3.setAPUbatvoltage(FrameUtils.getByteSubstringAsInt(canData,0,1)); //voltage
-        hb3.setAPURealCurrent(FrameUtils.getByteSubstringAsInt(canData,4,5));//Real Time Current
-        hb3.setAPUBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7)); //APUSOC
-    }
     /**
      * 解析 CAN ID 为 10F807A8 的数据
      *
@@ -151,11 +27,11 @@ public class CanDataParser {
     public static void parseCanData10F807A8(Heartbeat3 hb3, String canData) {
         // 实现 10F807A8 CAN 数据的解析逻辑
         hb3.setBSG1_BYTE1(FrameUtils.getByteValue(canData,0));  // 提取心跳包 档位相关 值
-        hb3.setBSG1_BYTE2(FrameUtils.getByteValue(canData,1));
+        hb3.setBSG1_BYTE2(FrameUtils.getByteValue(canData,1));  // 提取心跳包 档位相关 值
         hb3.setBSG1_BYTE3(FrameUtils.getByteValue(canData,2));  // 提取心跳包 档位相关 值
-        hb3.setBSG1_BYTE4(FrameUtils.getExactHexByteAString(canData,3)); // Controller errors in Byte4
-        hb3.setBSG1_BYTE5(FrameUtils.getExactHexByteAString(canData,4)); // Controller errors in Byte5
-        hb3.setBSG1_BYTE6(FrameUtils.getExactHexByteAString(canData,5)); // Controller errors in Byte6
+        hb3.setBSG1_BYTE4(FrameUtils.getByteValue(canData,3));  // 提取心跳包 档位相关 值
+        hb3.setBSG1_BYTE5(FrameUtils.getByteValue(canData,4));  // 提取心跳包 转速 值
+        hb3.setBSG1_BYTE6(FrameUtils.getByteValue(canData,5));  // 提取心跳包 转速 值
         hb3.setBSG1_BYTE7(FrameUtils.getByteValue(canData,6));  // 提取心跳包 电机温度 值
         hb3.setBSG1_BYTE8(FrameUtils.getByteValue(canData,7));  // 提取心跳包 控制器温度 值
     }
@@ -180,25 +56,10 @@ public class CanDataParser {
      * @param hb3 Heartbeat3 对象，用于存储解析后的数据
      * @param canData CAN 数据字符串
      */
-
     public static void parseCanData10FA07A8(Heartbeat3 hb3, String canData) {
         // 实现 10FA07A8 CAN 数据的解析逻辑
-        hb3.setBSG3_BYTE12(FrameUtils.getByteSubstringAsInt(canData,0,1));
-        hb3.setBSG3_BYTE34(FrameUtils.getByteSubstring(canData,3,2));
-//        Log.d("fdsadg","CANDATA HEX ----  "+FrameUtils.getByteSubstring(canData,3,2));
-
-
-//        Log.d("fdsadg","CANDATA INTVALUE  IS BYTE3 and BYTE 4 ----  "+FrameUtils.getByteSubstringAsInt(canData,3,2));
-//        int raw = FrameUtils.getByteSubstringAsInt(canData, 3, 2);
-//        double value;
-//        if (raw >2000) {
-//            // Invalid CAN value
-//            Log.d("CAN", "Invalid CAN data: " + raw);
-//            return;   // stop here
-//        } else if (raw<0 && raw>-2000) {
-//        }
-//        value = raw / 10.0;
-//        Log.d("CAN", "Decoded value = " + value);
+        hb3.setBSG3_BYTE12(FrameUtils.getByteSubstringAsInt(canData,0,1));    // 提取心跳包 当前母线电压 值
+        hb3.setBSG3_BYTE34(FrameUtils.getByteSubstringAsInt(canData,2,3));    // 提取心跳包 当前母线电流 值
         hb3.setBSG3_BYTE5678(FrameUtils.getByteSubstringAsInt(canData,4,7));  // 提取心跳包 圈数 32 位 值
     }
 

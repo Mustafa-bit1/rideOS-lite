@@ -23,8 +23,6 @@ import android.widget.Toast;
 
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.UpdateConfig;
-import com.fanconn.rideOS.UpdateManager;
-import com.fanconn.rideOS.UpdaterState;
 import com.fanconn.rideOS.util.UpdateConfigs;
 
 import org.json.JSONObject;

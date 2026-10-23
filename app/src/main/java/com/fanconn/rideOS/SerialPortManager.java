@@ -1,7 +1,6 @@
 package com.fanconn.rideOS;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -14,9 +13,6 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import tp.xmaihh.serialport.bean.ComBean;
 import tp.xmaihh.serialport.utils.ByteUtil;
@@ -33,6 +29,7 @@ public class SerialPortManager {
     public  native void clearSendBufferNative(int fd);
     private MySerialHelper serialHelper;  // 串口操作接口
     //private MySerialHelper mySerialHelper;
+
     private String sPort;  // 串口地址
     private int iBaudRate;  // 波特率
     private int RX_type;  // 数据格式类型
@@ -66,15 +63,6 @@ public class SerialPortManager {
             }
         }
     };
-    public static SerialPortManager peekInstance() {
-        return instance;
-    }
-    public static synchronized SerialPortManager getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("SerialPortManager is not initialized. Call initInstance() first.");
-        }
-        return instance;
-    }
 
     /**
      * 构造函数
@@ -117,10 +105,7 @@ public class SerialPortManager {
      * 初始化串口配置
      * @param context 上下文
      */
-    private Context context;
     public void initSerialConfig(Context context) {
-        this.context = context.getApplicationContext(); // ✅ store once
-
         serialHelper = new MySerialHelper(sPort, iBaudRate) {
             @Override
             protected void onDataReceived(ComBean paramComBean) {
@@ -145,10 +130,13 @@ public class SerialPortManager {
      * 关闭串口
      */
     public void closeSerialPort() {
+        // Cancel any pending MCU retry tasks first.
+        handlerVcuToMcu.removeCallbacks(VcuToMcTask);
+
         if (serialHelper != null) {
             serialHelper.close();
             serialHelper = null;
-            Log.d("SerialPortManager", "串口关闭成功");
+            Log.d("SerialPortManager", "Serial port closed");
         }
     }
 
@@ -222,64 +210,35 @@ public class SerialPortManager {
      * @param sPortData 待发送的数据字符串，格式如 "FFAA550200000A01"
      */
     public void getMcuDate(String sPortData) {
-        // Log.d("SerialPortManager", "getMcuDate");
-        int crc = FrameUtils.produceChecksum(sPortData);  // 计算校验和
-        String crcHexString = FrameUtils.toHexString(crc, 4);  // 将校验和转换为指定长度的十六进制字符串
-        sPortData = sPortData + crcHexString;  // 将校验和添加到原始数据字符串中
-        if(serialHelper!=null){
-        serialHelper.sendHex(sPortData);}  // 以十六进制格式发送带有校验和的数据到串口
+        if (serialHelper == null || !serialHelper.isOpen()) {
+            Log.w("SerialPortManager",
+                    "Cannot send MCU command: serial port is not open");
+            return;
+        }
+
+        if (sPortData == null || sPortData.isEmpty()) {
+            return;
+        }
+
+        int crc = FrameUtils.produceChecksum(sPortData);
+        String crcHexString = FrameUtils.toHexString(crc, 4);
+        sPortData = sPortData + crcHexString;
+
+        serialHelper.sendHex(sPortData);
     }
 
     /**
      * VCU下发数据给MCU
      */
-
-//    public void VCUSendToMCU(String data) {
-//        mcuData = data;
-//        currentAttempt = 0;
-//        handlerVcuToMcu.post(VcuToMcTask);
-//
-//        handlerVcuToMcu.postDelayed(() -> {
-//            mcuData = data;
-//            currentAttempt = 0;
-//            //Log.d("sdfs","VCUSENDTOMCUMETHODS "+data);
-//            handlerVcuToMcu.post(VcuToMcTask);
-//        }, 200);
-//    }
-
     public void VCUSendToMCU(String data) {
-
-        //  CHECK HANDLE LOCK CONDITION HERE
-        if ("FFAA550101000A00".equalsIgnoreCase(data)) {
-            if (context == null) {
-                //Log.e("MCU", "Context not initialized! Sending anyway as fallback");
-            } else {
-                SharedPreferences prefs = context.getSharedPreferences("feature_prefs", Context.MODE_PRIVATE);
-                boolean isHandleEnabled = prefs.getBoolean("handle_lock_enabled", true);
-
-                if (isHandleEnabled) {
-                    //Log.d("MCU", "Handle Lock command BLOCKED");
-                    return;
-                }
-            }
-        }
-
-        // Normal flow
         mcuData = data;
         currentAttempt = 0;
         handlerVcuToMcu.post(VcuToMcTask);
-
-        handlerVcuToMcu.postDelayed(() -> {
-            mcuData = data;
-            currentAttempt = 0;
-            handlerVcuToMcu.post(VcuToMcTask);
-        }, 200);
     }
 
     /**
      * 停止VCU下发数据给MCU
      */
-
     public void stopVCUSendToMCU() {
         handlerVcuToMcu.removeCallbacks(VcuToMcTask);
     }
@@ -304,8 +263,6 @@ public class SerialPortManager {
      * @return 分离出来的数据帧列表
      */
     public static List<String> splitIntoFrames(String receivedData) {
-//        Log.d("sdfgh","RRFRAME------"+receivedData);
-
         List<String> frames = new ArrayList<>();
 
         int index = 0;
@@ -354,6 +311,8 @@ public class SerialPortManager {
 
         return frames;
     }
+
+
     /**
      * 解析数据帧
      * @param frame 数据帧
@@ -361,8 +320,7 @@ public class SerialPortManager {
      */
     public void parseDataFrames(String frame, FrameDataListener listener) {
         if (frame.startsWith("FFAA77") && frame.length() > 14) {
-            if (FrameUtils.verifyFrame(frame)||frame.startsWith("FFAA770303001518FF50E5") || frame.startsWith("FFAA770303001518954001")) {
-                if(frame.startsWith("FFAA770303001518FF50E5"))Log.d("sdsfgf","frmae"+frame);
+            if (FrameUtils.verifyFrame(frame)) {
                 String frameType = FrameUtils.getByteSubstring(frame,3,4);
                 switch (frameType) {
                     case "0301":
@@ -374,7 +332,6 @@ public class SerialPortManager {
                         listener.onHeartbeat2Parsed(hb2);
                         break;
                     case "0303":
-                        //Log.d("SerialPortManager", "Frame verification failed--------"+frame);
                         parseHeartbeat3(frame);
                         listener.onHeartbeat3Parsed(hb3);
                         break;
@@ -382,65 +339,24 @@ public class SerialPortManager {
                         //Log.e("SerialPortManager", "Unknown frame type");
                         break;
                 }
+            } else {
+                //Log.e("SerialPortManager", "Frame verification failed");
             }
-//            if(frame.startsWith("FFAA770303001514028001")){
-//                parseHeartbeat3(frame);
-//                listener.onHeartbeat3Parsed(hb3);
-//            }
-            else {
-                //Log.e("SerialPortManager", "Frame verification failed--------"+frame);
-            }
-        }
-//        else if (frame.startsWith("FFAA66") && frame.length() > 14) {
-//            String frameType = FrameUtils.getByteSubstring(frame,3,4);
-//            switch (frameType) {
-//                case "0101"://Handle lock
-//                    parseHandleLockResponse(frame);
-//                    break;
-//                case "0102"://seat lock
-//                    parseSeatLockResponse(frame);
-//                    break;
-//                case "0107"://LED
-//                    parseLEDControlResponse(frame);
-//                    break;
-//                default:
-//                    //Log.e("SerialPortManager", "Unknown frame type");
-//                    break;
-//            }
-//        }
-        else if (frame.startsWith("FFAA66") && frame.length() > 14) {
-            //Log.e("SerialPortManager", "FFAA66 Frame verification failed");
-
+        } else if (frame.startsWith("FFAA66") && frame.length() > 14) {
             if (FrameUtils.verifyFrame(frame)) {
                 McuBleMacAddressDnswer(frame);
                 listener.onMcuAnswerDataParsed(mad);
-                //Log.e("SerialPortManager", "FFAA66333333333 "+frame);
             } else {
-                //Log.e("SerialPortManager", "FFAA66 Frame verification failed");
-            }
-            String frameType = FrameUtils.getByteSubstring(frame,3,4);
-            switch (frameType) {
-                case "0101"://Handle lock
-                    parseHandleLockResponse(frame);
-                    break;
-                case "0102"://seat lock
-                    parseSeatLockResponse(frame);
-                    break;
-                case "0107"://LED
-                    parseLEDControlResponse(frame);
-                    break;
-                default:
-                    //Log.e("SerialPortManager", "Unknown frame type");
-                    break;
+                Log.e("SerialPortManager", "FFAA66 Frame verification failed");
             }
         } else if (frame.length() != 0) {
             //int mcudata = Integer.parseInt(frame, 16);
-           // mad.setMcuOtaAnswer((byte) mcudata);  // 存储 MCU OTA应答数据
+            // mad.setMcuOtaAnswer((byte) mcudata);  // 存储 MCU OTA应答数据
             mad.setMcuOtaAnswer((byte) FrameUtils.getByteValue(frame,0));  // 存储 MCU OTA应答数据
             String temp = String.valueOf(mad.getMcuOtaAnswer());
-           // Log.e("SerialPortManager", " McuOtaAnswer: " + temp );
+            Log.e("SerialPortManager", " McuOtaAnswer: " + temp );
         } else {
-           // Log.e("SerialPortManager", " FFAA66 Invalid frame format");
+            Log.e("SerialPortManager", " FFAA66 Invalid frame format");
         }
     }
 
@@ -449,9 +365,8 @@ public class SerialPortManager {
      * @param frame 数据帧
      * @return Heartbeat1 对象
      */
-    public void parseHeartbeat1(String frame) {
+    private void parseHeartbeat1(String frame) {
         hb1.setDragonLock(FrameUtils.getByteValue(frame,7));   // 龙头锁状态
-       // Log.d("sdfdf","HANDLE LOCK CURRENT STATE "+FrameUtils.getByteValue(frame,7));
         hb1.setSeatLock(FrameUtils.getByteValue(frame,8));   // 坐垫锁状态
         hb1.setSideStand(FrameUtils.getByteValue(frame,9));  //侧支架状态
         hb1.setSeatLockSensor(FrameUtils.getByteValue(frame,10)); // 座椅锁状态
@@ -460,20 +375,7 @@ public class SerialPortManager {
         hb1.setGestureSlide(FrameUtils.getByteValue(frame,15));   // 手势滑动状态
         hb1.setHeadlights(FrameUtils.getByteValue(frame,16));  // 大灯状态
         hb1.setTurnSignal(FrameUtils.getByteValue(frame,17));   // 转向灯状态
-        hb1.setLED(FrameUtils.getByteValue(frame,18));//LED response
     }
-    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
-
-    public void sendContinuousSensorData() {
-        scheduler.scheduleWithFixedDelay(() -> {
-            if (MainActivity.evClient != null && MainActivity.evClient.isOpen()) {
-                MainActivity.evClient.sendSensorData("HandleLock", hb1.getDragonLock());//0=Lock   1=unlock
-                MainActivity.evClient.sendSensorData("SeatLock", hb1.getSeatLock());   //0=Lock   1=unlock
-                MainActivity.evClient.sendSensorData("ChargingStatus", 0);  //0=unplugged   1=pluggedIn
-            }
-        }, 0, 1, TimeUnit.SECONDS); // Wait 1 sec after each execution before starting again
-    }
-
 
     /**
      * 解析心跳包2
@@ -495,65 +397,13 @@ public class SerialPortManager {
      * @return Heartbeat3 对象
      */
     private void parseHeartbeat3(String frame) {
-        if(frame.length()>6)
-        {
-            //Log.d("sdfgh","FRAMEPARSE11111------"+frame);
+        hb3.setCanId(FrameUtils.getByteSubstring(frame,7,10));  // CAN ID
+        hb3.setCanData(FrameUtils.getByteSubstring(frame,11,18));  // CAN 数据
 
-            hb3.setCanId(FrameUtils.getByteSubstring(frame,7,10));  // CAN ID
-            hb3.setCanData(FrameUtils.getByteSubstring(frame,11,18));
-        }  // CAN 数据}
-        else {
-           // Log.d("sdfgh","FRAMEPARSERETURN------"+frame);
-
-            return;
-        }
-        //Log.d("dfsdgb","id's are"+FrameUtils.getByteSubstring(frame,7,10));
         // 根据 CAN ID 进一步解析 CAN 数据
         switch (hb3.getCanId()) {
-            case "18FF50E5"://CHARGING STARTED STATUS
-                CanDataParser.parseCanData18FF50E5(hb3, hb3.getCanData());
-                break;
-            case "18904001"://MAIN SOC
+            case "18904001":
                 CanDataParser.parseCanData18904001(hb3, hb3.getCanData());
-                break;
-            case "18914001"://MAIN SOC
-                CanDataParser.parseCanData18914001(hb3, hb3.getCanData());
-                break;
-            case "18904002"://APU SOC
-                CanDataParser.parseCanData18904002(hb3, hb3.getCanData());
-                break;
-            case "18934001"://Mos States
-                CanDataParser.parseCanData18934001(hb3, hb3.getCanData());
-                break;
-            case "18944001"://Mos States
-                CanDataParser.parseCanData18944001(hb3, hb3.getCanData());
-                break;
-            case "18984001"://Mos States
-                CanDataParser.parseCanData18984001(hb3, hb3.getCanData());
-                break;
-            case "16078001"://Mos States
-                CanDataParser.parseCanData16078001(hb3, hb3.getCanData());
-                break;
-            case "18934002"://APU Mos States
-                CanDataParser.parseCanData18934002(hb3, hb3.getCanData());
-                break;
-            case "18964001":// NTC
-                CanDataParser.parseCanData18964001(hb3, hb3.getCanData());
-                break;
-            case "18964002":// APU NTC
-                CanDataParser.parseCanData18964002(hb3, hb3.getCanData());
-                break;
-            case "18954001":
-                CanDataParser.parseCanData18954001(hb3, hb3.getCanData());
-                break;
-            case "1806E5F4":
-                CanDataParser.parseCanData1806E5F4(hb3, hb3.getCanData());
-                break;
-            case "160B8001":// Charge AH
-                CanDataParser.parseCanData160B8001(hb3, hb3.getCanData());
-                break;
-            case "160D8001":// Discharge AH
-                CanDataParser.parseCanData160D8001(hb3, hb3.getCanData());
                 break;
             case "10F807A8":
                 CanDataParser.parseCanData10F807A8(hb3, hb3.getCanData());
@@ -579,26 +429,6 @@ public class SerialPortManager {
         }
     }
 
-    private void parseHandleLockResponse(String frame)
-    {
-        hb3.sethandleLockresponse(FrameUtils.getByteValue(frame,7));
-    }
-
-    public void parseLEDControlResponse(String frame)
-    {
-        hb3.setLEDresponse(FrameUtils.getByteValue(frame,7));
-      //  Log.d("dsfghf","this is led response value "+frame);
-    }
-    private void parseSeatLockResponse(String frame)
-    {
-        hb3.setSeatLockresponse(FrameUtils.getByteValue(frame,7));
-    }
-    public Heartbeat3 getHb3() {
-        return hb3;
-    }
-    public Heartbeat1 getHb1() {
-        return hb1;
-    }
     /**
      * 解析蓝牙Mac地址应答数据
      * @param frame 数据帧
@@ -645,7 +475,7 @@ public class SerialPortManager {
         }
     }
 
-//    public void clearSendBuffer() {
+    //    public void clearSendBuffer() {
 //        if (serialHelper != null && serialHelper.isOpen()) {
 //            try {
 //                // 使用反射获取 mSerialPort
@@ -665,13 +495,13 @@ public class SerialPortManager {
 //            }
 //        }
 //    }
-public void clearSendBuffer() throws IOException {
+    public void clearSendBuffer() throws IOException {
         if (serialHelper != null && serialHelper.isOpen()) {
             FileDescriptor fd = serialHelper.getFileDescriptor();
             int fdInt = getFdInt(fd);
             clearSendBufferNative(fdInt);
-            }
         }
+    }
     private int getFdInt(FileDescriptor fd) throws IOException {
         try {
             // 通过反射获取 FileDescriptor 中的文件描述符
@@ -680,23 +510,6 @@ public void clearSendBuffer() throws IOException {
             return fdField.getInt(fd);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new IOException("Failed to access file descriptor", e);
-        }
-    }
-    public void close() {
-        if (serialHelper != null) {
-            serialHelper.close();  // This will close the serial port
-            serialHelper = null;
-        }
-
-        // Stop any background tasks if running
-        handlerVcuToMcu.removeCallbacks(VcuToMcTask);
-        currentAttempt = 0;
-    }
-
-    public static void reset() {
-        if (instance != null) {
-            instance.close();  // call the close method we just added
-            instance = null;
         }
     }
 

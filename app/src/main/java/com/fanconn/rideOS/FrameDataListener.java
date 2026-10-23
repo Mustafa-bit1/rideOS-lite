@@ -7,5 +7,4 @@ public interface FrameDataListener {
     void onHeartbeat2Parsed(Heartbeat2 hb2);
     void onHeartbeat3Parsed(Heartbeat3 hb3);
     void onMcuAnswerDataParsed(McuAnswerData mad);
-    void onCanTimeout();
 }

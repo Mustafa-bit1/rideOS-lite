@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.fanconn.rideOS.menu.OS_UpdatesFragment;
-import com.fanconn.rideOS.serialApplication;
 
 import org.json.JSONObject;
 
