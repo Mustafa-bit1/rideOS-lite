@@ -1,16 +1,13 @@
 package com.fanconn.rideOS.mcuupdate;
 
-
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
-
+import com.fanconn.rideOS.MainActivity;
 import com.fanconn.rideOS.R;
 import com.fanconn.rideOS.SerialPortManager;
-import com.fanconn.rideOS.menu.menu;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +36,7 @@ public class YMode {
     protected static final int MAXERRORS = 100;
     private Context context;
     private byte mcuAnswerData;
-    private menu activity = new menu();
+    private MainActivity activity = new MainActivity();
 
     public YMode(Context context) {
         this.context = context;
@@ -139,8 +136,7 @@ public class YMode {
         }
 
         if (elapsedTime >= TIMEOUT * 1000) {
-            ((FragmentActivity) context).runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
-//            activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
+            activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
             shortSleepTime(1000);
             throw new IOException("Timeout waiting for ST_C");
         }
@@ -180,9 +176,7 @@ public class YMode {
                     Log.d("sendHandshakeFrame", "Ignoring unexpected response: " + mcuAnswerData);
             }
         }
-        ((FragmentActivity) context).runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
-
-//        activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
+        activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
         shortSleepTime(1000);
         throw new IOException("Timeout waiting for ACK");
     }
@@ -223,18 +217,14 @@ public class YMode {
                 case CAN:
                     mcuAnswerData=0;
                     setMcuOtaAnswer();
-                    ((FragmentActivity) context).runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_transmission_terminated, Toast.LENGTH_SHORT).show());
-
-//                    activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_transmission_terminated, Toast.LENGTH_SHORT).show());
+                    activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_transmission_terminated, Toast.LENGTH_SHORT).show());
                     return -1;
                 default:
                     shortSleepTime(20);
                     break;
             }
         }
-        ((FragmentActivity) context).runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
-
-//        activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
+        activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
         shortSleepTime(1000);
         throw new IOException("Timeout waiting for response");
     }
@@ -248,21 +238,16 @@ public class YMode {
             if (mcuAnswerData == LUCKLY) {
                 mcuAnswerData = 0;
                 setMcuOtaAnswer();
-                ((FragmentActivity) context).runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_successfully, Toast.LENGTH_SHORT).show());
-//                activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_successfully, Toast.LENGTH_SHORT).show());
+                activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_successfully, Toast.LENGTH_SHORT).show());
                 return;
             } else if (mcuAnswerData == CAN) {
                 mcuAnswerData = 0;
                 setMcuOtaAnswer();
-                ((FragmentActivity) context).runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_transmission_terminated, Toast.LENGTH_SHORT).show());
-
-//                activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_transmission_terminated, Toast.LENGTH_SHORT).show());
+                activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_transmission_terminated, Toast.LENGTH_SHORT).show());
                 return;
             }
         }
-        ((FragmentActivity) context).runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
-
-//        activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
+        activity.runOnUiThread(() -> Toast.makeText(context, R.string.tips_mcuota_update_fail, Toast.LENGTH_SHORT).show());
         shortSleepTime(1000);
         throw new IOException("Timeout waiting for response");
     }

@@ -8,18 +8,18 @@
     tools:context="com.fanconn.rideOS.MainActivity">
 
 
-    <ImageButton
-        android:id="@+id/menubackbtn"
-        android:layout_width="147dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="92dp"
-        android:adjustViewBounds="true"
-        android:background="@android:color/transparent"
-        android:padding="0dp"
-        android:src="@drawable/backbtn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+<!--    <ImageButton-->
+<!--        android:id="@+id/menubackbtn"-->
+<!--        android:layout_width="147dp"-->
+<!--        android:layout_height="47dp"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="92dp"-->
+<!--        android:adjustViewBounds="true"-->
+<!--        android:background="@android:color/transparent"-->
+<!--        android:padding="0dp"-->
+<!--        android:src="@drawable/backbtn"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <ImageView
         android:id="@+id/enginestartIV"
@@ -115,11 +115,22 @@
         android:layout_width="118dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="581dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="69dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/neutralicon" />
 
+
+    <ImageView
+        android:id="@+id/charging_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/pluggedin" />
 
     <ImageView
         android:id="@+id/highBeam_IV"
@@ -128,6 +139,7 @@
         android:layout_marginStart="410dp"
         android:layout_marginTop="392dp"
         android:translationY="0dp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/lamp_off" />
@@ -155,6 +167,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/ip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="464dp"
+        android:fontFamily="@font/kanit"
+        android:text="."
+        android:textAlignment="center"
+        android:textColor="#1A1A1A"
+        android:textSize="12dp"
+        android:translationY="-10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/turnLeft_IV"
         android:layout_width="wrap_content"
@@ -162,6 +193,7 @@
         android:layout_marginStart="446dp"
         android:layout_marginTop="364dp"
         android:src="@drawable/left_on"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -173,6 +205,7 @@
         android:layout_marginTop="364dp"
         android:layout_marginEnd="506dp"
         android:src="@drawable/right_on"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -181,13 +214,13 @@
         android:id="@+id/timeTextView"
         android:layout_width="100dp"
         android:layout_height="30dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="590dp"
         android:fontFamily="@font/kanit"
         android:text="02:22 PM"
         android:textAlignment="center"
         android:textColor="#FFFFFFFF"
-        android:textSize="22dp"
+        android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlCompat" />

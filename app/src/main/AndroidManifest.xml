@@ -67,7 +67,6 @@
     <uses-permission android:name="com.fanconn.rideOS.PERMISSION_FRAME" />
 
     <application
-        android:name=".serialApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -79,47 +78,7 @@
         android:theme="@style/Theme.rideOS"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <activity
-            android:name=".TPMS_activity"
-            android:theme="@style/TransparentSlideThemeforOthers"
-            android:launchMode="singleTop"
-            android:exported="false" />
-        <activity
-            android:name=".menu.settings"
-            android:theme="@style/TransparentSlideThemeforOthers"
-            android:launchMode="singleTop"
-            android:exported="false" />
-        <activity
-            android:name=".MetadataActivity"
-            android:theme="@style/TransparentSlideThemeforOthers"
-            android:exported="false" />
-        <activity
-            android:name=".MetadataManager"
-            android:exported="false" />
-        <activity
-            android:name=".QuickSetting"
-            android:theme="@style/TransparentSlideTheme"
-            android:launchMode="singleTop"
-            android:exported="false" />
-        <activity
-            android:name="menu.informationFragment"
-            android:exported="false" />
-        <activity
-            android:name=".debugPage"
-            android:theme="@style/TransparentSlideThemeforOthers"
-            android:exported="false" />
-        <activity
-            android:name=".chargingUI"
-            android:exported="false"
-            android:launchMode="singleTask" />
-        <activity
-            android:name=".menu.menu"
-            android:theme="@style/TransparentSlideThemeforOthers"
-            android:exported="false" />
-        <activity
-            android:name=".Maps"
-            android:theme="@style/TransparentSlideThemeforOthers"
-            android:exported="false" /> <!-- LoginActivity is now the launcher (with ALL categories preserved) -->
+
         <activity
             android:name=".authen.LoginActivity"
             android:exported="true"
@@ -137,68 +96,6 @@
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop" />
-        <activity android:name=".authen.RegisterActivity" />
-        <activity android:name=".authen.UserActivity" />
-        <activity android:name=".local_ui.SelectActivity" />
-        <activity android:name=".local_ui.LocalUpdateActivity" />
-        <service android:name=".services.PrepareUpdateService"/>
-        <activity
-            android:name="com.fanconn.rideOS.aosp_mainActivity"
-            android:exported="false" />
-        <receiver
-            android:name=".NetworkChangeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".receiver.BootCompletedReceiver"
-            android:enabled="true"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-
-        </receiver>
-        <receiver
-            android:name=".receiver.NightlyRebootReceiver"
-            android:exported="false"/>
-        <service
-            android:name=".UpdateService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.FOREGROUND_SERVICE">
-            <intent-filter>
-                <action android:name="Newmotobike.UPDATE_SERVICE" />
-            </intent-filter>
-        </service>
-
-        <service
-            android:name="org.eclipse.paho.android.service.MqttService"
-            android:exported="false" />
-        <service
-            android:name=".CameraService"
-            android:enabled="true"
-            android:exported="false" />
-        <service
-            android:name=".TpmsScanService"
-            android:enabled="true"
-            android:exported="false" />
-
-        <service
-            android:name=".telemetry.MqttTelemetryService"
-            android:exported="false" />
-
-        <service
-            android:name="com.fanconn.rideOS.Smartkey.BLEScanService"
-            android:exported="false" />
-        <activity
-            android:name=".UpdateProgressActivity"
-            android:excludeFromRecents="true"
-            android:launchMode="singleTask"
-            android:theme="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen" />
 
         <provider
             android:name=".MyFileProvider"
@@ -210,30 +107,7 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity
-            android:name=".menu.supportFragment"
-            android:exported="false" />
-        <activity
-            android:name=".menu.OS_UpdatesFragment"
-            android:exported="false" />
-        <activity
-            android:name=".menu.riderProfilesFragment"
-            android:exported="false" />
-        <activity
-            android:name=".menu.FeaturesFragment"
-            android:exported="false" />
-        <activity
-            android:name=".menu.BatteryFragment"
-            android:exported="false" />
-        <activity
-            android:name=".menu.RideCamFragment"
-            android:exported="false" />
-        <activity
-            android:name=".menu.DocsFragment"
-            android:exported="false" />
-        <activity
-            android:name=".menu.WirelessFragment"
-            android:exported="false" />
+
     </application>
 
 </manifest>

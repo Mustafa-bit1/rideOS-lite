@@ -1,12 +1,17 @@
 package com.fanconn.rideOS;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fanconn.rideOS.authen.LoginActivity;
 import com.fanconn.rideOS.databinding.ActivityMainBinding;
 
 /**
@@ -17,7 +22,9 @@ public class UIUpdater {
     private final ActivityMainBinding binding;
     private final Handler handlerTurnSignal;
     private final Context context;
-
+    private static final long DOUBLE_TAP_INTERVAL_MS = 300;
+    private long lastSpeedTapTime = 0;
+    private int currentVehicleSpeed = 0;
     public UIUpdater(ActivityMainBinding binding, Context context) {
         this.binding = binding;
         this.handlerTurnSignal = new Handler();
@@ -29,8 +36,13 @@ public class UIUpdater {
      * @param hb1 解析后的 Heartbeat1 对象
      */
     public void updateHeartbeat1UI(Heartbeat1 hb1) {
-        // 更新大灯状态
-        updateImageView(binding.highBeamIV, hb1.getHeadlights() == 1 ? R.drawable.lamp_on : R.drawable.lamp_off);
+        // Show the headlight image only when ON
+        if (hb1.getHeadlights() == 1) {
+            binding.highBeamIV.setVisibility(View.VISIBLE);
+            binding.highBeamIV.setImageResource(R.drawable.lamp_on);
+        } else {
+            binding.highBeamIV.setVisibility(View.INVISIBLE);
+        }
         // 更新转向灯状态
         updateTurnSignalImages(hb1.getTurnSignal());
     }
@@ -81,41 +93,72 @@ public class UIUpdater {
         }
     }
 
-    /**
-     * 更新转向灯图片资源
-     * @param turnSignalState 转向灯状态
-     */
+
+    // Update turn signal images based on the current state
     private void updateTurnSignalImages(int turnSignalState) {
-        // 立即移除之前的任务
+
+        // Remove previously scheduled animation callbacks
         handlerTurnSignal.removeCallbacksAndMessages(null);
+
         switch (turnSignalState) {
             case 0:
-                updateTurnSignal(R.drawable.indicators, R.drawable.indicatorsr, false);
+                // Indicators OFF: hide both indicators
+                binding.turnLeftIV.setVisibility(View.INVISIBLE);
+                binding.turnRightIV.setVisibility(View.INVISIBLE);
+                stopTurnSignalAnimation();
                 break;
+
             case 1:
-                updateTurnSignal(R.drawable.left_on, R.drawable.indicatorsr, true);
-                startTurnSignalAnimation(R.drawable.indicators, R.drawable.left_on, binding.turnLeftIV);
+                // Left indicator ON: use left_on and blink without grey images
+                binding.turnLeftIV.setVisibility(View.VISIBLE);
+                binding.turnRightIV.setVisibility(View.INVISIBLE);
+
+                binding.turnLeftIV.setImageResource(R.drawable.left_on);
+
+                startTurnSignalAnimation(
+                        R.drawable.left_on,
+                        R.drawable.left_on,
+                        binding.turnLeftIV
+                );
                 break;
+
             case 2:
-                updateTurnSignal(R.drawable.indicators, R.drawable.right_on, true);
-                startTurnSignalAnimation(R.drawable.indicatorsr, R.drawable.right_on, binding.turnRightIV);
+                // Right indicator ON: use right_on and blink without grey images
+                binding.turnLeftIV.setVisibility(View.INVISIBLE);
+                binding.turnRightIV.setVisibility(View.VISIBLE);
+
+                binding.turnRightIV.setImageResource(R.drawable.right_on);
+
+                startTurnSignalAnimation(
+                        R.drawable.right_on,
+                        R.drawable.right_on,
+                        binding.turnRightIV
+                );
                 break;
+
             case 3:
-                updateTurnSignal(R.drawable.left_on, R.drawable.right_on, true);
+                // Hazard lights ON
+                binding.turnLeftIV.setVisibility(View.VISIBLE);
+                binding.turnRightIV.setVisibility(View.VISIBLE);
+
+                binding.turnLeftIV.setImageResource(R.drawable.left_on);
+                binding.turnRightIV.setImageResource(R.drawable.right_on);
+
                 startFaultSignalAnimation();
                 break;
+
             default:
+                // Invalid state: hide both indicators
+                binding.turnLeftIV.setVisibility(View.INVISIBLE);
+                binding.turnRightIV.setVisibility(View.INVISIBLE);
+                stopTurnSignalAnimation();
                 break;
         }
     }
 
-    /**
-     * 更新转向灯图片资源
-     * @param leftRes 左转向灯资源
-     * @param rightRes 右转向灯资源
-     * @param animated 是否需要动画
-     */
+    // Update turn signal drawable resources
     private void updateTurnSignal(int leftRes, int rightRes, boolean animated) {
+
         binding.turnLeftIV.setImageResource(leftRes);
         binding.turnRightIV.setImageResource(rightRes);
 
@@ -124,40 +167,52 @@ public class UIUpdater {
         }
     }
 
-    /**
-     * 开始转向灯动画
-     * @param initialRes 初始资源
-     * @param alternateRes 替换资源
-     * @param imageView 图片视图
-     */
-    private void startTurnSignalAnimation(final int initialRes, final int alternateRes, final ImageView imageView) {
+    // Start left/right indicator blinking animation
+    private void startTurnSignalAnimation(
+            final int initialRes,
+            final int alternateRes,
+            final ImageView imageView) {
+
+        imageView.setImageResource(initialRes);
+
         handlerTurnSignal.postDelayed(new Runnable() {
+            private boolean isVisible = true;
+
             @Override
             public void run() {
-                if (imageView.getDrawable().getConstantState().equals(imageView.getContext().getResources().getDrawable(alternateRes).getConstantState())) {
-                    imageView.setImageResource(initialRes);
-                } else {
-                    imageView.setImageResource(alternateRes);
+                if (imageView.getVisibility() != View.VISIBLE) {
+                    return;
                 }
+
+                isVisible = !isVisible;
+                imageView.setVisibility(isVisible ? View.VISIBLE : View.INVISIBLE);
+
                 handlerTurnSignal.postDelayed(this, 500);
             }
         }, 500);
     }
 
-    /**
-     * 开始故障灯动画
-     */
+    // Start hazard light blinking animation
     private void startFaultSignalAnimation() {
+
         handlerTurnSignal.postDelayed(new Runnable() {
+            private boolean isVisible = true;
+
             @Override
             public void run() {
-                toggleImageResource(binding.turnLeftIV, R.drawable.right, R.drawable.lmp_l);
-                toggleImageResource(binding.turnRightIV, R.drawable.left, R.drawable.lmp_r);
+                isVisible = !isVisible;
+
+                binding.turnLeftIV.setVisibility(
+                        isVisible ? View.VISIBLE : View.INVISIBLE
+                );
+                binding.turnRightIV.setVisibility(
+                        isVisible ? View.VISIBLE : View.INVISIBLE
+                );
+
                 handlerTurnSignal.postDelayed(this, 500);
             }
         }, 500);
     }
-
     /**
      * 切换 ImageView 的图片资源
      * @param imageView 需要切换的 ImageView
@@ -176,6 +231,7 @@ public class UIUpdater {
      * 停止更新和动画
      */
     public void stopUpdating() {
+        stopChargingUiWatcher();
         stopTurnSignalAnimation();
     }
 
@@ -218,6 +274,9 @@ public class UIUpdater {
      */
     public void updateHeartbeat3UI(Heartbeat3 hb3) {
         switch (hb3.getCanId()) {
+            case "18FF50E5":
+                updateCanData18FF50E5(hb3);
+                break;
             case "18904001":
                 updateCanData18904001(hb3);
                 break;
@@ -250,14 +309,32 @@ public class UIUpdater {
      * @param hb3 解析后的 Heartbeat3 对象
      */
     public void updateCanData18904001(Heartbeat3 hb3) {
-        // 更新电池电量
+        // Get battery SOC
         int batteryLevel = hb3.getBatteryLevel() / 10;
-        binding.batteryTV.setText(batteryLevel + "%");
-
+Log.d("BATTRY","THIS IS BAT UI"+batteryLevel);
+        // Update only for valid SOC values (0–100%)
+        if (batteryLevel >= 0 && batteryLevel <= 100) {
+            binding.batteryTV.setText("Battery " + batteryLevel + "%");
+        }
     }
-
+    private int previousGearState = -1;
     public void updateCanData10F807A8(Heartbeat3 hb3) {
-        int directionalGears = FrameUtils.extractBits(hb3.getBSG1_BYTE1(), 0, 1);
+        int directionalGears = FrameUtils.extractBits(
+                hb3.getBSG1_BYTE1(), 0, 1
+        );
+
+        // Send handle unlock command only when gear state changes
+        if (directionalGears != previousGearState) {
+
+            if (directionalGears == 1 || directionalGears == 2) {
+                SerialPortManager.getInstance()
+                        .VCUSendToMCU("FFAA550101000A01");
+            }
+
+            previousGearState = directionalGears;
+        }
+
+        // Update gear image
         switch (directionalGears) {
             case 0:
                 binding.gearImg.setImageResource(R.drawable.neutralicon);
@@ -273,14 +350,126 @@ public class UIUpdater {
         }
     }
 
+    public void updateCanData18FF50E5(Heartbeat3 hb3) {
+        refreshChargingIndicator();
+    }
+
+    private static final long CHARGING_UI_REFRESH_MS = 500L;
+
+    private final Handler chargingUiHandler =
+            new Handler(Looper.getMainLooper());
+
+    private boolean chargingUiWatcherStarted = false;
+
+    private final Runnable chargingUiWatcher = new Runnable() {
+        @Override
+        public void run() {
+            if (!chargingUiWatcherStarted) {
+                return;
+            }
+
+            refreshChargingIndicator();
+
+            chargingUiHandler.postDelayed(
+                    this,
+                    CHARGING_UI_REFRESH_MS
+            );
+        }
+    };
+
+    public void startChargingUiWatcher() {
+        if (chargingUiWatcherStarted) {
+            return;
+        }
+
+        chargingUiWatcherStarted = true;
+        chargingUiHandler.removeCallbacks(chargingUiWatcher);
+        chargingUiHandler.post(chargingUiWatcher);
+
+        Log.d("UIUpdater", "Charging UI watcher started");
+    }
+
+    public void stopChargingUiWatcher() {
+        chargingUiWatcherStarted = false;
+        chargingUiHandler.removeCallbacks(chargingUiWatcher);
+
+        Log.d("UIUpdater", "Charging UI watcher stopped");
+    }
+
+    private void refreshChargingIndicator() {
+        ChargingStatusManager manager =
+                ChargingStatusManager.getInstance();
+
+        ChargingStatusManager.ChargingState state =
+                manager.getChargingState();
+
+        switch (state) {
+            case CHARGING:
+                binding.chargingImg.setImageResource(
+                        R.drawable.chargingimg
+                );
+                binding.chargingImg.setVisibility(View.VISIBLE);
+                break;
+
+            case PLUGGED_IN:
+                binding.chargingImg.setImageResource(
+                        R.drawable.pluggedin
+                );
+                binding.chargingImg.setVisibility(View.VISIBLE);
+                break;
+
+            case NOT_CHARGING:
+            default:
+                binding.chargingImg.setVisibility(View.GONE);
+                break;
+        }
+    }
     /**
      * 更新 CAN 数据 10F907A8
      * @param hb3 解析后的 Heartbeat3 对象
      */
+    private double Speed_ratio_Value = 1.6;//// 10% high
+
     public void updateCanData10F907A8(Heartbeat3 hb3) {
-        // 计算速度
-        double speed = (hb3.getBSG2_BYTE78() * 60.0) / 3.3125 * 0.96 / 1000;
-        binding.speedNumberTV.setText(String.valueOf((int) speed));
+//        double speed = (hb3.getBSG2_BYTE78() * 60.0) / 3.3125 * 0.96 / 1000;
+        double speed = (int)((hb3.getBSG2_BYTE78() * 60.0 * Speed_ratio_Value) / 3.3125 * 1 / 1000); // 10% high
+
+        // Ignore invalid or noisy speed values.
+        if (Double.isNaN(speed)
+                || Double.isInfinite(speed)
+                || speed < 0
+                || speed > 200) {
+            return;
+        }
+
+        currentVehicleSpeed = (int) speed;
+
+        binding.speedNumberTV.setText(
+                String.valueOf(currentVehicleSpeed)
+        );
+
+    }
+
+    public void setupSpeedDoubleTap() {
+        binding.speedNumberTV.setOnClickListener(v -> {
+            long currentTime = SystemClock.elapsedRealtime();
+
+            if (currentTime - lastSpeedTapTime > DOUBLE_TAP_INTERVAL_MS) {
+                lastSpeedTapTime = currentTime;
+                return;
+            }
+
+            // Double-tap detected
+            lastSpeedTapTime = 0;
+
+            // Do not open LoginActivity while moving
+            if (currentVehicleSpeed > 0) {
+                return;
+            }
+            MainActivity.isLoginActivityLaunching = true;
+            Intent intent = new Intent(v.getContext(), LoginActivity.class);
+            v.getContext().startActivity(intent);
+        });
     }
 
     /**

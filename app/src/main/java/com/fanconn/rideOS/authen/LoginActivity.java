@@ -1,16 +1,20 @@
+
 package com.fanconn.rideOS.authen;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,36 +22,77 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fanconn.rideOS.ChargingStatusManager;
 import com.fanconn.rideOS.MainActivity;
 import com.fanconn.rideOS.R;
+import com.fanconn.rideOS.SerialPortManager;
+import com.fanconn.rideOS.scooterPowerManager;
 
 public class LoginActivity extends AppCompatActivity {
 
     private static final String CORRECT_PIN = "2222";
     private static final String TAG = "LoginActivity";
+    private boolean isLoginScreenActive = false;
+    private static final int REQUIRED_SETTINGS_TAPS = 5;
+    private static final long MAX_TAP_INTERVAL_MS = 1000;
+    private static final long SCREEN_OFF_DELAY_MS = 10_000L;
 
     private EditText etCredential;
+    private Button launchSettingsButton;
 
-    // Stores the actual PIN entered by the user.
     private final StringBuilder actualPin = new StringBuilder();
+    private final Handler screenOffHandler =
+            new Handler(Looper.getMainLooper());
+
+    private int settingsTapCount = 0;
+    private long lastSettingsTapTime = 0;
 
     private boolean isValidating = false;
     private boolean isInputLocked = false;
+    private boolean loginSuccessful = false;
+
+    private long lastActivityTime = 0;
+
+    private final Runnable screenOffRunnable = this::handleScreenOff;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        etCredential = findViewById(R.id.etCredential);
+        chargingStatus = findViewById(R.id.chargingStatus);
+        chargingStatus.setVisibility(View.GONE);
 
-        // The PIN is entered using the on-screen keypad.
-        // Display dots instead of the actual PIN.
+        launchSettingsButton = findViewById(R.id.launchSettings);
+        launchSettingsButton.setOnClickListener(v -> {
+            long currentTime = SystemClock.elapsedRealtime();
+
+            if (lastSettingsTapTime == 0
+                    || currentTime - lastSettingsTapTime > MAX_TAP_INTERVAL_MS) {
+                settingsTapCount = 0;
+            }
+
+            settingsTapCount++;
+            lastSettingsTapTime = currentTime;
+
+            Log.d(TAG, "Settings tap count=" + settingsTapCount);
+
+            if (settingsTapCount >= REQUIRED_SETTINGS_TAPS) {
+                settingsTapCount = 0;
+                lastSettingsTapTime = 0;
+
+                try {
+                    startActivity(new Intent(Settings.ACTION_SETTINGS));
+                } catch (Exception e) {
+                    Log.e(TAG, "Unable to open Android Settings", e);
+                }
+            }
+        });
+
+        etCredential = findViewById(R.id.etCredential);
         etCredential.setShowSoftInputOnFocus(false);
         etCredential.setText("");
 
-        // Prevent the EditText from triggering validation based on
-        // the number of displayed masking characters.
         etCredential.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(
@@ -61,22 +106,107 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                // PIN validation is handled by onKeypadButtonClick().
+                // Validation is handled by the keypad method.
             }
         });
+
+        Log.d(TAG, "LoginActivity created");
     }
 
-    /**
-     * Handles PIN keypad buttons declared using android:onClick.
-     */
-    public void onKeypadButtonClick(View view) {
 
-        if (isInputLocked || isValidating) {
+    private void handleScreenOff() {
+        // Screen-off is allowed only while LoginActivity is active.
+        if (loginSuccessful
+                || !isLoginScreenActive
+                || isFinishing()
+                || isDestroyed()) {
+            stopScreenOffTimer();
             return;
         }
 
-        // Play the existing keypad sound if this method is available
-        // in your project. See the note below if it does not compile.
+        long idleTime =
+                SystemClock.elapsedRealtime() - lastActivityTime;
+
+        if (idleTime < SCREEN_OFF_DELAY_MS) {
+            screenOffHandler.postDelayed(
+                    screenOffRunnable,
+                    SCREEN_OFF_DELAY_MS - idleTime
+            );
+            return;
+        }
+
+        PowerManager powerManager =
+                (PowerManager) getSystemService(POWER_SERVICE);
+
+        if (powerManager == null || !powerManager.isInteractive()) {
+            return;
+        }
+
+        // Final check immediately before requesting screen-off.
+        if (loginSuccessful
+                || !isLoginScreenActive
+                || isFinishing()
+                || isDestroyed()) {
+            return;
+        }
+
+        try {
+            java.lang.reflect.Method method =
+                    PowerManager.class.getMethod(
+                            "goToSleep",
+                            long.class
+                    );
+
+            method.invoke(
+                    powerManager,
+                    SystemClock.uptimeMillis()
+            );
+
+            Log.d(TAG, "Login idle timeout: screen-off requested");
+
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to turn screen off", e);
+        }
+    }
+
+    private void startScreenOffTimer() {
+        stopScreenOffTimer();
+
+        if (loginSuccessful
+                || !isLoginScreenActive
+                || isFinishing()
+                || isDestroyed()) {
+            return;
+        }
+
+        lastActivityTime = SystemClock.elapsedRealtime();
+
+        screenOffHandler.postDelayed(
+                screenOffRunnable,
+                SCREEN_OFF_DELAY_MS
+        );
+
+        Log.d(TAG, "Login screen timer started: 10 seconds");
+    }
+
+    private void stopScreenOffTimer() {
+        screenOffHandler.removeCallbacks(screenOffRunnable);
+    }
+
+
+    @Override
+    public void onUserInteraction() {
+        super.onUserInteraction();
+
+        if (isLoginScreenActive && !loginSuccessful) {
+            startScreenOffTimer();
+        }
+    }
+
+    public void onKeypadButtonClick(View view) {
+        if (isInputLocked || isValidating) {
+            return;
+        }
 
         Object tagObject = view.getTag();
 
@@ -88,75 +218,62 @@ public class LoginActivity extends AppCompatActivity {
         String tag = tagObject.toString();
 
         if ("del".equals(tag)) {
-
             if (actualPin.length() > 0) {
                 actualPin.deleteCharAt(actualPin.length() - 1);
             }
-
         } else if (tag.matches("[0-9]") && actualPin.length() < 4) {
-
             actualPin.append(tag);
         }
 
-        // Display only masking dots.
         StringBuilder masked = new StringBuilder();
-
         for (int i = 0; i < actualPin.length(); i++) {
             masked.append("•");
         }
 
         etCredential.setText(masked.toString());
 
-        // Validate when exactly four digits have been entered.
         if (actualPin.length() == 4) {
             validatePin();
         }
     }
 
     private void validatePin() {
-
         if (isValidating) {
             return;
         }
 
         isValidating = true;
 
-        String enteredPin = actualPin.toString();
-
-        if (CORRECT_PIN.equals(enteredPin)) {
-
+        if (CORRECT_PIN.equals(actualPin.toString())) {
             launchMainActivity();
-
         } else {
-
             showCustomToasterror("Invalid PIN");
-
-            // Clear the actual PIN and the displayed masking dots.
             actualPin.setLength(0);
             etCredential.setText("");
         }
 
         isValidating = false;
     }
+
     private void launchMainActivity() {
         loginSuccessful = true;
+        isLoginScreenActive = false;
+
         stopScreenOffTimer();
 
-        Intent intent = new Intent(
-                LoginActivity.this,
-                MainActivity.class
-        );
+        Log.d(TAG, "Login successful: screen-off timer stopped");
 
+        Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_SINGLE_TOP
+                Intent.FLAG_ACTIVITY_CLEAR_TOP
+                        | Intent.FLAG_ACTIVITY_SINGLE_TOP
         );
 
         startActivity(intent);
         finish();
     }
-    private void showCustomToasterror(String message) {
 
+    private void showCustomToasterror(String message) {
         LayoutInflater inflater = getLayoutInflater();
 
         View layout = inflater.inflate(
@@ -176,13 +293,14 @@ public class LoginActivity extends AppCompatActivity {
         toast.show();
     }
 
-    /**
-     * Prevent the previous PIN from remaining when LoginActivity
-     * becomes visible again.
-     */
     @Override
     protected void onResume() {
         super.onResume();
+
+        scooterPowerManager.lock(
+                command -> SerialPortManager.getInstance()
+                        .VCUSendToMCU(command)
+        );
 
         isInputLocked = false;
         isValidating = false;
@@ -192,71 +310,88 @@ public class LoginActivity extends AppCompatActivity {
             etCredential.setText("");
         }
 
-        if (!loginSuccessful) {
+        if (!loginSuccessful && !isFinishing()) {
+            isLoginScreenActive = true;
             startScreenOffTimer();
+
+            chargingStatusHandler.removeCallbacks(chargingStatusRunnable);
+            chargingStatusHandler.post(chargingStatusRunnable);
+
+        } else {
+            isLoginScreenActive = false;
+            stopScreenOffTimer();
+            chargingStatusHandler.removeCallbacks(chargingStatusRunnable);
+
+            if (chargingStatus != null) {
+                chargingStatus.setVisibility(View.GONE);
+            }
         }
+        Log.d(TAG, "onResume: loginSuccessful=" + loginSuccessful
+                + ", isLoginScreenActive=" + isLoginScreenActive);
     }
 
     @Override
     protected void onPause() {
-        super.onPause();
+        isLoginScreenActive = false;
         stopScreenOffTimer();
+        chargingStatusHandler.removeCallbacks(chargingStatusRunnable);
+
+        super.onPause();
     }
 
     @Override
     protected void onDestroy() {
+        isLoginScreenActive = false;
         stopScreenOffTimer();
+        chargingStatusHandler.removeCallbacks(chargingStatusRunnable);
+
         super.onDestroy();
     }
 
+    private TextView chargingStatus;
 
-
-    private static final long SCREEN_OFF_DELAY_MS = 10_000L;
-
-    private final Handler screenOffHandler =
+    private final Handler chargingStatusHandler =
             new Handler(Looper.getMainLooper());
 
-    private boolean loginSuccessful = false;
+    private final Runnable chargingStatusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!isLoginScreenActive || loginSuccessful
+                    || isFinishing() || isDestroyed()) {
+                return;
+            }
 
-    private final Runnable screenOffRunnable = () -> {
-        if (isFinishing() || isDestroyed() || loginSuccessful) {
-            return;
-        }
+            updateChargingStatus();
 
-        PowerManager powerManager =
-                (PowerManager) getSystemService(POWER_SERVICE);
-
-        if (powerManager == null || !powerManager.isInteractive()) {
-            return;
-        }
-
-        try {
-            java.lang.reflect.Method method =
-                    PowerManager.class.getMethod(
-                            "goToSleep", long.class
-                    );
-
-            method.invoke(
-                    powerManager,
-                    SystemClock.uptimeMillis()
-            );
-
-            Log.d(TAG, "Screen off requested after 10 seconds");
-
-        } catch (Exception e) {
-            Log.e(TAG, "Unable to turn screen off", e);
+            // Check the charging state once per second.
+            chargingStatusHandler.postDelayed(this, 1000);
         }
     };
 
-    private void startScreenOffTimer() {
-        screenOffHandler.removeCallbacks(screenOffRunnable);
-        screenOffHandler.postDelayed(
-                screenOffRunnable,
-                SCREEN_OFF_DELAY_MS
-        );
-    }
 
-    private void stopScreenOffTimer() {
-        screenOffHandler.removeCallbacks(screenOffRunnable);
+    private void updateChargingStatus() {
+
+        ChargingStatusManager.ChargingState state =
+                ChargingStatusManager.getInstance().getChargingState();
+
+        switch (state) {
+
+            case CHARGING:
+                chargingStatus.setText("Charging");
+                chargingStatus.setTextColor(Color.rgb(0, 200, 83));
+                chargingStatus.setVisibility(View.VISIBLE);
+                break;
+
+            case PLUGGED_IN:
+                chargingStatus.setText("Plugged In");
+                chargingStatus.setTextColor(Color.rgb(255, 193, 7));
+                chargingStatus.setVisibility(View.VISIBLE);
+                break;
+
+            case NOT_CHARGING:
+            default:
+                chargingStatus.setVisibility(View.GONE);
+                break;
+        }
     }
 }

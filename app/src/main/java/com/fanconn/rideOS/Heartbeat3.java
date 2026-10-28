@@ -6,6 +6,7 @@ package com.fanconn.rideOS;
 public class Heartbeat3 {
     private String canId; // CAN ID
     private String canData; // CAN 数据
+    private int ChargingState; // 单片机心跳包 电池电量
     private int batteryLevel; // 单片机心跳包 电池电量
     private int BSG1_BYTE1;
     private int BSG1_BYTE2;
@@ -54,6 +55,14 @@ public class Heartbeat3 {
         this.canData = canData;
     }
 
+
+    public int getChargingState() {
+        return ChargingState;
+    }
+
+    public void setChargingState(int ChargingState) {
+        this.ChargingState = ChargingState;
+    }
     public int getBatteryLevel() {
         return batteryLevel;
     }

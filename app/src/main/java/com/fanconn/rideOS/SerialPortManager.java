@@ -235,7 +235,15 @@ public class SerialPortManager {
         currentAttempt = 0;
         handlerVcuToMcu.post(VcuToMcTask);
     }
-
+    public static SerialPortManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException(
+                    "SerialPortManager has not been initialized. " +
+                            "Initialize it in MainActivity first."
+            );
+        }
+        return instance;
+    }
     /**
      * 停止VCU下发数据给MCU
      */
@@ -402,6 +410,15 @@ public class SerialPortManager {
 
         // 根据 CAN ID 进一步解析 CAN 数据
         switch (hb3.getCanId()) {
+            case "18FF50E5":
+                CanDataParser.parseCanData18FF50E5(
+                        hb3, hb3.getCanData()
+                );
+
+                ChargingStatusManager.getInstance()
+                        .onChargerCanReceived(hb3.getCanData());
+
+                break;
             case "18904001":
                 CanDataParser.parseCanData18904001(hb3, hb3.getCanData());
                 break;

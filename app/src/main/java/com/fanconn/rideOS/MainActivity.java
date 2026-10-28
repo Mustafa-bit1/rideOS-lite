@@ -3,14 +3,20 @@ package com.fanconn.rideOS;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -43,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
     private YMode yMode;
     private ProgressDialog progressDialog;
 
-    private ImageButton menubackbtn;
+//    private ImageButton menubackbtn;
 
     // 处理接收到的数据的 Handler
     public Handler mHandler = new Handler(new Handler.Callback() {
@@ -58,6 +64,10 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 public void run() {
                     List<String> frames = SerialPortManager.splitIntoFrames(rxText);
                     for (String frame : frames) {
+                        if(frame.startsWith("FFAA770303001518904001")){
+                            Log.d("BATTRY","THIS IS BAT UI FRAME"+frame);
+
+                        }
                         Log.e("handleMessage", "数据帧: " + frame);
 
                         parseFrame(frame); // 根据帧头处理不同类型的数据
@@ -81,31 +91,38 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
 
         // 隐藏状态栏和导航栏，设置为全屏
         setFullScreen();
-        menubackbtn = findViewById(R.id.menubackbtn);
-        menubackbtn.setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    MainActivity.this,
-                    LoginActivity.class
-            );
-            startActivity(intent);
-        });
+
+        updateWifiIpAddress();
+// Keep the dashboard display on while MainActivity is visible.
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+        );
+//        menubackbtn = findViewById(R.id.menubackbtn);
+//        menubackbtn.setOnClickListener(v -> {
+//            Intent intent = new Intent(
+//                    MainActivity.this,
+//                    LoginActivity.class
+//            );
+//            startActivity(intent);
+//        });
         // 初始化class
         serialPortManager = SerialPortManager.getInstance(sPort, iBaudRate, RX_type, mHandler);
         serialPortManager.initSerialConfig(this);
         uiUpdater = new UIUpdater(binding, this);
+        uiUpdater.setupSpeedDoubleTap();
         yMode = new YMode(this);
 
         // 获取蓝牙MAC地址和 mcu ota版本
         serialPortManager.VCUSendToMCU("FFAA550200000A01"); // 获取蓝牙 MAC 地址
         serialPortManager.VCUSendToMCU("FFAA550204000A01"); // 获取 MCU 版本信息
         acquisitionTime();
-
+        startSocRequests();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        isLoginActivityLaunching = false;
         acquisitionTime();
 
         // Initialize UART only if it is not already open.
@@ -116,22 +133,35 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
                 command -> serialPortManager.VCUSendToMCU(command)
         );
 
+        // Start charging status monitoring while dashboard is visible.
+        if (uiUpdater != null) {
+            uiUpdater.startChargingUiWatcher();
+        }
+
         mHandlerTime.removeCallbacks(mRunnableTime);
         mHandlerTime.postDelayed(mRunnableTime, 0);
     }
+    public static boolean isLoginActivityLaunching = false;
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (uiUpdater != null) {
+            uiUpdater.stopChargingUiWatcher();
+        }
+        if (isLoginActivityLaunching) {
+            // Lock only when LoginActivity is being launched.
+            scooterPowerManager.lock(
+                    command -> serialPortManager.VCUSendToMCU(command)
+            );
 
-        // Request lock.
-        scooterPowerManager.lock(
-                command -> serialPortManager.VCUSendToMCU(command)
-        );
+
+            Log.d("MainActivity", "LoginActivity launching: scooter lock requested");
+        } else {
+            Log.d("MainActivity", "Activity paused: lock skipped");
+        }
 
         mHandlerTime.removeCallbacks(mRunnableTime);
-
-        // Keep UART open.
     }
 
     @Override
@@ -243,6 +273,75 @@ public class MainActivity extends AppCompatActivity implements FrameDataListener
         // 设置系统 UI 选项，隐藏导航栏和状态栏，启用粘性沉浸模式
         int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
+    }
+
+    private void updateWifiIpAddress() {
+        TextView ipTextView = findViewById(R.id.ip);
+
+        WifiManager wifiManager =
+                (WifiManager) getApplicationContext()
+                        .getSystemService(Context.WIFI_SERVICE);
+
+        if (wifiManager == null) {
+            ipTextView.setText("IP: Unavailable");
+            return;
+        }
+
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+
+        if (wifiInfo != null && wifiInfo.getNetworkId() != -1) {
+            int ipAddress = wifiInfo.getIpAddress();
+
+            if (ipAddress != 0) {
+                String ip = Formatter.formatIpAddress(ipAddress);
+                ipTextView.setText("IP: " + ip);
+            } else {
+                ipTextView.setText("IP: Unavailable");
+            }
+        } else {
+            ipTextView.setText("IP: Wi-Fi disconnected");
+        }
+    }
+
+    private HandlerThread socRequestThread;
+    private Handler socRequestHandler;
+
+    private static final long SOC_REQUEST_INTERVAL_MS = 2000;
+
+    private final Runnable socRequestRunnable = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                SerialPortManager.getInstance().VCUSendToMCU(
+                        "FFAA5501030015189001400001020304050607"
+                );
+            } catch (Exception e) {
+                Log.e("SOC_REQUEST", "Failed to send SOC request", e);
+            }
+
+            // Schedule the next request after 2 seconds
+            if (socRequestHandler != null) {
+                socRequestHandler.postDelayed(
+                        this,
+                        SOC_REQUEST_INTERVAL_MS
+                );
+            }
+        }
+    };
+
+    private void startSocRequests() {
+        // Start only once; never create duplicate threads
+        if (socRequestThread != null) {
+            return;
+        }
+
+        socRequestThread = new HandlerThread("SOCRequestThread");
+        socRequestThread.start();
+
+        socRequestHandler = new Handler(socRequestThread.getLooper());
+
+        // Send the first request immediately
+        socRequestHandler.post(socRequestRunnable);
     }
 
 }

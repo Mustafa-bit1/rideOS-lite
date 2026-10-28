@@ -1,5 +1,7 @@
 package com.fanconn.rideOS;
 
+import android.util.Log;
+
 /**
  * CanDataParser 类用于解析不同 CAN ID 的 CAN 数据。
  * 每个解析方法将特定的 CAN 数据字符串解析为 Heartbeat3 对象中的相应字段。
@@ -12,9 +14,18 @@ public class CanDataParser {
      * @param hb3 Heartbeat3 对象，用于存储解析后的数据
      * @param canData CAN 数据字符串
      */
+
+    public static  void parseCanData18FF50E5(Heartbeat3 hb3, String canData) {
+        // 实现 18904001 CAN 数据的解析逻辑
+        // 提取心跳包 电池电量 值
+        hb3.setChargingState(FrameUtils.getByteSubstringAsInt(canData,2,3)/10);
+    }
+
     public static  void parseCanData18904001(Heartbeat3 hb3, String canData) {
         // 实现 18904001 CAN 数据的解析逻辑
         // 提取心跳包 电池电量 值
+        Log.d("BATTRY","THIS IS BAT UI STTER");
+
         hb3.setBatteryLevel(FrameUtils.getByteSubstringAsInt(canData,6,7));
     }
 

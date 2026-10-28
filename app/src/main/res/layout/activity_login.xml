@@ -76,40 +76,6 @@
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
 
-    <!--    <Button-->
-    <!--        android:id="@+id/ScreenOFFbtn"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginTop="416dp"-->
-    <!--        android:layout_marginEnd="1132dp"-->
-    <!--        android:background="@android:color/transparent"-->
-    <!--        android:fontFamily="@font/kanit"-->
-    <!--        android:text="Screen Off"-->
-    <!--        android:textColor="#FFFFFF"-->
-    <!--        android:textSize="20sp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-
-
-
-    <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switchAuthMethod"
-        android:layout_width="300dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="940dp"
-        android:layout_marginTop="370dp"
-        android:fontFamily="@font/kanit"
-        android:gravity="center"
-        android:padding="5dp"
-        android:switchPadding="0dp"
-        android:text="Use PIN instead"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:thumbTextPadding="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <!--    <TextView-->
     <!--        android:id="@+id/drawpattern"-->
     <!--        android:layout_width="wrap_content"-->
@@ -122,6 +88,38 @@
     <!--        android:textSize="19dp"-->
     <!--        app:layout_constraintStart_toStartOf="parent"-->
     <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+    <Button
+        android:id="@+id/launchSettings"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="408dp"
+        android:layout_marginEnd="40dp"
+        android:background="@android:color/transparent"
+        android:text=""
+        android:alpha="0"
+        android:visibility="visible"
+        android:clickable="true"
+        android:focusable="false"
+        android:elevation="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/chargingStatus"
+        android:layout_width="100dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="52dp"
+        android:fontFamily="@font/kanit"
+        android:text="Charging"
+        android:textAlignment="center"
+        android:textColor="#00C853"
+        android:textSize="20sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <include layout="@layout/custom_keypadd"
         android:id="@+id/customKeypad"
@@ -139,19 +137,6 @@
         android:visibility="gone"
         />
 
-    <TextView
-        android:id="@+id/loginSoc"
-        android:layout_width="223dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="528dp"
-        android:layout_marginTop="385dp"
-        android:fontFamily="@font/kanit"
-        android:text="-"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="21dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tempWarningMessage"
