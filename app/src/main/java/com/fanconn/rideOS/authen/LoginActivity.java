@@ -30,7 +30,7 @@ import com.fanconn.rideOS.scooterPowerManager;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final String CORRECT_PIN = "2222";
+    private static final String CORRECT_PIN = "2468";
     private static final String TAG = "LoginActivity";
     private boolean isLoginScreenActive = false;
     private static final int REQUIRED_SETTINGS_TAPS = 5;

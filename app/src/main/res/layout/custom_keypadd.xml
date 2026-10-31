@@ -42,23 +42,23 @@
         android:id="@+id/button_0"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="308dp"
-        android:layout_marginEnd="608dp"
+        android:layout_marginEnd="610dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
         android:scaleType="fitCenter"
         android:src="@drawable/b0"
         android:tag="0"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button_8" />
 
     <ImageButton
         android:id="@+id/button_1"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="50dp"
-        android:layout_marginEnd="696dp"
+        android:layout_marginEnd="720dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
@@ -91,7 +91,7 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="50dp"
-        android:layout_marginEnd="524dp"
+        android:layout_marginEnd="500dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
@@ -106,25 +106,22 @@
         android:id="@+id/button_4"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="136dp"
-        android:layout_marginEnd="696dp"
+        android:layout_marginEnd="720dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
         android:scaleType="fitCenter"
         android:src="@drawable/b4"
         android:tag="4"
-
+android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toBottomOf="@+id/button_1" />
 
 
     <ImageButton
         android:id="@+id/button_5"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="136dp"
         android:layout_marginEnd="610dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
@@ -132,16 +129,16 @@
         android:scaleType="fitCenter"
         android:src="@drawable/b5"
         android:tag="5"
-
+android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button_2" />
 
     <ImageButton
         android:id="@+id/button_6"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="136dp"
-        android:layout_marginEnd="524dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="500dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
@@ -150,30 +147,28 @@
         android:tag="6"
 
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button_3" />
 
 
     <ImageButton
         android:id="@+id/button_7"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="222dp"
-        android:layout_marginEnd="696dp"
+        android:layout_marginEnd="720dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
         android:scaleType="fitCenter"
         android:src="@drawable/b7"
         android:tag="7"
-
+android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button_4" />
 
     <ImageButton
         android:id="@+id/button_8"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="222dp"
         android:layout_marginEnd="610dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
@@ -181,39 +176,39 @@
         android:scaleType="fitCenter"
         android:src="@drawable/b8"
         android:tag="8"
-
+android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button_5" />
 
     <ImageButton
         android:id="@+id/button_9"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="222dp"
-        android:layout_marginEnd="524dp"
+        android:layout_marginEnd="500dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
         android:scaleType="fitCenter"
         android:src="@drawable/b9"
         android:tag="9"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button_6" />
 
     <ImageButton
         android:id="@+id/button_backspace"
         android:layout_width="59dp"
         android:layout_height="59dp"
-        android:layout_marginTop="308dp"
-        android:layout_marginEnd="524dp"
+        android:layout_marginEnd="500dp"
         android:background="@android:color/transparent"
         android:contentDescription="1"
         android:onClick="onKeypadButtonClick"
         android:scaleType="fitCenter"
         android:src="@drawable/back"
         android:tag="del"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/button_9" />
     <!--    <View-->
 <!--        android:layout_width="0dp"-->
 <!--        android:layout_height="wrap_content"-->

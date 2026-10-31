@@ -25,10 +25,18 @@ public class UIUpdater {
     private static final long DOUBLE_TAP_INTERVAL_MS = 300;
     private long lastSpeedTapTime = 0;
     private int currentVehicleSpeed = 0;
+    private final MainActivity activity; // Actual activity for dialogs, UI
+
     public UIUpdater(ActivityMainBinding binding, Context context) {
         this.binding = binding;
         this.handlerTurnSignal = new Handler();
         this.context = context;
+
+        if (context instanceof MainActivity) {
+            this.activity = (MainActivity) context;
+        } else {
+            throw new IllegalArgumentException("UIUpdater must be initialized with an Activity context");
+        }
     }
 
     /**
@@ -316,12 +324,25 @@ Log.d("BATTRY","THIS IS BAT UI"+batteryLevel);
         if (batteryLevel >= 0 && batteryLevel <= 100) {
             binding.batteryTV.setText("Battery " + batteryLevel + "%");
         }
+
+        activity.runOnUiThread(() -> {
+            binding.batteryArc.setBatteryLevel(batteryLevel);
+        });
     }
     private int previousGearState = -1;
+    public boolean isStand=false;
+
     public void updateCanData10F807A8(Heartbeat3 hb3) {
+
         int directionalGears = FrameUtils.extractBits(
                 hb3.getBSG1_BYTE1(), 0, 1
         );
+
+        int STAND = FrameUtils.extractBits(
+                hb3.getBSG1_BYTE2(), 0, 1
+        );
+
+        isStand = (STAND == 1);
 
         // Send handle unlock command only when gear state changes
         if (directionalGears != previousGearState) {
@@ -335,18 +356,24 @@ Log.d("BATTRY","THIS IS BAT UI"+batteryLevel);
         }
 
         // Update gear image
-        switch (directionalGears) {
-            case 0:
-                binding.gearImg.setImageResource(R.drawable.neutralicon);
-                break;
+        if (isStand) {
+            // Stand is open
+            binding.gearImg.setImageResource(R.drawable.sidestandicon);
+        } else {
+            // Stand is closed: show image based on gear
+            switch (directionalGears) {
+                case 0:
+                    binding.gearImg.setImageResource(R.drawable.neutralicon);
+                    break;
 
-            case 1:
-                binding.gearImg.setImageResource(R.drawable.forwardicon);
-                break;
+                case 1:
+                    binding.gearImg.setImageResource(R.drawable.forwardicon);
+                    break;
 
-            case 2:
-                binding.gearImg.setImageResource(R.drawable.reverseicon);
-                break;
+                case 2:
+                    binding.gearImg.setImageResource(R.drawable.reverseicon);
+                    break;
+            }
         }
     }
 
@@ -443,13 +470,16 @@ Log.d("BATTRY","THIS IS BAT UI"+batteryLevel);
         }
 
         currentVehicleSpeed = (int) speed;
-
+        updateSpeedTrueAnimation((int)speed,currentComsForSpeed*-1);
         binding.speedNumberTV.setText(
                 String.valueOf(currentVehicleSpeed)
         );
 
     }
 
+    private void updateSpeedTrueAnimation(int newSpeed,int currentColour) {
+        binding.speedArc.setSpeed(newSpeed,currentColour);
+    }
     public void setupSpeedDoubleTap() {
         binding.speedNumberTV.setOnClickListener(v -> {
             long currentTime = SystemClock.elapsedRealtime();
@@ -476,9 +506,37 @@ Log.d("BATTRY","THIS IS BAT UI"+batteryLevel);
      * 更新 CAN 数据 10FA07A8
      * @param hb3 解析后的 Heartbeat3 对象
      */
+    private static int currentComsForSpeed;
+
     private void updateCanData10FA07A8(Heartbeat3 hb3) {
 
+        float current = (float) roundTo1Decimal(
+                getFormattedBusCurrent(hb3.getBSG3_BYTE34()) * -1
+        );
+        currentComsForSpeed=(int)current;
     }
+
+    public static float getFormattedBusCurrent(String byte34Hex) {
+
+        // Step 1: parse HEX string to int
+        int raw = Integer.parseInt(byte34Hex, 16);
+
+        // Step 2: signed 16-bit conversion
+        if (raw > 0x7FFF) {          // 32767
+            raw -= 0x10000;         // 65536
+        }
+
+        // Step 3: apply resolution (0.1 A / bit)
+        float current = raw * 0.1f;
+
+        // Step 4: return formatted string
+        return current;
+    }
+
+    private double roundTo1Decimal(double value) {
+        return Math.round(value * 10.0) / 10.0;
+    }
+
 
     /**
      * 更新 CAN 数据 10FB07A8

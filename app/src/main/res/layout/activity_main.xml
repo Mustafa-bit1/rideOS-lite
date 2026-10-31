@@ -112,10 +112,10 @@
 
     <ImageView
         android:id="@+id/gear_img"
-        android:layout_width="118dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="581dp"
-        android:layout_marginTop="69dp"
+        android:layout_marginTop="70dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/neutralicon" />
@@ -131,6 +131,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/pluggedin" />
+
+    <com.fanconn.rideOS.BatteryArcView
+        android:id="@+id/batteryArc"
+        android:layout_width="853dp"
+        android:layout_height="290dp"
+        android:layout_marginTop="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.fanconn.rideOS.SpeedArcView
+        android:id="@+id/speedArc"
+        android:layout_width="1000dp"
+        android:layout_height="295dp"
+        android:layout_centerInParent="true"
+        app:layout_constraintBottom_toBottomOf="@+id/enginestartIV"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/highBeam_IV"
@@ -215,13 +234,13 @@
         android:layout_width="100dp"
         android:layout_height="30dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="590dp"
         android:fontFamily="@font/kanit"
         android:text="02:22 PM"
         android:textAlignment="center"
         android:textColor="#FFFFFFFF"
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlCompat" />
 

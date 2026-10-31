@@ -21,7 +21,7 @@ public class Heartbeat3 {
     private int BSG2_BYTE56;
     private int BSG2_BYTE78;
     private int BSG3_BYTE12;
-    private int BSG3_BYTE34;
+    private String BSG3_BYTE34;
     private int BSG3_BYTE5678;
     private int BSG4_BYTE12;
     private int BSG4_BYTE34;
@@ -175,11 +175,11 @@ public class Heartbeat3 {
         this.BSG3_BYTE12 = BSG3_BYTE12;
     }
 
-    public int getBSG3_BYTE34() {
+    public String getBSG3_BYTE34() {
         return BSG3_BYTE34;
     }
 
-    public void setBSG3_BYTE34(int BSG3_BYTE34) {
+    public void setBSG3_BYTE34(String BSG3_BYTE34) {
         this.BSG3_BYTE34 = BSG3_BYTE34;
     }
 

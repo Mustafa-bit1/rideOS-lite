@@ -129,13 +129,12 @@
         android:id="@+id/loginchargingicon"
         android:layout_width="138dp"
         android:layout_height="24dp"
-        android:layout_marginTop="417dp"
-        android:layout_marginEnd="578dp"
+        android:layout_marginTop="427dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/chargingicon"
         android:visibility="gone"
-        />
+        app:srcCompat="@drawable/chargingicon" />
 
 
     <TextView
